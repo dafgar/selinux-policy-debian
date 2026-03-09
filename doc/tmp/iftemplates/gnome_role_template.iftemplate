@@ -50,8 +50,8 @@
 
 	domtrans_pattern($3, gkeyringd_exec_t, $1_gkeyringd_t)
 
-	allow $2 { gnome_home_t gnome_keyring_home_t gnome_keyring_tmp_t }:dir { relabel_dir_perms manage_dir_perms };
-	allow $2 { gnome_home_t gnome_keyring_home_t }:file { relabel_file_perms manage_file_perms };
+	allow $2 { gnome_home_t gnome_keyring_home_t gnome_keyring_tmp_t }:dir { manage_dir_perms relabel_dir_perms };
+	allow $2 { gnome_home_t gnome_keyring_home_t }:file { manage_file_perms relabel_file_perms };
 
 	userdom_user_home_dir_filetrans($2, gnome_home_t, dir, ".gnome")
 	userdom_user_home_dir_filetrans($2, gnome_home_t, dir, ".gnome2")
@@ -59,7 +59,7 @@
 
 	gnome_home_filetrans($2, gnome_keyring_home_t, dir, "keyrings")
 
-	allow $2 gnome_keyring_tmp_t:sock_file { relabel_sock_file_perms manage_sock_file_perms };
+	allow $2 gnome_keyring_tmp_t:sock_file { manage_sock_file_perms relabel_sock_file_perms };
 
 	ps_process_pattern($3, $1_gkeyringd_t)
 	allow $3 $1_gkeyringd_t:process { ptrace signal_perms };
@@ -72,6 +72,8 @@
 	optional_policy(`
 		dbus_spec_session_domain($1, $1_gkeyringd_t, gkeyringd_exec_t)
 		dbus_system_bus_client($1_gkeyringd_t)
+		dbus_write_session_runtime_socket($1_gkeyringd_t)
+		dbus_getattr_session_runtime_socket($1_gkeyringd_t)
 
 		optional_policy(`
 			evolution_dbus_chat($1_gkeyringd_t)
@@ -89,6 +91,10 @@
 		optional_policy(`
 			wm_dbus_chat($1, $1_gkeyringd_t)
 		')
+	')
+
+	optional_policy(`
+		xserver_read_xdm_lib_files($1_gkeyringd_t)
 	')
 
 	optional_policy(`

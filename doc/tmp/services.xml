@@ -2462,7 +2462,19 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="bluetooth_domtrans" lineno="98">
+<interface name="bluetooth_use" lineno="100">
+<summary>
+Connect to bluetooth over a unix domain
+stream socket. The socket can be used
+for read and write.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="bluetooth_domtrans" lineno="122">
 <summary>
 Execute bluetooth in the bluetooth domain.
 </summary>
@@ -2472,7 +2484,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="bluetooth_read_config" lineno="117">
+<interface name="bluetooth_read_config" lineno="141">
 <summary>
 Read bluetooth configuration files.
 </summary>
@@ -2482,7 +2494,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="bluetooth_dbus_chat" lineno="136">
+<interface name="bluetooth_dbus_chat" lineno="160">
 <summary>
 Send and receive messages from
 bluetooth over dbus.
@@ -2493,7 +2505,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="bluetooth_dontaudit_read_helper_state" lineno="157">
+<interface name="bluetooth_dontaudit_read_helper_state" lineno="181">
 <summary>
 Do not audit attempts to read
 bluetooth process state files.
@@ -2504,7 +2516,19 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="bluetooth_admin" lineno="183">
+<interface name="bluetooth_use_inherited_helper_stream_sockets" lineno="203">
+<summary>
+Connect to bluetooth over a unix domain
+stream socket. The socket can be used
+for read and write. This is required for
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="bluetooth_admin" lineno="229">
 <summary>
 All of the rules required to
 administrate an bluetooth environment.
@@ -2520,6 +2544,26 @@ Role allowed access.
 </summary>
 </param>
 <rolecap/>
+</interface>
+<interface name="bluetooth_service_status" lineno="268">
+<summary>
+Get status of bluetooth_unit_t service
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="bluetooth_service_start" lineno="286">
+<summary>
+start bluetooth service
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
 </interface>
 </module>
 <module name="boinc" filename="policy/modules/services/boinc.if">
@@ -3126,7 +3170,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="chronyd_startstop" lineno="273">
+<interface name="chronyd_startstop" lineno="274">
 <summary>
 Allow specified domain to start and stop chronyd unit
 </summary>
@@ -3136,7 +3180,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="chronyd_status" lineno="292">
+<interface name="chronyd_status" lineno="294">
 <summary>
 Allow specified domain to get status of chronyd unit
 </summary>
@@ -3146,7 +3190,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="chronyd_dgram_send_cli" lineno="312">
+<interface name="chronyd_dgram_send_cli" lineno="314">
 <summary>
 Send to chronyd command line interface using a unix domain
 datagram socket.
@@ -3157,7 +3201,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="chronyd_admin" lineno="338">
+<interface name="chronyd_admin" lineno="340">
 <summary>
 All of the rules required to
 administrate an chronyd environment.
@@ -3576,9 +3620,52 @@ nfs file systems.
 </module>
 <module name="cockpit" filename="policy/modules/services/cockpit.if">
 <summary>Cockpit web management system for Linux</summary>
-<interface name="cockpit_ws_domtrans" lineno="13">
+
+<desc>
+Cockpit is a web console that enables users to administer Linux servers
+via a web browser.
+see https://cockpit-project.org/
+
+For linux logins that are allowed access they must be associated with a
+SELinux user that uses ssh_role_template (sysadm, system).  To be able
+to alter system settings the must be allowed sudo access.
+</desc>
+<template name="cockpit_role_template" lineno="46">
 <summary>
-Execute TEMPLATE in the cockpit domin.
+The role template for the cockpit module.
+</summary>
+<desc>
+<p>
+This template creates a derived domain which is allowed
+to change the linux user id, to run commands as a different
+user.
+</p>
+</desc>
+<param name="role_prefix">
+<summary>
+The prefix of the user role (e.g., user
+is the prefix for user_r).
+</summary>
+</param>
+<param name="user_domain">
+<summary>
+User domain for the role.
+</summary>
+</param>
+<param name="user_exec_domain">
+<summary>
+User exec domain for execute access.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access
+</summary>
+</param>
+</template>
+<interface name="cockpit_domtrans_session" lineno="84">
+<summary>
+Transition to the cockpit session domain.
 </summary>
 <param name="domain">
 <summary>
@@ -3586,19 +3673,9 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="cockpit_session_domtrans" lineno="32">
+<interface name="cockpit_get_service_status" lineno="103">
 <summary>
-Execute TEMPLATE in the cockpit session domin.
-</summary>
-<param name="domain">
-<summary>
-Domain allowed to transition.
-</summary>
-</param>
-</interface>
-<interface name="cockpit_rw_pipes" lineno="51">
-<summary>
-Read and write cockpit_session_t unnamed pipes.
+Allow specified domain to get status of cockpit service
 </summary>
 <param name="domain">
 <summary>
@@ -3606,9 +3683,9 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="cockpit_manage_unix_stream_sockets" lineno="69">
+<interface name="cockpit_enabledisable" lineno="122">
 <summary>
-Create cockpit unix_stream_sockets.
+Allow specified domain to enable cockpit units
 </summary>
 <param name="domain">
 <summary>
@@ -3616,9 +3693,9 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="cockpit_search_lib" lineno="87">
+<interface name="cockpit_startstop" lineno="142">
 <summary>
-Search cockpit lib directories.
+Allow specified domain to start cockpit units
 </summary>
 <param name="domain">
 <summary>
@@ -3626,9 +3703,9 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="cockpit_read_lib_files" lineno="106">
+<interface name="cockpit_manage_runtime_symlnks" lineno="162">
 <summary>
-Read cockpit lib files.
+Create, read, write, and delete the cockpick runtime symlink files.
 </summary>
 <param name="domain">
 <summary>
@@ -3636,9 +3713,9 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="cockpit_manage_lib_files" lineno="125">
+<interface name="cockpit_use_session_fds" lineno="181">
 <summary>
-Manage cockpit lib files.
+Inherit and use cockpit session file descriptors.
 </summary>
 <param name="domain">
 <summary>
@@ -3646,9 +3723,9 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="cockpit_manage_lib_dirs" lineno="144">
+<interface name="cockpit_rw_session_pipes" lineno="199">
 <summary>
-Manage cockpit lib directories.
+Read and write cockpit session unnamed pipes.
 </summary>
 <param name="domain">
 <summary>
@@ -3656,9 +3733,9 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="cockpit_read_pid_files" lineno="163">
+<interface name="cockpit_use_ws_fds" lineno="217">
 <summary>
-Read cockpit pid files.
+Inherit and use cockpit web service file descriptors.
 </summary>
 <param name="domain">
 <summary>
@@ -3666,9 +3743,9 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="cockpit_manage_pid_dirs" lineno="182">
+<interface name="cockpit_rw_ws_stream_sockets" lineno="235">
 <summary>
-Manage cockpit pid dirs.
+Read and write cockpit web service stream socket
 </summary>
 <param name="domain">
 <summary>
@@ -3676,9 +3753,9 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="cockpit_manage_pid_files" lineno="200">
+<interface name="cockpit_manage_cert_files" lineno="253">
 <summary>
-Manage cockpit pid dirs.
+Manage the cockpit certificate files.
 </summary>
 <param name="domain">
 <summary>
@@ -3686,17 +3763,37 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="cockpit_systemctl" lineno="218">
+<interface name="cockpit_read_cert_files" lineno="271">
 <summary>
-Execute cockpit server in the cockpit domain.
+Read cockpit certificate files.
 </summary>
 <param name="domain">
 <summary>
-Domain allowed to transition.
+Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="cockpit_admin" lineno="246">
+<interface name="cockpit_delete_cert_files" lineno="291">
+<summary>
+Delete cockpit certificate files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="cockpit_send_signal" lineno="311">
+<summary>
+Allow cockpit to send signals to another domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to send to,
+</summary>
+</param>
+</interface>
+<interface name="cockpit_admin" lineno="331">
 <summary>
 All of the rules required to administrate
 an cockpit environment
@@ -4136,7 +4233,29 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_engine_tmp_files" lineno="474">
+<interface name="container_search_engine_tmp" lineno="474">
+<summary>
+Allow the specified domain to search
+container engine temporary directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_read_engine_tmp_files" lineno="494">
+<summary>
+Allow the specified domain to read
+container engine temporary files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_engine_tmp_files" lineno="514">
 <summary>
 Allow the specified domain to manage
 container engine temporary files.
@@ -4147,7 +4266,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_engine_tmp_sock_files" lineno="494">
+<interface name="container_manage_engine_tmp_sock_files" lineno="534">
 <summary>
 Allow the specified domain to manage
 container engine temporary named sockets.
@@ -4158,7 +4277,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_engine_tmp_filetrans" lineno="526">
+<interface name="container_engine_tmp_filetrans" lineno="566">
 <summary>
 Allow the specified domain to create
 objects in generic temporary directories
@@ -4181,7 +4300,18 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="container_read_system_container_state" lineno="545">
+<interface name="container_read_all_container_state" lineno="585">
+<summary>
+Read the process state (/proc/pid)
+of all containers.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_read_system_container_state" lineno="604">
 <summary>
 Read the process state (/proc/pid)
 of all system containers.
@@ -4192,7 +4322,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_read_user_container_state" lineno="564">
+<interface name="container_read_user_container_state" lineno="623">
 <summary>
 Read the process state (/proc/pid)
 of all user containers.
@@ -4203,7 +4333,18 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_all_containers" lineno="584">
+<interface name="container_read_all_container_engine_state" lineno="642">
+<summary>
+Read the process state (/proc/pid)
+of all container engines.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_all_containers" lineno="662">
 <summary>
 All of the permissions necessary
 for a container engine to manage
@@ -4215,7 +4356,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_domtrans" lineno="604">
+<interface name="container_domtrans" lineno="682">
 <summary>
 Allow the specified domain to
 perform a type transition to
@@ -4227,7 +4368,30 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="container_stream_connect_system_containers" lineno="623">
+<interface name="container_fusefs_domtrans_spc" lineno="702">
+<summary>
+Execute FUSEFS files with a type
+transition to the super privileged
+container type.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_stream_connect_system_engine" lineno="721">
+<summary>
+Connect to a system container engine
+domain over a unix stream socket.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_stream_connect_system_containers" lineno="743">
 <summary>
 Connect to a system container domain
 over a unix stream socket.
@@ -4238,7 +4402,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_stream_connect_user_containers" lineno="645">
+<interface name="container_stream_connect_user_containers" lineno="765">
 <summary>
 Connect to a user container domain
 over a unix stream socket.
@@ -4249,7 +4413,29 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_stream_connect_all_containers" lineno="667">
+<interface name="container_stream_connect_spc" lineno="787">
+<summary>
+Connect to super privileged containers
+over a unix stream socket.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_rw_spc_tcp_sockets" lineno="809">
+<summary>
+Read and write super privileged
+container TCP sockets.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_stream_connect_all_containers" lineno="828">
 <summary>
 Connect to a container domain
 over a unix stream socket.
@@ -4260,7 +4446,29 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_signal_all_containers" lineno="690">
+<interface name="container_stream_connect_spec_container" lineno="850">
+<summary>
+Connect to the specified container
+domain over a unix stream socket.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_kill_all_containers" lineno="871">
+<summary>
+Allow the specified domain to
+send a kill signal to all containers.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to transition.
+</summary>
+</param>
+</interface>
+<interface name="container_signal_all_containers" lineno="891">
 <summary>
 Allow the specified domain to
 send all signals to a container
@@ -4272,7 +4480,89 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="container_setattr_container_ptys" lineno="708">
+<interface name="container_signal_system_containers" lineno="909">
+<summary>
+Send signals to a system container.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_dev_filetrans" lineno="938">
+<summary>
+Create objects in /dev with an automatic
+transition to the container device type.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+<param name="object">
+<summary>
+The object class of the object being created.
+</summary>
+</param>
+<param name="name" optional="true">
+<summary>
+The name of the object being created.
+</summary>
+</param>
+</interface>
+<interface name="container_rw_device_files" lineno="956">
+<summary>
+Read and write container device files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_device_files" lineno="974">
+<summary>
+Manage container device files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_getattr_device_blk_files" lineno="993">
+<summary>
+Get the attributes of container device
+block files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_read_device_blk_files" lineno="1011">
+<summary>
+Read container device block files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_mounton_all_devices" lineno="1029">
+<summary>
+Mount on all container devices.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_setattr_container_ptys" lineno="1047">
 <summary>
 Set the attributes of container ptys.
 </summary>
@@ -4282,7 +4572,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_use_container_ptys" lineno="726">
+<interface name="container_use_container_ptys" lineno="1065">
 <summary>
 Read and write container ptys.
 </summary>
@@ -4292,7 +4582,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_mountpoint" lineno="745">
+<interface name="container_mountpoint" lineno="1084">
 <summary>
 Make the specified type usable as a mountpoint
 for containers.
@@ -4303,7 +4593,97 @@ Type to be used as a mountpoint.
 </summary>
 </param>
 </interface>
-<interface name="container_create_config_files" lineno="764">
+<interface name="container_list_plugin_dirs" lineno="1104">
+<summary>
+Allow the specified domain to
+list the contents of container
+plugin directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_watch_plugin_dirs" lineno="1124">
+<summary>
+Allow the specified domain to
+add a watch on container plugin
+directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_plugin_files" lineno="1143">
+<summary>
+Allow the specified domain to
+manage container plugin files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_exec_plugins" lineno="1162">
+<summary>
+Allow the specified domain to
+execute container plugins.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_search_config" lineno="1182">
+<summary>
+Allow the specified domain to
+search container config directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_read_config" lineno="1202">
+<summary>
+Allow the specified domain to
+read container config files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_watch_config_dirs" lineno="1222">
+<summary>
+Allow the specified domain to
+watch container config directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_create_config_dirs" lineno="1241">
+<summary>
+Allow the specified domain to
+create container config directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_create_config_files" lineno="1260">
 <summary>
 Allow the specified domain to
 create container config files.
@@ -4314,10 +4694,10 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_write_config_files" lineno="783">
+<interface name="container_rw_config_files" lineno="1279">
 <summary>
-Allow the specified domain to
-write container config files.
+Allow the specified domain to read
+and write container config files.
 </summary>
 <param name="domain">
 <summary>
@@ -4325,7 +4705,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_config_files" lineno="802">
+<interface name="container_manage_config_files" lineno="1298">
 <summary>
 Allow the specified domain to
 manage container config files.
@@ -4336,7 +4716,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_file_root_filetrans" lineno="823">
+<interface name="container_file_root_filetrans" lineno="1319">
 <summary>
 Allow the specified domain to
 create container files in the
@@ -4349,7 +4729,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_dirs" lineno="842">
+<interface name="container_manage_dirs" lineno="1338">
 <summary>
 Allow the specified domain to
 manage container file directories.
@@ -4360,7 +4740,18 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_files" lineno="861">
+<interface name="container_watch_dirs" lineno="1357">
+<summary>
+Allow the specified domain to
+watch container file directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_files" lineno="1376">
 <summary>
 Allow the specified domain to
 manage container files.
@@ -4371,7 +4762,39 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_lnk_files" lineno="880">
+<interface name="container_ioctl_files" lineno="1394">
+<summary>
+IOCTL container files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_dontaudit_relabel_dirs" lineno="1413">
+<summary>
+Do not audit attempts to relabel
+container file directories.
+</summary>
+<param name="domain">
+<summary>
+Domain to not audit.
+</summary>
+</param>
+</interface>
+<interface name="container_dontaudit_relabel_files" lineno="1432">
+<summary>
+Do not audit attempts to relabel
+container files.
+</summary>
+<param name="domain">
+<summary>
+Domain to not audit.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_lnk_files" lineno="1451">
 <summary>
 Allow the specified domain to
 manage container lnk files.
@@ -4382,7 +4805,18 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_fifo_files" lineno="899">
+<interface name="container_rw_fifo_files" lineno="1470">
+<summary>
+Allow the specified domain to
+read and write container fifo files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_fifo_files" lineno="1489">
 <summary>
 Allow the specified domain to
 manage container fifo files.
@@ -4393,7 +4827,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_sock_files" lineno="918">
+<interface name="container_manage_sock_files" lineno="1508">
 <summary>
 Allow the specified domain to
 manage container sock files.
@@ -4404,7 +4838,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_rw_chr_files" lineno="937">
+<interface name="container_rw_chr_files" lineno="1527">
 <summary>
 Allow the specified domain to read
 and write container chr files.
@@ -4415,7 +4849,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_dontaudit_rw_chr_files" lineno="956">
+<interface name="container_dontaudit_rw_chr_files" lineno="1546">
 <summary>
 Do not audit attempts to read
 and write container chr files.
@@ -4426,7 +4860,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_chr_files" lineno="975">
+<interface name="container_manage_chr_files" lineno="1565">
 <summary>
 Allow the specified domain to
 manage container chr files.
@@ -4437,7 +4871,93 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_home_config" lineno="994">
+<interface name="container_spec_filetrans_file" lineno="1601">
+<summary>
+Allow the specified domain to create
+objects in specified directories with
+an automatic type transition to the
+container file type.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+<param name="domain">
+<summary>
+Directory to transition on.
+</summary>
+</param>
+<param name="object">
+<summary>
+The object class of the object being created.
+</summary>
+</param>
+<param name="name" optional="true">
+<summary>
+The name of the object being created.
+</summary>
+</param>
+</interface>
+<interface name="container_getattr_all_files" lineno="1621">
+<summary>
+Allow the specified domain to get
+the attributes of all container
+file objects.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_list_ro_dirs" lineno="1641">
+<summary>
+Allow the specified domain to list
+the contents of read-only container
+file directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_getattr_all_ro_chr_files" lineno="1661">
+<summary>
+Allow the specified domain to get
+the attributes of all read-only
+container file character devices.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_getattr_all_ro_files" lineno="1681">
+<summary>
+Allow the specified domain to get
+the attributes of all read-only
+container file objects.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_read_home_config" lineno="1699">
+<summary>
+Read container config home content.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_home_config" lineno="1720">
 <summary>
 Allow the specified domain to
 manage container config home content.
@@ -4448,7 +4968,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_config_home_filetrans" lineno="1026">
+<interface name="container_config_home_filetrans" lineno="1752">
 <summary>
 Allow the specified domain to create
 objects in an xdg_config directory
@@ -4471,7 +4991,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_home_data_files" lineno="1046">
+<interface name="container_manage_home_data_files" lineno="1772">
 <summary>
 Allow the specified domain to
 manage container data home files.
@@ -4482,7 +5002,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_home_data_fifo_files" lineno="1066">
+<interface name="container_manage_home_data_fifo_files" lineno="1792">
 <summary>
 Allow the specified domain to
 manage container data home named
@@ -4494,7 +5014,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_home_data_sock_files" lineno="1086">
+<interface name="container_manage_home_data_sock_files" lineno="1812">
 <summary>
 Allow the specified domain to
 manage container data home named
@@ -4506,7 +5026,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_admin_all_files" lineno="1104">
+<interface name="container_admin_all_files" lineno="1830">
 <summary>
 Administrate all container files.
 </summary>
@@ -4516,7 +5036,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_admin_all_ro_files" lineno="1124">
+<interface name="container_admin_all_ro_files" lineno="1850">
 <summary>
 Administrate all container read-only files.
 </summary>
@@ -4526,7 +5046,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_admin_all_user_runtime_content" lineno="1146">
+<interface name="container_admin_all_user_runtime_content" lineno="1872">
 <summary>
 All of the rules necessary for a user
 to manage user container runtime data
@@ -4538,7 +5058,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_all_home_content" lineno="1166">
+<interface name="container_manage_all_home_content" lineno="1892">
 <summary>
 All of the rules necessary for a user
 to manage container data in their home
@@ -4550,7 +5070,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_relabel_all_content" lineno="1210">
+<interface name="container_relabel_all_content" lineno="1936">
 <summary>
 Allow the specified domain to
 relabel container files and
@@ -4562,7 +5082,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_remount_fs" lineno="1229">
+<interface name="container_remount_fs" lineno="1955">
 <summary>
 Allow the specified domain to
 remount container filesystems.
@@ -4573,7 +5093,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_relabel_fs" lineno="1248">
+<interface name="container_relabel_fs" lineno="1974">
 <summary>
 Allow the specified domain to
 relabel container filesystems.
@@ -4584,7 +5104,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_getattr_fs" lineno="1268">
+<interface name="container_getattr_fs" lineno="1994">
 <summary>
 Allow the specified domain to
 get the attributes of container
@@ -4596,7 +5116,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_search_runtime" lineno="1287">
+<interface name="container_search_runtime" lineno="2013">
 <summary>
 Allow the specified domain to search
 runtime container directories.
@@ -4607,7 +5127,41 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_runtime_files" lineno="1307">
+<interface name="container_read_runtime_files" lineno="2033">
+<summary>
+Allow the specified domain to read
+runtime container files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_getattr_runtime_sock_files" lineno="2054">
+<summary>
+Allow the specified domain to get
+the attributes runtime container of
+container runtime named sockets.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_create_runtime_dirs" lineno="2073">
+<summary>
+Allow the specified domain to create
+runtime container directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_runtime_files" lineno="2092">
 <summary>
 Allow the specified domain to manage
 runtime container files.
@@ -4618,7 +5172,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_runtime_fifo_files" lineno="1326">
+<interface name="container_manage_runtime_fifo_files" lineno="2111">
 <summary>
 Allow the specified domain to manage
 runtime container named pipes.
@@ -4629,7 +5183,18 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_runtime_sock_files" lineno="1345">
+<interface name="container_manage_runtime_lnk_files" lineno="2130">
+<summary>
+Allow the specified domain to manage
+runtime container symlinks.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_runtime_sock_files" lineno="2149">
 <summary>
 Allow the specified domain to manage
 runtime container named sockets.
@@ -4640,7 +5205,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_user_runtime_files" lineno="1364">
+<interface name="container_manage_user_runtime_files" lineno="2168">
 <summary>
 Allow the specified domain to manage
 user runtime container files.
@@ -4651,7 +5216,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_rw_user_runtime_sock_files" lineno="1383">
+<interface name="container_rw_user_runtime_sock_files" lineno="2187">
 <summary>
 Allow the specified domain to read and
 write user runtime container named sockets.
@@ -4662,7 +5227,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_search_var_lib" lineno="1402">
+<interface name="container_search_var_lib" lineno="2206">
 <summary>
 Allow the specified domain to search
 container directories in /var/lib.
@@ -4673,7 +5238,41 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_var_lib_files" lineno="1422">
+<interface name="container_list_var_lib" lineno="2227">
+<summary>
+Allow the specified domain to list
+the contents of container directories
+in /var/lib.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_var_lib_dirs" lineno="2247">
+<summary>
+Allow the specified domain to manage
+container file directories in /var/lib.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_read_var_lib_files" lineno="2266">
+<summary>
+Allow the specified domain to read
+container files in /var/lib.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_var_lib_files" lineno="2285">
 <summary>
 Allow the specified domain to manage
 container files in /var/lib.
@@ -4684,7 +5283,18 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_var_lib_fifo_files" lineno="1441">
+<interface name="container_map_var_lib_files" lineno="2304">
+<summary>
+Allow the specified domain to memory
+map container files in /var/lib.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_var_lib_fifo_files" lineno="2323">
 <summary>
 Allow the specified domain to manage
 container named pipes in /var/lib.
@@ -4695,7 +5305,18 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_manage_var_lib_sock_files" lineno="1460">
+<interface name="container_manage_var_lib_lnk_files" lineno="2342">
+<summary>
+Allow the specified domain to manage
+container symlinks in /var/lib.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_var_lib_sock_files" lineno="2361">
 <summary>
 Allow the specified domain to manage
 container named sockets in /var/lib.
@@ -4706,7 +5327,74 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_unlabeled_var_lib_filetrans" lineno="1491">
+<interface name="container_var_lib_filetrans" lineno="2391">
+<summary>
+Allow the specified domain to create
+objects in /var/lib with an automatic
+transition to the container var lib type.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+<param name="object">
+<summary>
+The object class of the object being created.
+</summary>
+</param>
+<param name="name" optional="true">
+<summary>
+The name of the object being created.
+</summary>
+</param>
+</interface>
+<interface name="container_var_lib_filetrans_file" lineno="2421">
+<summary>
+Allow the specified domain to create
+objects in /var/lib with an automatic
+transition to the container file type.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+<param name="object">
+<summary>
+The object class of the object being created.
+</summary>
+</param>
+<param name="name" optional="true">
+<summary>
+The name of the object being created.
+</summary>
+</param>
+</interface>
+<interface name="container_filetrans_var_lib_file" lineno="2452">
+<summary>
+Allow the specified domain to create
+objects in container /var/lib directories
+with an automatic transition to the
+container file type.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+<param name="object">
+<summary>
+The object class of the object being created.
+</summary>
+</param>
+<param name="name" optional="true">
+<summary>
+The name of the object being created.
+</summary>
+</param>
+</interface>
+<interface name="container_unlabeled_var_lib_filetrans" lineno="2484">
 <summary>
 Allow the specified domain to create
 objects in unlabeled directories with
@@ -4729,7 +5417,152 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="container_start_units" lineno="1512">
+<interface name="container_getattr_all_var_lib_files" lineno="2506">
+<summary>
+Allow the specified domain to get
+the attributes of all container
+var lib objects.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_search_logs" lineno="2525">
+<summary>
+Allow the specified domain to search
+container log file directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_list_log_dirs" lineno="2545">
+<summary>
+Allow the specified domain to list
+the contents of container log directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_create_log_dirs" lineno="2564">
+<summary>
+Allow the specified domain to create
+container log file directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_log_dirs" lineno="2583">
+<summary>
+Allow the specified domain to manage
+container log file directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_watch_log_dirs" lineno="2602">
+<summary>
+Allow the specified domain to watch
+container log file directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_create_log_files" lineno="2621">
+<summary>
+Allow the specified domain to create
+container log files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_append_log_files" lineno="2640">
+<summary>
+Allow the specified domain to append
+data to container log files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_log_files" lineno="2659">
+<summary>
+Allow the specified domain to manage
+container log files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_watch_log_files" lineno="2678">
+<summary>
+Allow the specified domain to watch
+container log files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_log_filetrans" lineno="2709">
+<summary>
+Allow the specified domain to create
+objects in log directories with an
+automatic transition to the container
+log type.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+<param name="object">
+<summary>
+The object class of the object being created.
+</summary>
+</param>
+<param name="name" optional="true">
+<summary>
+The name of the object being created.
+</summary>
+</param>
+</interface>
+<interface name="container_manage_log_symlinks" lineno="2729">
+<summary>
+Allow the specified domain to manage
+container log symlinks.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="container_start_units" lineno="2748">
 <summary>
 Allow the specified domain to start
 systemd units for containers.
@@ -4740,7 +5573,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="container_admin" lineno="1539">
+<interface name="container_admin" lineno="2775">
 <summary>
 All of the rules required to
 administrate a container
@@ -4788,10 +5621,55 @@ Allow containers to read all public content.
 </p>
 </desc>
 </tunable>
+<tunable name="container_spc_create_nfs_servers" dftval="false">
+<desc>
+<p>
+Allow super privileged containers to create NFS servers.
+</p>
+</desc>
+</tunable>
+<tunable name="container_spc_use_tun_tap_dev" dftval="false">
+<desc>
+<p>
+Allow super privileged containers to use tun-tap devices.
+</p>
+</desc>
+</tunable>
+<tunable name="container_use_dri" dftval="false">
+<desc>
+<p>
+Allow containers to use direct rendering devices.
+</p>
+</desc>
+</tunable>
 <tunable name="container_use_ecryptfs" dftval="false">
 <desc>
 <p>
 Allow containers to use eCryptfs filesystems.
+</p>
+</desc>
+</tunable>
+<tunable name="container_use_host_all_caps" dftval="false">
+<desc>
+<p>
+Allow containers to use all capabilities in a
+non-namespaced context for various privileged operations
+directly on the host.
+</p>
+</desc>
+</tunable>
+<tunable name="container_use_hugetlbfs" dftval="false">
+<desc>
+<p>
+Allow containers to use huge pages.
+</p>
+</desc>
+</tunable>
+<tunable name="container_use_mknod" dftval="false">
+<desc>
+<p>
+Allow containers to use the mknod syscall, e.g. for
+creating special device files.
 </p>
 </desc>
 </tunable>
@@ -4806,6 +5684,41 @@ Allow containers to use NFS filesystems.
 <desc>
 <p>
 Allow containers to use CIFS filesystems.
+</p>
+</desc>
+</tunable>
+<tunable name="container_use_sysadmin" dftval="false">
+<desc>
+<p>
+Allow containers to use the sysadmin capability, e.g.
+for mounting filesystems.
+</p>
+</desc>
+</tunable>
+<tunable name="container_use_userns_all_caps" dftval="false">
+<desc>
+<p>
+Allow containers to use all capabilities in a
+namespaced context for various privileged operations
+within the container itself.
+</p>
+</desc>
+</tunable>
+<tunable name="container_use_userns_mknod" dftval="false">
+<desc>
+<p>
+Allow containers to use the mknod syscall in a
+namespaced context, e.g. for creating special device
+files within the container itself.
+</p>
+</desc>
+</tunable>
+<tunable name="container_use_userns_sysadmin" dftval="false">
+<desc>
+<p>
+Allow containers to use the sysadmin capability in a
+namespaced context, e.g. for mounting filesystems
+within the container itself.
 </p>
 </desc>
 </tunable>
@@ -5081,6 +5994,64 @@ CPUcontrol stub interface.  No access allowed.
 Domain allowed access.
 </summary>
 </param>
+</interface>
+</module>
+<module name="crio" filename="policy/modules/services/crio.if">
+<summary>policy for cri-o</summary>
+<interface name="crio_domtrans" lineno="13">
+<summary>
+Execute CRI-O in the crio domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to transition.
+</summary>
+</param>
+</interface>
+<interface name="crio_run" lineno="39">
+<summary>
+Execute CRI-O in the crio domain,
+and allow the specified role the
+kubelet domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to transition.
+</summary>
+</param>
+<param name="role">
+<summary>
+The role to be allowed the crio domain.
+</summary>
+</param>
+</interface>
+<interface name="crio_read_conmon_state" lineno="60">
+<summary>
+Read the process state (/proc/pid)
+of CRI-O conmon.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="crio_admin" lineno="85">
+<summary>
+All of the rules required to administrate
+a CRI-O environment.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+<rolecap/>
 </interface>
 </module>
 <module name="cron" filename="policy/modules/services/cron.if">
@@ -5766,18 +6737,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="cups_stream_connect_ptal" lineno="285">
-<summary>
-Connect to ptal over an unix
-domain stream socket.
-</summary>
-<param name="domain">
-<summary>
-Domain allowed access.
-</summary>
-</param>
-</interface>
-<interface name="cups_read_state" lineno="304">
+<interface name="cups_read_state" lineno="284">
 <summary>
 Read the process state (/proc/pid) of cupsd.
 </summary>
@@ -5787,7 +6747,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="cups_domtrans_hplip" lineno="326">
+<interface name="cups_domtrans_hplip" lineno="306">
 <summary>
 Execute HP Linux Imaging and
 Printing applications in their
@@ -5799,7 +6759,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="cups_admin" lineno="352">
+<interface name="cups_admin" lineno="332">
 <summary>
 All of the rules required to
 administrate an cups environment.
@@ -6020,7 +6980,7 @@ User domain for the role
 </summary>
 </param>
 </template>
-<interface name="dbus_system_bus_client" lineno="148">
+<interface name="dbus_system_bus_client" lineno="183">
 <summary>
 Template for creating connections to
 the system bus.
@@ -6031,7 +6991,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_connect_all_session_bus" lineno="182">
+<interface name="dbus_connect_all_session_bus" lineno="219">
 <summary>
 Acquire service on all DBUS
 session busses.
@@ -6042,7 +7002,17 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<template name="dbus_connect_spec_session_bus" lineno="208">
+<interface name="dbus_send_fifo_file_all_session_bus" lineno="238">
+<summary>
+send file to all session busses.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<template name="dbus_connect_spec_session_bus" lineno="264">
 <summary>
 Acquire service on specified
 DBUS session bus.
@@ -6059,7 +7029,7 @@ Domain allowed access.
 </summary>
 </param>
 </template>
-<interface name="dbus_all_session_bus_client" lineno="228">
+<interface name="dbus_all_session_bus_client" lineno="284">
 <summary>
 Creating connections to all
 DBUS session busses.
@@ -6070,7 +7040,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<template name="dbus_spec_session_bus_client" lineno="260">
+<template name="dbus_spec_session_bus_client" lineno="318">
 <summary>
 Creating connections to specified
 DBUS session bus.
@@ -6087,7 +7057,7 @@ Domain allowed access.
 </summary>
 </param>
 </template>
-<interface name="dbus_send_all_session_bus" lineno="287">
+<interface name="dbus_send_all_session_bus" lineno="345">
 <summary>
 Send messages to all DBUS
 session busses.
@@ -6098,7 +7068,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<template name="dbus_send_spec_session_bus" lineno="313">
+<template name="dbus_send_spec_session_bus" lineno="371">
 <summary>
 Send messages to specified
 DBUS session busses.
@@ -6115,7 +7085,7 @@ Domain allowed access.
 </summary>
 </param>
 </template>
-<interface name="dbus_getattr_session_runtime_socket" lineno="333">
+<interface name="dbus_getattr_session_runtime_socket" lineno="391">
 <summary>
 Allow the specified domain to get the
 attributes of the session dbus sock file.
@@ -6126,7 +7096,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_write_session_runtime_socket" lineno="352">
+<interface name="dbus_write_session_runtime_socket" lineno="410">
 <summary>
 Allow the specified domain to write to
 the session dbus sock file.
@@ -6137,7 +7107,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_read_config" lineno="370">
+<interface name="dbus_read_config" lineno="428">
 <summary>
 Read dbus configuration content.
 </summary>
@@ -6147,7 +7117,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_read_lib_files" lineno="389">
+<interface name="dbus_read_lib_files" lineno="447">
 <summary>
 Read system dbus lib files.
 </summary>
@@ -6157,7 +7127,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_relabel_lib_dirs" lineno="409">
+<interface name="dbus_relabel_lib_dirs" lineno="467">
 <summary>
 Relabel system dbus lib directory.
 </summary>
@@ -6167,7 +7137,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_manage_lib_files" lineno="429">
+<interface name="dbus_manage_lib_files" lineno="487">
 <summary>
 Create, read, write, and delete
 system dbus lib files.
@@ -6178,7 +7148,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_all_session_domain" lineno="455">
+<interface name="dbus_all_session_domain" lineno="513">
 <summary>
 Allow a application domain to be
 started by the specified session bus.
@@ -6195,7 +7165,7 @@ entry point to this domain.
 </summary>
 </param>
 </interface>
-<template name="dbus_spec_session_domain" lineno="489">
+<template name="dbus_spec_session_domain" lineno="547">
 <summary>
 Allow a application domain to be
 started by the specified session bus.
@@ -6218,7 +7188,7 @@ entry point to this domain.
 </summary>
 </param>
 </template>
-<interface name="dbus_connect_system_bus" lineno="510">
+<interface name="dbus_connect_system_bus" lineno="568">
 <summary>
 Acquire service on the DBUS system bus.
 </summary>
@@ -6228,7 +7198,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_send_system_bus" lineno="529">
+<interface name="dbus_send_system_bus" lineno="587">
 <summary>
 Send messages to the DBUS system bus.
 </summary>
@@ -6238,7 +7208,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_system_bus_unconfined" lineno="548">
+<interface name="dbus_system_bus_unconfined" lineno="606">
 <summary>
 Unconfined access to DBUS system bus.
 </summary>
@@ -6248,7 +7218,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_system_domain" lineno="573">
+<interface name="dbus_system_domain" lineno="631">
 <summary>
 Create a domain for processes which
 can be started by the DBUS system bus.
@@ -6264,7 +7234,7 @@ Type of the program to be used as an entry point to this domain.
 </summary>
 </param>
 </interface>
-<interface name="dbus_use_system_bus_fds" lineno="611">
+<interface name="dbus_use_system_bus_fds" lineno="669">
 <summary>
 Use and inherit DBUS system bus
 file descriptors.
@@ -6275,7 +7245,33 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_dontaudit_system_bus_rw_tcp_sockets" lineno="630">
+<interface name="dbus_use_system_bus_pidfds" lineno="688">
+<summary>
+Use PIDFD file descriptors from the
+DBUS system bus.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="dbus_system_bus_receive_file_handle" lineno="711">
+<summary>
+Allow DBUS system bus to receive file handles
+</summary>
+<param name="domain">
+<summary>
+Domain to receive fds from
+</summary>
+</param>
+<param name="file type">
+<summary>
+Type of file to receive
+</summary>
+</param>
+</interface>
+<interface name="dbus_dontaudit_system_bus_rw_tcp_sockets" lineno="731">
 <summary>
 Do not audit attempts to read and
 write DBUS system bus TCP sockets.
@@ -6286,7 +7282,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="dbus_watch_system_bus_runtime_dirs" lineno="648">
+<interface name="dbus_watch_system_bus_runtime_dirs" lineno="749">
 <summary>
 Watch system bus runtime directories.
 </summary>
@@ -6296,7 +7292,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_read_system_bus_runtime_files" lineno="666">
+<interface name="dbus_read_system_bus_runtime_files" lineno="767">
 <summary>
 Read system bus runtime files.
 </summary>
@@ -6306,7 +7302,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_list_system_bus_runtime" lineno="685">
+<interface name="dbus_list_system_bus_runtime" lineno="786">
 <summary>
 List system bus runtime directories.
 </summary>
@@ -6316,7 +7312,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_watch_system_bus_runtime_named_sockets" lineno="703">
+<interface name="dbus_watch_system_bus_runtime_named_sockets" lineno="804">
 <summary>
 Watch system bus runtime named sockets.
 </summary>
@@ -6326,7 +7322,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_read_system_bus_runtime_named_sockets" lineno="721">
+<interface name="dbus_read_system_bus_runtime_named_sockets" lineno="822">
 <summary>
 Read system bus runtime named sockets.
 </summary>
@@ -6336,7 +7332,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dbus_dontaudit_write_system_bus_runtime_named_sockets" lineno="740">
+<interface name="dbus_dontaudit_write_system_bus_runtime_named_sockets" lineno="841">
 <summary>
 Do not audit attempts to write to
 system bus runtime named sockets.
@@ -6347,7 +7343,17 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="dbus_unconfined" lineno="758">
+<interface name="dbus_rw_session_tmp_sockets" lineno="859">
+<summary>
+Read and write session named sockets in the tmp directory (/tmp).
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="dbus_unconfined" lineno="877">
 <summary>
 Unconfined access to DBUS.
 </summary>
@@ -6357,6 +7363,16 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
+<tunable name="dbus_can_network" dftval="false">
+<desc>
+<p>
+Determine whether the dbus server
+can use the network (insecure
+except than in the case of the
+loopback interface).
+</p>
+</desc>
+</tunable>
 <tunable name="dbus_pass_tuntap_fd" dftval="false">
 <desc>
 <p>
@@ -6686,7 +7702,7 @@ Role allowed access
 </summary>
 </param>
 </template>
-<interface name="dirmngr_unlink_tmp_sock" lineno="62">
+<interface name="dirmngr_unlink_tmp_sock" lineno="63">
 <summary>
 unlink dirmngr_tmp_t sock_file
 </summary>
@@ -6696,7 +7712,7 @@ domain allowed access
 </summary>
 </param>
 </interface>
-<interface name="dirmngr_domtrans" lineno="80">
+<interface name="dirmngr_domtrans" lineno="81">
 <summary>
 Execute dirmngr in the dirmngr domain.
 </summary>
@@ -6706,7 +7722,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="dirmngr_exec" lineno="99">
+<interface name="dirmngr_exec" lineno="100">
 <summary>
 Execute the dirmngr in the caller domain.
 </summary>
@@ -6716,7 +7732,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dirmngr_stream_connect" lineno="118">
+<interface name="dirmngr_stream_connect" lineno="119">
 <summary>
 Connect to dirmngr socket
 </summary>
@@ -6726,7 +7742,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dirmngr_tmp_dir_search" lineno="140">
+<interface name="dirmngr_tmp_dir_search" lineno="141">
 <summary>
 Search dirmngr_tmp_t dirs
 </summary>
@@ -6736,7 +7752,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="dirmngr_admin" lineno="165">
+<interface name="dirmngr_admin" lineno="166">
 <summary>
 All of the rules required to
 administrate an dirmngr environment.
@@ -7267,6 +8283,21 @@ Role allowed access.
 </param>
 <rolecap/>
 </interface>
+</module>
+<module name="eg25manager" filename="policy/modules/services/eg25manager.if">
+<summary>Manager daemon for the Quectel EG25 modem</summary>
+
+<desc>
+eg25-manager (Debian package eg25-manager) is a daemon aimed at configuring
+and monitoring the Quectel EG25 modem on a running system. It is used on the
+PinePhone (Pro) and performs the
+following functions:
+* power on/off
+* startup configuration using AT commands
+* AGPS data upload
+* status monitoring (and restart if it becomes unavailable)
+Homepage: https://gitlab.com/mobian1/eg25-manager
+</desc>
 </module>
 <module name="entropyd" filename="policy/modules/services/entropyd.if">
 <summary>Generate entropy from audio input.</summary>
@@ -8041,6 +9072,16 @@ Role allowed access.
 </module>
 <module name="geoclue" filename="policy/modules/services/geoclue.if">
 <summary>Geoclue is a D-Bus service that provides location information.</summary>
+<interface name="geoclue_dbus_chat" lineno="13">
+<summary>
+Send and receive messages from geoclue over dbus
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
 </module>
 <module name="git" filename="policy/modules/services/git.if">
 <summary>GIT revision control system.</summary>
@@ -8365,7 +9406,18 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="glusterfs_admin" lineno="104">
+<interface name="glusterfs_search_bricks" lineno="98">
+<summary>
+Search through the contents of gluster brick
+directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="glusterfs_admin" lineno="123">
 <summary>
 All of the rules required to
 administrate an glusterfs environment.
@@ -8382,6 +9434,17 @@ Role allowed access.
 </param>
 <rolecap/>
 </interface>
+<tunable name="glusterfs_manage_unlabeled" dftval="false">
+<desc>
+<p>
+Allow the gluster daemon to manage unlabeled
+objects. This could happen if the underlying
+gluster brick experiences data corruption
+and you want to allow gluster to handle
+files with corrupted or missing xattrs.
+</p>
+</desc>
+</tunable>
 <tunable name="glusterfs_modify_policy" dftval="false">
 <desc>
 <p>
@@ -8572,7 +9635,7 @@ Role allowed access.
 <summary>policy for gssproxy - daemon to proxy GSSAPI context establishment and channel handling</summary>
 <interface name="gssproxy_domtrans" lineno="13">
 <summary>
-Execute gssproxy in the gssproxy domin.
+Execute gssproxy in the gssproxy domain.
 </summary>
 <param name="domain">
 <summary>
@@ -8855,6 +9918,85 @@ Role allowed access.
 <rolecap/>
 </interface>
 </module>
+<module name="haproxy" filename="policy/modules/services/haproxy.if">
+<summary>A TCP/HTTP reverse proxy for high availability environments.</summary>
+<interface name="haproxy_domtrans" lineno="13">
+<summary>
+Execute haproxy in the haproxy domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to transition.
+</summary>
+</param>
+</interface>
+<interface name="haproxy_run" lineno="39">
+<summary>
+Execute haproxy in the haproxy domain, and
+allow the specified role the haproxy domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to transition.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+<rolecap/>
+</interface>
+<interface name="haproxy_admin" lineno="65">
+<summary>
+All of the rules required to
+administrate an haproxy environment.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+<rolecap/>
+</interface>
+<tunable name="haproxy_bind_all_tcp_ports" dftval="false">
+<desc>
+<p>
+Determine whether haproxy can bind to
+all TCP ports.
+</p>
+</desc>
+</tunable>
+<tunable name="haproxy_bind_kubernetes_port" dftval="false">
+<desc>
+<p>
+Determine whether haproxy can bind to
+kubernetes ports (typically 6443/tcp).
+</p>
+</desc>
+</tunable>
+<tunable name="haproxy_connect_all_tcp_ports" dftval="false">
+<desc>
+<p>
+Determine whether haproxy can connect to
+all TCP ports.
+</p>
+</desc>
+</tunable>
+<tunable name="haproxy_connect_kubernetes_port" dftval="false">
+<desc>
+<p>
+Determine whether haproxy can connect to
+kubernetes ports (typically 6443/tcp).
+</p>
+</desc>
+</tunable>
+</module>
 <module name="hddtemp" filename="policy/modules/services/hddtemp.if">
 <summary>Hard disk temperature tool running as a daemon.</summary>
 <interface name="hddtemp_domtrans" lineno="13">
@@ -8867,7 +10009,24 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="hddtemp_exec" lineno="32">
+<interface name="hddtemp_run" lineno="39">
+<summary>
+Execute hddtemp in the hddtemp domain, and
+allow the specified role the hdd domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to transition.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+<rolecap/>
+</interface>
+<interface name="hddtemp_exec" lineno="59">
 <summary>
 Execute hddtemp in the caller domain.
 </summary>
@@ -8877,7 +10036,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="hddtemp_admin" lineno="58">
+<interface name="hddtemp_admin" lineno="85">
 <summary>
 All of the rules required to
 administrate an hddtemp environment.
@@ -9106,6 +10265,29 @@ Role allowed access.
 </param>
 <rolecap/>
 </interface>
+</module>
+<module name="iiosensorproxy" filename="policy/modules/services/iiosensorproxy.if">
+<summary>IIO sensors to D-Bus proxy</summary>
+
+<desc>
+Industrial I/O subsystem is intended to provide support for devices
+that in some sense are analog to digital or digital to analog converters
+.
+Devices that fall into this category are:
+* ADCs
+* Accelerometers
+* Gyros
+* IMUs
+* Capacitance to Digital Converters (CDCs)
+* Pressure Sensors
+* Color, Light and Proximity Sensors
+* Temperature Sensors
+* Magnetometers
+* DACs
+* DDS (Direct Digital Synthesis)
+* PLLs (Phase Locked Loops)
+* Variable/Programmable Gain Amplifiers (VGA, PGA)
+</desc>
 </module>
 <module name="inetd" filename="policy/modules/services/inetd.if">
 <summary>Internet services daemon.</summary>
@@ -9910,6 +11092,583 @@ Role allowed access.
 <rolecap/>
 </interface>
 </module>
+<module name="kubernetes" filename="policy/modules/services/kubernetes.if">
+<summary>policy for kubernetes</summary>
+<template name="kubernetes_kubectl_role" lineno="29">
+<summary>
+Role access for kubectl.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role (e.g., user
+is the prefix for user_r).
+</summary>
+</param>
+<param name="user_domain">
+<summary>
+User domain for the role.
+</summary>
+</param>
+<param name="user_exec_domain">
+<summary>
+User exec domain for execute and transition access.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access
+</summary>
+</param>
+</template>
+<interface name="kubernetes_domtrans_kubelet" lineno="81">
+<summary>
+Execute kubelet in the kubelet domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to transition.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_run_kubelet" lineno="107">
+<summary>
+Execute kubelet in the kubelet domain,
+and allow the specified role the
+kubelet domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to transition.
+</summary>
+</param>
+<param name="role">
+<summary>
+The role to be allowed the kubelet domain.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_stream_connect_kubelet" lineno="127">
+<summary>
+Connect to kubelet over a unix stream socket.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_read_kubelet_state" lineno="149">
+<summary>
+Read the process state (/proc/pid)
+of kubelet.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_use_kubelet_fds" lineno="168">
+<summary>
+Inherit and use file descriptors from
+kubelet.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_kubelet_kill" lineno="187">
+<summary>
+Allow kubelet to send a kill signal
+to the specified domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_domtrans_kubeadm" lineno="205">
+<summary>
+Execute kubeadm in the kubeadm domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to transition.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_run_kubeadm" lineno="231">
+<summary>
+Execute kubeadm in the kubeadm domain,
+and allow the specified role the
+kubeadm domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to transition.
+</summary>
+</param>
+<param name="role">
+<summary>
+The role to be allowed the kubeadm domain.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_container_engine" lineno="254">
+<summary>
+Associated the specified domain to
+be a domain which is capable of
+operating as a kubernetes container
+engine.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_container" lineno="276">
+<summary>
+Associated the specified domain to
+be a domain which is capable of
+operating as a container domain
+which can be spawned by kubernetes.
+engine.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_mountpoint" lineno="295">
+<summary>
+Allow the specified file type to be
+mounted on by kubernetes.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_read_container_engine_state" lineno="314">
+<summary>
+Read the process state (/proc/pid) of
+kubernetes container engines.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_dontaudit_search_engine_keys" lineno="333">
+<summary>
+Do not audit attempts to search
+kubernetes container engine keys.
+</summary>
+<param name="domain">
+<summary>
+Domain to not audit.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_getpgid_containers" lineno="353">
+<summary>
+Allow the specified domain to
+get the process group ID of all
+kubernetes containers.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to transition.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_run_engine_bpf" lineno="372">
+<summary>
+Run kubernetes container engine bpf
+programs.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_rw_container_engine_fifo_files" lineno="391">
+<summary>
+Read and write FIFO files from
+kubernetes container engines.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_search_config" lineno="409">
+<summary>
+Search kubernetes config directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_read_config" lineno="428">
+<summary>
+Read kubernetes config files and symlinks.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_mounton_config_dirs" lineno="448">
+<summary>
+Mount on kubernetes config directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_watch_config_dirs" lineno="467">
+<summary>
+Allow the specified domain to watch
+kubernetes config directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_manage_config_files" lineno="485">
+<summary>
+Manage kubernetes config files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_mounton_config_files" lineno="503">
+<summary>
+Mount on kubernetes config files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_watch_config_files" lineno="522">
+<summary>
+Allow the specified domain to watch
+kubernetes config files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_search_plugin_dirs" lineno="542">
+<summary>
+Allow the specified domain to search
+through the contents of kubernetes plugin
+directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_list_plugins" lineno="563">
+<summary>
+Allow the specified domain to list
+the contents of kubernetes plugin
+directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_watch_plugin_dirs" lineno="582">
+<summary>
+Allow the specified domain to watch
+kubernetes plugin directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_manage_plugin_files" lineno="601">
+<summary>
+Allow the specified domain to manage
+kubernetes plugin files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_manage_runtime_dirs" lineno="619">
+<summary>
+Manage kubernetes runtime directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_mounton_runtime_dirs" lineno="637">
+<summary>
+Mount on kubernetes runtime directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_manage_runtime_files" lineno="655">
+<summary>
+Manage kubernetes runtime files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_map_runtime_files" lineno="673">
+<summary>
+Memory map kubernetes runtime files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_watch_runtime_files" lineno="691">
+<summary>
+Watch kubernetes runtime files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_manage_runtime_symlinks" lineno="709">
+<summary>
+Manage kubernetes runtime symlinks.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_manage_runtime_sock_files" lineno="727">
+<summary>
+Manage kubernetes runtime sock files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_list_tmpfs" lineno="746">
+<summary>
+List the contents of kubernetes tmpfs
+directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_manage_tmpfs_dirs" lineno="764">
+<summary>
+Manage kubernetes tmpfs directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_watch_tmpfs_dirs" lineno="782">
+<summary>
+Watch kubernetes tmpfs directories.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_read_tmpfs_files" lineno="800">
+<summary>
+Read kubernetes tmpfs files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_manage_tmpfs_files" lineno="818">
+<summary>
+Manage kubernetes tmpfs files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_watch_tmpfs_files" lineno="836">
+<summary>
+Watch kubernetes tmpfs files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_read_tmpfs_symlinks" lineno="854">
+<summary>
+Read kubernetes tmpfs symlinks.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_manage_tmpfs_symlinks" lineno="872">
+<summary>
+Manage kubernetes tmpfs symlinks.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_relabelfrom_tmpfs_dirs" lineno="891">
+<summary>
+Relabel directories from the kubernetes
+tmpfs type.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_relabelfrom_tmpfs_files" lineno="909">
+<summary>
+Relabel files from the kubernetes tmpfs type.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_relabelfrom_tmpfs_symlinks" lineno="927">
+<summary>
+Relabel symlinks from the kubernetes tmpfs type.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_get_unit_status" lineno="945">
+<summary>
+Get the status of kubernetes systemd units.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_start_unit" lineno="964">
+<summary>
+Start kubernetes systemd units.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_stop_unit" lineno="983">
+<summary>
+Stop kubernetes systemd units.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_reload_unit" lineno="1002">
+<summary>
+Reload kubernetes systemd units.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="kubernetes_admin" lineno="1028">
+<summary>
+All of the rules required to administrate
+a kubernetes environment.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+<rolecap/>
+</interface>
+</module>
 <module name="l2tp" filename="policy/modules/services/l2tp.if">
 <summary>Layer 2 Tunneling Protocol.</summary>
 <interface name="l2tpd_dgram_send" lineno="14">
@@ -10066,7 +11825,7 @@ Role allowed access.
 </interface>
 </module>
 <module name="lircd" filename="policy/modules/services/lircd.if">
-<summary>Linux infared remote control daemon.</summary>
+<summary>Linux infrared remote control daemon.</summary>
 <interface name="lircd_domtrans" lineno="13">
 <summary>
 Execute a domain transition to run lircd.
@@ -10144,6 +11903,28 @@ Role allowed access.
 </summary>
 </param>
 <rolecap/>
+</interface>
+</module>
+<module name="lowmemorymonitor" filename="policy/modules/services/lowmemorymonitor.if">
+<summary>low memory monitor daemon</summary>
+
+<desc>
+The Low Memory Monitor is an early boot daemon that will monitor memory
+pressure information coming from the kernel, and, first, send a signal
+to user-space applications when memory is running low, and then optionally
+activate the kernel's OOM killer when memory is running really low.
+https://gitlab.freedesktop.org/hadess/low-memory-monitor
+</desc>
+<interface name="low_mem_mon_dbus_chat" lineno="22">
+<summary>
+Send and receive messages from
+low_mem_mon_t over dbus.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
 </interface>
 </module>
 <module name="lpd" filename="policy/modules/services/lpd.if">
@@ -10548,6 +12329,16 @@ Determine whether Matrixd is allowed to federate
 <desc>
 <p>
 Determine whether Matrixd can connect to the Postgres database.
+</p>
+</desc>
+</tunable>
+<tunable name="matrix_bind_all_unreserved_tcp_ports" dftval="false">
+<desc>
+<p>
+Determine whether Matrixd is allowed to bind all
+TCP ports. This is intended for more complex Matrix
+server configurations (e.g. Synapse workers) and may
+be used in lieu of manually labeling each port.
 </p>
 </desc>
 </tunable>
@@ -11200,37 +12991,7 @@ Role allowed access
 </summary>
 </param>
 </template>
-<interface name="mta_user_role" lineno="152">
-<summary>
-User Role access for mta.
-</summary>
-<param name="role">
-<summary>
-Role allowed access.
-</summary>
-</param>
-<param name="domain">
-<summary>
-User domain for the role.
-</summary>
-</param>
-</interface>
-<interface name="mta_admin_role" lineno="184">
-<summary>
-Admin Role access for mta.
-</summary>
-<param name="role">
-<summary>
-Role allowed access.
-</summary>
-</param>
-<param name="domain">
-<summary>
-User domain for the role.
-</summary>
-</param>
-</interface>
-<interface name="mta_mailserver" lineno="220">
+<interface name="mta_mailserver" lineno="152">
 <summary>
 Make the specified domain usable for a mail server.
 </summary>
@@ -11245,7 +13006,7 @@ Type of the program to be used as an entry point to this domain.
 </summary>
 </param>
 </interface>
-<interface name="mta_agent_executable" lineno="239">
+<interface name="mta_agent_executable" lineno="171">
 <summary>
 Make the specified type a MTA executable file.
 </summary>
@@ -11255,7 +13016,7 @@ Type to be used as a mail client.
 </summary>
 </param>
 </interface>
-<interface name="mta_read_mail_home_files" lineno="259">
+<interface name="mta_read_mail_home_files" lineno="191">
 <summary>
 Read mta mail home files.
 </summary>
@@ -11265,7 +13026,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_manage_mail_home_files" lineno="279">
+<interface name="mta_manage_mail_home_files" lineno="211">
 <summary>
 Create, read, write, and delete
 mta mail home files.
@@ -11276,7 +13037,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_home_filetrans_mail_home" lineno="310">
+<interface name="mta_home_filetrans_mail_home" lineno="242">
 <summary>
 Create specified objects in user home
 directories with the generic mail
@@ -11298,7 +13059,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="mta_manage_mail_home_rw_content" lineno="329">
+<interface name="mta_manage_mail_home_rw_content" lineno="261">
 <summary>
 Create, read, write, and delete
 mta mail home rw content.
@@ -11309,7 +13070,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_home_filetrans_mail_home_rw" lineno="364">
+<interface name="mta_home_filetrans_mail_home_rw" lineno="296">
 <summary>
 Create specified objects in user home
 directories with the generic mail
@@ -11331,7 +13092,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="mta_system_content" lineno="382">
+<interface name="mta_system_content" lineno="314">
 <summary>
 Make the specified type by a system MTA.
 </summary>
@@ -11341,7 +13102,7 @@ Type to be used as a mail client.
 </summary>
 </param>
 </interface>
-<interface name="mta_sendmail_mailserver" lineno="415">
+<interface name="mta_sendmail_mailserver" lineno="347">
 <summary>
 Modified mailserver interface for
 sendmail daemon use.
@@ -11366,7 +13127,7 @@ The type to be used for the mail server.
 </summary>
 </param>
 </interface>
-<interface name="mta_use_mailserver_fds" lineno="436">
+<interface name="mta_use_mailserver_fds" lineno="368">
 <summary>
 Inherit FDs from mailserver_domain domains
 </summary>
@@ -11376,7 +13137,7 @@ Type for a list server or delivery agent that inherits fds
 </summary>
 </param>
 </interface>
-<interface name="mta_mailserver_sender" lineno="455">
+<interface name="mta_mailserver_sender" lineno="387">
 <summary>
 Make a type a mailserver type used
 for sending mail.
@@ -11387,7 +13148,7 @@ Mail server domain type used for sending mail.
 </summary>
 </param>
 </interface>
-<interface name="mta_mailserver_delivery" lineno="474">
+<interface name="mta_mailserver_delivery" lineno="406">
 <summary>
 Make a type a mailserver type used
 for delivering mail to local users.
@@ -11398,7 +13159,7 @@ Mail server domain type used for delivering mail.
 </summary>
 </param>
 </interface>
-<interface name="mta_mailserver_user_agent" lineno="494">
+<interface name="mta_mailserver_user_agent" lineno="426">
 <summary>
 Make a type a mailserver type used
 for sending mail on behalf of local
@@ -11410,7 +13171,7 @@ Mail server domain type used for sending local mail.
 </summary>
 </param>
 </interface>
-<interface name="mta_send_mail" lineno="512">
+<interface name="mta_send_mail" lineno="444">
 <summary>
 Send mail from the system.
 </summary>
@@ -11420,7 +13181,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="mta_sendmail_domtrans" lineno="549">
+<interface name="mta_sendmail_domtrans" lineno="481">
 <summary>
 Execute send mail in a specified domain.
 </summary>
@@ -11445,7 +13206,7 @@ Domain to transition to.
 </summary>
 </param>
 </interface>
-<interface name="mta_signal_system_mail" lineno="571">
+<interface name="mta_signal_system_mail" lineno="503">
 <summary>
 Send signals to system mail.
 </summary>
@@ -11455,7 +13216,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_kill_system_mail" lineno="589">
+<interface name="mta_kill_system_mail" lineno="521">
 <summary>
 Send kill signals to system mail.
 </summary>
@@ -11465,7 +13226,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_sendmail_exec" lineno="607">
+<interface name="mta_sendmail_exec" lineno="539">
 <summary>
 Execute sendmail in the caller domain.
 </summary>
@@ -11475,7 +13236,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_sendmail_entry_point" lineno="627">
+<interface name="mta_sendmail_entry_point" lineno="559">
 <summary>
 Make sendmail usable as an entry
 point for the domain.
@@ -11486,7 +13247,7 @@ Domain to be entered.
 </summary>
 </param>
 </interface>
-<interface name="mta_read_config" lineno="646">
+<interface name="mta_read_config" lineno="578">
 <summary>
 Read mail server configuration content.
 </summary>
@@ -11497,7 +13258,7 @@ Domain allowed access.
 </param>
 <rolecap/>
 </interface>
-<interface name="mta_write_config" lineno="668">
+<interface name="mta_write_config" lineno="600">
 <summary>
 Write mail server configuration files.
 </summary>
@@ -11508,7 +13269,18 @@ Domain allowed access.
 </param>
 <rolecap/>
 </interface>
-<interface name="mta_read_aliases" lineno="687">
+<interface name="mta_manage_config" lineno="620">
+<summary>
+Create, read, write, and delete
+mail server configuration content.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="mta_read_aliases" lineno="640">
 <summary>
 Read mail address alias files.
 </summary>
@@ -11518,7 +13290,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_map_aliases" lineno="706">
+<interface name="mta_map_aliases" lineno="659">
 <summary>
 Read mail address alias files.
 </summary>
@@ -11528,7 +13300,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_manage_aliases" lineno="725">
+<interface name="mta_manage_aliases" lineno="678">
 <summary>
 Create, read, write, and delete
 mail address alias content.
@@ -11539,7 +13311,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_etc_filetrans_aliases" lineno="757">
+<interface name="mta_etc_filetrans_aliases" lineno="710">
 <summary>
 Create specified object in generic
 etc directories with the mail address
@@ -11561,7 +13333,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="mta_spec_filetrans_aliases" lineno="792">
+<interface name="mta_spec_filetrans_aliases" lineno="745">
 <summary>
 Create specified objects in specified
 directories with a type transition to
@@ -11588,7 +13360,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="mta_rw_aliases" lineno="811">
+<interface name="mta_rw_aliases" lineno="764">
 <summary>
 Read and write mail alias files.
 </summary>
@@ -11599,7 +13371,7 @@ Domain allowed access.
 </param>
 <rolecap/>
 </interface>
-<interface name="mta_dontaudit_rw_delivery_tcp_sockets" lineno="832">
+<interface name="mta_dontaudit_rw_delivery_tcp_sockets" lineno="785">
 <summary>
 Do not audit attempts to read
 and write TCP sockets of mail
@@ -11611,7 +13383,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="mta_list_spool" lineno="850">
+<interface name="mta_list_spool" lineno="803">
 <summary>
 Allow listing the mail spool.
 </summary>
@@ -11621,7 +13393,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="mta_read_spool_symlinks" lineno="869">
+<interface name="mta_read_spool_symlinks" lineno="822">
 <summary>
 Allow reading mail spool symlinks.
 </summary>
@@ -11631,7 +13403,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="mta_rw_inherited_delivery_pipes" lineno="887">
+<interface name="mta_rw_inherited_delivery_pipes" lineno="840">
 <summary>
 read and write fifo files inherited from delivery domains
 </summary>
@@ -11641,7 +13413,7 @@ Domain to use fifo files
 </summary>
 </param>
 </interface>
-<interface name="mta_dontaudit_read_spool_symlinks" lineno="908">
+<interface name="mta_dontaudit_read_spool_symlinks" lineno="861">
 <summary>
 Do not audit attempts to read
 mail spool symlinks.
@@ -11652,7 +13424,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="mta_getattr_spool" lineno="926">
+<interface name="mta_getattr_spool" lineno="879">
 <summary>
 Get attributes of mail spool content.
 </summary>
@@ -11662,7 +13434,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_dontaudit_getattr_spool_files" lineno="948">
+<interface name="mta_dontaudit_getattr_spool_files" lineno="901">
 <summary>
 Do not audit attempts to get
 attributes of mail spool files.
@@ -11673,7 +13445,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="mta_spool_filetrans" lineno="986">
+<interface name="mta_spool_filetrans" lineno="939">
 <summary>
 Create specified objects in the
 mail spool directory with a
@@ -11700,7 +13472,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="mta_read_spool_files" lineno="1005">
+<interface name="mta_read_spool_files" lineno="958">
 <summary>
 Read mail spool files.
 </summary>
@@ -11710,7 +13482,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_rw_spool" lineno="1025">
+<interface name="mta_rw_spool" lineno="978">
 <summary>
 Read and write mail spool files.
 </summary>
@@ -11720,7 +13492,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_append_spool" lineno="1046">
+<interface name="mta_append_spool" lineno="999">
 <summary>
 Create, read, and write mail spool files.
 </summary>
@@ -11730,7 +13502,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_delete_spool" lineno="1067">
+<interface name="mta_delete_spool" lineno="1020">
 <summary>
 Delete mail spool files.
 </summary>
@@ -11740,7 +13512,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_manage_spool" lineno="1087">
+<interface name="mta_manage_spool" lineno="1040">
 <summary>
 Create, read, write, and delete
 mail spool content.
@@ -11751,7 +13523,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_watch_spool" lineno="1109">
+<interface name="mta_watch_spool" lineno="1062">
 <summary>
 Watch mail spool content.
 </summary>
@@ -11761,7 +13533,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_queue_filetrans" lineno="1144">
+<interface name="mta_queue_filetrans" lineno="1097">
 <summary>
 Create specified objects in the
 mail queue spool directory with a
@@ -11788,7 +13560,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="mta_search_queue" lineno="1163">
+<interface name="mta_search_queue" lineno="1116">
 <summary>
 Search mail queue directories.
 </summary>
@@ -11798,7 +13570,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_list_queue" lineno="1182">
+<interface name="mta_list_queue" lineno="1135">
 <summary>
 List mail queue directories.
 </summary>
@@ -11808,7 +13580,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_read_queue" lineno="1201">
+<interface name="mta_read_queue" lineno="1154">
 <summary>
 Read mail queue files.
 </summary>
@@ -11818,7 +13590,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_dontaudit_rw_queue" lineno="1221">
+<interface name="mta_dontaudit_rw_queue" lineno="1174">
 <summary>
 Do not audit attempts to read and
 write mail queue content.
@@ -11829,7 +13601,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="mta_manage_queue" lineno="1241">
+<interface name="mta_manage_queue" lineno="1194">
 <summary>
 Create, read, write, and delete
 mail queue content.
@@ -11840,7 +13612,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_read_sendmail_bin" lineno="1261">
+<interface name="mta_read_sendmail_bin" lineno="1214">
 <summary>
 Read sendmail binary.
 </summary>
@@ -11850,7 +13622,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_rw_user_mail_stream_sockets" lineno="1280">
+<interface name="mta_rw_user_mail_stream_sockets" lineno="1233">
 <summary>
 Read and write unix domain stream
 sockets of all base mail domains.
@@ -11861,7 +13633,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="mta_system_mail_role" lineno="1299">
+<interface name="mta_system_mail_role" lineno="1252">
 <summary>
 Allow system_mail_t to run in a role
 </summary>
@@ -11884,7 +13656,17 @@ Domain prefix to be used.
 </summary>
 </param>
 </template>
-<interface name="munin_stream_connect" lineno="55">
+<interface name="munin_rw_tcp_sockets" lineno="54">
+<summary>
+Permit to read/write Munin TCP sockets
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="munin_stream_connect" lineno="72">
 <summary>
 Connect to munin over a unix domain
 stream socket.
@@ -11895,7 +13677,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="munin_read_config" lineno="75">
+<interface name="munin_read_config" lineno="92">
 <summary>
 Read munin configuration content.
 </summary>
@@ -11906,7 +13688,7 @@ Domain allowed access.
 </param>
 <rolecap/>
 </interface>
-<interface name="munin_append_log" lineno="97">
+<interface name="munin_append_log" lineno="114">
 <summary>
 Append munin log files.
 </summary>
@@ -11917,7 +13699,7 @@ Domain allowed access.
 </param>
 <rolecap/>
 </interface>
-<interface name="munin_search_lib" lineno="117">
+<interface name="munin_search_lib" lineno="134">
 <summary>
 Search munin library directories.
 </summary>
@@ -11927,7 +13709,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="munin_dontaudit_search_lib" lineno="137">
+<interface name="munin_dontaudit_search_lib" lineno="154">
 <summary>
 Do not audit attempts to search
 munin library directories.
@@ -11938,7 +13720,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="munin_admin" lineno="162">
+<interface name="munin_admin" lineno="179">
 <summary>
 All of the rules required to
 administrate an munin environment.
@@ -13540,6 +15322,46 @@ Role allowed access.
 <rolecap/>
 </interface>
 </module>
+<module name="openarc" filename="policy/modules/services/openarc.if">
+<summary>Authenticated Received Chain milter.</summary>
+<interface name="openarc_stream_connect" lineno="13">
+<summary>
+Allow a domain to talk to OpenARC via Unix domain socket
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="openarc_reload" lineno="31">
+<summary>
+Reload the openarc service (systemd).
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="openarc_admin" lineno="58">
+<summary>
+All of the rules required to
+administrate an OpenARC environment.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+<rolecap/>
+</interface>
+</module>
 <module name="openca" filename="policy/modules/services/openca.if">
 <summary>Open Certificate Authority.</summary>
 <interface name="openca_domtrans" lineno="14">
@@ -14387,7 +16209,7 @@ MLS range to transition to.
 </interface>
 <interface name="podman_rw_conmon_pipes" lineno="272">
 <summary>
-Read and write podman conmon unnamed pipes.
+Read and write conmon unnamed pipes.
 </summary>
 <param name="domain">
 <summary>
@@ -14395,10 +16217,10 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="podman_use_conmon_fds" lineno="293">
+<interface name="podman_use_conmon_fds" lineno="291">
 <summary>
 Allow the specified domain to inherit
-file descriptors from podman conmon.
+and use file descriptors from conmon.
 </summary>
 <param name="domain">
 <summary>
@@ -14406,7 +16228,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<template name="podman_user_role" lineno="330">
+<template name="podman_user_role" lineno="326">
 <summary>
 Role access for rootless podman.
 </summary>
@@ -14433,7 +16255,7 @@ Role allowed access.
 </param>
 <rolecap/>
 </template>
-<interface name="podman_admin" lineno="367">
+<interface name="podman_admin" lineno="363">
 <summary>
 All of the rules required to
 administrate a podman
@@ -15202,7 +17024,7 @@ Role allowed access
 </summary>
 </param>
 </template>
-<interface name="postgresql_loadable_module" lineno="125">
+<interface name="postgresql_loadable_module" lineno="123">
 <summary>
 Marks as a SE-PostgreSQL loadable shared library module
 </summary>
@@ -15212,7 +17034,7 @@ Type marked as a database object type.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_database_object" lineno="143">
+<interface name="postgresql_database_object" lineno="141">
 <summary>
 Marks as a SE-PostgreSQL database object type
 </summary>
@@ -15222,7 +17044,7 @@ Type marked as a database object type.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_schema_object" lineno="161">
+<interface name="postgresql_schema_object" lineno="159">
 <summary>
 Marks as a SE-PostgreSQL schema object type
 </summary>
@@ -15232,7 +17054,7 @@ Type marked as a schema object type.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_table_object" lineno="179">
+<interface name="postgresql_table_object" lineno="177">
 <summary>
 Marks as a SE-PostgreSQL table/column/tuple object type
 </summary>
@@ -15242,7 +17064,7 @@ Type marked as a table/column/tuple object type.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_system_table_object" lineno="197">
+<interface name="postgresql_system_table_object" lineno="195">
 <summary>
 Marks as a SE-PostgreSQL system table/column/tuple object type
 </summary>
@@ -15252,7 +17074,7 @@ Type marked as a table/column/tuple object type.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_sequence_object" lineno="216">
+<interface name="postgresql_sequence_object" lineno="214">
 <summary>
 Marks as a SE-PostgreSQL sequence type
 </summary>
@@ -15262,7 +17084,7 @@ Type marked as a sequence type.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_view_object" lineno="234">
+<interface name="postgresql_view_object" lineno="232">
 <summary>
 Marks as a SE-PostgreSQL view object type
 </summary>
@@ -15272,7 +17094,7 @@ Type marked as a view object type.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_procedure_object" lineno="252">
+<interface name="postgresql_procedure_object" lineno="250">
 <summary>
 Marks as a SE-PostgreSQL procedure object type
 </summary>
@@ -15282,7 +17104,7 @@ Type marked as a procedure object type.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_trusted_procedure_object" lineno="270">
+<interface name="postgresql_trusted_procedure_object" lineno="268">
 <summary>
 Marks as a SE-PostgreSQL trusted procedure object type
 </summary>
@@ -15292,7 +17114,7 @@ Type marked as a trusted procedure object type.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_language_object" lineno="290">
+<interface name="postgresql_language_object" lineno="288">
 <summary>
 Marks as a SE-PostgreSQL procedural language object type
 </summary>
@@ -15302,7 +17124,7 @@ Type marked as a procedural language object type.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_blob_object" lineno="308">
+<interface name="postgresql_blob_object" lineno="306">
 <summary>
 Marks as a SE-PostgreSQL binary large object type
 </summary>
@@ -15312,7 +17134,7 @@ Type marked as a database binary large object type.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_search_db" lineno="326">
+<interface name="postgresql_search_db" lineno="324">
 <summary>
 Allow the specified domain to search postgresql's database directory.
 </summary>
@@ -15322,7 +17144,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_manage_db" lineno="343">
+<interface name="postgresql_manage_db" lineno="341">
 <summary>
 Allow the specified domain to manage postgresql's database.
 </summary>
@@ -15332,7 +17154,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_domtrans" lineno="363">
+<interface name="postgresql_domtrans" lineno="361">
 <summary>
 Execute postgresql in the postgresql domain.
 </summary>
@@ -15342,7 +17164,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_signal" lineno="381">
+<interface name="postgresql_signal" lineno="379">
 <summary>
 Allow domain to signal postgresql
 </summary>
@@ -15352,7 +17174,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_read_config" lineno="399">
+<interface name="postgresql_read_config" lineno="397">
 <summary>
 Allow the specified domain to read postgresql's etc.
 </summary>
@@ -15363,7 +17185,7 @@ Domain allowed access.
 </param>
 <rolecap/>
 </interface>
-<interface name="postgresql_tcp_connect" lineno="420">
+<interface name="postgresql_tcp_connect" lineno="418">
 <summary>
 Allow the specified domain to connect to postgresql with a tcp socket.
 </summary>
@@ -15373,7 +17195,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_stream_connect" lineno="441">
+<interface name="postgresql_stream_connect" lineno="439">
 <summary>
 Allow the specified domain to connect to postgresql with a unix socket.
 </summary>
@@ -15384,7 +17206,7 @@ Domain allowed access.
 </param>
 <rolecap/>
 </interface>
-<interface name="postgresql_unpriv_client" lineno="463">
+<interface name="postgresql_unpriv_client" lineno="461">
 <summary>
 Allow the specified domain unprivileged accesses to unifined database objects
 managed by SE-PostgreSQL,
@@ -15395,7 +17217,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_unconfined" lineno="555">
+<interface name="postgresql_unconfined" lineno="551">
 <summary>
 Allow the specified domain unconfined accesses to any database objects
 managed by SE-PostgreSQL,
@@ -15406,7 +17228,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="postgresql_admin" lineno="579">
+<interface name="postgresql_admin" lineno="575">
 <summary>
 All of the rules required to administrate an postgresql environment
 </summary>
@@ -15422,6 +17244,13 @@ The role to be allowed to manage the postgresql domain.
 </param>
 <rolecap/>
 </interface>
+<tunable name="psql_allow_execmem" dftval="false">
+<desc>
+<p>
+Allow postgresql to map memory regions as both executable and writable (e.g. for JIT).
+</p>
+</desc>
+</tunable>
 <tunable name="sepgsql_enable_users_ddl" dftval="false">
 <desc>
 <p>
@@ -15485,6 +17314,13 @@ Role allowed access.
 <rolecap/>
 </interface>
 </module>
+<module name="powerprofiles" filename="policy/modules/services/powerprofiles.if">
+<summary>power profiles daemon</summary>
+
+<desc>
+Daemon to control power profiles for laptop
+</desc>
+</module>
 <module name="ppp" filename="policy/modules/services/ppp.if">
 <summary>Point to Point Protocol daemon creates links in ppp networks.</summary>
 <interface name="ppp_manage_home_files" lineno="14">
@@ -15541,7 +17377,7 @@ The name of the object being created.
 </interface>
 <interface name="ppp_use_fds" lineno="101">
 <summary>
-Inherit and use ppp file discriptors.
+Inherit and use ppp file descriptors.
 </summary>
 <param name="domain">
 <summary>
@@ -15552,7 +17388,7 @@ Domain allowed access.
 <interface name="ppp_dontaudit_use_fds" lineno="120">
 <summary>
 Do not audit attempts to inherit
-and use ppp file discriptors.
+and use ppp file descriptors.
 </summary>
 <param name="domain">
 <summary>
@@ -17038,7 +18874,17 @@ Domain prefix to be used.
 </summary>
 </param>
 </template>
-<interface name="rpc_dontaudit_getattr_exports" lineno="64">
+<interface name="rpc_list_exports" lineno="63">
+<summary>
+List export files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="rpc_dontaudit_getattr_exports" lineno="82">
 <summary>
 Do not audit attempts to get
 attributes of export files.
@@ -17049,7 +18895,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="rpc_read_exports" lineno="82">
+<interface name="rpc_read_exports" lineno="100">
 <summary>
 Read export files.
 </summary>
@@ -17059,7 +18905,17 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpc_write_exports" lineno="100">
+<interface name="rpc_create_exports" lineno="118">
+<summary>
+Create export files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="rpc_write_exports" lineno="136">
 <summary>
 Write export files.
 </summary>
@@ -17069,7 +18925,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpc_domtrans_nfsd" lineno="118">
+<interface name="rpc_domtrans_nfsd" lineno="154">
 <summary>
 Execute nfsd in the nfsd domain.
 </summary>
@@ -17079,7 +18935,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="rpc_initrc_domtrans_nfsd" lineno="138">
+<interface name="rpc_initrc_domtrans_nfsd" lineno="174">
 <summary>
 Execute nfsd init scripts in
 the initrc domain.
@@ -17090,7 +18946,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="rpc_domtrans_rpcd" lineno="156">
+<interface name="rpc_domtrans_rpcd" lineno="192">
 <summary>
 Execute rpcd in the rpcd domain.
 </summary>
@@ -17100,7 +18956,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="rpc_initrc_domtrans_rpcd" lineno="176">
+<interface name="rpc_initrc_domtrans_rpcd" lineno="212">
 <summary>
 Execute rpcd init scripts in
 the initrc domain.
@@ -17111,7 +18967,18 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="rpc_use_nfsd_fds" lineno="195">
+<interface name="rpc_read_rpcd_state" lineno="231">
+<summary>
+Read the process state (/proc/pid) of
+rpcd.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="rpc_use_nfsd_fds" lineno="250">
 <summary>
 Inherit and use file descriptors from
 nfsd.
@@ -17122,7 +18989,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpc_read_nfs_content" lineno="214">
+<interface name="rpc_read_nfs_content" lineno="269">
 <summary>
 Read nfs exported content.
 </summary>
@@ -17133,7 +19000,7 @@ Domain allowed access.
 </param>
 <rolecap/>
 </interface>
-<interface name="rpc_manage_nfs_rw_content" lineno="236">
+<interface name="rpc_manage_nfs_rw_content" lineno="291">
 <summary>
 Create, read, write, and delete
 nfs exported read write content.
@@ -17145,7 +19012,7 @@ Domain allowed access.
 </param>
 <rolecap/>
 </interface>
-<interface name="rpc_manage_nfs_ro_content" lineno="258">
+<interface name="rpc_manage_nfs_ro_content" lineno="313">
 <summary>
 Create, read, write, and delete
 nfs exported read only content.
@@ -17157,7 +19024,7 @@ Domain allowed access.
 </param>
 <rolecap/>
 </interface>
-<interface name="rpc_tcp_rw_nfs_sockets" lineno="278">
+<interface name="rpc_tcp_rw_nfs_sockets" lineno="333">
 <summary>
 Read and write to nfsd tcp sockets.
 </summary>
@@ -17167,7 +19034,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpc_udp_rw_nfs_sockets" lineno="296">
+<interface name="rpc_udp_rw_nfs_sockets" lineno="351">
 <summary>
 Read and write to nfsd udp sockets.
 </summary>
@@ -17177,7 +19044,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpc_search_nfs_state_data" lineno="314">
+<interface name="rpc_search_nfs_state_data" lineno="369">
 <summary>
 Search nfs lib directories.
 </summary>
@@ -17187,7 +19054,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpc_create_nfs_state_data_dirs" lineno="333">
+<interface name="rpc_create_nfs_state_data_dirs" lineno="388">
 <summary>
 Create nfs lib directories.
 </summary>
@@ -17197,7 +19064,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpc_read_nfs_state_data" lineno="352">
+<interface name="rpc_read_nfs_state_data" lineno="407">
 <summary>
 Read nfs lib files.
 </summary>
@@ -17207,7 +19074,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpc_manage_nfs_state_data" lineno="372">
+<interface name="rpc_manage_nfs_state_data" lineno="427">
 <summary>
 Create, read, write, and delete
 nfs lib files.
@@ -17218,7 +19085,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpc_admin" lineno="398">
+<interface name="rpc_admin" lineno="453">
 <summary>
 All of the rules required to
 administrate an rpc environment.
@@ -17625,6 +19492,26 @@ Role allowed access.
 </summary>
 </param>
 <rolecap/>
+</interface>
+<interface name="rtkit_service_status" lineno="106">
+<summary>
+Get status of rtkit_daemon_unit_t service
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="rtkit_service_start" lineno="124">
+<summary>
+start rtkit daemon service
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
 </interface>
 </module>
 <module name="rwho" filename="policy/modules/services/rwho.if">
@@ -18313,7 +20200,27 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="sasl_admin" lineno="39">
+<interface name="sasl_read_keytab" lineno="32">
+<summary>
+Read SASL keytab files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="sasl_mmap_read_keytab" lineno="51">
+<summary>
+Memory map and read SASL keytab files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="sasl_admin" lineno="77">
 <summary>
 All of the rules required to
 administrate an sasl environment.
@@ -19042,7 +20949,7 @@ Role allowed access
 </summary>
 </param>
 </template>
-<interface name="spamassassin_run_update" lineno="73">
+<interface name="spamassassin_run_update" lineno="75">
 <summary>
 Execute sa-update in the spamd-update domain,
 and allow the specified role
@@ -19060,7 +20967,7 @@ Role allowed access.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_exec" lineno="93">
+<interface name="spamassassin_exec" lineno="95">
 <summary>
 Execute the standalone spamassassin
 program in the caller directory.
@@ -19071,7 +20978,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_signal_spamd" lineno="112">
+<interface name="spamassassin_signal_spamd" lineno="114">
 <summary>
 Send generic signals to spamd.
 </summary>
@@ -19081,7 +20988,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_reload" lineno="131">
+<interface name="spamassassin_reload" lineno="133">
 <summary>
 reload SA service
 </summary>
@@ -19092,7 +20999,7 @@ Domain allowed access.
 </param>
 <rolecap/>
 </interface>
-<interface name="spamassassin_status" lineno="151">
+<interface name="spamassassin_status" lineno="153">
 <summary>
 Get SA service status
 </summary>
@@ -19103,7 +21010,7 @@ Domain allowed access.
 </param>
 <rolecap/>
 </interface>
-<interface name="spamassassin_exec_spamd" lineno="170">
+<interface name="spamassassin_exec_spamd" lineno="172">
 <summary>
 Execute spamd in the caller domain.
 </summary>
@@ -19113,7 +21020,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_domtrans_client" lineno="189">
+<interface name="spamassassin_domtrans_client" lineno="191">
 <summary>
 Execute spamc in the spamc domain.
 </summary>
@@ -19123,7 +21030,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_exec_client" lineno="208">
+<interface name="spamassassin_exec_client" lineno="210">
 <summary>
 Execute spamc in the caller domain.
 </summary>
@@ -19133,7 +21040,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_kill_client" lineno="227">
+<interface name="spamassassin_kill_client" lineno="229">
 <summary>
 Send kill signals to spamc.
 </summary>
@@ -19143,7 +21050,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_domtrans_local_client" lineno="246">
+<interface name="spamassassin_domtrans_local_client" lineno="248">
 <summary>
 Execute spamassassin standalone client
 in the user spamassassin domain.
@@ -19154,7 +21061,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_manage_spamd_home_content" lineno="266">
+<interface name="spamassassin_manage_spamd_home_content" lineno="268">
 <summary>
 Create, read, write, and delete
 spamd home content.
@@ -19165,7 +21072,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_relabel_spamd_home_content" lineno="287">
+<interface name="spamassassin_relabel_spamd_home_content" lineno="289">
 <summary>
 Relabel spamd home content.
 </summary>
@@ -19175,7 +21082,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_home_filetrans_spamd_home" lineno="319">
+<interface name="spamassassin_home_filetrans_spamd_home" lineno="321">
 <summary>
 Create objects in user home
 directories with the spamd home type.
@@ -19196,7 +21103,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_read_lib_files" lineno="337">
+<interface name="spamassassin_read_lib_files" lineno="339">
 <summary>
 Read spamd lib files.
 </summary>
@@ -19206,7 +21113,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_manage_lib_files" lineno="357">
+<interface name="spamassassin_manage_lib_files" lineno="359">
 <summary>
 Create, read, write, and delete
 spamd lib files.
@@ -19217,7 +21124,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_read_spamd_runtime_files" lineno="376">
+<interface name="spamassassin_read_spamd_runtime_files" lineno="378">
 <summary>
 Read spamd runtime files.
 </summary>
@@ -19227,7 +21134,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_read_spamd_tmp_files" lineno="395">
+<interface name="spamassassin_read_spamd_tmp_files" lineno="397">
 <summary>
 Read temporary spamd files.
 </summary>
@@ -19237,7 +21144,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_dontaudit_getattr_spamd_tmp_sockets" lineno="414">
+<interface name="spamassassin_dontaudit_getattr_spamd_tmp_sockets" lineno="416">
 <summary>
 Do not audit attempts to get
 attributes of temporary spamd sockets.
@@ -19248,7 +21155,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_stream_connect_spamd" lineno="433">
+<interface name="spamassassin_stream_connect_spamd" lineno="435">
 <summary>
 Connect to spamd with a unix
 domain stream socket.
@@ -19259,7 +21166,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="spamassassin_admin" lineno="459">
+<interface name="spamassassin_admin" lineno="461">
 <summary>
 All of the rules required to
 administrate an spamassassin environment.
@@ -19280,7 +21187,8 @@ Role allowed access.
 <desc>
 <p>
 Determine whether spamassassin
-clients can use the network.
+daemon or clients can use the
+network.
 </p>
 </desc>
 </tunable>
@@ -19292,11 +21200,28 @@ generic user home content.
 </p>
 </desc>
 </tunable>
+<tunable name="spamassassin_network_update" dftval="true">
+<desc>
+<p>
+Determine whether spamassassin
+can update the rules using the
+network.
+</p>
+</desc>
+</tunable>
 <tunable name="rspamd_spamd" dftval="false">
 <desc>
 <p>
 Determine whether extra rules should
 be enabled to support rspamd.
+</p>
+</desc>
+</tunable>
+<tunable name="spamd_execmem" dftval="false">
+<desc>
+<p>
+Determine whether execmem should be allowed
+Needed if LUA JIT is enabled for rspamd
 </p>
 </desc>
 </tunable>
@@ -19516,7 +21441,7 @@ is the prefix for sshd_t).
 </summary>
 </param>
 </template>
-<template name="ssh_role_template" lineno="321">
+<template name="ssh_role_template" lineno="323">
 <summary>
 Role access for ssh
 </summary>
@@ -19542,7 +21467,7 @@ Role allowed access
 </summary>
 </param>
 </template>
-<interface name="ssh_sigchld" lineno="488">
+<interface name="ssh_sigchld" lineno="498">
 <summary>
 Send a SIGCHLD signal to the ssh server.
 </summary>
@@ -19552,7 +21477,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_signal" lineno="506">
+<interface name="ssh_signal" lineno="516">
 <summary>
 Send a generic signal to the ssh server.
 </summary>
@@ -19562,7 +21487,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_signull" lineno="524">
+<interface name="ssh_signull" lineno="534">
 <summary>
 Send a null signal to sshd processes.
 </summary>
@@ -19572,7 +21497,18 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_read_pipes" lineno="542">
+<interface name="ssh_use_sshd_pidfds" lineno="553">
+<summary>
+Use PIDFD file descriptors from the
+ssh server.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="ssh_read_pipes" lineno="571">
 <summary>
 Read a ssh server unnamed pipe.
 </summary>
@@ -19582,7 +21518,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_rw_pipes" lineno="559">
+<interface name="ssh_rw_pipes" lineno="588">
 <summary>
 Read and write a ssh server unnamed pipe.
 </summary>
@@ -19592,7 +21528,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_rw_stream_sockets" lineno="577">
+<interface name="ssh_rw_stream_sockets" lineno="606">
 <summary>
 Read and write ssh server unix domain stream sockets.
 </summary>
@@ -19602,7 +21538,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_rw_tcp_sockets" lineno="595">
+<interface name="ssh_rw_tcp_sockets" lineno="624">
 <summary>
 Read and write ssh server TCP sockets.
 </summary>
@@ -19612,7 +21548,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_dontaudit_rw_tcp_sockets" lineno="614">
+<interface name="ssh_dontaudit_rw_tcp_sockets" lineno="643">
 <summary>
 Do not audit attempts to read and write
 ssh server TCP sockets.
@@ -19623,7 +21559,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="ssh_exec_sshd" lineno="632">
+<interface name="ssh_exec_sshd" lineno="661">
 <summary>
 Execute the ssh daemon in the caller domain.
 </summary>
@@ -19633,7 +21569,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_domtrans" lineno="651">
+<interface name="ssh_domtrans" lineno="680">
 <summary>
 Execute the ssh daemon sshd domain.
 </summary>
@@ -19643,7 +21579,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="ssh_client_domtrans" lineno="669">
+<interface name="ssh_client_domtrans" lineno="698">
 <summary>
 Execute the ssh client in the ssh client domain.
 </summary>
@@ -19653,7 +21589,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="ssh_exec" lineno="687">
+<interface name="ssh_exec" lineno="716">
 <summary>
 Execute the ssh client in the caller domain.
 </summary>
@@ -19663,7 +21599,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_setattr_key_files" lineno="706">
+<interface name="ssh_setattr_key_files" lineno="735">
 <summary>
 Set the attributes of sshd key files.
 </summary>
@@ -19673,7 +21609,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_agent_exec" lineno="725">
+<interface name="ssh_agent_exec" lineno="754">
 <summary>
 Execute the ssh agent client in the caller domain.
 </summary>
@@ -19683,7 +21619,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_setattr_home_dirs" lineno="744">
+<interface name="ssh_setattr_home_dirs" lineno="773">
 <summary>
 Set the attributes of ssh home directory (~/.ssh)
 </summary>
@@ -19693,7 +21629,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_create_home_dirs" lineno="762">
+<interface name="ssh_create_home_dirs" lineno="791">
 <summary>
 Create ssh home directory (~/.ssh)
 </summary>
@@ -19703,7 +21639,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_read_user_home_files" lineno="781">
+<interface name="ssh_read_user_home_files" lineno="810">
 <summary>
 Read ssh home directory content
 </summary>
@@ -19713,7 +21649,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_domtrans_keygen" lineno="802">
+<interface name="ssh_domtrans_keygen" lineno="831">
 <summary>
 Execute the ssh key generator in the ssh keygen domain.
 </summary>
@@ -19723,7 +21659,23 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="ssh_read_server_keys" lineno="820">
+<interface name="ssh_run_keygen" lineno="855">
+<summary>
+Execute the ssh key generator in the ssh keygen domain,
+and allow the specified	role the ssh keygen domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+</interface>
+<interface name="ssh_read_server_keys" lineno="874">
 <summary>
 Read ssh server keys
 </summary>
@@ -19733,7 +21685,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_dontaudit_read_server_keys" lineno="838">
+<interface name="ssh_dontaudit_read_server_keys" lineno="892">
 <summary>
 Do not audit denials on reading ssh server keys
 </summary>
@@ -19743,7 +21695,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="ssh_manage_home_files" lineno="856">
+<interface name="ssh_manage_home_files" lineno="910">
 <summary>
 Manage ssh home directory content
 </summary>
@@ -19753,7 +21705,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_delete_tmp" lineno="875">
+<interface name="ssh_delete_tmp" lineno="929">
 <summary>
 Delete from the ssh temp files.
 </summary>
@@ -19763,7 +21715,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="ssh_dontaudit_agent_tmp" lineno="894">
+<interface name="ssh_dontaudit_agent_tmp" lineno="948">
 <summary>
 dontaudit access to ssh agent tmp dirs
 </summary>
@@ -19791,6 +21743,13 @@ Allow ssh logins as sysadm_r:sysadm_t
 <desc>
 <p>
 Allow ssh to use gpg-agent
+</p>
+</desc>
+</tunable>
+<tunable name="sshd_port_forwarding" dftval="false">
+<desc>
+<p>
+Allow sshd to use remote port forwarding (bind to any TCP port)
 </p>
 </desc>
 </tunable>
@@ -20022,6 +21981,13 @@ Role allowed access.
 </param>
 <rolecap/>
 </interface>
+</module>
+<module name="switcheroo" filename="policy/modules/services/switcheroo.if">
+<summary>switcheroo daemon</summary>
+
+<desc>
+Daemon to control which apps use a integrated GPU and which use discrete
+</desc>
 </module>
 <module name="sympa" filename="policy/modules/services/sympa.if">
 <summary>Sympa mailing list manager</summary>
@@ -20449,7 +22415,7 @@ Domain allowed access.
 <interface name="tgtd_manage_semaphores" lineno="32">
 <summary>
 Create, read, write, and delete
-tgtd sempaphores.
+tgtd semaphores.
 </summary>
 <param name="domain">
 <summary>
@@ -20485,6 +22451,13 @@ Role allowed access.
 </param>
 <rolecap/>
 </interface>
+</module>
+<module name="thunderbolt" filename="policy/modules/services/thunderbolt.if">
+<summary>thunderbolt daemon</summary>
+
+<desc>
+Daemon to control authentication for Thunderbolt.
+</desc>
 </module>
 <module name="timidity" filename="policy/modules/services/timidity.if">
 <summary>MIDI to WAV converter and player configured as a service.</summary>
@@ -21335,7 +23308,7 @@ Domain prefix to be used.
 </summary>
 </param>
 </template>
-<interface name="virt_image" lineno="97">
+<interface name="virt_image" lineno="100">
 <summary>
 Make the specified type virt image type.
 </summary>
@@ -21345,7 +23318,7 @@ Type to be used as a virtual image.
 </summary>
 </param>
 </interface>
-<interface name="virt_domtrans" lineno="117">
+<interface name="virt_domtrans" lineno="120">
 <summary>
 Execute a domain transition to run virtd.
 </summary>
@@ -21355,7 +23328,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="virt_domtrans_qmf" lineno="136">
+<interface name="virt_domtrans_qmf" lineno="139">
 <summary>
 Execute a domain transition to run virt qmf.
 </summary>
@@ -21365,7 +23338,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="virt_domtrans_bridgehelper" lineno="156">
+<interface name="virt_domtrans_bridgehelper" lineno="159">
 <summary>
 Execute a domain transition to
 run virt bridgehelper.
@@ -21376,7 +23349,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="virt_domtrans_leaseshelper" lineno="176">
+<interface name="virt_domtrans_leaseshelper" lineno="179">
 <summary>
 Execute a domain transition to
 run virt leaseshelper.
@@ -21387,7 +23360,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="virt_run_bridgehelper" lineno="202">
+<interface name="virt_run_bridgehelper" lineno="205">
 <summary>
 Execute bridgehelper in the bridgehelper
 domain, and allow the specified role
@@ -21404,7 +23377,7 @@ Role allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_run_virt_domain" lineno="228">
+<interface name="virt_run_virt_domain" lineno="231">
 <summary>
 Execute virt domain in the their
 domain, and allow the specified
@@ -21421,7 +23394,7 @@ Role allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_signal_all_virt_domains" lineno="252">
+<interface name="virt_signal_all_virt_domains" lineno="255">
 <summary>
 Send generic signals to all virt domains.
 </summary>
@@ -21431,7 +23404,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_kill_all_virt_domains" lineno="270">
+<interface name="virt_kill_all_virt_domains" lineno="273">
 <summary>
 Send kill signals to all virt domains.
 </summary>
@@ -21441,7 +23414,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_getattr_virtd_exec_files" lineno="288">
+<interface name="virt_getattr_virtd_exec_files" lineno="291">
 <summary>
 Get attributes of virtd executable files.
 </summary>
@@ -21451,7 +23424,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_stream_connect" lineno="307">
+<interface name="virt_stream_connect" lineno="310">
 <summary>
 Connect to virt with a unix
 domain stream socket.
@@ -21462,7 +23435,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_attach_tun_iface" lineno="326">
+<interface name="virt_attach_tun_iface" lineno="329">
 <summary>
 Attach to virt tun devices.
 </summary>
@@ -21472,7 +23445,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_read_config" lineno="345">
+<interface name="virt_read_config" lineno="348">
 <summary>
 Read virt configuration content.
 </summary>
@@ -21482,7 +23455,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_manage_config" lineno="368">
+<interface name="virt_manage_config" lineno="371">
 <summary>
 Create, read, write, and delete
 virt configuration content.
@@ -21493,7 +23466,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_read_content" lineno="390">
+<interface name="virt_read_content" lineno="393">
 <summary>
 Read virt content.
 </summary>
@@ -21503,7 +23476,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_manage_virt_content" lineno="426">
+<interface name="virt_manage_virt_content" lineno="429">
 <summary>
 Create, read, write, and delete
 virt content.
@@ -21514,7 +23487,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_relabel_virt_content" lineno="462">
+<interface name="virt_relabel_virt_content" lineno="465">
 <summary>
 Relabel virt content.
 </summary>
@@ -21524,7 +23497,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_home_filetrans_virt_content" lineno="497">
+<interface name="virt_home_filetrans_virt_content" lineno="500">
 <summary>
 Create specified objects in user home
 directories with the virt content type.
@@ -21545,7 +23518,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="virt_manage_svirt_home_content" lineno="516">
+<interface name="virt_manage_svirt_home_content" lineno="519">
 <summary>
 Create, read, write, and delete
 svirt home content.
@@ -21556,7 +23529,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_relabel_svirt_home_content" lineno="551">
+<interface name="virt_relabel_svirt_home_content" lineno="554">
 <summary>
 Relabel svirt home content.
 </summary>
@@ -21566,7 +23539,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_home_filetrans_svirt_home" lineno="585">
+<interface name="virt_home_filetrans_svirt_home" lineno="588">
 <summary>
 Create specified objects in user home
 directories with the svirt home type.
@@ -21587,7 +23560,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="virt_home_filetrans" lineno="620">
+<interface name="virt_home_filetrans" lineno="623">
 <summary>
 Create specified objects in generic
 virt home directories with private
@@ -21614,7 +23587,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="virt_manage_home_files" lineno="640">
+<interface name="virt_manage_home_files" lineno="643">
 <summary>
 Create, read, write, and delete
 virt home files.
@@ -21625,7 +23598,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_manage_generic_virt_home_content" lineno="660">
+<interface name="virt_manage_generic_virt_home_content" lineno="663">
 <summary>
 Create, read, write, and delete
 virt home content.
@@ -21636,7 +23609,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_relabel_generic_virt_home_content" lineno="695">
+<interface name="virt_relabel_generic_virt_home_content" lineno="698">
 <summary>
 Relabel virt home content.
 </summary>
@@ -21646,7 +23619,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_home_filetrans_virt_home" lineno="730">
+<interface name="virt_home_filetrans_virt_home" lineno="733">
 <summary>
 Create specified objects in user home
 directories with the generic virt
@@ -21668,7 +23641,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="virt_read_runtime_files" lineno="748">
+<interface name="virt_read_runtime_files" lineno="751">
 <summary>
 Read virt runtime files.
 </summary>
@@ -21678,7 +23651,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_runtime_filetrans" lineno="783">
+<interface name="virt_runtime_filetrans" lineno="786">
 <summary>
 Create an object in the libvirt runtime directory, with a private type.
 </summary>
@@ -21704,7 +23677,7 @@ The name of the object being created.
 </param>
 <infoflow type="write" weight="10"/>
 </interface>
-<interface name="virt_search_lib" lineno="801">
+<interface name="virt_search_lib" lineno="804">
 <summary>
 Search virt lib directories.
 </summary>
@@ -21714,7 +23687,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_read_lib_files" lineno="820">
+<interface name="virt_read_lib_files" lineno="823">
 <summary>
 Read virt lib files.
 </summary>
@@ -21724,7 +23697,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_manage_lib_files" lineno="841">
+<interface name="virt_manage_lib_files" lineno="844">
 <summary>
 Create, read, write, and delete
 virt lib files.
@@ -21735,7 +23708,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_read_log" lineno="861">
+<interface name="virt_read_log" lineno="864">
 <summary>
 Read virt log files.
 </summary>
@@ -21746,7 +23719,7 @@ Domain allowed access.
 </param>
 <rolecap/>
 </interface>
-<interface name="virt_append_log" lineno="880">
+<interface name="virt_append_log" lineno="883">
 <summary>
 Append virt log files.
 </summary>
@@ -21756,7 +23729,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_manage_log" lineno="900">
+<interface name="virt_manage_log" lineno="903">
 <summary>
 Create, read, write, and delete
 virt log files.
@@ -21767,7 +23740,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_search_images" lineno="921">
+<interface name="virt_search_images" lineno="924">
 <summary>
 Search virt image directories.
 </summary>
@@ -21777,7 +23750,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_read_images" lineno="940">
+<interface name="virt_read_images" lineno="943">
 <summary>
 Read virt image files.
 </summary>
@@ -21787,7 +23760,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_rw_all_image_chr_files" lineno="976">
+<interface name="virt_rw_all_image_chr_files" lineno="979">
 <summary>
 Read and write all virt image
 character files.
@@ -21798,7 +23771,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_manage_virt_cache" lineno="997">
+<interface name="virt_manage_virt_cache" lineno="1000">
 <summary>
 Create, read, write, and delete
 virt cache content.
@@ -21809,7 +23782,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_manage_images" lineno="1019">
+<interface name="virt_manage_images" lineno="1022">
 <summary>
 Create, read, write, and delete
 virt image files.
@@ -21820,7 +23793,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_lxc_use_fds" lineno="1055">
+<interface name="virt_lxc_use_fds" lineno="1058">
 <summary>
 Inherit and use virtd lxc
 file descriptors.
@@ -21831,7 +23804,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_lxc_sigchld" lineno="1073">
+<interface name="virt_lxc_sigchld" lineno="1076">
 <summary>
 Send a SIGCHLD to virtd lxc.
 </summary>
@@ -21841,9 +23814,9 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_lxc_rw_pipes" lineno="1091">
+<interface name="virt_lxc_rw_pipes" lineno="1094">
 <summary>
-Read and write virtd lxc unamed pipes.
+Read and write virtd lxc unnamed pipes.
 </summary>
 <param name="domain">
 <summary>
@@ -21851,7 +23824,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_lxc_stream_connect" lineno="1110">
+<interface name="virt_lxc_stream_connect" lineno="1113">
 <summary>
 Connect to virtd lxc over
 a unix stream socket.
@@ -21862,7 +23835,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_lxc_list_runtime" lineno="1130">
+<interface name="virt_lxc_list_runtime" lineno="1133">
 <summary>
 List the contents of virtd lxc
 directories.
@@ -21873,7 +23846,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_lxc_read_runtime" lineno="1148">
+<interface name="virt_lxc_read_runtime" lineno="1151">
 <summary>
 Read virtd lxc runtime files.
 </summary>
@@ -21883,7 +23856,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_virsh_use_fds" lineno="1167">
+<interface name="virt_virsh_use_fds" lineno="1170">
 <summary>
 Inherit and use virsh file
 descriptors.
@@ -21894,7 +23867,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_virsh_sigchld" lineno="1185">
+<interface name="virt_virsh_sigchld" lineno="1188">
 <summary>
 Send a SIGCHLD to virsh.
 </summary>
@@ -21904,9 +23877,9 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_virsh_rw_pipes" lineno="1203">
+<interface name="virt_virsh_rw_pipes" lineno="1206">
 <summary>
-Read and write virsh unamed pipes.
+Read and write virsh unnamed pipes.
 </summary>
 <param name="domain">
 <summary>
@@ -21914,7 +23887,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="virt_admin" lineno="1228">
+<interface name="virt_admin" lineno="1231">
 <summary>
 All of the rules required to
 administrate an virt environment.
@@ -22249,7 +24222,7 @@ Role allowed access
 </summary>
 </param>
 </template>
-<template name="xserver_role" lineno="172">
+<template name="xserver_role" lineno="177">
 <summary>
 Rules required for using the X Windows server
 and environment.
@@ -22276,7 +24249,7 @@ Role allowed access
 </summary>
 </param>
 </template>
-<interface name="xserver_ro_session" lineno="247">
+<interface name="xserver_ro_session" lineno="258">
 <summary>
 Create sessions on the X server, with read-only
 access to the X server shared
@@ -22293,11 +24266,21 @@ The type of the domain SYSV tmpfs files.
 </summary>
 </param>
 </interface>
-<interface name="xserver_rw_session" lineno="289">
+<interface name="xdm_signull" lineno="293">
+<summary>
+Send a null signal to xdm processes.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="xserver_rw_session" lineno="318">
 <summary>
 Create sessions on the X server, with read and write
-access to the X server shared
-memory segments.
+access to the X server shared memory segments, but
+do not bypass existing tunable policy logic.
 </summary>
 <param name="domain">
 <summary>
@@ -22310,7 +24293,7 @@ The type of the domain SYSV tmpfs files.
 </summary>
 </param>
 </interface>
-<interface name="xserver_non_drawing_client" lineno="309">
+<interface name="xserver_non_drawing_client" lineno="344">
 <summary>
 Create non-drawing client sessions on an X server.
 </summary>
@@ -22320,7 +24303,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<template name="xserver_common_x_domain_template" lineno="348">
+<template name="xserver_common_x_domain_template" lineno="383">
 <summary>
 Interface to provide X object permissions on a given X server to
 an X client domain.  Provides the minimal set required by a basic
@@ -22338,7 +24321,7 @@ Client domain allowed access.
 </summary>
 </param>
 </template>
-<template name="xserver_object_types_template" lineno="407">
+<template name="xserver_object_types_template" lineno="442">
 <summary>
 Template for creating the set of types used
 in an X windows domain.
@@ -22350,7 +24333,7 @@ is the prefix for user_t).
 </summary>
 </param>
 </template>
-<template name="xserver_user_x_domain_template" lineno="449">
+<template name="xserver_user_x_domain_template" lineno="484">
 <summary>
 Interface to provide X object permissions on a given X server to
 an X client domain.  Provides the minimal set required by a basic
@@ -22373,7 +24356,7 @@ The type of the domain SYSV tmpfs files.
 </summary>
 </param>
 </template>
-<interface name="xserver_use_user_fonts" lineno="516">
+<interface name="xserver_use_user_fonts" lineno="554">
 <summary>
 Read user fonts, user font configuration,
 and manage the user font cache.
@@ -22394,7 +24377,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_domtrans_xauth" lineno="548">
+<interface name="xserver_domtrans_xauth" lineno="586">
 <summary>
 Transition to the Xauthority domain.
 </summary>
@@ -22404,7 +24387,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="xserver_user_home_dir_filetrans_user_xauth" lineno="571">
+<interface name="xserver_user_home_dir_filetrans_user_xauth" lineno="609">
 <summary>
 Create a Xauthority file in the user home directory.
 </summary>
@@ -22419,7 +24402,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="xserver_user_home_dir_filetrans_user_iceauth" lineno="595">
+<interface name="xserver_user_home_dir_filetrans_user_iceauth" lineno="633">
 <summary>
 Create a ICEauthority file in
 the user home directory.
@@ -22435,7 +24418,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="xserver_user_home_dir_filetrans_user_xsession_log" lineno="614">
+<interface name="xserver_user_home_dir_filetrans_user_xsession_log" lineno="652">
 <summary>
 Create a .xsession-errors log
 file in the user home directory.
@@ -22446,7 +24429,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_read_user_xauth" lineno="632">
+<interface name="xserver_read_user_xauth" lineno="670">
 <summary>
 Read all users .Xauthority.
 </summary>
@@ -22456,7 +24439,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_read_user_dmrc" lineno="651">
+<interface name="xserver_read_user_dmrc" lineno="689">
 <summary>
 Read all users .dmrc.
 </summary>
@@ -22466,7 +24449,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_read_user_iceauth" lineno="670">
+<interface name="xserver_read_user_iceauth" lineno="708">
 <summary>
 Read all users .ICEauthority.
 </summary>
@@ -22476,7 +24459,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_setattr_console_pipes" lineno="689">
+<interface name="xserver_setattr_console_pipes" lineno="727">
 <summary>
 Set the attributes of the X windows console named pipes.
 </summary>
@@ -22486,7 +24469,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_rw_console" lineno="707">
+<interface name="xserver_rw_console" lineno="745">
 <summary>
 Read and write the X windows console named pipe.
 </summary>
@@ -22496,7 +24479,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_create_console_pipes" lineno="725">
+<interface name="xserver_create_console_pipes" lineno="763">
 <summary>
 Create the X windows console named pipes.
 </summary>
@@ -22506,7 +24489,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_relabel_console_pipes" lineno="743">
+<interface name="xserver_relabel_console_pipes" lineno="781">
 <summary>
 relabel the X windows console named pipes.
 </summary>
@@ -22516,7 +24499,32 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_use_xdm_fds" lineno="761">
+<interface name="xserver_xdm_auth_filetrans" lineno="814">
+<summary>
+Create xdm authorization files
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+<param name="file_type">
+<summary>
+The type of the object to be created
+</summary>
+</param>
+<param name="object_class">
+<summary>
+The object class.
+</summary>
+</param>
+<param name="name" optional="true">
+<summary>
+The name of the object being created.
+</summary>
+</param>
+</interface>
+<interface name="xserver_use_xdm_fds" lineno="832">
 <summary>
 Use file descriptors for xdm.
 </summary>
@@ -22526,7 +24534,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_dontaudit_use_xdm_fds" lineno="780">
+<interface name="xserver_dontaudit_use_xdm_fds" lineno="851">
 <summary>
 Do not audit attempts to inherit
 XDM file descriptors.
@@ -22537,7 +24545,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="xserver_sigchld_xdm" lineno="798">
+<interface name="xserver_sigchld_xdm" lineno="869">
 <summary>
 Allow domain to send sigchld to xdm_t
 </summary>
@@ -22547,7 +24555,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_rw_xdm_pipes" lineno="816">
+<interface name="xserver_rw_xdm_pipes" lineno="887">
 <summary>
 Read and write XDM unnamed pipes.
 </summary>
@@ -22557,7 +24565,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_dontaudit_rw_xdm_pipes" lineno="835">
+<interface name="xserver_dontaudit_rw_xdm_pipes" lineno="906">
 <summary>
 Do not audit attempts to read and write
 XDM unnamed pipes.
@@ -22568,7 +24576,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="xserver_dbus_chat_xdm" lineno="855">
+<interface name="xserver_dbus_chat_xdm" lineno="926">
 <summary>
 Send and receive messages from
 xdm over dbus.
@@ -22579,7 +24587,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_read_xdm_state" lineno="875">
+<interface name="xserver_read_xdm_state" lineno="946">
 <summary>
 Read xdm process state files.
 </summary>
@@ -22589,7 +24597,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_setsched_xdm" lineno="897">
+<interface name="xserver_setsched_xdm" lineno="968">
 <summary>
 Set the priority of the X Display
 Manager (XDM).
@@ -22600,7 +24608,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_stream_connect_xdm" lineno="916">
+<interface name="xserver_stream_connect_xdm" lineno="987">
 <summary>
 Connect to XDM over a unix domain
 stream socket.
@@ -22611,7 +24619,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_read_xdm_rw_config" lineno="935">
+<interface name="xserver_read_xdm_rw_config" lineno="1006">
 <summary>
 Read xdm-writable configuration files.
 </summary>
@@ -22621,7 +24629,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_setattr_xdm_tmp_dirs" lineno="954">
+<interface name="xserver_setattr_xdm_tmp_dirs" lineno="1025">
 <summary>
 Set the attributes of XDM temporary directories.
 </summary>
@@ -22631,7 +24639,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_create_xdm_tmp_sockets" lineno="973">
+<interface name="xserver_create_xdm_tmp_sockets" lineno="1044">
 <summary>
 Create a named socket in a XDM
 temporary directory.
@@ -22642,7 +24650,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_delete_xdm_tmp_sockets" lineno="994">
+<interface name="xserver_delete_xdm_tmp_sockets" lineno="1065">
 <summary>
 Delete a named socket in a XDM
 temporary directory.
@@ -22653,7 +24661,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_read_xdm_runtime_files" lineno="1013">
+<interface name="xserver_read_xdm_runtime_files" lineno="1084">
 <summary>
 Read XDM runtime files.
 </summary>
@@ -22663,7 +24671,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_read_xdm_lib_files" lineno="1032">
+<interface name="xserver_read_xdm_lib_files" lineno="1103">
 <summary>
 Read XDM var lib files.
 </summary>
@@ -22673,7 +24681,27 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_xsession_entry_type" lineno="1050">
+<interface name="xserver_mmap_read_xdm_lib_files" lineno="1122">
+<summary>
+read and map XDM var lib files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="xserver_watch_xdm_lib_dirs" lineno="1141">
+<summary>
+watch XDM var lib dirs.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="xserver_xsession_entry_type" lineno="1159">
 <summary>
 Make an X session script an entrypoint for the specified domain.
 </summary>
@@ -22683,7 +24711,7 @@ The domain for which the shell is an entrypoint.
 </summary>
 </param>
 </interface>
-<interface name="xserver_xsession_spec_domtrans" lineno="1087">
+<interface name="xserver_xsession_spec_domtrans" lineno="1196">
 <summary>
 Execute an X session in the target domain.  This
 is an explicit transition, requiring the
@@ -22712,7 +24740,7 @@ The type of the shell process.
 </summary>
 </param>
 </interface>
-<interface name="xserver_write_inherited_xsession_log" lineno="1106">
+<interface name="xserver_write_inherited_xsession_log" lineno="1215">
 <summary>
 Write to inherited  xsession log
 files such as .xsession-errors.
@@ -22723,7 +24751,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_rw_xsession_log" lineno="1126">
+<interface name="xserver_rw_xsession_log" lineno="1235">
 <summary>
 Read and write xsession log
 files such as .xsession-errors.
@@ -22734,7 +24762,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_manage_xsession_log" lineno="1145">
+<interface name="xserver_manage_xsession_log" lineno="1254">
 <summary>
 Manage xsession log files such
 as .xsession-errors.
@@ -22745,7 +24773,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_write_inherited_log" lineno="1164">
+<interface name="xserver_write_inherited_log" lineno="1273">
 <summary>
 Write to inherited X server log
 files like /var/log/lightdm/lightdm.log
@@ -22756,7 +24784,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_getattr_log" lineno="1182">
+<interface name="xserver_getattr_log" lineno="1291">
 <summary>
 Get the attributes of X server logs.
 </summary>
@@ -22766,7 +24794,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_dontaudit_write_log" lineno="1202">
+<interface name="xserver_dontaudit_write_log" lineno="1311">
 <summary>
 Do not audit attempts to write the X server
 log files.
@@ -22777,7 +24805,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="xserver_delete_log" lineno="1220">
+<interface name="xserver_delete_log" lineno="1329">
 <summary>
 Delete X server log files.
 </summary>
@@ -22787,7 +24815,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_read_xkb_libs" lineno="1241">
+<interface name="xserver_read_xkb_libs" lineno="1350">
 <summary>
 Read X keyboard extension libraries.
 </summary>
@@ -22797,7 +24825,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_create_xdm_tmp_dirs" lineno="1263">
+<interface name="xserver_create_xdm_tmp_dirs" lineno="1372">
 <summary>
 Create xdm temporary directories.
 </summary>
@@ -22807,7 +24835,7 @@ Domain to allow access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_read_xdm_tmp_files" lineno="1281">
+<interface name="xserver_read_xdm_tmp_files" lineno="1390">
 <summary>
 Read xdm temporary files.
 </summary>
@@ -22817,7 +24845,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_dontaudit_read_xdm_tmp_files" lineno="1300">
+<interface name="xserver_dontaudit_read_xdm_tmp_files" lineno="1409">
 <summary>
 Do not audit attempts to read xdm temporary files.
 </summary>
@@ -22827,7 +24855,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="xserver_rw_xdm_tmp_files" lineno="1319">
+<interface name="xserver_rw_xdm_tmp_files" lineno="1428">
 <summary>
 Read write xdm temporary files.
 </summary>
@@ -22837,7 +24865,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_manage_xdm_tmp_files" lineno="1338">
+<interface name="xserver_manage_xdm_tmp_files" lineno="1447">
 <summary>
 Create, read, write, and delete xdm temporary files.
 </summary>
@@ -22847,7 +24875,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_dontaudit_getattr_xdm_tmp_sockets" lineno="1357">
+<interface name="xserver_dontaudit_getattr_xdm_tmp_sockets" lineno="1466">
 <summary>
 Do not audit attempts to get the attributes of
 xdm temporary named sockets.
@@ -22858,7 +24886,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="xserver_list_xdm_tmp" lineno="1375">
+<interface name="xserver_list_xdm_tmp" lineno="1484">
 <summary>
 list xdm_tmp_t directories
 </summary>
@@ -22868,7 +24896,7 @@ Domain to allow
 </summary>
 </param>
 </interface>
-<interface name="xserver_domtrans" lineno="1393">
+<interface name="xserver_domtrans" lineno="1502">
 <summary>
 Execute the X server in the X server domain.
 </summary>
@@ -22878,7 +24906,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="xserver_signal" lineno="1412">
+<interface name="xserver_signal" lineno="1521">
 <summary>
 Signal X servers
 </summary>
@@ -22888,7 +24916,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_kill" lineno="1430">
+<interface name="xserver_kill" lineno="1539">
 <summary>
 Kill X servers
 </summary>
@@ -22898,7 +24926,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_read_state" lineno="1448">
+<interface name="xserver_read_state" lineno="1557">
 <summary>
 Allow reading xserver_t files to get cgroup and sessionid
 </summary>
@@ -22908,7 +24936,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_rw_shm" lineno="1468">
+<interface name="xserver_rw_shm" lineno="1577">
 <summary>
 Read and write X server Sys V Shared
 memory segments.
@@ -22919,7 +24947,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_dontaudit_rw_tcp_sockets" lineno="1487">
+<interface name="xserver_dontaudit_rw_tcp_sockets" lineno="1598">
 <summary>
 Do not audit attempts to read and write to
 X server sockets.
@@ -22930,7 +24958,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="xserver_dontaudit_rw_stream_sockets" lineno="1506">
+<interface name="xserver_dontaudit_rw_stream_sockets" lineno="1617">
 <summary>
 Do not audit attempts to read and write X server
 unix domain stream sockets.
@@ -22941,7 +24969,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="xserver_stream_connect" lineno="1525">
+<interface name="xserver_stream_connect" lineno="1636">
 <summary>
 Connect to the X server over a unix domain
 stream socket.
@@ -22952,7 +24980,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_read_tmp_files" lineno="1544">
+<interface name="xserver_read_tmp_files" lineno="1655">
 <summary>
 Read X server temporary files.
 </summary>
@@ -22962,7 +24990,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_dbus_chat" lineno="1563">
+<interface name="xserver_dbus_chat" lineno="1674">
 <summary>
 talk to xserver_t by dbus
 </summary>
@@ -22972,7 +25000,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_manage_core_devices" lineno="1585">
+<interface name="xserver_manage_core_devices" lineno="1696">
 <summary>
 Interface to provide X object permissions on a given X server to
 an X client domain.  Gives the domain permission to read the
@@ -22984,7 +25012,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_unconfined" lineno="1608">
+<interface name="xserver_unconfined" lineno="1719">
 <summary>
 Interface to provide X object permissions on a given X server to
 an X client domain.  Gives the domain complete control over the
@@ -22996,7 +25024,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_rw_xdm_keys" lineno="1628">
+<interface name="xserver_rw_xdm_keys" lineno="1739">
 <summary>
 Manage keys for xdm.
 </summary>
@@ -23006,7 +25034,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_link_xdm_keys" lineno="1646">
+<interface name="xserver_link_xdm_keys" lineno="1757">
 <summary>
 Manage keys for xdm.
 </summary>
@@ -23016,7 +25044,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_rw_mesa_shader_cache" lineno="1664">
+<interface name="xserver_rw_mesa_shader_cache" lineno="1775">
 <summary>
 Read and write the mesa shader cache.
 </summary>
@@ -23026,7 +25054,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="xserver_manage_mesa_shader_cache" lineno="1685">
+<interface name="xserver_manage_mesa_shader_cache" lineno="1796">
 <summary>
 Manage the mesa shader cache.
 </summary>
@@ -23036,6 +25064,29 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
+<tunable name="xserver_can_network" dftval="false">
+<desc>
+<p>
+Allows the X server to use TCP/IP
+networking functionality (insecure).
+</p>
+</desc>
+</tunable>
+<tunable name="xserver_xdm_can_network" dftval="false">
+<desc>
+<p>
+Allows the X display manager to use
+TCP/IP networking functionality (insecure).
+</p>
+</desc>
+</tunable>
+<tunable name="xdm_sysadm_login" dftval="false">
+<desc>
+<p>
+Allow xdm logins as sysadm
+</p>
+</desc>
+</tunable>
 <tunable name="allow_write_xshm" dftval="false">
 <desc>
 <p>
@@ -23044,10 +25095,11 @@ memory segments.
 </p>
 </desc>
 </tunable>
-<tunable name="xdm_sysadm_login" dftval="false">
+<tunable name="xserver_client_writes_xserver_tmpfs" dftval="false">
 <desc>
 <p>
-Allow xdm logins as sysadm
+Allows clients to write to the X server tmpfs
+files.
 </p>
 </desc>
 </tunable>
@@ -23334,7 +25386,19 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="zfs_rw_zpool_cache" lineno="117">
+<interface name="zfs_filetrans_zpool_cache" lineno="119">
+<summary>
+Create the zpool cache with an
+automatic transition to the zpool
+cache type.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="zfs_rw_zpool_cache" lineno="137">
 <summary>
 Read and write zpool cache files.
 </summary>
@@ -23344,7 +25408,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="zfs_admin" lineno="143">
+<interface name="zfs_admin" lineno="163">
 <summary>
 All of the rules required to
 administrate a ZFS environment.

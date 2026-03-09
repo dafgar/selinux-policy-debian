@@ -86,16 +86,16 @@ ifdef(`distro_debian',`
 #
 
 allow ssh_t self:capability { dac_override dac_read_search setgid setuid };
-allow ssh_t self:process { transition signal_perms getsched setsched getsession getpgid setpgid getcap setcap share getattr noatsecure siginh rlimitinh dyntransition setkeycreate setsockcreate getrlimit };
+allow ssh_t self:process { dyntransition getattr getcap getpgid getrlimit getsched getsession noatsecure rlimitinh setcap setkeycreate setpgid setsched setsockcreate share siginh signal_perms transition };
 allow ssh_t self:fd use;
 allow ssh_t self:fifo_file rw_fifo_file_perms;
 allow ssh_t self:key manage_key_perms;
 allow ssh_t self:unix_dgram_socket { create_socket_perms sendto };
-allow ssh_t self:unix_stream_socket { create_stream_socket_perms connectto };
+allow ssh_t self:unix_stream_socket { connectto create_stream_socket_perms };
 allow ssh_t self:shm create_shm_perms;
 allow ssh_t self:sem create_sem_perms;
 allow ssh_t self:msgq create_msgq_perms;
-allow ssh_t self:msg { send receive };
+allow ssh_t self:msg { receive send };
 allow ssh_t self:tcp_socket create_stream_socket_perms;
 
 # Read the ssh key file.
@@ -178,6 +178,11 @@ tunable_policy(`allow_ssh_keysign',`
 	domtrans_pattern(ssh_t, ssh_keysign_exec_t, ssh_keysign_t)
 ')
 
+ifdef(`init_systemd',`
+	systemd_user_runtime_dir_unlink(ssh_agent_tmp_t, sock_file)
+	systemd_user_sessions_manage_sock_file(ssh_agent_tmp_t)
+')
+
 tunable_policy(`use_nfs_home_dirs',`
 	fs_manage_nfs_dirs(ssh_t)
 	fs_manage_nfs_files(ssh_t)
@@ -240,7 +245,7 @@ allow sshd_t self:capability dac_read_search;
 
 # so a tunnel can point to another ssh tunnel
 allow sshd_t self:netlink_route_socket r_netlink_socket_perms;
-allow sshd_t self:key { search link write };
+allow sshd_t self:key { link search write };
 
 allow sshd_t sshd_keytab_t:file read_file_perms;
 
@@ -265,11 +270,7 @@ corenet_sendrecv_xserver_server_packets(sshd_t)
 
 ifdef(`distro_debian',`
 	allow sshd_t self:process { getcap setcap };
-	auth_read_pam_motd_files(sshd_t)
 	auth_use_pam_motd_dynamic(sshd_t)
-
-	# for unattended-upgrades notices.  Should we have a domain transition?
-	files_read_var_lib_files(sshd_t)
 ',`
 	dontaudit sshd_t self:process { getcap setcap };
 ')
@@ -349,7 +350,7 @@ optional_policy(`
 # and by sysadm_t
 
 dontaudit ssh_keygen_t self:capability sys_tty_config;
-allow ssh_keygen_t self:process { sigchld sigkill sigstop signull signal };
+allow ssh_keygen_t self:process { sigchld sigkill signal signull sigstop };
 
 allow ssh_keygen_t self:unix_stream_socket create_stream_socket_perms;
 

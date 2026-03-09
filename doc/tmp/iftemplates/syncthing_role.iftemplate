@@ -1,0 +1,16 @@
+	gen_require(`
+		attribute_role syncthing_roles;
+		type syncthing_t, syncthing_exec_t, syncthing_xdg_config_t;
+	')
+
+	roleattribute $4 syncthing_roles;
+
+	domtrans_pattern($3, syncthing_exec_t, syncthing_t)
+
+	allow $2 syncthing_xdg_config_t:file { manage_file_perms relabel_file_perms };
+	allow $2 syncthing_xdg_config_t:dir { manage_dir_perms relabel_dir_perms };
+	allow $2 syncthing_xdg_config_t:lnk_file { manage_lnk_file_perms relabel_lnk_file_perms };
+
+	optional_policy(`
+		systemd_user_app_status($1, syncthing_t)
+	')

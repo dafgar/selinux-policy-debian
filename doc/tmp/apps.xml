@@ -31,6 +31,40 @@ be labeled public_content_rw_t.
 </desc>
 </tunable>
 </module>
+<module name="bubblewrap" filename="policy/modules/apps/bubblewrap.if">
+<summary>Run bubblewrap and then transition back to original domain</summary>
+<template name="bubblewrap_role" lineno="24">
+<summary>
+Role access for bubblewrap.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role (e.g., user
+is the prefix for user_r).
+</summary>
+</param>
+<param name="user_domain">
+<summary>
+User domain for the role.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access
+</summary>
+</param>
+</template>
+<interface name="bubblewrap_exec" lineno="135">
+<summary>
+Execute bubblewrap in the caller domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+</module>
 <module name="calamaris" filename="policy/modules/apps/calamaris.if">
 <summary>Squid log analysis.</summary>
 <interface name="calamaris_domtrans" lineno="14">
@@ -166,7 +200,7 @@ Role allowed access
 </summary>
 </param>
 </template>
-<interface name="chromium_rw_tmp_pipes" lineno="83">
+<interface name="chromium_rw_tmp_pipes" lineno="85">
 <summary>
 Read-write access to Chromiums' temporary fifo files
 </summary>
@@ -176,7 +210,7 @@ Domain allowed access
 </summary>
 </param>
 </interface>
-<interface name="chromium_tmp_filetrans" lineno="117">
+<interface name="chromium_tmp_filetrans" lineno="119">
 <summary>
 Automatically use the specified type for resources created in chromium's
 temporary locations
@@ -202,7 +236,7 @@ The name of the resource being created
 </summary>
 </param>
 </interface>
-<interface name="chromium_domtrans" lineno="136">
+<interface name="chromium_domtrans" lineno="138">
 <summary>
 Execute a domain transition to the chromium domain (chromium_t)
 </summary>
@@ -212,7 +246,7 @@ Domain allowed access
 </summary>
 </param>
 </interface>
-<interface name="chromium_run" lineno="162">
+<interface name="chromium_run" lineno="163">
 <summary>
 Execute chromium in the chromium domain and allow the specified role to access the chromium domain
 </summary>
@@ -528,6 +562,30 @@ Grant the evolution domains manage rights on all user content
 </desc>
 </tunable>
 </module>
+<module name="feedbackd" filename="policy/modules/apps/feedbackd.if">
+<summary>Run feedbackd from systemd</summary>
+<template name="feedbackd_role" lineno="24">
+<summary>
+Role access for feedbackd.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role (e.g., user
+is the prefix for user_r).
+</summary>
+</param>
+<param name="user_domain">
+<summary>
+User domain for the role.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access
+</summary>
+</param>
+</template>
+</module>
 <module name="games" filename="policy/modules/apps/games.if">
 <summary>Various games.</summary>
 <template name="games_role" lineno="29">
@@ -674,7 +732,7 @@ Role allowed access
 </summary>
 </param>
 </template>
-<interface name="gnome_exec_gconf" lineno="138">
+<interface name="gnome_exec_gconf" lineno="144">
 <summary>
 Execute gconf in the caller domain.
 </summary>
@@ -684,7 +742,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_read_gconf_config" lineno="157">
+<interface name="gnome_read_gconf_config" lineno="163">
 <summary>
 Read gconf configuration content.
 </summary>
@@ -694,7 +752,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_dontaudit_read_inherited_gconf_config_files" lineno="179">
+<interface name="gnome_dontaudit_read_inherited_gconf_config_files" lineno="185">
 <summary>
 Do not audit attempts to read
 inherited gconf configuration files.
@@ -705,7 +763,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="gnome_manage_gconf_config" lineno="198">
+<interface name="gnome_manage_gconf_config" lineno="204">
 <summary>
 Create, read, write, and delete
 gconf configuration content.
@@ -716,7 +774,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_stream_connect_gconf" lineno="220">
+<interface name="gnome_stream_connect_gconf" lineno="226">
 <summary>
 Connect to gconf using a unix
 domain stream socket.
@@ -727,7 +785,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_domtrans_gconfd" lineno="239">
+<interface name="gnome_domtrans_gconfd" lineno="245">
 <summary>
 Run gconfd in gconfd domain.
 </summary>
@@ -737,7 +795,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="gnome_create_generic_home_dirs" lineno="258">
+<interface name="gnome_create_generic_home_dirs" lineno="264">
 <summary>
 Create generic gnome home directories.
 </summary>
@@ -747,7 +805,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_setattr_generic_home_dirs" lineno="277">
+<interface name="gnome_setattr_generic_home_dirs" lineno="283">
 <summary>
 Set attributes of generic gnome
 user home directories.
@@ -758,7 +816,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_read_generic_home_content" lineno="296">
+<interface name="gnome_read_generic_home_content" lineno="302">
 <summary>
 Read generic gnome home content.
 </summary>
@@ -768,7 +826,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_manage_generic_home_content" lineno="320">
+<interface name="gnome_manage_generic_home_content" lineno="326">
 <summary>
 Create, read, write, and delete
 generic gnome home content.
@@ -779,7 +837,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_search_generic_home" lineno="343">
+<interface name="gnome_search_generic_home" lineno="349">
 <summary>
 Search generic gnome home directories.
 </summary>
@@ -789,7 +847,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_home_filetrans" lineno="378">
+<interface name="gnome_home_filetrans" lineno="384">
 <summary>
 Create objects in gnome user home
 directories with a private type.
@@ -815,7 +873,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="gnome_create_generic_gconf_home_dirs" lineno="397">
+<interface name="gnome_create_generic_gconf_home_dirs" lineno="403">
 <summary>
 Create generic gconf home directories.
 </summary>
@@ -825,7 +883,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_read_generic_gconf_home_content" lineno="415">
+<interface name="gnome_read_generic_gconf_home_content" lineno="421">
 <summary>
 Read generic gconf home content.
 </summary>
@@ -835,7 +893,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_manage_generic_gconf_home_content" lineno="439">
+<interface name="gnome_manage_generic_gconf_home_content" lineno="445">
 <summary>
 Create, read, write, and delete
 generic gconf home content.
@@ -846,7 +904,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_search_generic_gconf_home" lineno="462">
+<interface name="gnome_search_generic_gconf_home" lineno="468">
 <summary>
 Search generic gconf home directories.
 </summary>
@@ -856,7 +914,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_home_filetrans_gconf_home" lineno="493">
+<interface name="gnome_home_filetrans_gconf_home" lineno="499">
 <summary>
 Create objects in user home
 directories with the generic gconf
@@ -878,7 +936,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="gnome_home_filetrans_gnome_home" lineno="523">
+<interface name="gnome_home_filetrans_gnome_home" lineno="529">
 <summary>
 Create objects in user home
 directories with the generic gnome
@@ -900,7 +958,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="gnome_gconf_home_filetrans" lineno="557">
+<interface name="gnome_gconf_home_filetrans" lineno="563">
 <summary>
 Create objects in gnome gconf home
 directories with a private type.
@@ -926,7 +984,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="gnome_user_home_dir_filetrans_gstreamer_orcexec" lineno="588">
+<interface name="gnome_user_home_dir_filetrans_gstreamer_orcexec" lineno="594">
 <summary>
 Create objects in user home
 directories with the gstreamer
@@ -948,7 +1006,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="gnome_user_runtime_filetrans_gstreamer_orcexec" lineno="618">
+<interface name="gnome_user_runtime_filetrans_gstreamer_orcexec" lineno="624">
 <summary>
 Create objects in the user
 runtime directories with the
@@ -970,7 +1028,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="gnome_read_keyring_home_files" lineno="636">
+<interface name="gnome_read_keyring_home_files" lineno="642">
 <summary>
 Read generic gnome keyring home files.
 </summary>
@@ -980,7 +1038,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_dbus_chat_gconfd" lineno="657">
+<interface name="gnome_dbus_chat_gconfd" lineno="663">
 <summary>
 Send and receive messages from
 gnome configuration daemon over
@@ -992,7 +1050,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<template name="gnome_dbus_chat_gkeyringd" lineno="684">
+<template name="gnome_dbus_chat_gkeyringd" lineno="690">
 <summary>
 Send and receive messages from
 gnome keyring daemon over dbus.
@@ -1009,7 +1067,7 @@ Domain allowed access.
 </summary>
 </param>
 </template>
-<interface name="gnome_dbus_chat_all_gkeyringd" lineno="705">
+<interface name="gnome_dbus_chat_all_gkeyringd" lineno="711">
 <summary>
 Send and receive messages from all
 gnome keyring daemon over dbus.
@@ -1020,7 +1078,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_spec_domtrans_all_gkeyringd" lineno="725">
+<interface name="gnome_spec_domtrans_all_gkeyringd" lineno="731">
 <summary>
 Run all gkeyringd in gkeyringd domain.
 </summary>
@@ -1030,7 +1088,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<template name="gnome_stream_connect_gkeyringd" lineno="752">
+<template name="gnome_stream_connect_gkeyringd" lineno="758">
 <summary>
 Connect to gnome keyring daemon
 with a unix stream socket.
@@ -1047,7 +1105,7 @@ Domain allowed access.
 </summary>
 </param>
 </template>
-<interface name="gnome_stream_connect_all_gkeyringd" lineno="773">
+<interface name="gnome_stream_connect_all_gkeyringd" lineno="779">
 <summary>
 Connect to all gnome keyring daemon
 with a unix stream socket.
@@ -1058,7 +1116,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_manage_gstreamer_orcexec" lineno="795">
+<interface name="gnome_manage_gstreamer_orcexec" lineno="801">
 <summary>
 Manage gstreamer ORC optimized
 code.
@@ -1069,7 +1127,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_mmap_gstreamer_orcexec" lineno="814">
+<interface name="gnome_mmap_gstreamer_orcexec" lineno="820">
 <summary>
 Mmap gstreamer ORC optimized
 code.
@@ -1080,7 +1138,17 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gnome_watch_xdg_config_dirs" lineno="832">
+<interface name="gnome_mmap_read_xdg_config_files" lineno="838">
+<summary>
+mmap read gnome_xdg_config_t files
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="gnome_watch_xdg_config_dirs" lineno="857">
 <summary>
 watch gnome_xdg_config_t dirs
 </summary>
@@ -1119,7 +1187,7 @@ Role allowed access
 </summary>
 </param>
 </template>
-<interface name="gpg_domtrans" lineno="83">
+<interface name="gpg_domtrans" lineno="84">
 <summary>
 Execute the gpg in the gpg domain.
 </summary>
@@ -1129,7 +1197,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="gpg_exec" lineno="102">
+<interface name="gpg_exec" lineno="103">
 <summary>
 Execute the gpg in the caller domain.
 </summary>
@@ -1139,7 +1207,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gpg_spec_domtrans" lineno="136">
+<interface name="gpg_spec_domtrans" lineno="137">
 <summary>
 Execute gpg in a specified domain.
 </summary>
@@ -1164,7 +1232,7 @@ Domain to transition to.
 </summary>
 </param>
 </interface>
-<interface name="gpg_exec_agent" lineno="155">
+<interface name="gpg_exec_agent" lineno="156">
 <summary>
 Execute the gpg-agent in the caller domain.
 </summary>
@@ -1174,7 +1242,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gpg_dontaudit_exec_agent" lineno="174">
+<interface name="gpg_dontaudit_exec_agent" lineno="175">
 <summary>
 Do not audit attempts to execute the gpg-agent.
 </summary>
@@ -1184,7 +1252,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="gpg_entry_type" lineno="193">
+<interface name="gpg_entry_type" lineno="194">
 <summary>
 Make gpg executable files an
 entrypoint for the specified domain.
@@ -1195,7 +1263,28 @@ The domain for which gpg_exec_t is an entrypoint.
 </summary>
 </param>
 </interface>
-<interface name="gpg_signal" lineno="211">
+<interface name="gpg_agent_exec" lineno="212">
+<summary>
+Execute the gpg_agent in the caller domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="gpg_agent_entry_type" lineno="232">
+<summary>
+Make gpg_agent executable files an
+entrypoint for the specified domain.
+</summary>
+<param name="domain">
+<summary>
+The domain for which gpg_agent_exec_t is an entrypoint.
+</summary>
+</param>
+</interface>
+<interface name="gpg_signal" lineno="250">
 <summary>
 Send generic signals to gpg.
 </summary>
@@ -1205,7 +1294,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gpg_enter_user_gpg_agent_domain" lineno="234">
+<interface name="gpg_enter_user_gpg_agent_domain" lineno="273">
 <summary>
 Transition to $2_gpg_agent_t from another domain via gpg_agent_exec_t
 </summary>
@@ -1220,7 +1309,7 @@ base of target domain
 </summary>
 </param>
 </interface>
-<interface name="gpg_rw_agent_pipes" lineno="251">
+<interface name="gpg_rw_agent_pipes" lineno="290">
 <summary>
 Read and write gpg agent pipes.
 </summary>
@@ -1230,7 +1319,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gpg_stream_connect_agent" lineno="269">
+<interface name="gpg_stream_connect_agent" lineno="308">
 <summary>
 Connect to gpg agent socket
 </summary>
@@ -1240,7 +1329,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gpg_search_agent_tmp_dirs" lineno="291">
+<interface name="gpg_search_agent_tmp_dirs" lineno="330">
 <summary>
 Search gpg agent dirs.
 </summary>
@@ -1250,7 +1339,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gpg_agent_tmp_filetrans" lineno="325">
+<interface name="gpg_agent_tmp_filetrans" lineno="364">
 <summary>
 filetrans in gpg_agent_tmp_t dirs
 </summary>
@@ -1276,7 +1365,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="gpg_agent_tmp_unlink_sock" lineno="344">
+<interface name="gpg_agent_tmp_unlink_sock" lineno="383">
 <summary>
 unlink gpg_agent_tmp_t sock_file
 </summary>
@@ -1286,7 +1375,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gpg_runtime_filetrans" lineno="378">
+<interface name="gpg_runtime_filetrans" lineno="417">
 <summary>
 filetrans in gpg_runtime_t dirs
 </summary>
@@ -1312,7 +1401,17 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="gpg_secret_filetrans" lineno="413">
+<interface name="gpg_dontaudit_getattr_gpg_runtime_dirs" lineno="436">
+<summary>
+Do not audit attempt to getattr gpg runtime dirs.
+</summary>
+<param name="domain">
+<summary>
+Domain to not audit.
+</summary>
+</param>
+</interface>
+<interface name="gpg_secret_filetrans" lineno="472">
 <summary>
 filetrans in gpg_secret_t dirs
 </summary>
@@ -1338,7 +1437,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="gpg_pinentry_dbus_chat" lineno="434">
+<interface name="gpg_pinentry_dbus_chat" lineno="493">
 <summary>
 Send messages to and from gpg
 pinentry over DBUS.
@@ -1349,7 +1448,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="gpg_dontaudit_search_user_secrets" lineno="455">
+<interface name="gpg_dontaudit_search_user_secrets" lineno="514">
 <summary>
 Do not audit attempts to search gpg
 user secrets.
@@ -1360,13 +1459,23 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="gpg_list_user_secrets" lineno="473">
+<interface name="gpg_list_user_secrets" lineno="534">
 <summary>
 List gpg user secrets.
 </summary>
 <param name="domain">
 <summary>
 Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="gpg_dontaudit_search_user_secrets_dirs" lineno="553">
+<summary>
+Do not audit attempt to search gpg user secrets dirs.
+</summary>
+<param name="domain">
+<summary>
+Domain to not audit.
 </summary>
 </param>
 </interface>
@@ -2664,7 +2773,7 @@ Role allowed access
 </summary>
 </param>
 </template>
-<interface name="pulseaudio_client_domain" lineno="73">
+<interface name="pulseaudio_client_domain" lineno="74">
 <summary>
 Connect to pulseaudio and manage
 pulseaudio config data.
@@ -2675,7 +2784,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_domtrans" lineno="91">
+<interface name="pulseaudio_domtrans" lineno="92">
 <summary>
 Execute a domain transition to run pulseaudio.
 </summary>
@@ -2685,7 +2794,7 @@ Domain allowed to transition.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_run" lineno="117">
+<interface name="pulseaudio_run" lineno="118">
 <summary>
 Execute pulseaudio in the pulseaudio
 domain, and allow the specified role
@@ -2702,7 +2811,7 @@ Role allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_exec" lineno="137">
+<interface name="pulseaudio_exec" lineno="138">
 <summary>
 Execute pulseaudio in the caller domain.
 </summary>
@@ -2712,7 +2821,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_dontaudit_exec" lineno="156">
+<interface name="pulseaudio_dontaudit_exec" lineno="157">
 <summary>
 Do not audit attempts to execute pulseaudio.
 </summary>
@@ -2722,7 +2831,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_signull" lineno="175">
+<interface name="pulseaudio_signull" lineno="176">
 <summary>
 Send null signals to pulseaudio.
 processes.
@@ -2733,7 +2842,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_use_fds" lineno="194">
+<interface name="pulseaudio_use_fds" lineno="195">
 <summary>
 Use file descriptors for
 pulseaudio.
@@ -2744,7 +2853,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_dontaudit_use_fds" lineno="213">
+<interface name="pulseaudio_dontaudit_use_fds" lineno="214">
 <summary>
 Do not audit attempts to use the
 file descriptors for pulseaudio.
@@ -2755,7 +2864,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_stream_connect" lineno="232">
+<interface name="pulseaudio_stream_connect" lineno="233">
 <summary>
 Connect to pulseaudio with a unix
 domain stream socket.
@@ -2766,7 +2875,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_manage_tmp_dirs" lineno="251">
+<interface name="pulseaudio_manage_tmp_dirs" lineno="252">
 <summary>
 Manage pulseaudio_tmp_t dirs
 </summary>
@@ -2776,7 +2885,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_dbus_chat" lineno="270">
+<interface name="pulseaudio_dbus_chat" lineno="271">
 <summary>
 Send and receive messages from
 pulseaudio over dbus.
@@ -2787,7 +2896,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_setattr_home_dir" lineno="290">
+<interface name="pulseaudio_setattr_home_dir" lineno="291">
 <summary>
 Set attributes of pulseaudio home directories.
 </summary>
@@ -2797,7 +2906,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_read_home" lineno="308">
+<interface name="pulseaudio_read_home" lineno="309">
 <summary>
 Read pulseaudio home content.
 </summary>
@@ -2807,7 +2916,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_rw_home_files" lineno="329">
+<interface name="pulseaudio_rw_home_files" lineno="330">
 <summary>
 Read and write Pulse Audio files.
 </summary>
@@ -2817,7 +2926,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_manage_home" lineno="350">
+<interface name="pulseaudio_manage_home" lineno="351">
 <summary>
 Create, read, write, and delete
 pulseaudio home content.
@@ -2828,7 +2937,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_home_filetrans_pulseaudio_home" lineno="383">
+<interface name="pulseaudio_home_filetrans_pulseaudio_home" lineno="384">
 <summary>
 Create objects in user home
 directories with the pulseaudio
@@ -2850,7 +2959,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_tmpfs_content" lineno="402">
+<interface name="pulseaudio_tmpfs_content" lineno="403">
 <summary>
 Make the specified tmpfs file type
 pulseaudio tmpfs content.
@@ -2861,7 +2970,7 @@ File type to make pulseaudio tmpfs content.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_read_tmpfs_files" lineno="420">
+<interface name="pulseaudio_read_tmpfs_files" lineno="421">
 <summary>
 Read pulseaudio tmpfs files.
 </summary>
@@ -2871,7 +2980,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pulseaudio_rw_tmpfs_files" lineno="440">
+<interface name="pulseaudio_rw_tmpfs_files" lineno="441">
 <summary>
 Read and write pulseaudio tmpfs
 files.
@@ -2887,6 +2996,14 @@ Domain allowed access.
 <p>
 Allow pulseaudio to execute code in
 writable memory
+</p>
+</desc>
+</tunable>
+<tunable name="pulseaudio_can_network" dftval="false">
+<desc>
+<p>
+Determine whether pulseaudio
+can use the network.
 </p>
 </desc>
 </tunable>
@@ -3822,7 +3939,17 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="vmware_read_system_config" lineno="84">
+<interface name="vmware_exec_guest" lineno="84">
+<summary>
+Execute vmware guest executables
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="vmware_read_system_config" lineno="103">
 <summary>
 Read vmware system configuration files.
 </summary>
@@ -3832,7 +3959,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="vmware_append_system_config" lineno="103">
+<interface name="vmware_append_system_config" lineno="122">
 <summary>
 Append vmware system configuration files.
 </summary>
@@ -3842,7 +3969,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="vmware_append_log" lineno="122">
+<interface name="vmware_append_log" lineno="141">
 <summary>
 Append vmware log files.
 </summary>
@@ -4114,7 +4241,7 @@ Role allowed access
 </summary>
 </param>
 </template>
-<interface name="wm_exec" lineno="150">
+<interface name="wm_exec" lineno="221">
 <summary>
 Execute wm in the caller domain.
 </summary>
@@ -4124,7 +4251,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<template name="wm_dbus_chat" lineno="176">
+<template name="wm_dbus_chat" lineno="247">
 <summary>
 Send and receive messages from
 specified wm over dbus.
@@ -4141,7 +4268,7 @@ Domain allowed access.
 </summary>
 </param>
 </template>
-<interface name="wm_dontaudit_exec_tmp_files" lineno="197">
+<interface name="wm_dontaudit_exec_tmp_files" lineno="268">
 <summary>
 Do not audit attempts to execute
 files in temporary directories.
@@ -4152,7 +4279,27 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="wm_dontaudit_exec_tmpfs_files" lineno="216">
+<interface name="wm_rw_tmpfs_files" lineno="286">
+<summary>
+read-write files in temporary filesystems.
+</summary>
+<param name="domain">
+<summary>
+Domain to allow
+</summary>
+</param>
+</interface>
+<interface name="wm_map_tmpfs_files" lineno="304">
+<summary>
+map files in temporary filesystems.
+</summary>
+<param name="domain">
+<summary>
+Domain to allow
+</summary>
+</param>
+</interface>
+<interface name="wm_dontaudit_exec_tmpfs_files" lineno="323">
 <summary>
 Do not audit attempts to execute
 files in temporary filesystems.
@@ -4163,7 +4310,37 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="wm_application_domain" lineno="259">
+<interface name="wm_receive_fd" lineno="341">
+<summary>
+Allow receiving fd from wm domain
+</summary>
+<param name="domain">
+<summary>
+Domain to allow
+</summary>
+</param>
+</interface>
+<interface name="wm_sock_rw" lineno="359">
+<summary>
+Allow using socket of wm domain
+</summary>
+<param name="domain">
+<summary>
+Domain to allow
+</summary>
+</param>
+</interface>
+<interface name="wm_send_fd" lineno="377">
+<summary>
+Allow sending fd to wm domain
+</summary>
+<param name="domain">
+<summary>
+Domain to allow
+</summary>
+</param>
+</interface>
+<interface name="wm_application_domain" lineno="420">
 <summary>
 Create a domain for applications
 that are launched by the window
@@ -4198,7 +4375,7 @@ Type to be used as the source window manager domain.
 </param>
 <infoflow type="none"/>
 </interface>
-<template name="wm_write_pipes" lineno="284">
+<template name="wm_write_pipes" lineno="446">
 <summary>
 Write wm unnamed pipes.
 </summary>
@@ -4250,6 +4427,44 @@ Role allowed access
 </summary>
 </param>
 </template>
+<interface name="xscreensaver_domtrans" lineno="69">
+<summary>
+Make a domain transition to the
+xscreensaver target domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="xscreensaver_run" lineno="95">
+<summary>
+Execute xscreensaver in the xscreensaver
+domain, and allow the specified role
+the xscreensaver domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to transition.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+</interface>
+<interface name="xscreensaver_run_helper" lineno="114">
+<summary>
+Transition to xscreensaver_helper_t when running xscreensaver_helper_exec_t
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
 <tunable name="xscreensaver_read_generic_user_content" dftval="true">
 <desc>
 <p>

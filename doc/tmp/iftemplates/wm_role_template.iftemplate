@@ -18,22 +18,40 @@
 	# Policy
 	#
 
+	allow $1_wm_t self:process getcap;
+
 	allow $3 $1_wm_t:fd use;
 
-	allow $1_wm_t $3:unix_stream_socket connectto;
-	allow $3 $1_wm_t:unix_stream_socket connectto;
+	allow $1_wm_t $3:unix_stream_socket { connectto read write getopt ioctl getattr accept };
+	allow $3 $1_wm_t:unix_stream_socket { connectto read write getopt shutdown };
+	allow $3 $1_wm_t:fifo_file read_fifo_file_perms;
 
-	allow $3 $1_wm_t:process { ptrace signal_perms };
+	allow $1_wm_t self:capability sys_nice;
+
+	# ptrace here would allow messing with keyboard
+	allow $3 $1_wm_t:process { signal_perms };
 	ps_process_pattern($3, $1_wm_t)
 
 	kernel_read_kernel_sysctls($1_wm_t)
 
-	allow $1_wm_t $3:process { signull sigkill };
+	allow $1_wm_t $3:process { sigkill signull signal };
+	ps_process_pattern($1_wm_t, $3)
 
 	domtrans_pattern($3, wm_exec_t, $1_wm_t)
 
 	corecmd_bin_domtrans($1_wm_t, $2)
 	corecmd_shell_domtrans($1_wm_t, $2)
+
+	domain_use_interactive_fds($1_wm_t)
+
+	files_usr_domtrans($1_wm_t, $2)
+
+	files_watch_etc_dirs($1_wm_t)
+	files_watch_usr_dirs($1_wm_t)
+	files_watch_var_lib_dirs($1_wm_t)
+
+	fs_read_cgroup_symlinks($1_wm_t)
+	fs_create_cgroup_dirs($1_wm_t)
 
 	mls_file_read_all_levels($1_wm_t)
 	mls_file_write_all_levels($1_wm_t)
@@ -41,9 +59,32 @@
 	mls_xwin_write_all_levels($1_wm_t)
 	mls_fd_use_all_levels($1_wm_t)
 
+	auth_domtrans_chk_passwd($1_wm_t)
 	auth_use_nsswitch($1_wm_t)
 
+	libs_read_lib_files($1_wm_t)
+
+	init_read_state($1_wm_t)
+
+	miscfiles_manage_fonts_cache($1_wm_t)
+
+	udev_list_runtime($1_wm_t)
+
+	userdom_manage_user_runtime_dirs($1_wm_t)
+
+	userdom_rw_user_tmpfs_files($1_wm_t)
+	userdom_map_user_tmpfs_files($1_wm_t)
+	userdom_manage_user_tmp_files($1_wm_t)
+	userdom_map_user_tmp_files($1_wm_t)
+
 	dev_rw_input_dev($1_wm_t)
+
+	logging_send_syslog_msg($1_wm_t)
+
+	xdg_watch_cache_files($1_wm_t)
+
+	xdg_watch_config_dirs($1_wm_t)
+	xdg_watch_data_dirs($1_wm_t)
 
 	xserver_role($1, $1_wm_t, $3, $4)
 	xserver_manage_core_devices($1_wm_t)
@@ -55,9 +96,16 @@
 	')
 
 	optional_policy(`
+		apt_dbus_chat($1_wm_t)
+	')
+
+	optional_policy(`
 		dbus_connect_spec_session_bus($1, $1_wm_t)
+		dbus_getattr_session_runtime_socket($1_wm_t)
+		dbus_read_lib_files($1_wm_t)
 		dbus_spec_session_bus_client($1, $1_wm_t)
 		dbus_system_bus_client($1_wm_t)
+		dbus_write_session_runtime_socket($1_wm_t)
 
 		optional_policy(`
 			wm_dbus_chat($1, $3)
@@ -65,7 +113,20 @@
 	')
 
 	optional_policy(`
+		colord_dbus_chat($1_wm_t)
+	')
+
+	optional_policy(`
+		geoclue_dbus_chat($1_wm_t)
+	')
+
+	optional_policy(`
+		gnome_mmap_read_xdg_config_files($1_wm_t)
 		gnome_stream_connect_all_gkeyringd($1_wm_t)
+	')
+
+	optional_policy(`
+		modemmanager_dbus_chat($1_wm_t)
 	')
 
 	optional_policy(`
@@ -82,8 +143,18 @@
 	')
 
 	optional_policy(`
+		systemd_list_userdb_runtime_dirs($1_wm_t)
+		systemd_read_logind_runtime_files($1_wm_t)
+		systemd_read_logind_state($1_wm_t)
+		systemd_read_logind_sessions_files($1_wm_t)
+		systemd_search_user_runtime($1_wm_t)
 		systemd_use_logind_fds($1_wm_t)
 		systemd_user_app_status($1, $1_wm_t)
+		systemd_write_inherited_logind_inhibit_pipes($1_wm_t)
+	')
+
+	optional_policy(`
+		xscreensaver_run($1_wm_t, $4)
 	')
 
 	optional_policy(`

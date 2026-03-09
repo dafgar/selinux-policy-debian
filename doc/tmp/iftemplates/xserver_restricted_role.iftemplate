@@ -14,8 +14,6 @@
 
 	allow xserver_t $2:process signal;
 
-	allow xserver_t $2:shm rw_shm_perms;
-
 	allow $2 user_fonts_t:dir list_dir_perms;
 	allow $2 user_fonts_t:file read_file_perms;
 
@@ -27,6 +25,9 @@
 
 	stream_connect_pattern($2, xserver_tmp_t, xserver_tmp_t, xserver_t)
 	files_search_tmp($2)
+
+	# for /run/gdm3/dbus/
+	allow $2 xdm_var_run_t:sock_file write_sock_file_perms;
 
 	# Communicate via System V shared memory.
 	allow $2 xserver_t:fd use;
@@ -99,8 +100,12 @@
 	# Client write xserver shm
 	tunable_policy(`allow_write_xshm',`
 		allow $2 xserver_t:shm rw_shm_perms;
+	')
+
+	tunable_policy(`allow_write_xshm || xserver_client_writes_xserver_tmpfs',`
 		allow $2 xserver_tmpfs_t:file rw_file_perms;
 	')
+
 	tunable_policy(`xserver_allow_dri',`
 		dev_rw_dri($2)
 	')

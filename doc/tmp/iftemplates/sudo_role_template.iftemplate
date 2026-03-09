@@ -1,6 +1,7 @@
 
 	gen_require(`
 		type sudo_exec_t;
+		type sudo_log_t;
 		attribute sudodomain;
 	')
 
@@ -22,14 +23,14 @@
 
 	# Use capabilities.
 	allow $1_sudo_t self:capability { chown dac_override fowner kill setgid setuid sys_nice sys_resource };
-	allow $1_sudo_t self:process { signal_perms getsched setsched getsession getpgid setpgid getcap setcap share getattr getrlimit rlimitinh siginh transition setsockcreate dyntransition noatsecure setkeycreate };
+	allow $1_sudo_t self:process { dyntransition getattr getcap getpgid getrlimit getsched getsession noatsecure rlimitinh setcap setkeycreate setpgid setsched setsockcreate share siginh signal_perms transition };
 	allow $1_sudo_t self:process { setexec setrlimit };
 	allow $1_sudo_t self:fd use;
 	allow $1_sudo_t self:fifo_file rw_fifo_file_perms;
 	allow $1_sudo_t self:shm create_shm_perms;
 	allow $1_sudo_t self:sem create_sem_perms;
 	allow $1_sudo_t self:msgq create_msgq_perms;
-	allow $1_sudo_t self:msg { send receive };
+	allow $1_sudo_t self:msg { receive send };
 	allow $1_sudo_t self:netlink_selinux_socket create_socket_perms;
 	allow $1_sudo_t self:unix_dgram_socket create_socket_perms;
 	allow $1_sudo_t self:unix_stream_socket create_stream_socket_perms;
@@ -38,8 +39,13 @@
 	allow $1_sudo_t self:key manage_key_perms;
 	dontaudit $1_sudo_t self:capability { dac_read_search sys_ptrace };
 
+	allow $1_sudo_t sudo_log_t:dir add_entry_dir_perms;
+	allow $1_sudo_t sudo_log_t:file { append_file_perms create_file_perms };
+	logging_log_filetrans($1_sudo_t, sudo_log_t, file)
+
 	# allow getting the process group of the parent process
 	allow $1_sudo_t $2:process getpgid;
+	allow $1_sudo_t $2:unix_stream_socket rw_socket_perms;
 
 	# allow accessing /proc/pid/stat of the calling domain
 	ps_process_pattern($1_sudo_t, $2)
@@ -163,10 +169,12 @@
 	')
 
 	optional_policy(`
-		dbus_system_bus_client($1_sudo_t)
+		auth_use_pam_systemd($1_sudo_t)
 
 		ifdef(`init_systemd',`
 			init_dbus_chat($1_sudo_t)
+
+			systemd_read_logind_state($1_sudo_t)
 		')
 	')
 
@@ -174,3 +182,6 @@
 		fprintd_dbus_chat($1_sudo_t)
 	')
 
+	optional_policy(`
+		su_signal_all($1_sudo_t)
+	')

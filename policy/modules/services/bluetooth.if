@@ -85,6 +85,30 @@ interface(`bluetooth_stream_connect',`
 	stream_connect_pattern($1, bluetooth_runtime_t, bluetooth_runtime_t, bluetooth_t)
 ')
 
+#####################################
+## <summary>
+##	Connect to bluetooth over a unix domain
+##	stream socket. The socket can be used
+##      for read and write.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`bluetooth_use',`
+	gen_require(`
+		type bluetooth_t;
+	')
+
+	files_search_runtime($1)
+	allow $1 bluetooth_t:bluetooth_socket rw_socket_perms;
+	allow $1 bluetooth_t:unix_stream_socket rw_socket_perms;
+	allow $1 bluetooth_t:fd use;
+	bluetooth_stream_connect($1)
+')
+
 ########################################
 ## <summary>
 ##	Execute bluetooth in the bluetooth domain.
@@ -163,6 +187,28 @@ interface(`bluetooth_dontaudit_read_helper_state',`
 	dontaudit $1 bluetooth_helper_t:file read_file_perms;
 ')
 
+#####################################
+## <summary>
+##	Connect to bluetooth over a unix domain
+##	stream socket. The socket can be used
+##      for read and write. This is required for
+#       bluetooth helper context.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`bluetooth_use_inherited_helper_stream_sockets',`
+	gen_require(`
+		type bluetooth_helper_t;
+	')
+
+	allow $1 bluetooth_helper_t:unix_stream_socket rw_socket_perms;
+	allow $1 bluetooth_helper_t:fd use;
+')
+
 ########################################
 ## <summary>
 ##	All of the rules required to
@@ -207,4 +253,40 @@ interface(`bluetooth_admin',`
 
 	files_list_runtime($1)
 	admin_pattern($1, bluetooth_runtime_t)
+')
+
+########################################
+## <summary>
+##      Get status of bluetooth_unit_t service
+## </summary>
+## <param name="domain">
+##      <summary>
+##      Domain allowed access.
+##      </summary>
+## </param>
+#
+interface(`bluetooth_service_status',`
+	gen_require(`
+		type bluetooth_unit_t;
+	')
+
+	allow $1 bluetooth_unit_t:service status;
+')
+
+########################################
+## <summary>
+##      start bluetooth service
+## </summary>
+## <param name="domain">
+##      <summary>
+##      Domain allowed access.
+##      </summary>
+## </param>
+#
+interface(`bluetooth_service_start',`
+	gen_require(`
+		type bluetooth_unit_t;
+	')
+
+	allow $1 bluetooth_unit_t:service start;
 ')

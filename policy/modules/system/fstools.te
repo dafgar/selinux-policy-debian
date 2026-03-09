@@ -22,6 +22,11 @@ files_runtime_file(fsadm_run_t)
 type swapfile_t; # customizable
 files_type(swapfile_t)
 
+ifdef(`distro_gentoo',`
+	type fsadm_db_t;
+	files_type(fsadm_db_t)
+')
+
 ########################################
 #
 # local policy
@@ -30,7 +35,7 @@ files_type(swapfile_t)
 # ipc_lock is for losetup
 allow fsadm_t self:capability { dac_override dac_read_search ipc_lock sys_admin sys_rawio sys_resource sys_tty_config };
 dontaudit fsadm_t self:capability net_admin;
-allow fsadm_t self:process { transition signal_perms getsched setsched getsession getpgid setpgid getcap setcap share getattr noatsecure siginh rlimitinh dyntransition execstack setkeycreate setsockcreate getrlimit };
+allow fsadm_t self:process { dyntransition execstack getattr getcap getpgid getrlimit getsched getsession noatsecure rlimitinh setcap setkeycreate setpgid setsched setsockcreate share siginh signal_perms transition };
 allow fsadm_t self:fd use;
 allow fsadm_t self:fifo_file rw_fifo_file_perms;
 allow fsadm_t self:sock_file read_sock_file_perms;
@@ -41,7 +46,7 @@ allow fsadm_t self:unix_stream_socket connectto;
 allow fsadm_t self:shm create_shm_perms;
 allow fsadm_t self:sem create_sem_perms;
 allow fsadm_t self:msgq create_msgq_perms;
-allow fsadm_t self:msg { send receive };
+allow fsadm_t self:msg { receive send };
 
 can_exec(fsadm_t, fsadm_exec_t)
 
@@ -120,6 +125,7 @@ files_manage_etc_runtime_files(fsadm_t)
 files_etc_filetrans_etc_runtime(fsadm_t, file)
 
 fs_getattr_cgroup(fsadm_t)
+fs_getattr_dos_fs(fsadm_t)
 fs_rw_all_image_files(fsadm_t)
 fs_search_auto_mountpoints(fsadm_t)
 fs_getattr_xattr_fs(fsadm_t)
@@ -132,6 +138,8 @@ fs_list_auto_mountpoints(fsadm_t)
 fs_search_tmpfs(fsadm_t)
 fs_getattr_tmpfs_dirs(fsadm_t)
 fs_read_tmpfs_symlinks(fsadm_t)
+# for kubernetes if kubelet calls losetup
+fs_ioctl_cgroup_dirs(fsadm_t)
 # for fstrim
 files_manage_boot_dirs(fsadm_t)
 # Recreate /mnt/cdrom.
@@ -144,7 +152,7 @@ mls_file_write_all_levels(fsadm_t)
 
 selinux_getattr_fs(fsadm_t)
 
-storage_dev_filetrans_fixed_disk_control(fsadm_t, "megaraid_sas_ioctl_node")
+storage_dev_filetrans_fixed_disk(fsadm_t, chr_file, "megaraid_sas_ioctl_node")
 storage_manage_fixed_disk(fsadm_t)
 storage_raw_read_fixed_disk(fsadm_t)
 storage_raw_write_fixed_disk(fsadm_t)
@@ -172,7 +180,7 @@ logging_send_syslog_msg(fsadm_t)
 miscfiles_read_localization(fsadm_t)
 
 # for /run/mount/utab
-mount_getattr_runtime_files(fsadm_t)
+mount_read_runtime_files(fsadm_t)
 
 mount_rw_runtime_files(fsadm_t)
 
@@ -184,6 +192,10 @@ ifdef(`distro_debian',`
 	term_dontaudit_use_unallocated_ttys(fsadm_t)
 ')
 
+ifdef(`distro_gentoo',`
+	manage_files_pattern(fsadm_t, fsadm_db_t, fsadm_db_t)
+')
+
 ifdef(`distro_redhat',`
 	optional_policy(`
 		unconfined_domain(fsadm_t)
@@ -193,6 +205,15 @@ ifdef(`distro_redhat',`
 optional_policy(`
 	amanda_rw_dumpdates_files(fsadm_t)
 	amanda_append_log_files(fsadm_t)
+')
+
+optional_policy(`
+	cloudinit_rw_tmp_files(fsadm_t)
+	cloudinit_create_tmp_files(fsadm_t)
+')
+
+optional_policy(`
+	container_read_device_blk_files(fsadm_t)
 ')
 
 optional_policy(`
@@ -210,12 +231,24 @@ optional_policy(`
 ')
 
 optional_policy(`
+	fsdaemon_read_lib(fsadm_t)
+')
+
+optional_policy(`
 	livecd_rw_tmp_files(fsadm_t)
 ')
 
 optional_policy(`
 	modutils_read_module_config(fsadm_t)
 	modutils_read_module_deps(fsadm_t)
+')
+
+optional_policy(`
+	munin_rw_tcp_sockets(fsadm_t)
+')
+
+optional_policy(`
+	mon_dontaudit_use_fds(fsadm_t)
 ')
 
 optional_policy(`

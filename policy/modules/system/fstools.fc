@@ -3,6 +3,7 @@
 /usr/bin/badblocks		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/bin/blkid			--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/bin/blockdev		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
+/usr/bin/btrfs			--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/bin/cfdisk			--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/bin/clubufflush		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/bin/delpart		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
@@ -13,7 +14,6 @@
 /usr/bin/e4fsck			--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/bin/e2label		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/bin/e2mmpstatus		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
-/usr/bin/efibootmgr		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/bin/fatsort		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/bin/fdisk			--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/bin/findfs			--	gen_context(system_u:object_r:fsadm_exec_t,s0)
@@ -70,7 +70,6 @@
 /usr/sbin/e4fsck		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/sbin/e2label		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/sbin/e2mmpstatus		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
-/usr/sbin/efibootmgr		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/sbin/fatsort		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/sbin/fdisk			--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/sbin/findfs		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
@@ -109,6 +108,10 @@
 /usr/sbin/zpios			--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/sbin/zstreamdump		--	gen_context(system_u:object_r:fsadm_exec_t,s0)
 /usr/sbin/ztest			--	gen_context(system_u:object_r:fsadm_exec_t,s0)
+
+ifdef(`distro_gentoo',`
+/var/db/smartmontools(/.*)?		gen_context(system_u:object_r:fsadm_db_t,s0)
+')
 
 /var/swap			--	gen_context(system_u:object_r:swapfile_t,s0)
 

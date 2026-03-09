@@ -542,6 +542,24 @@ interface(`libs_relabel_shared_libs',`
 ##	</summary>
 ## </param>
 #
+interface(`libs_watch_shared_libs_dirs',`
+	gen_require(`
+		type lib_t;
+	')
+
+	allow $1 lib_t:dir watch;
+')
+
+########################################
+## <summary>
+##	watch lib dirs
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
 interface(`libs_watch_shared_libs_dir',`
 	gen_require(`
 		type lib_t;

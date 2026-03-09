@@ -47,23 +47,40 @@ endif
 BINDIR ?= /usr/bin
 SBINDIR ?= /usr/sbin
 ifdef TEST_TOOLCHAIN
-tc_usrbindir := env LD_LIBRARY_PATH="$(TEST_TOOLCHAIN)/lib:$(TEST_TOOLCHAIN)/usr/lib" $(TEST_TOOLCHAIN)$(BINDIR)
-tc_usrsbindir := env LD_LIBRARY_PATH="$(TEST_TOOLCHAIN)/lib:$(TEST_TOOLCHAIN)/usr/lib" $(TEST_TOOLCHAIN)$(SBINDIR)
-tc_sbindir := env LD_LIBRARY_PATH="$(TEST_TOOLCHAIN)/lib:$(TEST_TOOLCHAIN)/usr/lib" $(TEST_TOOLCHAIN)/sbin
+python_path_plat := $(shell python3 -c "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '/usr', 'base': '/usr'}))")
+python_path_pure := $(shell python3 -c "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '/usr'}))")
+ifdef PYTHONPATH
+python_path := $(TEST_TOOLCHAIN)$(python_path_plat):$(TEST_TOOLCHAIN)$(python_path_pure):$(PYTHONPATH)
 else
+python_path := $(TEST_TOOLCHAIN)$(python_path_plat):$(TEST_TOOLCHAIN)$(python_path_pure)
+endif
+tc_env := env LD_LIBRARY_PATH="$(TEST_TOOLCHAIN)/lib:$(TEST_TOOLCHAIN)/usr/lib" PYTHONPATH="$(python_path)"
+tc_usrbindir := $(TEST_TOOLCHAIN)$(BINDIR)
+tc_usrsbindir := $(TEST_TOOLCHAIN)$(SBINDIR)
+tc_sbindir := $(TEST_TOOLCHAIN)/sbin
+else
+tc_env :=
 tc_usrbindir := $(BINDIR)
 tc_usrsbindir := $(SBINDIR)
 tc_sbindir := /sbin
 endif
-CHECKPOLICY ?= $(tc_usrbindir)/checkpolicy
-CHECKMODULE ?= $(tc_usrbindir)/checkmodule
-SEMODULE ?= $(tc_usrsbindir)/semodule
-SEMOD_PKG ?= $(tc_usrbindir)/semodule_package
-SEMOD_LNK ?= $(tc_usrbindir)/semodule_link
-SEMOD_EXP ?= $(tc_usrbindir)/semodule_expand
-LOADPOLICY ?= $(tc_usrsbindir)/load_policy
-SEPOLGEN_IFGEN ?= $(tc_usrbindir)/sepolgen-ifgen
-SETFILES ?= $(tc_sbindir)/setfiles
+CHECKPOLICY ?= $(tc_env) $(tc_usrbindir)/checkpolicy
+CHECKMODULE ?= $(tc_env) $(tc_usrbindir)/checkmodule
+SEMODULE ?= $(tc_env) $(tc_usrsbindir)/semodule
+SEMOD_PKG ?= $(tc_env) $(tc_usrbindir)/semodule_package
+SEMOD_LNK ?= $(tc_env) $(tc_usrbindir)/semodule_link
+SEMOD_EXP ?= $(tc_env) $(tc_usrbindir)/semodule_expand
+LOADPOLICY ?= $(tc_env) $(tc_usrsbindir)/load_policy
+# chkcon is not directly run by makefiles; the path is used by the validate-appconfig
+# tool.  The tc_env is added below in the validateappconfig var
+CHKCON ?= $(tc_usrbindir)/chkcon
+ifdef TEST_TOOLCHAIN
+SEPOLGEN_IFGEN ?= $(tc_env) $(tc_usrbindir)/sepolgen-ifgen --attr-helper $(TEST_TOOLCHAIN)$(BINDIR)/sepolgen-ifgen-attr-helper
+else
+SEPOLGEN_IFGEN ?= $(tc_env) $(tc_usrbindir)/sepolgen-ifgen
+endif
+SETFILES ?= $(tc_env) $(tc_sbindir)/setfiles
+SEFCONTEXT_COMPILE ?= $(tc_env) $(tc_usrsbindir)/sefcontext_compile
 XMLLINT ?= $(BINDIR)/xmllint
 SECHECK ?= $(BINDIR)/sechecker
 
@@ -111,6 +128,9 @@ m4terminate := $(support)/fatal_error.m4
 # so policycoreutils updates are not required (RHEL4)
 genhomedircon := $(PYTHON) $(support)/genhomedircon.py
 gentemplates := $(support)/gentemplates.sh
+### temporary replacment because of python segv
+### validateappconfig := $(tc_env) $(PYTHON) $(support)/validate-appconfig.py -c $(CHKCON)
+validateappconfig := true
 
 # documentation paths
 docs := doc
@@ -264,7 +284,10 @@ seusers := $(appconf)/seusers
 appdir := $(contextpath)
 user_default_contexts := $(wildcard config/appconfig-$(TYPE)/*_default_contexts)
 user_default_contexts_names := $(addprefix $(contextpath)/users/,$(subst _default_contexts,,$(notdir $(user_default_contexts))))
-appfiles := $(addprefix $(appdir)/,default_contexts default_type initrc_context failsafe_context userhelper_context removable_context dbus_contexts sepgsql_contexts x_contexts customizable_types securetty_types lxc_contexts openrc_contexts virtual_domain_context virtual_image_context) $(contextpath)/files/media $(fcsubspath) $(user_default_contexts_names)
+appfiles_names := default_contexts default_type initrc_context failsafe_context userhelper_context removable_context dbus_contexts sepgsql_contexts x_contexts customizable_types securetty_types lxc_contexts openrc_contexts virtual_domain_context virtual_image_context
+appfiles := $(addprefix $(appdir)/,$(appfiles_names)) $(contextpath)/files/media $(fcsubspath) $(user_default_contexts_names)
+builtappconf := $(tmpdir)/appconfig
+builtappfiles := $(addprefix $(builtappconf)/,$(appfiles_names) $(notdir $(user_default_contexts)) media) $(fcsubspath)
 net_contexts := $(builddir)net_contexts
 net_contexts_nft := $(builddir)net_contexts.nft
 docfiles += $(net_contexts) $(net_contexts_nft)
@@ -323,6 +346,23 @@ off_mods += $(filter-out $(cmdline_off) $(cmdline_base) $(cmdline_mods), $(mod_c
 
 # add modules not in modules.conf to the off list
 off_mods += $(filter-out $(base_mods) $(mod_mods) $(off_mods),$(notdir $(detected_mods)))
+
+# enable appconfig validation based on enabled modules
+ifneq "$(filter container.te,$(base_mods) $(mod_mods))" ""
+	validateappconfig += -l
+endif
+
+ifneq "$(filter postgresql.te,$(base_mods) $(mod_mods))" ""
+	validateappconfig += -s
+endif
+
+ifneq "$(filter virt.te,$(base_mods) $(mod_mods))" ""
+	validateappconfig += -v
+endif
+
+ifneq "$(filter xserver.te,$(base_mods) $(mod_mods))" ""
+	validateappconfig += -x
+endif
 
 # filesystems to be used in labeling targets
 filesystems = $(shell mount | grep -v "context=" | $(GREP) -v '\((|.*,)bind(,.*|)\)' | $(AWK) '/(ext[234]|btrfs| xfs| jfs).*rw/{print $$3}';)
@@ -498,9 +538,12 @@ $(userpath)/local.users: config/local.users
 #
 # Build Appconfig files
 #
-$(tmpdir)/initrc_context: $(appconf)/initrc_context
-	@mkdir -p $(tmpdir)
-	$(verbose) $(M4) $(M4PARAM) $(m4support) $^ | $(GREP) '^[a-z]' > $@
+$(builtappconf)/%: $(appconf)/%
+	@mkdir -p $(@D)
+	@echo "Building $(@F)"
+	$(verbose) $(M4) $(M4PARAM) $(m4support) $< > $@
+
+.SECONDARY: $(builtappfiles)
 
 ########################################
 #
@@ -515,7 +558,7 @@ $(installdir)/booleans: $(booleans)
 	@$(INSTALL) -d -m 0755 $(@D)
 	$(verbose) $(INSTALL) -m 0644 $(tmpdir)/booleans $@
 
-$(contextpath)/files/media: $(appconf)/media
+$(contextpath)/files/media: $(builtappconf)/media
 	@$(INSTALL) -d -m 0755 $(@D)
 	$(verbose) $(INSTALL) -m 0644 $< $@
 
@@ -523,11 +566,11 @@ $(fcsubspath): config/file_contexts.subs_dist
 	@$(INSTALL) -d -m 0755 $(@D)
 	$(verbose) $(INSTALL) -m 0644 $< $@
 
-$(contextpath)/users/%: $(appconf)/%_default_contexts
+$(contextpath)/users/%: $(builtappconf)/%_default_contexts
 	@$(INSTALL) -d -m 0755 $(@D)
 	$(verbose) $(INSTALL) -m 0644 $^ $@
 
-$(appdir)/%: $(appconf)/%
+$(appdir)/%: $(builtappconf)/%
 	$(verbose) $(M4) $(M4PARAM) $(m4support) $< > $(tmpdir)/$(@F)
 	@$(INSTALL) -d -m 0755 $(@D)
 	$(verbose) $(INSTALL) -m 0644 $(tmpdir)/$(@F) $@

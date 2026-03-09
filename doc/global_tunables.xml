@@ -124,3 +124,11 @@ the same domain and outside users)
 </p>
 </desc>
 </tunable>
+<tunable name="user_execmod_tmpfs" dftval="false">
+<desc>
+<p>
+Allow users to execmod tmpfs files, KDE plasmashell needs this
+the same domain and outside users)
+</p>
+</desc>
+</tunable>

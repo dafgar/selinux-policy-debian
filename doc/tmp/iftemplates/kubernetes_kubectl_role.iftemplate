@@ -1,0 +1,39 @@
+	gen_require(`
+		attribute kubectl_domain;
+		type kubectl_exec_t;
+		type kubernetes_home_t;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	type $1_kubectl_t, kubectl_domain;
+	userdom_user_application_domain($1_kubectl_t, kubectl_exec_t)
+	role $4 types $1_kubectl_t;
+
+	########################################
+	#
+	# Policy
+	#
+
+	domtrans_pattern($3, kubectl_exec_t, $1_kubectl_t)
+
+	allow $2 kubernetes_home_t:dir { manage_dir_perms relabel_dir_perms };
+	allow $2 kubernetes_home_t:file { manage_file_perms relabel_file_perms };
+	allow $2 kubernetes_home_t:lnk_file { manage_lnk_file_perms relabel_lnk_file_perms };
+	userdom_user_home_dir_filetrans($2, kubernetes_home_t, dir, ".kube")
+
+	allow $3 $1_kubectl_t:process { ptrace signal_perms };
+	ps_process_pattern($3, $1_kubectl_t)
+
+	auth_use_nsswitch($1_kubectl_t)
+
+	# kubectl executes an editor when editing files.
+	# transition back to the user domain when running them
+	corecmd_bin_domtrans($1_kubectl_t, $2)
+
+	optional_policy(`
+		systemd_user_app_status($1, $1_kubectl_t)
+	')

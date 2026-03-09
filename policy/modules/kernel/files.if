@@ -444,6 +444,24 @@ interface(`files_tmpfs_file',`
 ##	</summary>
 ## </param>
 #
+interface(`files_dontaudit_getattr_all_tmpfs_files',`
+	gen_require(`
+		attribute tmpfsfile;
+	')
+
+	dontaudit $1 tmpfsfile:file getattr;
+')
+
+########################################
+## <summary>
+##	dontaudit getattr on tmpfs files
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain to not have stat on tmpfs files audited
+##	</summary>
+## </param>
+#
 interface(`files_dontaudit_tmpfs_file_getattr',`
 	gen_require(`
 		attribute tmpfsfile;
@@ -542,8 +560,8 @@ interface(`files_mounton_non_security',`
 		attribute non_security_file_type;
 	')
 
-	allow $1 non_security_file_type:dir { getattr search mounton };
-	allow $1 non_security_file_type:file { getattr mounton };
+	allow $1 non_security_file_type:dir { mounton_dir_perms search };
+	allow $1 non_security_file_type:file mounton_file_perms;
 ')
 
 ########################################
@@ -733,6 +751,30 @@ interface(`files_read_all_files',`
 
 	optional_policy(`
 		auth_read_shadow($1)
+	')
+')
+
+########################################
+## <summary>
+##	Read and memory map all files.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`files_mmap_read_all_files',`
+	gen_require(`
+		attribute file_type;
+	')
+
+	allow $1 file_type:dir list_dir_perms;
+	mmap_read_files_pattern($1, file_type, file_type)
+
+	optional_policy(`
+		auth_read_shadow($1)
+		auth_map_shadow($1)
 	')
 ')
 
@@ -1454,6 +1496,25 @@ interface(`files_unmount_all_file_type_fs',`
 ##	</summary>
 ## </param>
 #
+interface(`files_watch_all_dirs',`
+	gen_require(`
+		attribute file_type;
+	')
+
+	allow $1 file_type:dir watch;
+')
+
+
+########################################
+## <summary>
+##	watch all directories of file_type
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
 interface(`files_watch_all_file_type_dir',`
 	gen_require(`
 		attribute file_type;
@@ -1462,7 +1523,6 @@ interface(`files_watch_all_file_type_dir',`
 	allow $1 file_type:dir watch;
 ')
 
-########################################
 ########################################
 ## <summary>
 ##	Read all non-authentication related
@@ -1748,6 +1808,25 @@ interface(`files_dontaudit_relabel_config_files',`
 	dontaudit $1 configfile:file relabel_file_perms;
 ')
 
+#######################################
+## <summary>
+##	Relabel configuration symlinks.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+##
+#
+interface(`files_relabel_config_symlinks',`
+	gen_require(`
+		attribute configfile;
+	')
+
+	relabel_lnk_files_pattern($1, configfile, configfile)
+')
+
 ########################################
 ## <summary>
 ##	Mount a filesystem on all mount points.
@@ -1763,8 +1842,8 @@ interface(`files_mounton_all_mountpoints',`
 		attribute mountpoint;
 	')
 
-	allow $1 mountpoint:dir { search_dir_perms mounton };
-	allow $1 mountpoint:file { getattr mounton };
+	allow $1 mountpoint:dir { mounton search_dir_perms };
+	allow $1 mountpoint:file mounton_file_perms;
 
 	kernel_mounton_unlabeled_dirs($1)
 ')
@@ -1933,6 +2012,24 @@ interface(`files_watch_all_mount_perm',`
 
 ########################################
 ## <summary>
+##	Watch all mount superblock changes
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`files_watch_all_mount_sb',`
+	gen_require(`
+		attribute mountpoint;
+	')
+
+	allow $1 mountpoint:dir watch_sb;
+')
+
+########################################
+## <summary>
 ##	Check if all mountpoints are writable.
 ## </summary>
 ## <param name="domain">
@@ -1983,7 +2080,7 @@ interface(`files_list_root',`
 	')
 
 	allow $1 root_t:dir list_dir_perms;
-	allow $1 root_t:lnk_file { read_lnk_file_perms ioctl lock };
+	allow $1 root_t:lnk_file { ioctl lock read_lnk_file_perms };
 ')
 
 ########################################
@@ -2294,7 +2391,7 @@ interface(`files_relabel_rootfs',`
 		type root_t;
 	')
 
-	allow $1 root_t:filesystem { relabelto relabelfrom };
+	allow $1 root_t:filesystem { relabelfrom relabelto };
 ')
 
 ########################################
@@ -2567,6 +2664,25 @@ interface(`files_read_boot_files',`
 	')
 
 	read_files_pattern($1, boot_t, boot_t)
+')
+
+########################################
+## <summary>
+##	Read and memory map files in the /boot directory.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <rolecap/>
+#
+interface(`files_mmap_read_boot_files',`
+	gen_require(`
+		type boot_t;
+	')
+
+	mmap_read_files_pattern($1, boot_t, boot_t)
 ')
 
 ########################################
@@ -2849,7 +2965,7 @@ interface(`files_mounton_default',`
 		type default_t;
 	')
 
-	allow $1 default_t:dir { search_dir_perms mounton };
+	allow $1 default_t:dir { mounton search_dir_perms };
 ')
 
 ########################################
@@ -2906,6 +3022,25 @@ interface(`files_dontaudit_read_default_files',`
 	')
 
 	dontaudit $1 default_t:file read_file_perms;
+')
+
+########################################
+## <summary>
+##	Do not audit attempts to execute files
+##	with the default file type.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain to not audit.
+##	</summary>
+## </param>
+#
+interface(`files_dontaudit_execute_default_files',`
+	gen_require(`
+		type default_t;
+	')
+
+	dontaudit $1 default_t:file execute;
 ')
 
 ########################################
@@ -3768,6 +3903,43 @@ interface(`files_dontaudit_read_etc_runtime_files',`
 
 ########################################
 ## <summary>
+##	Do not audit attempts to execute files
+##	in /etc that are dynamically
+##	created on boot, such as mtab.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain to not audit.
+##	</summary>
+## </param>
+#
+interface(`files_dontaudit_exec_etc_runtime_files',`
+	gen_require(`
+		type etc_runtime_t;
+	')
+
+	dontaudit $1 etc_runtime_t:file execute;
+')
+
+########################################
+## <summary>
+##	Do not audit attempts to execute files
+##	in /etc that are dynamically
+##	created on boot, such as mtab.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain to not audit.
+##	</summary>
+## </param>
+#
+interface(`files_dontaudit_execuite_etc_runtime_files',`
+	refpolicywarn(`$0($*) has been deprecated, please use files_dontaudit_exec_etc_runtime_files() instead.')
+	files_dontaudit_exec_etc_runtime_files($1)
+')
+
+########################################
+## <summary>
 ##	Do not audit attempts to read files
 ##	in /etc
 ## </summary>
@@ -4265,7 +4437,7 @@ interface(`files_mounton_mnt',`
 		type mnt_t;
 	')
 
-	allow $1 mnt_t:dir { search_dir_perms mounton };
+	allow $1 mnt_t:dir { mounton search_dir_perms };
 ')
 
 ########################################
@@ -4532,6 +4704,24 @@ interface(`files_relabel_kernel_modules',`
 
 	relabel_files_pattern($1, modules_object_t, modules_object_t)
 	allow $1 modules_object_t:dir list_dir_perms;
+')
+
+########################################
+## <summary>
+##	Mount on kernel module directories.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`files_mounton_kernel_modules_dirs',`
+	gen_require(`
+		type modules_object_t;
+	')
+
+	allow $1 modules_object_t:dir mounton;
 ')
 
 ########################################
@@ -5585,6 +5775,42 @@ interface(`files_usr_filetrans',`
 	filetrans_pattern($1, usr_t, $2, $3, $4)
 ')
 
+
+########################################
+## <summary>
+##      Execute a usr_t file in the specified domain.
+## </summary>
+## <desc>
+##      <p>
+##      Execute a usr_t file in the specified domain.
+##      </p>
+##      <p>
+##      No interprocess communication (signals, pipes,
+##      etc.) is provided by this interface since
+##      the domains are not owned by this module.
+##      </p>
+## </desc>
+## <param name="domain">
+##      <summary>
+##      Domain allowed to transition.
+##      </summary>
+## </param>
+## <param name="target_domain">
+##      <summary>
+##      The type of the process.
+##      </summary>
+## </param>
+#
+interface(`files_usr_domtrans',`
+	gen_require(`
+		type usr_t;
+	')
+
+	files_list_usr($1)
+	domain_transition_pattern($1, usr_t, $2)
+	type_transition $1 usr_t:process $2;
+')
+
 ########################################
 ## <summary>
 ##	Search directories in /usr/src.
@@ -5698,7 +5924,7 @@ interface(`files_create_kernel_symbol_table',`
 		type boot_t, system_map_t;
 	')
 
-	allow $1 boot_t:dir { list_dir_perms add_entry_dir_perms };
+	allow $1 boot_t:dir { add_entry_dir_perms list_dir_perms };
 	allow $1 system_map_t:file { create_file_perms rw_file_perms };
 ')
 
@@ -5742,7 +5968,7 @@ interface(`files_delete_kernel_symbol_table',`
 
 ########################################
 ## <summary>
-##	Delete a system.map in the /boot directory.
+##	Mount on a system.map in the /boot directory (for bind mounts).
 ## </summary>
 ## <param name="domain">
 ##	<summary>
@@ -6315,13 +6541,12 @@ interface(`files_read_var_lib_symlinks',`
 ## </param>
 #
 interface(`files_manage_urandom_seed',`
-	gen_require(`
-		type var_t, var_lib_t;
-	')
-
-	allow $1 var_t:dir search_dir_perms;
-	manage_files_pattern($1, var_lib_t, var_lib_t)
+	refpolicywarn(`$0($*) has been deprecated, please use init_manage_random_seed() instead.')
+	init_manage_random_seed($1)
 ')
+
+# cjp: the next interface really needs to be fixed
+# in some way.  It really needs its own type.
 
 ########################################
 ## <summary>
@@ -6864,6 +7089,42 @@ interface(`files_create_runtime_dirs',`
 
 ########################################
 ## <summary>
+##	Read and write a /var/run directory.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`files_rw_runtime_dirs',`
+	gen_require(`
+		type var_run_t;
+	')
+
+	rw_dirs_pattern($1, var_run_t, var_run_t)
+')
+
+########################################
+## <summary>
+##	Watch /var/lib directories.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`files_watch_var_lib_dirs',`
+	gen_require(`
+		type var_lib_t;
+	')
+
+	allow $1 var_lib_t:dir watch;
+')
+
+########################################
+## <summary>
 ##	Watch /var/run directories.
 ## </summary>
 ## <param name="domain">
@@ -6878,6 +7139,24 @@ interface(`files_watch_runtime_dirs',`
 	')
 
 	allow $1 var_run_t:dir watch;
+')
+
+########################################
+## <summary>
+##	Watch /var directories.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`files_watch_var_dirs',`
+	gen_require(`
+		type var_t;
+	')
+
+	allow $1 var_t:dir watch;
 ')
 
 ########################################
@@ -6916,6 +7195,24 @@ interface(`files_exec_runtime',`
 	')
 
 	exec_files_pattern($1, var_run_t, var_run_t)
+')
+
+########################################
+## <summary>
+##	Dontaudit attempt to execute generic programs in /var/run in the caller domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`files_dontaudit_exec_runtime',`
+	gen_require(`
+		type var_run_t;
+	')
+
+	dontaudit $1 var_run_t:file execute;
 ')
 
 ########################################
@@ -7633,20 +7930,20 @@ interface(`files_polyinstantiate_all',`
 	allow $1 self:capability { chown fowner fsetid sys_admin };
 
 	# Need to give access to the directories to be polyinstantiated
-	allow $1 polydir:dir { add_entry_dir_perms create setattr mounton rmdir };
+	allow $1 polydir:dir { add_entry_dir_perms create mounton rmdir setattr };
 
 	# Need to give access to the polyinstantiated subdirectories
 	allow $1 polymember:dir search_dir_perms;
 
 	# Need to give access to parent directories where original
 	# is remounted for polyinstantiation aware programs (like gdm)
-	allow $1 polyparent:dir { getattr mounton };
+	allow $1 polyparent:dir mounton_dir_perms;
 
 	# Need to give permission to create directories where applicable
 	allow $1 self:process setfscreate;
-	allow $1 polymember: dir { create setattr relabelto };
-	allow $1 polydir: dir { write add_name open };
-	allow $1 polyparent:dir { rw_dir_perms relabel_dir_perms };
+	allow $1 polymember: dir { create relabelto setattr };
+	allow $1 polydir: dir { add_name open write };
+	allow $1 polyparent:dir { relabel_dir_perms rw_dir_perms };
 
 	# Default type for mountpoints
 	allow $1 poly_t:dir { create mounton };

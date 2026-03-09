@@ -536,7 +536,17 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="apt_dontaudit_manage_db" lineno="251">
+<interface name="apt_watch_db" lineno="249">
+<summary>
+watch apt db dirs
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="apt_dontaudit_manage_db" lineno="270">
 <summary>
 Do not audit attempts to create,
 read, write, and delete apt
@@ -545,6 +555,16 @@ package database content.
 <param name="domain">
 <summary>
 Domain to not audit.
+</summary>
+</param>
+</interface>
+<interface name="apt_dbus_chat" lineno="290">
+<summary>
+Send and receive messages from apt over dbus
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
 </summary>
 </param>
 </interface>
@@ -953,7 +973,17 @@ Role allowed access.
 </module>
 <module name="cloudinit" filename="policy/modules/admin/cloudinit.if">
 <summary>Init scripts for cloud VMs</summary>
-<interface name="cloudinit_create_runtime_dirs" lineno="13">
+<interface name="cloudinit_rw_inherited_pipes" lineno="13">
+<summary>
+Read and write inherited cloud-init pipes.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="cloudinit_create_runtime_dirs" lineno="32">
 <summary>
 Create cloud-init runtime directory.
 </summary>
@@ -963,7 +993,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="cloudinit_write_runtime_files" lineno="32">
+<interface name="cloudinit_write_runtime_files" lineno="51">
 <summary>
 Write cloud-init runtime files.
 </summary>
@@ -973,7 +1003,17 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="cloudinit_create_runtime_files" lineno="51">
+<interface name="cloudinit_rw_runtime_files" lineno="70">
+<summary>
+Read and write cloud-init runtime files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="cloudinit_create_runtime_files" lineno="89">
 <summary>
 Create cloud-init runtime files.
 </summary>
@@ -983,7 +1023,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="cloudinit_filetrans_runtime" lineno="81">
+<interface name="cloudinit_filetrans_runtime" lineno="119">
 <summary>
 Create files in /run with the type used for
 cloud-init runtime files.
@@ -1004,7 +1044,7 @@ The name of the object being created.
 </summary>
 </param>
 </interface>
-<interface name="cloudinit_getattr_state_files" lineno="99">
+<interface name="cloudinit_getattr_state_files" lineno="137">
 <summary>
 Get the attribute of cloud-init state files.
 </summary>
@@ -1014,6 +1054,50 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
+<interface name="cloudinit_write_inherited_tmp_files" lineno="158">
+<summary>
+Write inherited cloud-init temporary files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="cloudinit_rw_tmp_files" lineno="177">
+<summary>
+Read and write cloud-init temporary files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="cloudinit_create_tmp_files" lineno="196">
+<summary>
+Create cloud-init temporary files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<tunable name="cloudinit_growpart" dftval="false">
+<desc>
+<p>
+Enable support for the cloud-init-growpart module.
+</p>
+</desc>
+</tunable>
+<tunable name="cloudinit_manage_non_security" dftval="false">
+<desc>
+<p>
+Enable support for cloud-init to manage all non-security files.
+</p>
+</desc>
+</tunable>
 </module>
 <module name="consoletype" filename="policy/modules/admin/consoletype.if">
 <summary>
@@ -2435,7 +2519,17 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="portage_dontaudit_search_tmp" lineno="325">
+<interface name="portage_dontaudit_use_inherited_ptys" lineno="324">
+<summary>
+Do not audit attempts to read and write inherited portage ptys.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="portage_dontaudit_search_tmp" lineno="343">
 <summary>
 Do not audit attempts to search the
 portage temporary directories.
@@ -2446,7 +2540,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="portage_dontaudit_rw_tmp_files" lineno="344">
+<interface name="portage_dontaudit_rw_tmp_files" lineno="362">
 <summary>
 Do not audit attempts to read and write
 the portage temporary files.
@@ -3050,7 +3144,17 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpm_append_tmp_files" lineno="351">
+<interface name="rpm_read_tmp_files" lineno="351">
+<summary>
+Read rpm temporary files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="rpm_append_tmp_files" lineno="371">
 <summary>
 Append rpm temporary files.
 </summary>
@@ -3060,7 +3164,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpm_manage_tmp_files" lineno="371">
+<interface name="rpm_manage_tmp_files" lineno="391">
 <summary>
 Create, read, write, and delete
 rpm temporary files.
@@ -3071,7 +3175,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpm_read_script_tmp_files" lineno="390">
+<interface name="rpm_read_script_tmp_files" lineno="410">
 <summary>
 Read rpm script temporary files.
 </summary>
@@ -3081,7 +3185,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpm_read_cache" lineno="410">
+<interface name="rpm_read_cache" lineno="430">
 <summary>
 Read rpm cache content.
 </summary>
@@ -3091,7 +3195,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpm_manage_cache" lineno="432">
+<interface name="rpm_manage_cache" lineno="452">
 <summary>
 Create, read, write, and delete
 rpm cache content.
@@ -3102,7 +3206,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpm_read_db" lineno="453">
+<interface name="rpm_read_db" lineno="473">
 <summary>
 Read rpm lib content.
 </summary>
@@ -3112,7 +3216,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpm_delete_db" lineno="475">
+<interface name="rpm_delete_db" lineno="495">
 <summary>
 Delete rpm lib files.
 </summary>
@@ -3122,7 +3226,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpm_manage_db" lineno="495">
+<interface name="rpm_manage_db" lineno="515">
 <summary>
 Create, read, write, and delete
 rpm lib files.
@@ -3133,7 +3237,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpm_dontaudit_manage_db" lineno="517">
+<interface name="rpm_dontaudit_manage_db" lineno="537">
 <summary>
 Do not audit attempts to create, read,
 write, and delete rpm lib content.
@@ -3144,7 +3248,7 @@ Domain to not audit.
 </summary>
 </param>
 </interface>
-<interface name="rpm_manage_runtime_files" lineno="539">
+<interface name="rpm_manage_runtime_files" lineno="559">
 <summary>
 Create, read, write, and delete
 rpm runtime files.
@@ -3155,7 +3259,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="rpm_admin" lineno="565">
+<interface name="rpm_admin" lineno="585">
 <summary>
 All of the rules required to
 administrate an rpm environment.
@@ -3604,7 +3708,7 @@ The role associated with the user domain.
 </summary>
 </param>
 </template>
-<template name="su_role_template" lineno="143">
+<template name="su_role_template" lineno="149">
 <summary>
 The role template for the su module.
 </summary>
@@ -3630,9 +3734,19 @@ Role allowed access
 </summary>
 </param>
 </template>
-<interface name="su_exec" lineno="293">
+<interface name="su_exec" lineno="306">
 <summary>
 Execute su in the caller domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="su_signal_all" lineno="325">
+<summary>
+Send signals to all su domains.
 </summary>
 <param name="domain">
 <summary>
@@ -3686,9 +3800,19 @@ Role allowed access
 </summary>
 </param>
 </template>
-<interface name="sudo_sigchld" lineno="225">
+<interface name="sudo_sigchld" lineno="236">
 <summary>
 Send a SIGCHLD signal to the sudo domain.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="sudo_exec" lineno="254">
+<summary>
+Execute sudo in the caller domain.
 </summary>
 <param name="domain">
 <summary>

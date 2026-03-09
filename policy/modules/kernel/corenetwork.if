@@ -653,7 +653,7 @@ interface(`corenet_sctp_sendrecv_generic_node',`
 		type node_t;
 	')
 
-	allow $1 node_t:node { sendto recvfrom };
+	allow $1 node_t:node { recvfrom sendto };
 ')
 
 ########################################
@@ -732,7 +732,7 @@ interface(`corenet_tcp_sendrecv_generic_node',`
 		type node_t;
 	')
 
-	allow $1 node_t:node { sendto recvfrom };
+	allow $1 node_t:node { recvfrom sendto };
 ')
 
 ########################################
@@ -1053,7 +1053,7 @@ interface(`corenet_tcp_sendrecv_all_nodes',`
 		attribute node_type;
 	')
 
-	allow $1 node_type:node { sendto recvfrom };
+	allow $1 node_type:node { recvfrom sendto };
 ')
 
 ########################################
@@ -1108,7 +1108,7 @@ interface(`corenet_sctp_sendrecv_all_nodes',`
 		attribute node_type;
 	')
 
-	allow $1 node_type:node { sendto recvfrom };
+	allow $1 node_type:node { recvfrom sendto };
 ')
 
 ########################################
@@ -1616,7 +1616,7 @@ interface(`corenet_tcp_bind_all_ports',`
 
 ########################################
 ## <summary>
-##	Do not audit attepts to bind TCP sockets to any ports.
+##	Do not audit attempts to bind TCP sockets to any ports.
 ## </summary>
 ## <param name="domain">
 ##	<summary>
@@ -1671,7 +1671,7 @@ interface(`corenet_sctp_connect_generic_port',`
 
 ########################################
 ## <summary>
-##	Do not audit attepts to bind UDP sockets to any ports.
+##	Do not audit attempts to bind UDP sockets to any ports.
 ## </summary>
 ## <param name="domain">
 ##	<summary>
@@ -1885,7 +1885,7 @@ interface(`corenet_tcp_connect_reserved_port',`
 
 ########################################
 ## <summary>
-##	Do not audit attepts to bind SCTP sockets to any ports.
+##	Do not audit attempts to bind SCTP sockets to any ports.
 ## </summary>
 ## <param name="domain">
 ##	<summary>
@@ -2478,7 +2478,7 @@ interface(`corenet_tcp_recvfrom_netlabel',`
 
 ########################################
 ## <summary>
-##	Receive TCP packets from an unlabled connection.
+##	Receive TCP packets from an unlabeled connection.
 ## </summary>
 ## <param name="domain">
 ##	<summary>
@@ -3329,7 +3329,7 @@ interface(`corenet_relabelto_all_server_packets',`
 
 ########################################
 ## <summary>
-##	Receive SCTP packets from an unlabled connection.
+##	Receive SCTP packets from an unlabeled connection.
 ## </summary>
 ## <param name="domain">
 ##	<summary>
@@ -32941,6 +32941,321 @@ interface(`corenet_relabelto_ktalkd_server_packets',`
 	')
 
 	allow $1 ktalkd_server_packet_t:packet relabelto;
+')
+
+
+
+
+########################################
+## <summary>
+##	Bind TCP sockets to the kubernetes port.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <infoflow type="none"/>
+#
+interface(`corenet_tcp_bind_kubernetes_port',`
+	gen_require(`
+		type kubernetes_port_t;
+	')
+
+	allow $1 kubernetes_port_t:tcp_socket name_bind;
+	allow $1 self:capability net_bind_service;
+')
+
+########################################
+## <summary>
+##	Bind UDP sockets to the kubernetes port.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <infoflow type="none"/>
+#
+interface(`corenet_udp_bind_kubernetes_port',`
+	gen_require(`
+		type kubernetes_port_t;
+	')
+
+	allow $1 kubernetes_port_t:udp_socket name_bind;
+	allow $1 self:capability net_bind_service;
+')
+
+########################################
+## <summary>
+##	Make a TCP connection to the kubernetes port.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`corenet_tcp_connect_kubernetes_port',`
+	gen_require(`
+		type kubernetes_port_t;
+	')
+
+	allow $1 kubernetes_port_t:tcp_socket name_connect;
+')
+
+
+########################################
+## <summary>
+##	Send kubernetes_client packets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <infoflow type="write" weight="10"/>
+#
+interface(`corenet_send_kubernetes_client_packets',`
+	gen_require(`
+		type kubernetes_client_packet_t;
+	')
+
+	allow $1 kubernetes_client_packet_t:packet send;
+')
+
+########################################
+## <summary>
+##	Do not audit attempts to send kubernetes_client packets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain to not audit.
+##	</summary>
+## </param>
+## <infoflow type="none"/>
+#
+interface(`corenet_dontaudit_send_kubernetes_client_packets',`
+	gen_require(`
+		type kubernetes_client_packet_t;
+	')
+
+	dontaudit $1 kubernetes_client_packet_t:packet send;
+')
+
+########################################
+## <summary>
+##	Receive kubernetes_client packets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <infoflow type="read" weight="10"/>
+#
+interface(`corenet_receive_kubernetes_client_packets',`
+	gen_require(`
+		type kubernetes_client_packet_t;
+	')
+
+	allow $1 kubernetes_client_packet_t:packet recv;
+')
+
+########################################
+## <summary>
+##	Do not audit attempts to receive kubernetes_client packets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <infoflow type="none"/>
+#
+interface(`corenet_dontaudit_receive_kubernetes_client_packets',`
+	gen_require(`
+		type kubernetes_client_packet_t;
+	')
+
+	dontaudit $1 kubernetes_client_packet_t:packet recv;
+')
+
+########################################
+## <summary>
+##	Send and receive kubernetes_client packets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <infoflow type="both" weight="10"/>
+#
+interface(`corenet_sendrecv_kubernetes_client_packets',`
+	corenet_send_kubernetes_client_packets($1)
+	corenet_receive_kubernetes_client_packets($1)
+')
+
+########################################
+## <summary>
+##	Do not audit attempts to send and receive kubernetes_client packets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain to not audit.
+##	</summary>
+## </param>
+## <infoflow type="none"/>
+#
+interface(`corenet_dontaudit_sendrecv_kubernetes_client_packets',`
+	corenet_dontaudit_send_kubernetes_client_packets($1)
+	corenet_dontaudit_receive_kubernetes_client_packets($1)
+')
+
+########################################
+## <summary>
+##	Relabel packets to kubernetes_client the packet type.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`corenet_relabelto_kubernetes_client_packets',`
+	gen_require(`
+		type kubernetes_client_packet_t;
+	')
+
+	allow $1 kubernetes_client_packet_t:packet relabelto;
+')
+
+
+########################################
+## <summary>
+##	Send kubernetes_server packets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <infoflow type="write" weight="10"/>
+#
+interface(`corenet_send_kubernetes_server_packets',`
+	gen_require(`
+		type kubernetes_server_packet_t;
+	')
+
+	allow $1 kubernetes_server_packet_t:packet send;
+')
+
+########################################
+## <summary>
+##	Do not audit attempts to send kubernetes_server packets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain to not audit.
+##	</summary>
+## </param>
+## <infoflow type="none"/>
+#
+interface(`corenet_dontaudit_send_kubernetes_server_packets',`
+	gen_require(`
+		type kubernetes_server_packet_t;
+	')
+
+	dontaudit $1 kubernetes_server_packet_t:packet send;
+')
+
+########################################
+## <summary>
+##	Receive kubernetes_server packets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <infoflow type="read" weight="10"/>
+#
+interface(`corenet_receive_kubernetes_server_packets',`
+	gen_require(`
+		type kubernetes_server_packet_t;
+	')
+
+	allow $1 kubernetes_server_packet_t:packet recv;
+')
+
+########################################
+## <summary>
+##	Do not audit attempts to receive kubernetes_server packets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <infoflow type="none"/>
+#
+interface(`corenet_dontaudit_receive_kubernetes_server_packets',`
+	gen_require(`
+		type kubernetes_server_packet_t;
+	')
+
+	dontaudit $1 kubernetes_server_packet_t:packet recv;
+')
+
+########################################
+## <summary>
+##	Send and receive kubernetes_server packets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <infoflow type="both" weight="10"/>
+#
+interface(`corenet_sendrecv_kubernetes_server_packets',`
+	corenet_send_kubernetes_server_packets($1)
+	corenet_receive_kubernetes_server_packets($1)
+')
+
+########################################
+## <summary>
+##	Do not audit attempts to send and receive kubernetes_server packets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain to not audit.
+##	</summary>
+## </param>
+## <infoflow type="none"/>
+#
+interface(`corenet_dontaudit_sendrecv_kubernetes_server_packets',`
+	corenet_dontaudit_send_kubernetes_server_packets($1)
+	corenet_dontaudit_receive_kubernetes_server_packets($1)
+')
+
+########################################
+## <summary>
+##	Relabel packets to kubernetes_server the packet type.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`corenet_relabelto_kubernetes_server_packets',`
+	gen_require(`
+		type kubernetes_server_packet_t;
+	')
+
+	allow $1 kubernetes_server_packet_t:packet relabelto;
 ')
 
 

@@ -64,10 +64,10 @@ logging_send_syslog_msg(acpi_t)
 
 allow acpid_t self:capability { kill mknod sys_admin sys_nice sys_time };
 dontaudit acpid_t self:capability { dac_override dac_read_search setuid sys_ptrace sys_tty_config };
+allow acpid_t self:process { getsession signal_perms getsched };
 # for pidof and pgrep
 allow acpid_t self:cap_userns sys_ptrace;
 
-allow acpid_t self:process { signal_perms getsession getsched };
 allow acpid_t self:fifo_file rw_fifo_file_perms;
 allow acpid_t self:netlink_socket create_socket_perms;
 allow acpid_t self:netlink_generic_socket create_socket_perms;
@@ -224,6 +224,7 @@ optional_policy(`
 optional_policy(`
 	init_list_unit_dirs(acpid_t)
 	systemd_dbus_chat_logind(acpid_t)
+	systemd_read_logind_sessions_files(acpid_t)
 	systemd_start_power_units(acpid_t)
 	systemd_status_power_units(acpid_t)
 ')

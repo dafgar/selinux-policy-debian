@@ -1,4 +1,11 @@
 ## <summary>Policy for firmwate update daemon and utility.</summary>
+##
+## <desc>
+## You can either use a GUI software manager like GNOME Software to view and
+## apply updates, the command-line tool or the system D-Bus interface directly.
+## Firmware updates are supported for a variety of technologies.
+## See https://github.com/fwupd/fwupd for details
+## </desc>
 
 ########################################
 ## <summary>
@@ -20,10 +27,10 @@
 #
 interface(`fwupd_run',`
 	gen_require(`
-		attribute_role fwupd_roles;
-		type fwupd_exec_t, fwupd_t;
+		attribute_role fwupdmgr_roles;
+		type fwupdmgr_exec_t, fwupdmgr_t;
 	')
 
-	domtrans_pattern($1, fwupd_exec_t, fwupd_t)
-	roleattribute $2 fwupd_roles;
+	domtrans_pattern($1, fwupdmgr_exec_t, fwupdmgr_t)
+	roleattribute $2 fwupdmgr_roles;
 ')

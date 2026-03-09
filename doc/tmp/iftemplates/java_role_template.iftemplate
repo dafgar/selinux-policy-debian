@@ -21,7 +21,7 @@
 
 	domtrans_pattern($3, java_exec_t, $1_java_t)
 
-	allow $3 $1_java_t:process { ptrace noatsecure siginh rlimitinh signal_perms };
+	allow $3 $1_java_t:process { noatsecure ptrace rlimitinh siginh signal_perms };
 	ps_process_pattern($3, $1_java_t)
 
 	allow $3 { java_home_t java_tmp_t }:dir { manage_dir_perms relabel_dir_perms };

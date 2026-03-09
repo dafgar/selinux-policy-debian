@@ -19,7 +19,7 @@
 
 	domtrans_pattern($3, mozilla_exec_t, mozilla_t)
 
-	allow $3 mozilla_t:process { noatsecure siginh rlimitinh ptrace signal_perms };
+	allow $3 mozilla_t:process { noatsecure ptrace rlimitinh siginh signal_perms };
 	ps_process_pattern($3, mozilla_t)
 
 	allow mozilla_t $3:process signull;

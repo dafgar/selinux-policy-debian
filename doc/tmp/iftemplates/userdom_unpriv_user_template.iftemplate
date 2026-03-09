@@ -1,0 +1,92 @@
+
+	##############################
+	#
+	# Declarations
+	#
+
+	# Inherit rules for ordinary users.
+	userdom_restricted_user_template($1)
+	userdom_common_user_template($1)
+
+	##############################
+	#
+	# Local policy
+	#
+
+	# port access is audited even if dac would not have allowed it, so dontaudit it here
+	corenet_dontaudit_tcp_bind_all_reserved_ports($1_t)
+	# Need the following rule to allow users to run vpnc
+	corenet_tcp_bind_xserver_port($1_t)
+
+	files_exec_usr_files($1_t)
+	files_watch_etc_symlinks($1_t)
+
+	miscfiles_manage_public_files($1_t)
+	miscfiles_watch_localization($1_t)
+	miscfiles_watch_public_dirs($1_t)
+
+	tunable_policy(`user_dmesg',`
+		kernel_read_ring_buffer($1_t)
+	',`
+		kernel_dontaudit_read_ring_buffer($1_t)
+	')
+
+	tunable_policy(`user_exec_noexattrfile',`
+		fs_exec_noxattr($1_t)
+	')
+
+	# Allow users to run TCP servers (bind to ports and accept connection from
+	# the same domain and outside users) disabling this forces FTP passive mode
+	# and may change other protocols
+	tunable_policy(`user_tcp_server',`
+		corenet_tcp_bind_generic_node($1_t)
+		corenet_tcp_bind_generic_port($1_t)
+		corenet_tcp_bind_all_unreserved_ports($1_t)
+	')
+
+	# Allow users to run UDP servers (bind to ports and accept connection from
+	# the same domain and outside users)
+	tunable_policy(`user_udp_server',`
+		corenet_udp_bind_generic_node($1_t)
+		corenet_udp_bind_generic_port($1_t)
+		corenet_udp_bind_all_unreserved_ports($1_t)
+	')
+
+	optional_policy(`
+		netutils_run_ping_cond($1_t, $1_r)
+		netutils_run_traceroute_cond($1_t, $1_r)
+	')
+
+	# Run pppd in pppd_t by default for user
+	optional_policy(`
+		ppp_run_cond($1_t, $1_r)
+	')
+
+	optional_policy(`
+		setroubleshoot_stream_connect($1_t)
+	')
+
+	optional_policy(`
+		# kwalletd5 inherits a socket from init
+		init_rw_inherited_stream_socket($1_t)
+		init_use_fds($1_t)
+		# for polkit-kde-auth
+		init_read_state($1_t)
+
+		systemd_dbus_chat_logind($1_t)
+		systemd_use_logind_fds($1_t)
+		systemd_dbus_chat_hostnamed($1_t)
+		systemd_write_inherited_logind_inhibit_pipes($1_t)
+	')
+
+	# Allow users to manage xdg content in their home directories
+	optional_policy(`
+		userdom_xdg_user_template($1)
+	')
+
+	# Allow controlling usbguard
+	optional_policy(`
+		tunable_policy(`usbguard_user_modify_rule_files',`
+			usbguard_stream_connect($1_t)
+		')
+	')

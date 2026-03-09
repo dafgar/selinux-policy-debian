@@ -54,7 +54,7 @@ files_tmp_file(boinc_project_tmp_t)
 # Local policy
 #
 
-allow boinc_t self:process { setsched setpgid signull sigkill signal };
+allow boinc_t self:process { setpgid setsched getsched sigkill signal signull ptrace sigstop };
 allow boinc_t self:unix_stream_socket { accept listen };
 allow boinc_t self:tcp_socket { accept listen };
 allow boinc_t self:shm create_shm_perms;
@@ -93,7 +93,8 @@ libs_legacy_use_ld_so(boinc_t)
 domtrans_pattern(boinc_t, boinc_project_var_lib_t, boinc_project_t)
 
 kernel_read_system_state(boinc_t)
-kernel_search_vm_sysctl(boinc_t)
+kernel_read_vm_sysctls(boinc_t)
+kernel_read_vm_overcommit_sysctl(boinc_t)
 kernel_read_kernel_sysctls(boinc_t)
 
 corenet_all_recvfrom_netlabel(boinc_t)
@@ -153,7 +154,7 @@ miscfiles_read_generic_certs(boinc_t)
 miscfiles_read_localization(boinc_t)
 
 tunable_policy(`boinc_execmem',`
-	allow boinc_t self:process { execstack execmem };
+	allow boinc_t self:process { execmem execstack };
 ')
 
 optional_policy(`
@@ -180,7 +181,7 @@ optional_policy(`
 #
 
 allow boinc_project_t self:capability { setgid setuid };
-allow boinc_project_t self:process { execmem execstack noatsecure ptrace setcap getcap setpgid setsched signal_perms };
+allow boinc_project_t self:process { execmem execstack getcap noatsecure ptrace setcap setpgid setsched signal_perms };
 
 manage_dirs_pattern(boinc_project_t, boinc_project_tmp_t, boinc_project_tmp_t)
 manage_files_pattern(boinc_project_t, boinc_project_tmp_t, boinc_project_tmp_t)

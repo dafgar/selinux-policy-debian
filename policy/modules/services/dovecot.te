@@ -102,7 +102,7 @@ miscfiles_read_localization(dovecot_domain)
 
 allow dovecot_t self:capability { chown dac_override dac_read_search fsetid kill setgid setuid sys_chroot sys_resource };
 dontaudit dovecot_t self:capability sys_tty_config;
-allow dovecot_t self:process { setrlimit signal_perms getcap setcap setsched };
+allow dovecot_t self:process { getcap setcap setrlimit setsched signal_perms };
 allow dovecot_t self:tcp_socket { accept listen };
 allow dovecot_t self:unix_stream_socket { accept connectto listen };
 
@@ -113,7 +113,7 @@ allow dovecot_t dovecot_cert_t:lnk_file read_lnk_file_perms;
 allow dovecot_t dovecot_keytab_t:file read_file_perms;
 
 manage_dirs_pattern(dovecot_t, dovecot_tmp_t, dovecot_tmp_t)
-manage_files_pattern(dovecot_t, dovecot_tmp_t, dovecot_tmp_t)
+mmap_manage_files_pattern(dovecot_t, dovecot_tmp_t, dovecot_tmp_t)
 files_tmp_filetrans(dovecot_t, dovecot_tmp_t, { file dir })
 
 manage_files_pattern(dovecot_t, dovecot_var_lib_t, dovecot_var_lib_t)
@@ -124,12 +124,13 @@ create_files_pattern(dovecot_t, dovecot_var_log_t, dovecot_var_log_t)
 setattr_files_pattern(dovecot_t, dovecot_var_log_t, dovecot_var_log_t)
 logging_log_filetrans(dovecot_t, dovecot_var_log_t, { file dir })
 
+allow dovecot_t dovecot_spool_t:dir watch;
 manage_dirs_pattern(dovecot_t, dovecot_spool_t, dovecot_spool_t)
-manage_files_pattern(dovecot_t, dovecot_spool_t, dovecot_spool_t)
+mmap_manage_files_pattern(dovecot_t, dovecot_spool_t, dovecot_spool_t)
 manage_lnk_files_pattern(dovecot_t, dovecot_spool_t, dovecot_spool_t)
 
 manage_dirs_pattern(dovecot_t, dovecot_runtime_t, dovecot_runtime_t)
-manage_files_pattern(dovecot_t, dovecot_runtime_t, dovecot_runtime_t)
+mmap_manage_files_pattern(dovecot_t, dovecot_runtime_t, dovecot_runtime_t)
 manage_lnk_files_pattern(dovecot_t, dovecot_runtime_t, dovecot_runtime_t)
 manage_sock_files_pattern(dovecot_t, dovecot_runtime_t, dovecot_runtime_t)
 manage_fifo_files_pattern(dovecot_t, dovecot_runtime_t, dovecot_runtime_t)
@@ -251,7 +252,7 @@ optional_policy(`
 #
 
 allow dovecot_auth_t self:capability { chown dac_override ipc_lock setgid setuid sys_nice };
-allow dovecot_auth_t self:process { getsched setsched signal_perms getcap setcap };
+allow dovecot_auth_t self:process { getcap getsched setcap setsched signal_perms };
 allow dovecot_auth_t self:unix_stream_socket { accept connectto listen };
 
 read_files_pattern(dovecot_auth_t, dovecot_passwd_t, dovecot_passwd_t)
@@ -261,13 +262,15 @@ manage_files_pattern(dovecot_auth_t, dovecot_auth_tmp_t, dovecot_auth_tmp_t)
 files_tmp_filetrans(dovecot_auth_t, dovecot_auth_tmp_t, { file dir })
 
 allow dovecot_auth_t dovecot_runtime_t:dir list_dir_perms;
-allow dovecot_auth_t dovecot_runtime_t:file manage_file_perms;
+allow dovecot_auth_t dovecot_runtime_t:file mmap_manage_file_perms;
 allow dovecot_auth_t dovecot_runtime_t:fifo_file write_fifo_file_perms;
 manage_sock_files_pattern(dovecot_auth_t, dovecot_runtime_t, dovecot_runtime_t)
 
 allow dovecot_auth_t dovecot_t:unix_stream_socket { connectto rw_stream_socket_perms };
 
 kernel_dontaudit_getattr_proc(dovecot_auth_t)
+
+kernel_getattr_proc(dovecot_auth_t)
 
 kernel_getattr_proc(dovecot_auth_t)
 
@@ -321,6 +324,10 @@ optional_policy(`
 ')
 
 optional_policy(`
+	sasl_read_keytab(dovecot_auth_t)
+')
+
+optional_policy(`
         postgresql_unpriv_client(dovecot_auth_t)
 
         tunable_policy(`dovecot_can_connect_db',`
@@ -340,6 +347,8 @@ optional_policy(`
 # Deliver local policy
 #
 
+allow dovecot_deliver_t self:process signal;
+
 allow dovecot_deliver_t dovecot_cert_t:dir search_dir_perms;
 
 append_files_pattern(dovecot_deliver_t, dovecot_var_log_t, dovecot_var_log_t)
@@ -357,6 +366,8 @@ stream_connect_pattern(dovecot_deliver_t, dovecot_runtime_t, dovecot_runtime_t, 
 can_exec(dovecot_deliver_t, dovecot_deliver_exec_t)
 
 allow dovecot_deliver_t dovecot_t:process signull;
+
+allow dovecot_deliver_t dovecot_spool_t:file map;
 
 fs_getattr_all_fs(dovecot_deliver_t)
 

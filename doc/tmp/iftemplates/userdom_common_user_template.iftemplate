@@ -1,5 +1,6 @@
 	gen_require(`
 		attribute unpriv_userdomain;
+		type user_runtime_t;
 	')
 
 	userdom_basic_networking_template($1)
@@ -10,8 +11,8 @@
 	#
 
 	# evolution and gnome-session try to create a netlink socket
-	dontaudit $1_t self:netlink_socket { create ioctl read getattr write setattr append bind connect getopt setopt shutdown };
-	dontaudit $1_t self:netlink_route_socket { create ioctl read getattr write setattr append bind connect getopt setopt shutdown nlmsg_read nlmsg_write };
+	dontaudit $1_t self:netlink_socket { append bind connect create getattr getopt ioctl read setattr setopt shutdown write };
+	dontaudit $1_t self:netlink_route_socket { append bind connect create getattr getopt ioctl nlmsg_read nlmsg_write read setattr setopt shutdown write };
 
 	# gnome-settings-daemon and some applications create a netlink socket
 	allow $1_t self:netlink_kobject_uevent_socket create_socket_perms;
@@ -52,7 +53,7 @@
 	files_watch_etc_dirs($1_t)
 	files_watch_usr_dirs($1_t)
 
-	fs_rw_cgroup_files($1_t)
+	fs_read_cgroup_files($1_t)
 
 	# cjp: some of this probably can be removed
 	selinux_get_fs_mount($1_t)
@@ -137,6 +138,10 @@
 	')
 
 	optional_policy(`
+		cockpit_role_template($1, $1_t, $1_r)
+	')
+
+	optional_policy(`
 		dbus_role_template($1, $1_r, $1_t)
 		dbus_system_bus_client($1_t)
 
@@ -179,6 +184,7 @@
 
 		optional_policy(`
 			systemd_role_template($1, $1_r, $1_t)
+			systemd_user_app_socket_create($1, $1_t, user_runtime_t)
 		')
 	')
 

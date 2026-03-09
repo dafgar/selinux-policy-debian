@@ -55,10 +55,6 @@ files_tmp_filetrans(certbot_t, certbot_tmp_t, { dir file })
 manage_files_pattern(certbot_t, certbot_tmpfs_t, certbot_tmpfs_t)
 fs_tmpfs_filetrans(certbot_t, certbot_tmpfs_t, { file })
 
-# this is for certbot to have write-exec memory, I know it is bad
-# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=913544
-# the Debian bug report has background about python-acme and python3-openssl
-allow certbot_t self:process execmem;
 allow certbot_t certbot_tmp_t:file mmap_exec_file_perms;
 allow certbot_t certbot_tmpfs_t:file mmap_exec_file_perms;
 allow certbot_t certbot_runtime_t:file mmap_exec_file_perms;
@@ -72,6 +68,7 @@ files_runtime_filetrans(certbot_t, certbot_runtime_t, file)
 
 kernel_dontaudit_read_system_state(certbot_t)
 kernel_search_fs_sysctls(certbot_t)
+kernel_read_vm_overcommit_sysctl(certbot_t)
 
 corecmd_list_bin(certbot_t)
 corecmd_mmap_bin_files(certbot_t)

@@ -153,7 +153,7 @@ interface(`cron_unconfined_role',`
 	# Declarations
 	#
 
-	role $4 types { unconfined_cronjob_t};
+	role $4 types { unconfined_cronjob_t };
 
 	##############################
 	#
@@ -162,7 +162,7 @@ interface(`cron_unconfined_role',`
 
 	can_exec($2, crontab_exec_t)
 
-	dontaudit crond_t $2:process { noatsecure siginh rlimitinh };
+	dontaudit crond_t $2:process { noatsecure rlimitinh siginh };
 	allow $2 crond_t:process sigchld;
 
 	allow $2 $1_cron_spool_t:file rw_inherited_file_perms;
@@ -236,7 +236,7 @@ interface(`cron_admin_role',`
 
 	domtrans_pattern($2, crontab_exec_t, admin_crontab_t)
 
-	dontaudit crond_t $2:process { noatsecure siginh rlimitinh };
+	dontaudit crond_t $2:process { noatsecure rlimitinh siginh };
 	allow $2 crond_t:process sigchld;
 
 	allow $2 $1_cron_spool_t:file rw_inherited_file_perms;

@@ -53,11 +53,8 @@ miscfiles_read_localization(devicekit_t)
 optional_policy(`
 	dbus_system_bus_client(devicekit_t)
 
-	allow devicekit_t { devicekit_disk_t devicekit_power_t }:dbus send_msg;
-')
-
-optional_policy(`
-	xserver_dbus_chat_xdm(devicekit_power_t)
+	devicekit_dbus_chat_disk(devicekit_t)
+	devicekit_dbus_chat_power(devicekit_t)
 ')
 
 ########################################
@@ -105,6 +102,7 @@ dev_getattr_mtrr_dev(devicekit_disk_t)
 dev_getattr_usbfs_dirs(devicekit_disk_t)
 dev_read_rand(devicekit_disk_t)
 dev_read_urand(devicekit_disk_t)
+dev_rw_lvm_control(devicekit_disk_t)
 dev_rw_sysfs(devicekit_disk_t)
 
 domain_getattr_all_pipes(devicekit_disk_t)
@@ -151,14 +149,13 @@ logging_send_syslog_msg(devicekit_disk_t)
 
 mount_watch_runtime_dirs(devicekit_disk_t)
 miscfiles_read_localization(devicekit_disk_t)
+miscfiles_read_generic_certs(devicekit_disk_t)
 
 userdom_read_all_users_state(devicekit_disk_t)
 userdom_search_user_home_dirs(devicekit_disk_t)
 
 optional_policy(`
 	dbus_system_bus_client(devicekit_disk_t)
-
-	allow devicekit_disk_t devicekit_t:dbus send_msg;
 
 	optional_policy(`
 		policykit_dbus_chat(devicekit_disk_t)
@@ -304,8 +301,6 @@ optional_policy(`
 	dbus_system_bus_client(devicekit_power_t)
 	init_dbus_chat(devicekit_power_t)
 
-	allow devicekit_power_t devicekit_t:dbus send_msg;
-
 	optional_policy(`
 		networkmanager_dbus_chat(devicekit_power_t)
 	')
@@ -316,6 +311,10 @@ optional_policy(`
 
 	optional_policy(`
 		rpm_dbus_chat(devicekit_power_t)
+	')
+
+	optional_policy(`
+		xserver_dbus_chat_xdm(devicekit_power_t)
 	')
 ')
 

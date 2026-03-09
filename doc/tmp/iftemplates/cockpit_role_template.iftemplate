@@ -1,0 +1,25 @@
+
+	type $1_cockpit_tmpfs_t;
+	files_tmpfs_file($1_cockpit_tmpfs_t)
+	dev_filetrans($2, $1_cockpit_tmpfs_t, file)
+
+	allow $2 $1_cockpit_tmpfs_t:file { execute mmap_manage_file_perms };
+
+	dev_dontaudit_execute_dev_nodes($2)
+
+	files_dontaudit_execute_default_files($2)
+	files_dontaudit_exec_etc_runtime_files($2)
+	files_dontaudit_exec_runtime($2)
+	files_watch_etc_files($2)
+	files_watch_root_dirs($2)
+	files_watch_var_dirs($2)
+	files_watch_var_lib_dirs($2)
+
+	cockpit_use_ws_fds($2)
+	cockpit_rw_ws_stream_sockets($2)
+
+	init_watch_utmp($2)
+
+	systemd_watch_logind_runtime_dirs($2)
+
+	userdom_dontaudit_execute_user_tmpfs_files($2)

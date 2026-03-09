@@ -22,15 +22,15 @@
 	#
 
 	allow $1_ssh_t self:capability { dac_override dac_read_search setgid setuid };
-	allow $1_ssh_t self:process { transition signal_perms getsched setsched getsession getpgid setpgid getcap setcap share getattr noatsecure siginh rlimitinh dyntransition setkeycreate setsockcreate getrlimit };
+	allow $1_ssh_t self:process { dyntransition getattr getcap getpgid getrlimit getsched getsession noatsecure rlimitinh setcap setkeycreate setpgid setsched setsockcreate share siginh signal_perms transition };
 	allow $1_ssh_t self:fd use;
 	allow $1_ssh_t self:fifo_file rw_inherited_fifo_file_perms;
 	allow $1_ssh_t self:unix_dgram_socket { create_socket_perms sendto };
-	allow $1_ssh_t self:unix_stream_socket { create_stream_socket_perms connectto };
+	allow $1_ssh_t self:unix_stream_socket { connectto create_stream_socket_perms };
 	allow $1_ssh_t self:shm create_shm_perms;
 	allow $1_ssh_t self:sem create_sem_perms;
 	allow $1_ssh_t self:msgq create_msgq_perms;
-	allow $1_ssh_t self:msg { send receive };
+	allow $1_ssh_t self:msg { receive send };
 	allow $1_ssh_t self:tcp_socket create_stream_socket_perms;
 
 	# for rsync

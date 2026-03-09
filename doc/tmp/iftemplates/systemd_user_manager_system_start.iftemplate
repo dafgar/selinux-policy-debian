@@ -1,4 +1,5 @@
 	gen_require(`
+		class system { start };
 		type $1_systemd_t;
 	')
 

@@ -1,0 +1,6 @@
+	gen_require(`
+		type $1_systemd_t;
+	')
+
+	allow $1_systemd_t $2:unix_stream_socket { getattr write listen create bind setopt };
+	allow $1_systemd_t $3:sock_file { getattr write create };

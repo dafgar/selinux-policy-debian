@@ -192,7 +192,7 @@ interface(`ntp_filetrans_drift',`
 	')
 
 	files_search_var_lib($1)
-	files_var_lib_filetrans($1, ntp_drift_t, dir)
+	files_var_lib_filetrans($1, ntp_drift_t, dir, "ntpsec")
 ')
 
 ########################################
@@ -231,10 +231,10 @@ interface(`ntp_enabledisable',`
 	ifdef(`init_systemd',`
 		gen_require(`
 			type ntpd_unit_t;
-			class service { enable disable };
+			class service { disable enable };
 		')
 
-		allow $1 ntpd_unit_t:service { enable disable };
+		allow $1 ntpd_unit_t:service { disable enable };
 	')
 ')
 

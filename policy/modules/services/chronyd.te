@@ -102,6 +102,7 @@ corenet_sendrecv_chronyd_server_packets(chronyd_t)
 corenet_udp_bind_chronyd_port(chronyd_t)
 
 dev_rw_realtime_clock(chronyd_t)
+dev_read_urand(chronyd_t)
 
 files_read_usr_files(chronyd_t)
 
@@ -137,7 +138,7 @@ optional_policy(`
 # chronyc local policy
 #
 
-allow chronyc_t self:capability { dac_override };
+allow chronyc_t self:capability { dac_override dac_read_search };
 allow chronyc_t self:process { signal };
 allow chronyc_t self:udp_socket create_socket_perms;
 allow chronyc_t self:netlink_route_socket create_netlink_socket_perms;

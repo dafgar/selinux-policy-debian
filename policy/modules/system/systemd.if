@@ -22,14 +22,16 @@
 #
 template(`systemd_role_template',`
 	gen_require(`
+		class service { reload start status stop };
+		class system { disable enable reload start status stop };
 		attribute systemd_user_session_type, systemd_log_parse_env_type;
 		attribute systemd_user_activated_sock_file_type, systemd_user_unix_stream_activated_socket_type;
 		type systemd_analyze_exec_t;
 		type systemd_conf_home_t, systemd_data_home_t;
+		type systemd_tmpfiles_exec_t;
 		type systemd_user_runtime_t, systemd_user_runtime_notify_t;
 		type systemd_user_unit_t;
 		type systemd_user_runtime_unit_t, systemd_user_transient_unit_t;
-		type systemd_machined_t, user_devpts_t;
 	')
 
 	#################################
@@ -41,7 +43,13 @@ template(`systemd_role_template',`
 	domain_user_exemption_target($1_systemd_t)
 	userdom_application_exec_domain($1_systemd_t, $1)
 	ubac_constrained($1_systemd_t)
-	role $2 types $1_systemd_t;
+	role $2 types { $1_systemd_t };
+
+	type $1_systemd_tmpfiles_t;
+	domain_type($1_systemd_tmpfiles_t)
+	domain_entry_file($1_systemd_tmpfiles_t, systemd_tmpfiles_exec_t)
+	domain_user_exemption_target($1_systemd_tmpfiles_t)
+	role $2 types { $1_systemd_tmpfiles_t };
 
 	#################################
 	#
@@ -53,11 +61,20 @@ template(`systemd_role_template',`
 	# remainder of the rules.
 	allow $1_systemd_t self:process { getsched signal };
 	allow $1_systemd_t self:netlink_kobject_uevent_socket create_socket_perms;
+	allow $1_systemd_t self:netlink_route_socket r_netlink_socket_perms;
+	allow $1_systemd_t self:unix_dgram_socket { create_socket_perms sendto };
 	allow $1_systemd_t self:unix_stream_socket create_stream_socket_perms;
-	allow $1_systemd_t $3:process { setsched rlimitinh signal_perms };
+	allow $1_systemd_t $3:process { rlimitinh setsched signal_perms };
 	corecmd_shell_domtrans($1_systemd_t, $3)
 	corecmd_bin_domtrans($1_systemd_t, $3)
-	corecmd_shell_entry_type($1_systemd_t)
+	allow $1_systemd_t self:unix_dgram_socket sendto;
+	allow $1_systemd_t self:netlink_route_socket { bind create getattr getopt nlmsg_read read setopt write };
+
+	allow $3 $1_systemd_t:dbus send_msg;
+	allow $1_systemd_t $3:dbus send_msg;
+
+	# for gnome-session-binary
+	allow $3 $1_systemd_t:unix_dgram_socket sendto;
 
 	# systemctl --user rules
 	allow $1_systemd_t systemd_user_unix_stream_activated_socket_type:unix_stream_socket { create_socket_perms listen };
@@ -84,16 +101,36 @@ template(`systemd_role_template',`
 	allow $1_systemd_t $3:file read_file_perms;
 	allow $1_systemd_t $3:lnk_file read_lnk_file_perms;
 
-	dev_read_urand($1_systemd_t)
+	allow $1_systemd_t $3:unix_stream_socket { connectto getattr accept getopt read };
 
-	files_search_home($1_systemd_t)
+	dev_getattr_sound_dev($1_systemd_t)
+	dev_read_urand($1_systemd_t)
+	storage_getattr_removable_dev($1_systemd_t)
+	term_dontaudit_getattr_unallocated_ttys($1_systemd_t)
+
+	clock_read_adjtime($1_systemd_t)
+
+	files_exec_usr_files($1_systemd_t)
+	files_list_home($1_systemd_t)
+	files_watch_home($1_systemd_t)
+	files_getattr_usr_files($1_systemd_t)
+	files_read_usr_files($1_systemd_t)
 	files_watch_etc_dirs($1_systemd_t)
+	files_watch_root_dirs($1_systemd_t)
+	files_list_var($1_systemd_t)
+	files_watch_var_dirs($1_systemd_t)
+	files_list_var_lib($1_systemd_t)
+	files_watch_var_lib_dirs($1_systemd_t)
 
 	fs_getattr_xattr_fs($1_systemd_t)
+	fs_getattr_nsfs_files($1_systemd_t)
 	fs_manage_cgroup_files($1_systemd_t)
 	fs_watch_cgroup_files($1_systemd_t)
 
 	kernel_dontaudit_getattr_proc($1_systemd_t)
+	kernel_getattr_proc($1_systemd_t)
+	kernel_read_psi($1_systemd_t)
+
 	# if systemd exists in the initrd, the journal socket stays labeled kernel_t
 	# without this access, user services cannot log to the journal
 	kernel_stream_connect($1_systemd_t)
@@ -106,12 +143,23 @@ template(`systemd_role_template',`
 	# container engines will move container processes to different slices
 	init_dbus_chat($1_systemd_t)
 
+	# for services run by init such as /run/systemd/oom/io.system.ManagedOOM
+	init_unix_stream_socket_connectto($1_systemd_t)
+
 	# the user@.service unit is restarted when containers are created
 	systemd_get_user_manager_units_status($1_systemd_t)
 	systemd_start_user_manager_units($1_systemd_t)
 	systemd_stop_user_manager_units($1_systemd_t)
 	systemd_reload_user_manager_units($1_systemd_t)
 
+	systemd_list_userdb_runtime_dirs($1_systemd_t)
+	systemd_stream_connect_homed($1_systemd_t)
+
+	# for wireplumber
+	systemd_read_logind_runtime_files($3)
+	systemd_watch_logind_runtime_dirs($3)
+
+	miscfiles_read_fonts($1_systemd_t)
 	miscfiles_watch_localization($1_systemd_t)
 
 	mount_read_runtime_files($1_systemd_t)
@@ -121,11 +169,10 @@ template(`systemd_role_template',`
 	seutil_search_default_contexts($1_systemd_t)
 	seutil_read_file_contexts($1_systemd_t)
 
-	userdom_search_user_home_dirs($1_systemd_t)
-
-	# for machinectl shell
-	term_user_pty($1_systemd_t, user_devpts_t)
-	allow $1_systemd_t user_devpts_t:chr_file rw_file_perms;
+	userdom_list_user_home_dirs($1_systemd_t)
+	userdom_watch_user_home_dirs($1_systemd_t)
+	userdom_list_user_home_content($1_systemd_t)
+	userdom_write_user_tmp_sockets($1_systemd_t)
 
 	systemd_manage_conf_home_content($1_systemd_t)
 	systemd_manage_data_home_content($1_systemd_t)
@@ -133,12 +180,35 @@ template(`systemd_role_template',`
 	systemd_search_user_runtime_unit_dirs($1_systemd_t)
 	systemd_search_user_transient_unit_dirs($1_systemd_t)
 	systemd_read_user_units_files($1_systemd_t)
+	systemd_read_logind_state($1_systemd_t)
+	systemd_write_notify_socket($1_systemd_t)
 
 	dbus_system_bus_client($1_systemd_t)
 	dbus_spec_session_bus_client($1, $1_systemd_t)
 	dbus_connect_spec_session_bus($1, $1_systemd_t)
 
 	userdom_exec_user_bin_files($1_systemd_t)
+	userdom_list_user_tmp($1_systemd_t)
+
+	# user systemd-tmpfiles rules
+	allow $1_systemd_tmpfiles_t $1_systemd_t:unix_stream_socket rw_socket_perms;
+	domtrans_pattern($1_systemd_t, systemd_tmpfiles_exec_t, $1_systemd_tmpfiles_t)
+	read_files_pattern($1_systemd_t, $1_systemd_tmpfiles_t, $1_systemd_tmpfiles_t)
+
+	files_list_runtime($1_systemd_tmpfiles_t)
+	files_read_etc_files($1_systemd_tmpfiles_t)
+
+	kernel_read_kernel_sysctls($1_systemd_tmpfiles_t)
+	kernel_read_system_state($1_systemd_tmpfiles_t)
+
+	logging_send_syslog_msg($1_systemd_tmpfiles_t)
+
+	selinux_use_status_page($1_systemd_tmpfiles_t)
+
+	seutil_read_file_contexts($1_systemd_tmpfiles_t)
+
+	userdom_search_user_home_dirs($1_systemd_tmpfiles_t)
+	userdom_search_user_runtime($1_systemd_tmpfiles_t)
 
 	# userdomain rules
 	allow $3 $1_systemd_t:process signal;
@@ -148,7 +218,7 @@ template(`systemd_role_template',`
 	allow $3 $1_systemd_t:fifo_file rw_inherited_fifo_file_perms;
 	stream_connect_pattern($3, systemd_user_runtime_t, systemd_user_runtime_t, $1_systemd_t)
 
-	allow $3 $1_systemd_t:system { disable enable reload start stop status };
+	allow $3 $1_systemd_t:system { disable enable reload start status stop };
 
 	allow $3 systemd_user_runtime_t:dir { manage_dir_perms relabel_dir_perms };
 	allow $3 systemd_user_runtime_t:file { manage_file_perms relabel_file_perms };
@@ -157,10 +227,9 @@ template(`systemd_role_template',`
 	allow $3 systemd_user_runtime_t:sock_file { manage_sock_file_perms relabel_sock_file_perms };
 
 	# for "machinectl shell"
-	allow $1_systemd_t systemd_machined_t:fd use;
-	allow $3 systemd_machined_t:fd use;
-	allow $3 systemd_machined_t:dbus send_msg;
-	allow systemd_machined_t $3:dbus send_msg;
+	systemd_use_inherited_machined_ptys($1_systemd_t)
+	systemd_use_inherited_machined_ptys($3)
+	systemd_dbus_chat_machined($3)
 
 	allow $3 systemd_user_runtime_notify_t:sock_file { manage_sock_file_perms relabel_sock_file_perms };
 
@@ -204,10 +273,32 @@ template(`systemd_role_template',`
 	')
 
 	optional_policy(`
+		gpg_stream_connect_agent($1_systemd_t)
+	')
+
+	optional_policy(`
+		modemmanager_dbus_chat($1_systemd_t)
+	')
+
+	optional_policy(`
+		pulseaudio_domtrans($1_systemd_t)
+		pulseaudio_manage_tmp_dirs($1_systemd_t)
+	')
+
+	optional_policy(`
 		xdg_config_filetrans($1_systemd_t, systemd_conf_home_t, dir, "systemd")
 		xdg_data_filetrans($1_systemd_t, systemd_data_home_t, dir, "systemd")
+		xdg_read_cache_files($1_systemd_t)
 		xdg_read_config_files($1_systemd_t)
 		xdg_read_data_files($1_systemd_t)
+		xdg_watch_cache_dirs($1_systemd_t)
+	')
+
+	optional_policy(`
+		xserver_read_xdm_lib_files($1_systemd_t)
+		xserver_watch_xdm_lib_dirs($1_systemd_t)
+		xserver_read_xdm_state($1_systemd_t)
+		xserver_use_user_fonts($1_systemd_t)
 	')
 ')
 
@@ -240,6 +331,30 @@ template(`systemd_user_daemon_domain',`
 	domtrans_pattern($1_systemd_t, $2, $3)
 
 	systemd_user_app_status($1, $3)
+')
+
+######################################
+## <summary>
+##   Allow the specified domain to not have the atsecure setting when started
+##   as a daemon by the specified systemd user instance
+## </summary>
+## <param name="prefix">
+##	<summary>
+##	Prefix for the user domain.
+##	</summary>
+## </param>
+## <param name="domain">
+##	<summary>
+##	Domain that is entered with noatsecure
+##	</summary>
+## </param>
+#
+template(`systemd_user_daemon_domain_noatsecure',`
+	gen_require(`
+		type $1_systemd_t;
+	')
+
+	allow $1_systemd_t $2:process noatsecure;
 ')
 
 ######################################
@@ -287,6 +402,46 @@ interface(`systemd_user_unix_stream_activated_socket',`
 	systemd_user_activated_sock_file($2)
 ')
 
+#######################################
+## <summary>
+##  Allow the specified domain to write to
+##  systemd-notify socket
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_write_notify_socket',`
+	gen_require(`
+		type systemd_runtime_notify_t;
+	')
+
+	init_list_runtime($1)
+	init_unix_dgram_socket_sendto($1)
+	allow $1 systemd_runtime_notify_t:sock_file write_sock_file_perms;
+')
+
+#######################################
+## <summary>
+##  Allow the specified domain to stat the
+##  systemd-notify socket
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_getattr_notify_socket',`
+	gen_require(`
+		type systemd_runtime_notify_t;
+	')
+
+	allow $1 systemd_runtime_notify_t:sock_file getattr;
+')
+
 ######################################
 ## <summary>
 ##	Allow the target domain the permissions necessary
@@ -314,6 +469,29 @@ template(`systemd_user_send_systemd_notify',`
 	allow $2 systemd_user_runtime_notify_t:sock_file rw_sock_file_perms;
 
 	allow $2 $1_systemd_t:unix_dgram_socket sendto;
+')
+
+######################################
+## <summary>
+##   Allow the target domain to have unix stream sockets created for it
+## </summary>
+## <param name="prefix">
+##	<summary>
+##	Prefix for the user domain.
+##	</summary>
+## </param>
+## <param name="domain">
+##	<summary>
+##	Domain to allow the systemd user instance to monitor.
+##	</summary>
+## </param>
+#
+template(`systemd_user_create_unix_stream_socket',`
+	gen_require(`
+		type $1_systemd_t;
+	')
+
+	allow $1_systemd_t $2:unix_stream_socket { create setopt bind listen };
 ')
 
 ######################################
@@ -354,6 +532,35 @@ template(`systemd_user_app_status',`
 	# state of the systemd --user instance
 	ps_process_pattern($2, $1_systemd_t)
 	allow $2 $1_systemd_t:process sigchld;
+')
+
+######################################
+## <summary>
+##   Allow systemd user to create a sock_file for a domain
+## </summary>
+## <param name="prefix">
+##	<summary>
+##	Prefix for the systemd user domain.
+##	</summary>
+## </param>
+## <param name="domain">
+##	<summary>
+##	User domain to have socket created
+##	</summary>
+## </param>
+## <param name="type">
+##	<summary>
+##	type of sock_file to create
+##	</summary>
+## </param>
+#
+template(`systemd_user_app_socket_create',`
+	gen_require(`
+		type $1_systemd_t;
+	')
+
+	allow $1_systemd_t $2:unix_stream_socket { getattr write listen create bind setopt };
+	allow $1_systemd_t $3:sock_file { getattr write create };
 ')
 
 ########################################
@@ -398,6 +605,7 @@ template(`systemd_read_user_manager_state',`
 #
 template(`systemd_user_manager_system_start',`
 	gen_require(`
+		class system { start };
 		type $1_systemd_t;
 	')
 
@@ -422,6 +630,7 @@ template(`systemd_user_manager_system_start',`
 #
 template(`systemd_user_manager_system_stop',`
 	gen_require(`
+		class system { stop };
 		type $1_systemd_t;
 	')
 
@@ -446,6 +655,7 @@ template(`systemd_user_manager_system_stop',`
 #
 template(`systemd_user_manager_system_status',`
 	gen_require(`
+		class system { status };
 		type $1_systemd_t;
 	')
 
@@ -1072,6 +1282,47 @@ interface(`systemd_PrivateDevices',`
 	fs_read_tmpfs_symlinks($1)
 ')
 
+########################################
+## <summary>
+##   Send and receive messages from
+##   systemd homed over dbus.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_dbus_chat_homed',`
+	gen_require(`
+		type systemd_homed_t;
+		class dbus send_msg;
+	')
+
+	allow $1 systemd_homed_t:dbus send_msg;
+	allow systemd_homed_t $1:dbus send_msg;
+')
+
+########################################
+## <summary>
+##   Connect to /run/systemd/userdb/io.systemd.Home to
+##   query user account information.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_stream_connect_homed',`
+	gen_require(`
+		type systemd_homed_t;
+		type systemd_userdbd_runtime_t;
+	')
+
+	stream_connect_pattern($1, systemd_userdbd_runtime_t, systemd_userdbd_runtime_t, systemd_homed_t)
+')
+
 ######################################
 ## <summary>
 ##   Read and write systemd-homework semaphores.
@@ -1124,6 +1375,102 @@ interface(`systemd_map_hwdb',`
 	')
 
 	allow $1 systemd_hwdb_t:file map;
+')
+
+########################################
+## <summary>
+##	List files in /var/log/systemd.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_list_log_dirs',`
+	gen_require(`
+		type systemd_log_t;
+	')
+
+	allow $1 systemd_log_t:dir list_dir_perms;
+	logging_search_logs($1)
+')
+
+########################################
+## <summary>
+##	Create files in /var/log/systemd.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_create_log_files',`
+	gen_require(`
+		type systemd_log_t;
+	')
+
+	create_files_pattern($1, systemd_log_t, systemd_log_t)
+	logging_search_logs($1)
+')
+
+########################################
+## <summary>
+##	Write to files in /var/log/systemd.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_write_log_files',`
+	gen_require(`
+		type systemd_log_t;
+	')
+
+	write_files_pattern($1, systemd_log_t, systemd_log_t)
+	logging_search_logs($1)
+')
+
+########################################
+## <summary>
+##	Set the attributes of files in
+##	/var/log/systemd.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_setattr_log_files',`
+	gen_require(`
+		type systemd_log_t;
+	')
+
+	allow $1 systemd_log_t:file setattr_file_perms;
+')
+
+########################################
+## <summary>
+##	Create the /var/log/systemd directory
+##	with an automatic type transition.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_create_log_dirs',`
+	gen_require(`
+		type systemd_log_t;
+	')
+
+	allow $1 systemd_log_t:dir create_dir_perms;
+	logging_log_filetrans($1, systemd_log_t, dir, "systemd")
 ')
 
 ######################################
@@ -1201,7 +1548,7 @@ interface(`systemd_write_logind_runtime_pipes',`
 
 	init_search_run($1)
 	files_search_runtime($1)
-	allow $1 systemd_logind_runtime_t:fifo_file { getattr write };
+	allow $1 systemd_logind_runtime_t:fifo_file write_fifo_file_perms;
 ')
 
 ######################################
@@ -1363,6 +1710,27 @@ interface(`systemd_signull_logind',`
 
 ########################################
 ## <summary>
+##   Send and receive messages from
+##   systemd locale over dbus.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_dbus_chat_locale',`
+	gen_require(`
+		type systemd_locale_t;
+		class dbus send_msg;
+	')
+
+	allow $1 systemd_locale_t:dbus send_msg;
+	allow systemd_locale_t $1:dbus send_msg;
+')
+
+########################################
+## <summary>
 ##  List the contents of systemd userdb runtime directories.
 ## </summary>
 ## <param name="domain">
@@ -1413,6 +1781,24 @@ interface(`systemd_read_userdb_runtime_files', `
 	')
 
 	read_files_pattern($1, systemd_userdbd_runtime_t, systemd_userdbd_runtime_t)
+')
+
+########################################
+## <summary>
+##  Manage symbolic links under /run/systemd/userdb.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_manage_userdb_runtime_symlinks', `
+	gen_require(`
+		type systemd_userdbd_runtime_t;
+	')
+
+	manage_lnk_files_pattern($1, systemd_userdbd_runtime_t, systemd_userdbd_runtime_t)
 ')
 
 ########################################
@@ -1476,6 +1862,24 @@ interface(`systemd_read_machines',`
 
 ########################################
 ## <summary>
+##	Allow watching /run/systemd/machines
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_watch_machines_dirs',`
+	gen_require(`
+		type systemd_machined_runtime_t;
+	')
+
+	allow $1 systemd_machined_runtime_t:dir watch;
+')
+
+########################################
+## <summary>
 ##     Allow connecting to /run/systemd/userdb/io.systemd.Machine socket
 ## </summary>
 ## <param name="domain">
@@ -1529,24 +1933,6 @@ interface(`systemd_dbus_chat_machined',`
 
 	allow $1 systemd_machined_t:dbus send_msg;
 	allow systemd_machined_t $1:dbus send_msg;
-')
-
-########################################
-## <summary>
-##	Allow watching /run/systemd/machines
-## </summary>
-## <param name="domain">
-##	<summary>
-##	Domain that can watch the machines files
-##	</summary>
-## </param>
-#
-interface(`systemd_watch_machines_dirs',`
-	gen_require(`
-		type systemd_machined_runtime_t;
-	')
-
-	allow $1 systemd_machined_runtime_t:dir watch;
 ')
 
 ########################################
@@ -1790,6 +2176,24 @@ interface(`systemd_watch_journal_dirs',`
 
 ########################################
 ## <summary>
+##	Relabel from systemd-journald file type.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_relabelfrom_journal_files',`
+	gen_require(`
+		type systemd_journal_t;
+	')
+
+	allow $1 systemd_journal_t:file relabelfrom_file_perms;
+')
+
+########################################
+## <summary>
 ##	Relabel to systemd-journald directory type.
 ## </summary>
 ## <param name="domain">
@@ -1805,26 +2209,6 @@ interface(`systemd_relabelto_journal_dirs',`
 
 	files_search_var($1)
 	allow $1 systemd_journal_t:dir relabelto_dir_perms;
-')
-
-########################################
-## <summary>
-##	Relabel from systemd-journald file type.
-## </summary>
-## <param name="domain">
-##	<summary>
-##	Domain allowed access.
-##	</summary>
-## </param>
-#
-interface(`systemd_relabelfrom_journal_files',`
-	gen_require(`
-		type systemd_journal_t;
-	')
-
-	files_search_var($1)
-	list_dirs_pattern($1,systemd_journal_t,systemd_journal_t)
-	allow $1 systemd_journal_t:file relabelfrom_file_perms;
 ')
 
 ########################################
@@ -1900,10 +2284,10 @@ interface(`systemd_manage_networkd_units',`
 interface(`systemd_enabledisable_networkd',`
 	gen_require(`
 		type systemd_networkd_unit_t;
-		class service { enable disable };
+		class service { disable enable };
 	')
 
-	allow $1 systemd_networkd_unit_t:service { enable disable };
+	allow $1 systemd_networkd_unit_t:service { disable enable };
 ')
 
 ########################################
@@ -2056,6 +2440,27 @@ interface(`systemd_read_networkd_runtime',`
 
 	list_dirs_pattern($1, systemd_networkd_runtime_t, systemd_networkd_runtime_t)
 	read_files_pattern($1, systemd_networkd_runtime_t, systemd_networkd_runtime_t)
+')
+
+#######################################
+## <summary>
+##  Connect to systemd-nsresourced over
+##  /run/systemd/io.systemd.NamespaceResource .
+## </summary>
+## <param name="domain">
+##  <summary>
+##  Domain allowed access.
+##  </summary>
+## </param>
+#
+interface(`systemd_stream_connect_nsresourced', `
+	gen_require(`
+		type systemd_nsresourced_t;
+		type systemd_nsresourced_runtime_t;
+	')
+
+	init_search_runtime($1)
+	stream_connect_pattern($1, systemd_nsresourced_runtime_t, systemd_nsresourced_runtime_t, systemd_nsresourced_t)
 ')
 
 ########################################
@@ -2381,13 +2786,13 @@ interface(`systemd_tmpfilesd_managed',`
 	')
 
 	allow systemd_tmpfiles_t $1:dir { manage_dir_perms relabel_dir_perms  };
-	allow systemd_tmpfiles_t $1:file { create setattr unlink write_file_perms relabel_file_perms };
-	allow systemd_tmpfiles_t $1:lnk_file { create setattr unlink relabel_lnk_file_perms };
-	allow systemd_tmpfiles_t $1:fifo_file { create setattr unlink relabel_fifo_file_perms };
+	allow systemd_tmpfiles_t $1:file { create relabel_file_perms setattr unlink write_file_perms };
+	allow systemd_tmpfiles_t $1:lnk_file { create read relabel_lnk_file_perms setattr unlink };
+	allow systemd_tmpfiles_t $1:fifo_file { create relabel_fifo_file_perms setattr unlink };
 
 	ifelse(`$2',`',`',`
 		refpolicywarn(`$0($*) second parameter is deprecated.')
-		allow systemd_tmpfiles_t $1:$2 { setattr relabelfrom relabelto create };
+		allow systemd_tmpfiles_t $1:$2 { create relabelfrom relabelto setattr };
 	')
 ')
 
@@ -2433,27 +2838,6 @@ interface(`systemd_dbus_chat_resolved',`
 	allow systemd_resolved_t $1:dbus send_msg;
 ')
 
-########################################
-## <summary>
-##   Send and receive messages from
-##   systemd localed over dbus.
-## </summary>
-## <param name="domain">
-##	<summary>
-##	Domain allowed access.
-##	</summary>
-## </param>
-#
-interface(`systemd_dbus_chat_locale',`
-	gen_require(`
-		type systemd_locale_t;
-		class dbus send_msg;
-	')
-
-	allow $1 systemd_locale_t:dbus send_msg;
-	allow systemd_locale_t $1:dbus send_msg;
-')
-
 #######################################
 ## <summary>
 ##  Allow domain to read resolv.conf file generated by systemd_resolved
@@ -2474,6 +2858,25 @@ interface(`systemd_read_resolved_runtime',`
 
 	init_search_runtime($1)
 	read_files_pattern($1, systemd_resolved_runtime_t, systemd_resolved_runtime_t)
+')
+
+#######################################
+## <summary>
+##  Allow domain to read directory containing resolv.conf
+## </summary>
+## <param name="domain">
+##	<summary>
+##	domain allowed access
+##	</summary>
+## </param>
+#
+interface(`systemd_list_resolved_runtime_dir',`
+	gen_require(`
+		type systemd_resolved_runtime_t;
+	')
+
+	init_search_runtime($1)
+	allow $1 systemd_resolved_runtime_t:dir list_dir_perms;
 ')
 
 ########################################
@@ -2505,6 +2908,8 @@ interface(`systemd_exec_systemctl',`
 	init_stream_connect($1)
 	init_telinit($1)
 	init_dbus_chat($1)
+
+	kernel_read_kernel_sysctls($1)
 ')
 
 #######################################
@@ -2577,6 +2982,137 @@ interface(`systemd_write_all_user_keys',`
 	')
 
 	allow $1 systemd_user_session_type:key write;
+')
+
+########################################
+## <summary>
+##    signal all systemd --user domains.
+## </summary>
+## <param name="domain">
+##    <summary>
+##    Domain allowed access.
+##    </summary>
+## </param>
+#
+interface(`systemd_signal_all_user_sessions',`
+	gen_require(`
+		attribute systemd_user_session_type;
+	')
+
+	allow $1 systemd_user_session_type:process signal;
+')
+
+########################################
+## <summary>
+##    allow systemd --user to create stream sockets for a process
+## </summary>
+## <param name="domain">
+##    <summary>
+##    Domain to own the socket
+##    </summary>
+## </param>
+#
+interface(`systemd_user_sessions_create_stream_socket',`
+	gen_require(`
+		attribute systemd_user_session_type;
+	')
+
+	allow systemd_user_session_type $1:unix_stream_socket { create setopt bind listen };
+')
+
+########################################
+## <summary>
+##    allow systemd --user to create stream socket file
+## </summary>
+## <param name="type">
+##    <summary>
+##    type of the socket file
+##    </summary>
+## </param>
+#
+interface(`systemd_user_sessions_create_sock_file',`
+	gen_require(`
+		attribute systemd_user_session_type;
+	')
+
+	allow systemd_user_session_type $1:sock_file { create getattr write };
+')
+
+########################################
+## <summary>
+##    allow systemd --user to manage stream socket file
+## </summary>
+## <param name="type">
+##    <summary>
+##    type of the socket file
+##    </summary>
+## </param>
+#
+interface(`systemd_user_sessions_manage_sock_file',`
+	gen_require(`
+		attribute systemd_user_session_type;
+	')
+
+	allow systemd_user_session_type $1:sock_file manage_sock_file_perms;
+')
+
+########################################
+## <summary>
+##    Unlink user runtime entries
+## </summary>
+## <param name="type">
+##    <summary>
+##    Type to unlink
+##    </summary>
+## </param>
+## <param name="class">
+##    <summary>
+##    class to unlink
+##    </summary>
+## </param>
+#
+interface(`systemd_user_runtime_dir_unlink',`
+	gen_require(`
+		type systemd_user_runtime_dir_t;
+	')
+
+	allow systemd_user_runtime_dir_t $1:$2 unlink;
+')
+
+########################################
+## <summary>
+##	start all systemd --user domains.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_start_all_user_sessions',`
+	gen_require(`
+		attribute systemd_user_session_type;
+	')
+
+	allow $1 systemd_user_session_type:system start;
+')
+
+########################################
+## <summary>
+##	get status of all systemd --user domains.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_status_all_user_sessions',`
+	gen_require(`
+		attribute systemd_user_session_type;
+	')
+
+	allow $1 systemd_user_session_type:system status;
 ')
 
 ########################################

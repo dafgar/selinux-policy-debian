@@ -112,6 +112,8 @@ userdom_read_all_users_state(policykit_t)
 optional_policy(`
 	dbus_system_domain(policykit_t, policykit_exec_t)
 	init_dbus_chat(policykit_t)
+	init_get_transient_units_status(policykit_t)
+	init_get_system_status(policykit_t)
 
 	userdom_dbus_send_all_users(policykit_t)
 
@@ -134,7 +136,10 @@ optional_policy(`
 ')
 
 optional_policy(`
+	systemd_get_user_manager_units_status(policykit_t)
+
 	# for /run/systemd/machines
+	systemd_connect_machined(policykit_t)
 	systemd_read_machines(policykit_t)
 	systemd_watch_machines_dirs(policykit_t)
 	systemd_connect_machined(policykit_t)

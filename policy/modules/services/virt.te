@@ -206,6 +206,7 @@ files_type(virtlockd_var_lib_t)
 type virtlogd_t;
 type virtlogd_exec_t;
 init_daemon_domain(virtlogd_t, virtlogd_exec_t)
+init_named_socket_activation(virtlogd_t, virt_runtime_t)
 
 type virtlogd_run_t;
 files_runtime_file(virtlogd_run_t)
@@ -220,7 +221,7 @@ ifdef(`enable_mls',`
 # Common virt domain local policy
 #
 
-allow virt_domain self:process { signal getsched signull };
+allow virt_domain self:process { getsched signal signull };
 allow virt_domain self:fifo_file rw_fifo_file_perms;
 allow virt_domain self:netlink_kobject_uevent_socket create_socket_perms;
 allow virt_domain self:netlink_route_socket r_netlink_socket_perms;
@@ -332,8 +333,6 @@ virt_read_lib_files(virt_domain)
 virt_read_content(virt_domain)
 virt_stream_connect(virt_domain)
 
-qemu_exec(virt_domain)
-
 tunable_policy(`virt_use_execmem',`
 	allow virt_domain self:process { execmem execstack };
 ')
@@ -395,6 +394,10 @@ optional_policy(`
 ')
 
 optional_policy(`
+	qemu_exec(virt_domain)
+')
+
+optional_policy(`
 	xen_rw_image_files(virt_domain)
 ')
 
@@ -451,7 +454,9 @@ tunable_policy(`virt_use_evdev',`
 
 allow virtd_t self:capability { chown dac_override dac_read_search fowner fsetid ipc_lock kill mknod net_admin net_raw setgid setpcap setuid sys_admin sys_chroot sys_nice sys_ptrace };
 dontaudit virtd_t self:capability { sys_module sys_ptrace };
-allow virtd_t self:process { getcap getsched setcap sigkill signal signull execmem setexec setfscreate setrlimit setsockcreate setsched };
+allow virtd_t self:capability2 { bpf perfmon };
+allow virtd_t self:bpf { map_create map_read map_write prog_load prog_run };
+allow virtd_t self:process { execmem getcap getsched setcap setexec setfscreate setrlimit setsched setsockcreate sigkill signal signull };
 allow virtd_t self:fifo_file { manage_fifo_file_perms relabel_fifo_file_perms };
 allow virtd_t self:unix_stream_socket { accept connectto listen relabelfrom relabelto };
 allow virtd_t self:tcp_socket { accept listen };
@@ -461,16 +466,17 @@ allow virtd_t self:packet_socket create_socket_perms;
 allow virtd_t self:netlink_generic_socket create_socket_perms;
 allow virtd_t self:netlink_kobject_uevent_socket create_socket_perms;
 allow virtd_t self:netlink_route_socket nlmsg_write;
+allow virtd_t self:anon_inode { create map read write };
 
-allow virtd_t virt_domain:process { getattr getsched setsched transition rlimitinh signal signull sigkill };
-dontaudit virtd_t virt_domain:process { siginh noatsecure rlimitinh };
+allow virtd_t virt_domain:process { getattr getsched rlimitinh setsched sigkill signal signull transition };
+dontaudit virtd_t virt_domain:process { noatsecure rlimitinh siginh };
 
-allow virtd_t virt_domain:unix_stream_socket { create_stream_socket_perms connectto };
+allow virtd_t virt_domain:unix_stream_socket { connectto create_stream_socket_perms };
 
 allow virtd_t virtlogd_t:fd use;
 allow virtd_t virtlogd_t:fifo_file rw_fifo_file_perms;
 
-allow virtd_t virtd_lxc_t:process { signal signull sigkill };
+allow virtd_t virtd_lxc_t:process { sigkill signal signull };
 
 domtrans_pattern(virtd_t, virtd_lxc_exec_t, virtd_lxc_t)
 
@@ -522,7 +528,8 @@ allow virtd_t virt_image_type:file relabel_file_perms;
 allow virtd_t virt_image_type:dir { manage_dir_perms relabel_dir_perms };
 allow virtd_t virt_image_type:blk_file relabel_blk_file_perms;
 allow virtd_t virt_image_type:chr_file relabel_chr_file_perms;
-allow virtd_t virt_image_type:sock_file manage_sock_file_perms;
+# relabel needed for qemu guest agent sockets
+allow virtd_t virt_image_type:sock_file { manage_sock_file_perms relabel_sock_file_perms };
 
 allow virtd_t virt_ptynode:chr_file rw_term_perms;
 
@@ -580,6 +587,7 @@ kernel_read_network_state(virtd_t)
 kernel_rw_net_sysctls(virtd_t)
 kernel_read_kernel_sysctls(virtd_t)
 kernel_read_vm_overcommit_sysctl(virtd_t)
+kernel_read_vm_sysctls(virtd_t)
 kernel_request_load_module(virtd_t)
 kernel_search_debugfs(virtd_t)
 kernel_setsched(virtd_t)
@@ -606,6 +614,7 @@ corenet_tcp_connect_soundd_port(virtd_t)
 corenet_rw_tun_tap_dev(virtd_t)
 
 dev_rw_sysfs(virtd_t)
+dev_read_cpuid(virtd_t)
 dev_read_urand(virtd_t)
 dev_read_rand(virtd_t)
 dev_rw_kvm(virtd_t)
@@ -628,6 +637,7 @@ files_search_all(virtd_t)
 files_read_kernel_modules(virtd_t)
 files_read_usr_src_files(virtd_t)
 files_mounton_root(virtd_t)
+files_watch_etc_dirs(virtd_t)
 
 # Manages /etc/sysconfig/system-config-firewall
 # files_relabelto_system_conf_files(virtd_t)
@@ -690,6 +700,15 @@ sysnet_signal_ifconfig(virtd_t)
 sysnet_domtrans_ifconfig(virtd_t)
 
 userdom_read_all_users_state(virtd_t)
+
+ifdef(`init_systemd',`
+	init_read_utmp(virtd_t)
+
+	systemd_dbus_chat_logind(virtd_t)
+
+	systemd_connect_machined(virtd_t)
+	systemd_dbus_chat_machined(virtd_t)
+')
 
 tunable_policy(`virt_use_fusefs',`
 	fs_manage_fusefs_dirs(virtd_t)
@@ -803,8 +822,8 @@ optional_policy(`
 	kernel_read_xen_state(virtd_t)
 	kernel_write_xen_state(virtd_t)
 
-	xen_exec(virtd_t)
-	xen_stream_connect(virtd_t)
+	xen_domtrans_xm(virtd_t)
+	xen_stream_connect_xm(virtd_t)
 	xen_stream_connect_xenstore(virtd_t)
 	xen_read_image_files(virtd_t)
 ')
@@ -820,7 +839,7 @@ optional_policy(`
 #
 
 allow virsh_t self:capability { dac_override ipc_lock setpcap sys_nice sys_tty_config };
-allow virsh_t self:process { getcap getsched setsched setcap signal };
+allow virsh_t self:process { getcap getsched setcap setsched signal };
 allow virsh_t self:fifo_file rw_fifo_file_perms;
 allow virsh_t self:unix_stream_socket { accept connectto listen };
 allow virsh_t self:tcp_socket { accept listen };
@@ -927,9 +946,9 @@ optional_policy(`
 optional_policy(`
 	xen_manage_image_dirs(virsh_t)
 	xen_append_log(virsh_t)
-	xen_domtrans(virsh_t)
+	xen_domtrans_xm(virsh_t)
 	xen_read_xenstored_runtime_files(virsh_t)
-	xen_stream_connect(virsh_t)
+	xen_stream_connect_xm(virsh_t)
 	xen_stream_connect_xenstore(virsh_t)
 ')
 
@@ -961,7 +980,7 @@ optional_policy(`
 #
 
 allow virtd_lxc_t self:capability { chown dac_override net_admin net_raw setpcap sys_admin sys_boot sys_resource };
-allow virtd_lxc_t self:process { setexec setrlimit setsched getcap setcap signal_perms };
+allow virtd_lxc_t self:process { getcap setcap setexec setrlimit setsched signal_perms };
 allow virtd_lxc_t self:fifo_file rw_fifo_file_perms;
 allow virtd_lxc_t self:netlink_route_socket nlmsg_write;
 allow virtd_lxc_t self:unix_stream_socket { accept listen };
@@ -1101,7 +1120,7 @@ optional_policy(`
 # Bridgehelper local policy
 #
 
-allow virt_bridgehelper_t self:process { setcap getcap };
+allow virt_bridgehelper_t self:process { getcap setcap };
 allow virt_bridgehelper_t self:capability { net_admin setgid setpcap setuid };
 allow virt_bridgehelper_t self:tcp_socket create_stream_socket_perms;
 allow virt_bridgehelper_t self:tun_socket create_socket_perms;
@@ -1153,6 +1172,8 @@ files_read_etc_files(virt_leaseshelper_t)
 allow virtlockd_t self:capability dac_override;
 allow virtlockd_t self:fifo_file rw_fifo_file_perms;
 allow virtlockd_t self:unix_stream_socket create_stream_socket_perms;
+allow virtlockd_t self:process getsched;
+allow virtlockd_t self:unix_dgram_socket create_socket_perms;
 
 allow virtlockd_t virtd_t:dir list_dir_perms;
 allow virtlockd_t virtd_t:file read_file_perms;
@@ -1176,10 +1197,16 @@ files_runtime_filetrans(virtlockd_t, virtlockd_run_t, file)
 
 can_exec(virtlockd_t, virtlockd_exec_t)
 
+kernel_getattr_proc(virtlockd_t)
+kernel_read_kernel_sysctls(virtlockd_t)
 kernel_read_system_state(virtlockd_t)
+
+dev_read_sysfs(virtlockd_t)
 
 files_read_etc_files(virtlockd_t)
 files_list_var_lib(virtlockd_t)
+
+logging_send_syslog_msg(virtlockd_t)
 
 miscfiles_read_localization(virtlockd_t)
 
@@ -1194,9 +1221,12 @@ virt_read_config(virtlockd_t)
 allow virtlogd_t self:fifo_file rw_fifo_file_perms;
 allow virtlogd_t self:unix_stream_socket create_stream_socket_perms;
 
+
 allow virtlogd_t virtd_t:dir list_dir_perms;
 allow virtlogd_t virtd_t:file read_file_perms;
 allow virtlogd_t virtd_t:lnk_file read_lnk_file_perms;
+allow virtlogd_t self:process getsched;
+allow virtlogd_t self:unix_dgram_socket create;
 
 can_exec(virtlogd_t, virtlogd_exec_t)
 
@@ -1208,10 +1238,18 @@ files_runtime_filetrans(virtlogd_t, virtlogd_run_t, file)
 allow virtlogd_t virt_common_runtime_t:file append_file_perms;
 manage_files_pattern(virtlogd_t, virt_common_runtime_t, virt_common_runtime_t)
 
+kernel_getattr_proc(virtlogd_t)
+kernel_read_kernel_sysctls(virtlogd_t)
 kernel_read_system_state(virtlogd_t)
+
+dev_read_sysfs(virtlogd_t)
 
 files_read_etc_files(virtlogd_t)
 files_list_var_lib(virtlogd_t)
+
+logging_send_syslog_msg(virtlogd_t)
+
+logging_send_syslog_msg(virtlogd_t)
 
 miscfiles_read_localization(virtlogd_t)
 

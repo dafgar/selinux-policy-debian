@@ -1,6 +1,6 @@
 	gen_require(`
 		attribute admindomain;
-		class passwd { passwd chfn chsh rootok };
+		class passwd { chfn chsh passwd rootok };
 	')
 
 	##############################
@@ -26,13 +26,14 @@
 	# $1_t local policy
 	#
 
-	allow $1_t self:capability { chown dac_override dac_read_search fowner fsetid kill setgid setuid setpcap linux_immutable net_bind_service net_broadcast net_admin net_raw ipc_lock ipc_owner sys_rawio sys_chroot sys_ptrace sys_pacct sys_admin sys_boot sys_nice sys_resource sys_time sys_tty_config mknod lease setfcap };
+	allow $1_t self:capability { chown dac_override dac_read_search fowner fsetid ipc_lock ipc_owner kill lease linux_immutable mknod net_admin net_bind_service net_broadcast net_raw setfcap setgid setpcap setuid sys_admin sys_boot sys_chroot sys_nice sys_pacct sys_ptrace sys_rawio sys_resource sys_time sys_tty_config };
 	allow $1_t self:cap_userns sys_ptrace;
 	allow $1_t self:process { setexec setfscreate };
 	allow $1_t self:netlink_audit_socket nlmsg_readpriv;
+	allow $1_t self:netlink_tcpdiag_socket create_netlink_socket_perms;
 	allow $1_t self:tun_socket create;
 	# Set password information for other users.
-	allow $1_t self:passwd { passwd chfn chsh };
+	allow $1_t self:passwd { chfn chsh passwd };
 	# Skip authentication when pam_rootok is specified.
 	allow $1_t self:passwd rootok;
 
@@ -42,6 +43,7 @@
 	kernel_change_ring_buffer_level($1_t)
 	kernel_clear_ring_buffer($1_t)
 	kernel_read_ring_buffer($1_t)
+	kernel_read_psi($1_t)
 	kernel_get_sysvipc_info($1_t)
 	kernel_rw_all_sysctls($1_t)
 	# signal unlabeled processes:
@@ -97,6 +99,7 @@
 	term_use_all_terms($1_t)
 
 	auth_getattr_shadow($1_t)
+	auth_getattr_shadow_history($1_t)
 	# Manage almost all files
 	files_manage_non_auth_files($1_t)
 	files_map_non_auth_files($1_t)

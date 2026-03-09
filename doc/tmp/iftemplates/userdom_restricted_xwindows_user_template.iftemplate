@@ -17,8 +17,6 @@
 	logging_send_syslog_msg($1_t)
 	logging_dontaudit_send_audit_msgs($1_t)
 
-	# Need to to this just so screensaver will work. Should be moved to screensaver domain
-	logging_send_audit_msgs($1_t)
 	selinux_get_enforce_mode($1_t)
 
 	xserver_restricted_role($1, $1_t, $1_application_exec_domain, $1_r)
@@ -37,6 +35,10 @@
 
 		optional_policy(`
 			gnome_role_template($1, $1_t, $1_application_exec_domain, $1_r)
+		')
+
+		optional_policy(`
+			systemd_role_template($1, $1_r, $1_t)
 		')
 
 		optional_policy(`

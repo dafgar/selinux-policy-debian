@@ -452,7 +452,7 @@ interface(`term_relabel_pty_fs',`
 	')
 
 	dev_list_all_dev_nodes($1)
-	allow $1 devpts_t:filesystem { relabelto relabelfrom };
+	allow $1 devpts_t:filesystem { relabelfrom relabelto };
 ')
 
 ########################################
@@ -568,7 +568,7 @@ interface(`term_dontaudit_list_ptys',`
 		type devpts_t;
 	')
 
-	dontaudit $1 devpts_t:dir { getattr search read };
+	dontaudit $1 devpts_t:dir { getattr read search };
 ')
 
 ########################################
@@ -743,7 +743,7 @@ interface(`term_dontaudit_use_generic_ptys',`
 		type devpts_t;
 	')
 
-	dontaudit $1 devpts_t:chr_file { getattr read write ioctl };
+	dontaudit $1 devpts_t:chr_file { getattr ioctl read write };
 ')
 
 #######################################

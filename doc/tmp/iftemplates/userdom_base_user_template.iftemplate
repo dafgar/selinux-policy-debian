@@ -22,30 +22,31 @@
 
 	term_user_tty($1_t, user_tty_device_t)
 
-	allow $1_t self:process { signal_perms getsched setsched share getpgid setpgid setcap getsession getattr };
+	allow $1_t self:process { getattr getpgid getsched getsession setcap setpgid setsched share signal_perms };
 	allow $1_t self:fd use;
 	allow $1_t self:key manage_key_perms;
 	allow $1_t self:fifo_file rw_fifo_file_perms;
 	allow $1_t self:unix_dgram_socket { create_socket_perms sendto };
-	allow $1_t self:unix_stream_socket { create_stream_socket_perms connectto };
+	allow $1_t self:unix_stream_socket { connectto create_stream_socket_perms };
 	allow $1_t self:shm create_shm_perms;
 	allow $1_t self:sem create_sem_perms;
 	allow $1_t self:msgq create_msgq_perms;
-	allow $1_t self:msg { send receive };
+	allow $1_t self:msg { receive send };
 	allow $1_t self:context contains;
 	dontaudit $1_t self:socket create;
 
-	allow $1_t user_devpts_t:chr_file { setattr rw_chr_file_perms };
+	allow $1_t user_devpts_t:chr_file { rw_chr_file_perms setattr };
 	term_create_pty($1_t, user_devpts_t)
 	# avoid annoying messages on terminal hangup on role change
 	dontaudit $1_t user_devpts_t:chr_file ioctl;
 
-	allow $1_t user_tty_device_t:chr_file { setattr rw_chr_file_perms };
+	allow $1_t user_tty_device_t:chr_file { rw_chr_file_perms setattr };
 	# avoid annoying messages on terminal hangup on role change
 	dontaudit $1_t user_tty_device_t:chr_file ioctl;
 
 	kernel_read_kernel_sysctls($1_t)
 	kernel_read_crypto_sysctls($1_t)
+	kernel_read_fs_sysctls($1_t)
 	kernel_read_vm_overcommit_sysctl($1_t)
 	kernel_dontaudit_list_unlabeled($1_t)
 	kernel_dontaudit_getattr_unlabeled_files($1_t)
@@ -84,7 +85,7 @@
 	files_read_world_readable_symlinks($1_t)
 	files_read_world_readable_pipes($1_t)
 	files_read_world_readable_sockets($1_t)
-	# old broswer_domain():
+	# old browser_domain():
 	files_dontaudit_list_non_security($1_t)
 	files_dontaudit_getattr_non_security_files($1_t)
 	files_dontaudit_getattr_non_security_symlinks($1_t)
@@ -105,8 +106,10 @@
 	init_get_system_status($1_t)
 
 	optional_policy(`
+		apt_dbus_chat($1_t)
 		apt_read_cache($1_t)
 		apt_read_db($1_t)
+		apt_watch_db($1_t)
 	')
 
 	tunable_policy(`allow_execmem',`
@@ -119,11 +122,28 @@
 		allow $1_t self:process execstack;
 	')
 
+	tunable_policy(`user_all_users_send_syslog',`
+		logging_send_syslog_msg($1_t)
+	')
+
 	optional_policy(`
 		devicekit_dbus_chat_disk($1_t)
 		devicekit_dbus_chat_power($1_t)
 	')
 
 	optional_policy(`
+		# allow all users to register fingerprints
+		fprintd_dbus_chat($1_t)
+	')
+
+	optional_policy(`
+		geoclue_dbus_chat($1_t)
+	')
+
+	optional_policy(`
 		kerneloops_dbus_chat($1_t)
+	')
+
+	optional_policy(`
+		ntp_dbus_chat($1_t)
 	')

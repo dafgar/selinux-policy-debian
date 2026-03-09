@@ -54,9 +54,11 @@ ifdef(`distro_redhat',`
 /etc/kde/env(/.*)?			gen_context(system_u:object_r:bin_t,s0)
 /etc/kde/shutdown(/.*)?			gen_context(system_u:object_r:bin_t,s0)
 
+/etc/letsencrypt/renewal-hooks/.* --	gen_context(system_u:object_r:bin_t,s0)
+
 /etc/mail/make			--	gen_context(system_u:object_r:bin_t,s0)
 
-/etc/mcelog/.*-error-trigger	--	gen_context(system_u:object_r:bin_t,s0)
+/etc/mcelog/.*-trigger		--	gen_context(system_u:object_r:bin_t,s0)
 /etc/mcelog/.*\.local		--	gen_context(system_u:object_r:bin_t,s0)
 
 ifdef(`distro_redhat',`
@@ -105,14 +107,19 @@ ifdef(`distro_redhat',`
 
 /etc/wide-dhcpv6/dhcp6c-ifupdown --	gen_context(system_u:object_r:bin_t,s0)
 /etc/wide-dhcpv6/dhcp6c-script	--	gen_context(system_u:object_r:bin_t,s0)
+/etc/wpa_supplicant/.*\.sh	--	gen_context(system_u:object_r:bin_t,s0)
 
 /etc/X11/xdm/GiveConsole	--	gen_context(system_u:object_r:bin_t,s0)
 /etc/X11/xdm/TakeConsole	--	gen_context(system_u:object_r:bin_t,s0)
 /etc/X11/xdm/Xsetup_0		--	gen_context(system_u:object_r:bin_t,s0)
 /etc/X11/xinit(/.*)?			gen_context(system_u:object_r:bin_t,s0)
 
+/etc/xdg/Xwayland-session.d/.*	--	gen_context(system_u:object_r:bin_t,s0)
+
 /etc/xen/qemu-ifup		--	gen_context(system_u:object_r:bin_t,s0)
 /etc/xen/scripts(/.*)?			gen_context(system_u:object_r:bin_t,s0)
+
+/etc/zfs/zfs-functions		--      gen_context(system_u:object_r:bin_t,s0)
 
 ifdef(`distro_debian',`
 /etc/mysql/debian-start		--	gen_context(system_u:object_r:bin_t,s0)
@@ -126,6 +133,9 @@ ifdef(`distro_debian',`
 /opt/(.*/)?libexec(/.*)?		gen_context(system_u:object_r:bin_t,s0)
 
 /opt/(.*/)?sbin(/.*)?			gen_context(system_u:object_r:bin_t,s0)
+
+/opt/brother/Printers/[^/]+/lpd(/.*)?	gen_context(system_u:object_r:bin_t,s0)
+/opt/brother/Printers/[^/]+/cupswrapper(/.*)?	gen_context(system_u:object_r:bin_t,s0)
 
 /opt/google/talkplugin(/.*)?		gen_context(system_u:object_r:bin_t,s0)
 
@@ -167,6 +177,7 @@ ifdef(`distro_gentoo',`
 /usr/bin/zsh.*			--	gen_context(system_u:object_r:shell_exec_t,s0)
 
 /usr/lib/(.*/)?bin(/.*)?		gen_context(system_u:object_r:bin_t,s0)
+/usr/lib/(.*/)?glib-2.0(/.*)?		gen_context(system_u:object_r:bin_t,s0)
 /usr/lib/postfix/configure-instance\.sh -- gen_context(system_u:object_r:bin_t,s0)
 
 /usr/(.*/)?sbin(/.*)?			gen_context(system_u:object_r:bin_t,s0)
@@ -208,6 +219,7 @@ ifdef(`distro_gentoo',`
 /usr/lib/gnome-settings-daemon/.* --	gen_context(system_u:object_r:bin_t,s0)
 /usr/lib/gvfs/gvfs.*		--	gen_context(system_u:object_r:bin_t,s0)
 /usr/lib/ipsec/.*		--	gen_context(system_u:object_r:bin_t,s0)
+/usr/lib/jvm/java.*/lib/jspawnhelper	--	gen_context(system_u:object_r:bin_t,s0)
 /usr/lib/kde4/libexec/.*	--	gen_context(system_u:object_r:bin_t,s0)
 /usr/lib/[^/]+/libexec/kf5/.*	--	gen_context(system_u:object_r:bin_t,s0)
 /usr/lib/mailman/bin(/.*)?		gen_context(system_u:object_r:bin_t,s0)
@@ -217,6 +229,7 @@ ifdef(`distro_gentoo',`
 /usr/lib/mon/alert\.d(/.*)?		gen_context(system_u:object_r:bin_t,s0)
 /usr/lib/nagios/plugins(/.*)?		gen_context(system_u:object_r:bin_t,s0)
 /usr/lib/netsaint/plugins(/.*)?		gen_context(system_u:object_r:bin_t,s0)
+/usr/lib/NetworkManager/dispatcher.d(/.*)? gen_context(system_u:object_r:bin_t,s0)
 /usr/lib/NetworkManager/nm-.*	--	gen_context(system_u:object_r:bin_t,s0)
 /usr/lib/networkmanager/nm-.*	--	gen_context(system_u:object_r:bin_t,s0)
 /usr/lib/news/bin(/.*)?			gen_context(system_u:object_r:bin_t,s0)
@@ -256,7 +269,7 @@ ifdef(`distro_gentoo',`
 /usr/lib/xfce4/session/xfsm-shutdown-helper -- gen_context(system_u:object_r:bin_t,s0)
 /usr/lib/xfce4/xfconf/xfconfd	--	gen_context(system_u:object_r:bin_t,s0)
 /usr/lib/xfce4/xfwm4/helper-dialog --	gen_context(system_u:object_r:bin_t,s0)
-/usr/lib/x86_64-linux-gnu/libexec/.* -- gen_context(system_u:object_r:bin_t,s0)
+/usr/lib/[^/]+-linux-gnu/libexec/.* -- gen_context(system_u:object_r:bin_t,s0)
 
 ifdef(`distro_debian',`
 /usr/lib/[^/]+/tumbler-1/tumblerd --	gen_context(system_u:object_r:bin_t,s0)
@@ -326,6 +339,7 @@ ifdef(`distro_debian',`
 /usr/share/cluster/.*\.sh		gen_context(system_u:object_r:bin_t,s0)
 /usr/share/cluster/ocf-shellfuncs --	gen_context(system_u:object_r:bin_t,s0)
 /usr/share/cluster/svclib_nfslock --	gen_context(system_u:object_r:bin_t,s0)
+/usr/share/cockpit/motd/update-motd    -- gen_context(system_u:object_r:bin_t,s0)
 /usr/share/cvs/contrib/rcs2log	--	gen_context(system_u:object_r:bin_t,s0)
 /usr/share/e16/misc(/.*)?		gen_context(system_u:object_r:bin_t,s0)
 /usr/share/gedit/plugins/externaltools/tools(/.*)? gen_context(system_u:object_r:bin_t,s0)
@@ -339,6 +353,7 @@ ifdef(`distro_debian',`
 /usr/share/hal/scripts(/.*)?		gen_context(system_u:object_r:bin_t,s0)
 /usr/share/ifupdown2/__main__\.py	--	gen_context(system_u:object_r:bin_t,s0)
 /usr/share/libalpm/scripts(/.*)?	gen_context(system_u:object_r:bin_t,s0)
+/usr/share/libpam-kwallet-common/pam_kwallet_init -- gen_context(system_u:object_r:bin_t,s0)
 /usr/share/mc/extfs/.*		--	gen_context(system_u:object_r:bin_t,s0)
 /usr/share/Modules/init(/.*)?		gen_context(system_u:object_r:bin_t,s0)
 /usr/share/org\.gnome\.Weather/org\.gnome\.Weather\.Application	--	gen_context(system_u:object_r:bin_t,s0)

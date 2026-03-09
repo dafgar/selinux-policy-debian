@@ -113,6 +113,14 @@ tunable_policy(`use_samba_home_dirs',`
 	fs_read_cifs_files(colord_t)
 ')
 
+ifdef(`init_systemd', `
+	systemd_read_logind_sessions_files(colord_t)
+')
+
+optional_policy(`
+	avahi_dbus_chat(colord_t)
+')
+
 optional_policy(`
 	cups_read_config(colord_t)
 	cups_read_rw_config(colord_t)
@@ -137,14 +145,30 @@ optional_policy(`
 ')
 
 optional_policy(`
+	systemd_map_hwdb(colord_t)
+	systemd_read_hwdb(colord_t)
+	systemd_read_logind_sessions_files(colord_t)
+')
+
+optional_policy(`
 	udev_read_runtime_files(colord_t)
 ')
 
 optional_policy(`
 	unconfined_dbus_send(colord_t)
+	unconfined_use_fds(colord_t)
 ')
 
 optional_policy(`
-	xserver_read_xdm_lib_files(colord_t)
+	xdg_read_data_files(colord_t)
+')
+
+optional_policy(`
+	wm_receive_fd(colord_t)
+')
+
+optional_policy(`
+	xserver_mmap_read_xdm_lib_files(colord_t)
+	xserver_read_xdm_state(colord_t)
 	xserver_use_xdm_fds(colord_t)
 ')

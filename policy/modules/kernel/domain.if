@@ -128,7 +128,7 @@ interface(`domain_entry_file',`
 	')
 
 	allow $1 $2:file entrypoint;
-	allow $1 $2:file { mmap_exec_file_perms ioctl lock };
+	allow $1 $2:file { ioctl lock mmap_exec_file_perms };
 
 	typeattribute $2 entry_type;
 
@@ -417,7 +417,7 @@ interface(`domain_dontaudit_use_interactive_fds',`
 ########################################
 ## <summary>
 ##	Send a SIGCHLD signal to domains whose file
-##	discriptors are widely inheritable.
+##	descriptors are widely inheritable.
 ## </summary>
 ## <param name="domain">
 ##	<summary>
@@ -983,6 +983,24 @@ interface(`domain_dontaudit_getattr_all_sockets',`
 
 ########################################
 ## <summary>
+##	Allow stat of all domains TCP sockets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain to not audit.
+##	</summary>
+## </param>
+#
+interface(`domain_getattr_all_tcp_sockets',`
+	gen_require(`
+		attribute domain;
+	')
+
+	allow $1 domain:tcp_socket getattr;
+')
+
+########################################
+## <summary>
 ##	Do not audit attempts to get the attributes
 ##	of all domains TCP sockets.
 ## </summary>
@@ -998,6 +1016,24 @@ interface(`domain_dontaudit_getattr_all_tcp_sockets',`
 	')
 
 	dontaudit $1 domain:tcp_socket getattr;
+')
+
+########################################
+## <summary>
+##	Allow stat of all domains UDP sockets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain to allow
+##	</summary>
+## </param>
+#
+interface(`domain_getattr_all_udp_sockets',`
+	gen_require(`
+		attribute domain;
+	')
+
+	allow $1 domain:udp_socket getattr;
 ')
 
 ########################################

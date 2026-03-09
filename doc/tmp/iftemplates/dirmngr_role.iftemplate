@@ -17,4 +17,5 @@
 
 	optional_policy(`
 		systemd_user_app_status($1, dirmngr_t)
+		systemd_user_app_socket_create($1, dirmngr_t, dirmngr_tmp_t)
 	')
