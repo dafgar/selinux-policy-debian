@@ -1,0 +1,23 @@
+	gen_require(`
+		attribute_role obex_roles;
+		type obex_t, obex_exec_t;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	roleattribute $2 obex_roles;
+
+	########################################
+	#
+	# Policy
+	#
+
+	allow $3 obex_t:process { ptrace signal_perms };
+	ps_process_pattern($3, obex_t)
+
+	dbus_spec_session_domain($1, obex_t, obex_exec_t)
+
+	obex_dbus_chat($3)

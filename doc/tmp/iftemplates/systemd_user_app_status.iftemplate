@@ -1,0 +1,21 @@
+	gen_require(`
+		type $1_systemd_t;
+	')
+
+	# This interface does not imply permissions for the systemd user
+	# domain to run the application. Instead, these rules are necessary
+	# for a systemd --user instance to monitor an application as well as
+	# any child processes of that application, children of those, and so
+	# on.
+
+	# systemd --user instances need to be able to read the state of the
+	# app it runs and capture its output to journald
+	ps_process_pattern($1_systemd_t, $2)
+	allow $1_systemd_t $2:process signal_perms;
+	allow $2 $1_systemd_t:fd use;
+	allow $2 $1_systemd_t:unix_stream_socket rw_stream_socket_perms;
+
+	# apps run by systemd --user instances need to be able to read the
+	# state of the systemd --user instance
+	ps_process_pattern($2, $1_systemd_t)
+	allow $2 $1_systemd_t:process sigchld;

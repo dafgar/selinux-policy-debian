@@ -1,0 +1,22 @@
+	gen_require(`
+		attribute_role pyzor_roles;
+		type pyzor_t, pyzor_exec_t, pyzor_home_t;
+		type pyzor_tmp_t;
+	')
+
+	roleattribute $4 pyzor_roles;
+
+	domtrans_pattern($3, pyzor_exec_t, pyzor_t)
+
+	allow $3 pyzor_t:process { ptrace signal_perms };
+	ps_process_pattern($3, pyzor_t)
+
+	allow $2 { pyzor_home_t pyzor_tmp_t }:dir { manage_dir_perms relabel_dir_perms };
+	allow $2 { pyzor_home_t pyzor_tmp_t }:file { manage_file_perms relabel_file_perms };
+	allow $2 pyzor_home_t:lnk_file { manage_lnk_file_perms relabel_lnk_file_perms };
+
+	userdom_user_home_dir_filetrans($2, pyzor_home_t, dir, ".pyzor")
+
+	optional_policy(`
+		systemd_user_app_status($1, pyzor_t)
+	')

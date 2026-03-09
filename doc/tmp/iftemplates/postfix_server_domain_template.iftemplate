@@ -1,0 +1,27 @@
+	gen_require(`
+		type postfix_master_t;
+		attribute postfix_server_domain, postfix_server_tmp_content;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	postfix_domain_template($1)
+
+	typeattribute postfix_$1_t postfix_server_domain;
+
+	type postfix_$1_tmp_t, postfix_server_tmp_content;
+	files_tmp_file(postfix_$1_tmp_t)
+
+	########################################
+	#
+	# Declarations
+	#
+
+	manage_dirs_pattern(postfix_$1_t, postfix_$1_tmp_t, postfix_$1_tmp_t)
+	manage_files_pattern(postfix_$1_t, postfix_$1_tmp_t, postfix_$1_tmp_t)
+	files_tmp_filetrans(postfix_$1_t, postfix_$1_tmp_t, { file dir })
+
+	domtrans_pattern(postfix_master_t, postfix_$1_exec_t, postfix_$1_t)

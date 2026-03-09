@@ -1,0 +1,7 @@
+	gen_require(`
+		type $1_gkeyringd_t;
+		class dbus send_msg;
+	')
+
+	allow $2 $1_gkeyringd_t:dbus send_msg;
+	allow $1_gkeyringd_t $2:dbus send_msg;

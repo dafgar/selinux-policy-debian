@@ -1,0 +1,36 @@
+	gen_require(`
+		attribute crontab_domain;
+		type crontab_exec_t;
+	')
+
+	##############################
+	#
+	# Declarations
+	#
+
+	type $1_crontab_t, crontab_domain;
+	userdom_user_application_domain($1_crontab_t, crontab_exec_t)
+
+	type $1_crontab_tmp_t;
+	userdom_user_tmp_file($1_crontab_tmp_t)
+
+	type $1_cron_spool_t, cron_spool_type;
+
+	##############################
+	#
+	# Local policy
+	#
+
+	manage_dirs_pattern($1_crontab_t, $1_crontab_tmp_t, $1_crontab_tmp_t)
+	manage_files_pattern($1_crontab_t, $1_crontab_tmp_t, $1_crontab_tmp_t)
+	files_tmp_filetrans($1_crontab_t, $1_crontab_tmp_t, { dir file })
+
+	auth_domtrans_chk_passwd($1_crontab_t)
+	auth_use_nsswitch($1_crontab_t)
+	allow $1_crontab_t self:capability fsetid;
+
+	files_type($1_cron_spool_t)
+	ubac_constrained($1_cron_spool_t)
+
+	manage_files_pattern($1_crontab_t, cron_spool_t, $1_cron_spool_t)
+	filetrans_pattern($1_crontab_t, cron_spool_t, $1_cron_spool_t, file)

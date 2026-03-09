@@ -1,0 +1,5 @@
+	gen_require(`
+		type $1_systemd_t;
+	')
+
+	ps_process_pattern($2, $1_systemd_t)

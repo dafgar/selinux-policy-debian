@@ -1,0 +1,21 @@
+	gen_require(`
+		attribute_role ooffice_roles;
+		type ooffice_t, ooffice_exec_t;
+	')
+
+	roleattribute $4 ooffice_roles;
+
+	allow ooffice_t $3:unix_stream_socket connectto;
+
+	domtrans_pattern($3, ooffice_exec_t, ooffice_t)
+
+	allow $3 ooffice_t:process { ptrace signal_perms };
+	ps_process_pattern($3, ooffice_t)
+
+	optional_policy(`
+		ooffice_dbus_chat($3)
+	')
+
+	optional_policy(`
+		systemd_user_app_status($1, ooffice_t)
+	')

@@ -1,0 +1,16 @@
+	gen_require(`
+		attribute telepathy_domain, telepathy_executable, telepathy_tmp_content;
+	')
+
+	type telepathy_$1_t, telepathy_domain;
+	type telepathy_$1_exec_t, telepathy_executable;
+	userdom_user_application_domain(telepathy_$1_t, telepathy_$1_exec_t)
+
+	type telepathy_$1_tmp_t, telepathy_tmp_content;
+	userdom_user_tmp_file(telepathy_$1_tmp_t)
+
+	optional_policy(`
+		wm_application_domain(telepathy_$1_t, telepathy_$1_exec_t)
+	')
+
+	auth_use_nsswitch(telepathy_$1_t)

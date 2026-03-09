@@ -1,0 +1,10 @@
+	gen_require(`
+		type rootlesskit_t;
+		type rootlesskit_exec_t;
+	')
+
+	rootlesskit_run($3, $4)
+
+	optional_policy(`
+		systemd_user_daemon_domain($1, rootlesskit_exec_t, rootlesskit_t)
+	')

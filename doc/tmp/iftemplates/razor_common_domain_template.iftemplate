@@ -1,0 +1,20 @@
+	gen_require(`
+		attribute razor_domain;
+		type razor_exec_t;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	type $1_t, razor_domain;
+	domain_type($1_t)
+	domain_entry_file($1_t, razor_exec_t)
+
+	########################################
+	#
+	# Declarations
+	#
+
+	auth_use_nsswitch($1_t)

@@ -1,0 +1,44 @@
+	gen_require(`
+		type root_xdrawable_t;
+		type xevent_t, client_xevent_t;
+		type input_xevent_t, $1_input_xevent_t;
+
+		attribute x_domain;
+		attribute xdrawable_type, xcolormap_type;
+		attribute input_xevent_type;
+
+		class x_drawable all_x_drawable_perms;
+		class x_property all_x_property_perms;
+		class x_event all_x_event_perms;
+		class x_synthetic_event all_x_synthetic_event_perms;
+	')
+
+	##############################
+	#
+	# Local Policy
+	#
+
+	# Type attributes
+	typeattribute $2 x_domain;
+	typeattribute $2 xdrawable_type, xcolormap_type;
+
+	# X Properties
+	# disable property transitions for the time being.
+#	type_transition $2 xproperty_t:x_property $1_xproperty_t;
+
+	# X Windows
+	# new windows have the domain type
+	type_transition $2 root_xdrawable_t:x_drawable $2;
+
+	# X Input
+	# distinguish input events
+	type_transition $2 input_xevent_t:x_event $1_input_xevent_t;
+	# can send own events
+	allow $2 $1_input_xevent_t:{ x_event x_synthetic_event } send;
+	# can receive own events
+	allow $2 $1_input_xevent_t:{ x_event x_synthetic_event } receive;
+	# can receive default events
+	allow $2 client_xevent_t:{ x_event x_synthetic_event } receive;
+	allow $2 xevent_t:{ x_event x_synthetic_event } receive;
+	# dont audit send failures
+	dontaudit $2 input_xevent_type:x_event send;

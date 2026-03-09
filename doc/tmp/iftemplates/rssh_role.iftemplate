@@ -1,0 +1,15 @@
+	gen_require(`
+		attribute_role rssh_roles;
+		type rssh_t, rssh_exec_t, rssh_ro_t;
+		type rssh_rw_t;
+	')
+
+	roleattribute $4 rssh_roles;
+
+	domtrans_pattern($2, rssh_exec_t, rssh_t)
+
+	allow $2 rssh_t:process { ptrace signal_perms };
+	ps_process_pattern($2, rssh_t)
+
+	allow $2 { rssh_ro_t rssh_rw_t }:dir { manage_dir_perms relabel_dir_perms };
+	allow $2 { rssh_ro_t rssh_rw_t }:file { manage_file_perms relabel_file_perms };

@@ -1,0 +1,33 @@
+	gen_require(`
+		attribute_role git_session_roles;
+		type git_session_t, gitd_exec_t, git_user_content_t;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	roleattribute $4 git_session_roles;
+
+	########################################
+	#
+	# Policy
+	#
+
+	allow $2 git_user_content_t:dir { manage_dir_perms relabel_dir_perms };
+	allow $2 git_user_content_t:file { exec_file_perms manage_file_perms relabel_file_perms };
+	userdom_user_home_dir_filetrans($2, git_user_content_t, dir, "public_git")
+
+	allow $3 git_session_t:process { ptrace signal_perms };
+	ps_process_pattern($3, git_session_t)
+
+	tunable_policy(`git_session_users',`
+		domtrans_pattern($3, gitd_exec_t, git_session_t)
+	',`
+		can_exec($3, gitd_exec_t)
+	')
+
+	optional_policy(`
+		systemd_user_app_status($1, git_session_t)
+	')

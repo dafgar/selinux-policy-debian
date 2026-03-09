@@ -1,0 +1,57 @@
+
+	userdom_restricted_user_template($1)
+
+	##############################
+	#
+	# Local policy
+	#
+
+	auth_role($1, $1_t, $1_application_exec_domain, $1_r)
+	auth_search_pam_console_data($1_t)
+
+	dev_read_sound($1_t)
+	dev_write_sound($1_t)
+	# gnome keyring wants to read this.
+	dev_dontaudit_read_rand($1_t)
+
+	logging_send_syslog_msg($1_t)
+	logging_dontaudit_send_audit_msgs($1_t)
+
+	# Need to to this just so screensaver will work. Should be moved to screensaver domain
+	logging_send_audit_msgs($1_t)
+	selinux_get_enforce_mode($1_t)
+
+	xserver_restricted_role($1, $1_t, $1_application_exec_domain, $1_r)
+
+	optional_policy(`
+		alsa_read_config($1_t)
+	')
+
+	optional_policy(`
+		dbus_role_template($1, $1_r, $1_t)
+		dbus_system_bus_client($1_t)
+
+		optional_policy(`
+			cups_dbus_chat($1_t)
+		')
+
+		optional_policy(`
+			gnome_role_template($1, $1_t, $1_application_exec_domain, $1_r)
+		')
+
+		optional_policy(`
+			wm_role_template($1, $1_t, $1_application_exec_domain, $1_r)
+		')
+	')
+
+	optional_policy(`
+		java_role($1, $1_t, $1_application_exec_domain, $1_r)
+	')
+
+	optional_policy(`
+		pulseaudio_role($1, $1_t, $1_application_exec_domain, $1_r)
+	')
+
+	optional_policy(`
+		setroubleshoot_dontaudit_stream_connect($1_t)
+	')

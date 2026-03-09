@@ -1,0 +1,22 @@
+	gen_require(`
+		attribute_role razor_roles;
+		type razor_t, razor_exec_t, razor_home_t;
+		type razor_tmp_t;
+	')
+
+	roleattribute $4 razor_roles;
+
+	domtrans_pattern($3, razor_exec_t, razor_t)
+
+	ps_process_pattern($3, razor_t)
+	allow $3 razor_t:process signal;
+
+	allow $2 { razor_home_t razor_tmp_t }:dir { manage_dir_perms relabel_dir_perms };
+	allow $2 { razor_home_t razor_tmp_t }:file { manage_file_perms relabel_file_perms };
+	allow $2 razor_home_t:lnk_file { manage_lnk_file_perms relabel_lnk_file_perms };
+
+	userdom_user_home_dir_filetrans($2, razor_home_t, dir, ".razor")
+
+	optional_policy(`
+		systemd_user_app_status($1, razor_t)
+	')

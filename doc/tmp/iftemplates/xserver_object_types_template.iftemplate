@@ -1,0 +1,16 @@
+	gen_require(`
+		attribute xproperty_type, input_xevent_type, xevent_type;
+	')
+
+	##############################
+	#
+	# Declarations
+	#
+
+	# Types for properties
+	type $1_xproperty_t, xproperty_type;
+	ubac_constrained($1_xproperty_t)
+
+	# Types for events
+	type $1_input_xevent_t, input_xevent_type, xevent_type;
+	ubac_constrained($1_input_xevent_t)

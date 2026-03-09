@@ -1,0 +1,5 @@
+	gen_require(`
+		type $1_systemd_t;
+	')
+
+	allow $2 $1_systemd_t:system start;

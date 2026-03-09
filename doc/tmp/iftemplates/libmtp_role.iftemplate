@@ -1,0 +1,15 @@
+	gen_require(`
+		attribute_role libmtp_roles;
+		type libmtp_t, libmtp_exec_t;
+	')
+
+	roleattribute $4 libmtp_roles;
+
+	domtrans_pattern($3, libmtp_exec_t, libmtp_t)
+
+	allow $3 libmtp_t:process { ptrace signal_perms };
+	ps_process_pattern($3, libmtp_t)
+
+	optional_policy(`
+		systemd_user_app_status($1, libmtp_t)
+	')

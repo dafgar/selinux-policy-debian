@@ -1,0 +1,303 @@
+	gen_require(`
+		attribute unpriv_userdomain;
+	')
+
+	userdom_basic_networking_template($1)
+
+	##############################
+	#
+	# User domain Local policy
+	#
+
+	# evolution and gnome-session try to create a netlink socket
+	dontaudit $1_t self:netlink_socket { create ioctl read getattr write setattr append bind connect getopt setopt shutdown };
+	dontaudit $1_t self:netlink_route_socket { create ioctl read getattr write setattr append bind connect getopt setopt shutdown nlmsg_read nlmsg_write };
+
+	# gnome-settings-daemon and some applications create a netlink socket
+	allow $1_t self:netlink_kobject_uevent_socket create_socket_perms;
+
+	allow $1_t unpriv_userdomain:fd use;
+
+	kernel_read_system_state($1_t)
+	kernel_read_network_state($1_t)
+	kernel_read_net_sysctls($1_t)
+	# Very permissive allowing every domain to see every type:
+	kernel_get_sysvipc_info($1_t)
+	# Find CDROM devices:
+	kernel_read_device_sysctls($1_t)
+
+	corecmd_exec_bin($1_t)
+
+	corenet_udp_bind_generic_node($1_t)
+	corenet_udp_bind_generic_port($1_t)
+
+	dev_read_rand($1_t)
+	dev_write_sound($1_t)
+	dev_read_sound($1_t)
+	dev_read_sound_mixer($1_t)
+	dev_write_sound_mixer($1_t)
+	dev_read_wireless($1_t)
+
+	files_exec_etc_files($1_t)
+	files_search_locks($1_t)
+	# List mounted filesystems (cdrom, FAT, NTFS and so on)
+	files_list_mnt($1_t)
+	# cjp: perhaps should cut back on file reads:
+	files_read_var_files($1_t)
+	files_read_var_symlinks($1_t)
+	files_read_generic_spool($1_t)
+	files_read_var_lib_files($1_t)
+	# Stat lost+found.
+	files_getattr_lost_found_dirs($1_t)
+	files_watch_etc_dirs($1_t)
+	files_watch_usr_dirs($1_t)
+
+	fs_rw_cgroup_files($1_t)
+
+	# cjp: some of this probably can be removed
+	selinux_get_fs_mount($1_t)
+	selinux_validate_context($1_t)
+	selinux_compute_access_vector($1_t)
+	selinux_compute_create_context($1_t)
+	selinux_compute_relabel_context($1_t)
+	selinux_compute_user_contexts($1_t)
+
+	# for eject
+	storage_getattr_fixed_disk_dev($1_t)
+
+	auth_use_nsswitch($1_t)
+	auth_read_login_records($1_t)
+	auth_search_pam_console_data($1_t)
+	auth_run_pam($1_t, $1_r)
+	auth_run_utempter($1_t, $1_r)
+
+	init_read_utmp($1_t)
+
+	seutil_read_file_contexts($1_t)
+	seutil_read_default_contexts($1_t)
+	seutil_run_newrole($1_t, $1_r)
+	seutil_exec_checkpolicy($1_t)
+	seutil_exec_setfiles($1_t)
+	# for when the network connection is killed
+	# this is needed when a login role can change
+	# to this one.
+	seutil_dontaudit_signal_newrole($1_t)
+
+	ifndef(`enable_mls',`
+		tunable_policy(`user_write_removable',`
+			# Read/write floppies and other removable devices
+			storage_raw_read_removable_device($1_t)
+			storage_raw_write_removable_device($1_t)
+		',`
+			# Read floppies
+			storage_raw_read_removable_device($1_t)
+		')
+	')
+
+	tunable_policy(`user_direct_mouse',`
+		dev_read_mouse($1_t)
+	')
+
+	tunable_policy(`user_rw_noexattrfile',`
+		fs_manage_noxattr_fs_dirs($1_t)
+		fs_manage_noxattr_fs_files($1_t)
+		fs_manage_noxattr_fs_symlinks($1_t)
+	',`
+		fs_read_noxattr_fs_files($1_t)
+		fs_read_noxattr_fs_symlinks($1_t)
+	')
+
+	tunable_policy(`user_ttyfile_stat',`
+		term_getattr_all_ttys($1_t)
+	')
+
+	tunable_policy(`user_write_removable',`
+		# Read/write USB devices (e.g. external removable USB mass storage devices)
+		dev_rw_generic_usb_dev($1_t)
+	',`
+		# Read USB devices (e.g. external removable USB mass storage devices)
+		dev_read_generic_usb_dev($1_t)
+	')
+
+
+	optional_policy(`
+		alsa_home_filetrans_alsa_home($1_t, file, ".asoundrc")
+		alsa_manage_home_files($1_t)
+		alsa_read_config($1_t)
+		alsa_relabel_home_files($1_t)
+	')
+
+	optional_policy(`
+		# Allow graphical boot to check battery lifespan
+		acpi_stream_connect($1_t)
+	')
+
+	optional_policy(`
+		canna_stream_connect($1_t)
+	')
+
+	optional_policy(`
+		dbus_role_template($1, $1_r, $1_t)
+		dbus_system_bus_client($1_t)
+
+		optional_policy(`
+			accountsd_dbus_chat($1_t)
+		')
+
+		optional_policy(`
+			bluetooth_dbus_chat($1_t)
+		')
+
+		optional_policy(`
+			colord_dbus_chat($1_t)
+		')
+
+		optional_policy(`
+			cups_dbus_chat_config($1_t)
+		')
+
+		optional_policy(`
+			devicekit_dbus_chat_disk($1_t)
+			devicekit_dbus_chat_power($1_t)
+		')
+
+		optional_policy(`
+			networkmanager_dbus_chat($1_t)
+		')
+
+		optional_policy(`
+			policykit_dbus_chat($1_t)
+		')
+
+		optional_policy(`
+			rtkit_daemon_dbus_chat($1_t)
+		')
+
+		optional_policy(`
+			xserver_dbus_chat_xdm($1_t)
+		')
+
+		optional_policy(`
+			systemd_role_template($1, $1_r, $1_t)
+		')
+	')
+
+	optional_policy(`
+		dpkg_read_db($1_t)
+	')
+
+	optional_policy(`
+		gssproxy_stream_connect($1_t)
+	')
+
+	optional_policy(`
+		hwloc_exec_dhwd($1_t)
+		hwloc_read_runtime_files($1_t)
+	')
+
+	optional_policy(`
+		inetd_use_fds($1_t)
+		inetd_rw_tcp_sockets($1_t)
+	')
+
+	optional_policy(`
+		inn_read_config($1_t)
+		inn_read_news_lib($1_t)
+		inn_read_news_spool($1_t)
+	')
+
+	optional_policy(`
+		kerberos_manage_krb5_home_files($1_t)
+		kerberos_relabel_krb5_home_files($1_t)
+		kerberos_home_filetrans_krb5_home($1_t, file, ".k5login")
+	')
+
+	optional_policy(`
+		locate_read_lib_files($1_t)
+	')
+
+	optional_policy(`
+		mpd_manage_user_data_content($1_t)
+		mpd_relabel_user_data_content($1_t)
+	')
+
+	# for running depmod as part of the kernel packaging process
+	optional_policy(`
+		modutils_read_module_config($1_t)
+	')
+
+	optional_policy(`
+		mta_rw_spool($1_t)
+	')
+
+	optional_policy(`
+		mysql_manage_mysqld_home_files($1_t)
+		mysql_relabel_mysqld_home_files($1_t)
+		mysql_home_filetrans_mysqld_home($1_t, file, ".my.cnf")
+
+		tunable_policy(`allow_user_mysql_connect',`
+			mysql_stream_connect($1_t)
+		')
+	')
+
+	optional_policy(`
+		oident_manage_user_content($1_t)
+		oident_relabel_user_content($1_t)
+		oident_home_filetrans_oidentd_home($1_t, file, ".oidentd.conf")
+	')
+
+	optional_policy(`
+		pcscd_read_runtime_files($1_t)
+		pcscd_stream_connect($1_t)
+	')
+
+	optional_policy(`
+		tunable_policy(`allow_user_postgresql_connect',`
+			postgresql_stream_connect($1_t)
+			postgresql_tcp_connect($1_t)
+		')
+	')
+
+	optional_policy(`
+		ppp_manage_home_files($1_t)
+		ppp_relabel_home_files($1_t)
+		ppp_home_filetrans_ppp_home($1_t, file, ".ppprc")
+	')
+
+	optional_policy(`
+		resmgr_stream_connect($1_t)
+	')
+
+	optional_policy(`
+		rpc_dontaudit_getattr_exports($1_t)
+		rpc_manage_nfs_rw_content($1_t)
+	')
+
+	optional_policy(`
+		samba_stream_connect_winbind($1_t)
+	')
+
+	optional_policy(`
+		slrnpull_search_spool($1_t)
+	')
+
+	optional_policy(`
+		udev_read_runtime_files($1_t)
+	')
+
+	optional_policy(`
+		usernetctl_run($1_t, $1_r)
+	')
+
+	optional_policy(`
+		systemd_dbus_chat_locale($1_t)
+		systemd_stream_connect_userdb($1_t)
+	')
+
+	optional_policy(`
+		virt_home_filetrans_virt_home($1_t, dir, ".libvirt")
+		virt_home_filetrans_virt_home($1_t, dir, ".virtinst")
+		virt_home_filetrans_virt_content($1_t, dir, "isos")
+		virt_home_filetrans_svirt_home($1_t, dir, "qemu")
+		virt_home_filetrans_virt_home($1_t, dir, "VirtualMachines")
+	')

@@ -1,0 +1,21 @@
+	gen_require(`
+		attribute rpc_domain;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	type $1_t, rpc_domain;
+	type $1_exec_t;
+	init_daemon_domain($1_t, $1_exec_t)
+
+	domain_use_interactive_fds($1_t)
+
+	########################################
+	#
+	# Policy
+	#
+
+	auth_use_nsswitch($1_t)

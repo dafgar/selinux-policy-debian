@@ -1,0 +1,25 @@
+	gen_require(`
+		attribute milter_data_type, milter_domains;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	type $1_milter_t, milter_domains;
+	type $1_milter_exec_t;
+	init_daemon_domain($1_milter_t, $1_milter_exec_t)
+
+	type $1_milter_data_t, milter_data_type;
+	files_runtime_file($1_milter_data_t)
+
+	########################################
+	#
+	# Policy
+	#
+
+	manage_files_pattern($1_milter_t, $1_milter_data_t, $1_milter_data_t)
+	manage_sock_files_pattern($1_milter_t, $1_milter_data_t, $1_milter_data_t)
+
+	auth_use_nsswitch($1_milter_t)

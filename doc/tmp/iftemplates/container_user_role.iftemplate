@@ -1,0 +1,34 @@
+	gen_require(`
+		attribute container_user_domain;
+		attribute container_engine_user_domain;
+	')
+
+	role $4 types container_user_domain;
+
+	container_base_role($1, $2, $3, $4)
+
+	allow container_user_domain $3:unix_stream_socket rw_stream_socket_perms;
+
+	allow $3 container_user_domain:process { ptrace signal_perms };
+	ps_process_pattern($3, container_user_domain)
+
+	container_admin_all_user_runtime_content($2)
+	container_manage_all_home_content($2)
+
+	optional_policy(`
+		systemd_read_user_manager_state($1, container_engine_user_domain)
+		systemd_user_manager_system_start($1, container_engine_user_domain)
+		systemd_user_manager_system_stop($1, container_engine_user_domain)
+		systemd_user_manager_system_status($1, container_engine_user_domain)
+		systemd_user_manager_dbus_chat($1, container_engine_user_domain)
+
+		systemd_user_app_status($1, container_user_domain)
+	')
+
+	optional_policy(`
+		docker_user_role($1, $2, $3, $4)
+	')
+
+	optional_policy(`
+		podman_user_role($1, $2, $3, $4)
+	')

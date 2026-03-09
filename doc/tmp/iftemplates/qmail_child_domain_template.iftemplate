@@ -1,0 +1,24 @@
+	gen_require(`
+		attribute qmail_child_domain;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	type $1_t, qmail_child_domain;
+	type $1_exec_t;
+	domain_type($1_t)
+	domain_entry_file($1_t, $1_exec_t)
+
+	role system_r types $1_t;
+
+	########################################
+	#
+	# Policy
+	#
+
+	domtrans_pattern($2, $1_exec_t, $1_t)
+
+	kernel_read_system_state($2)

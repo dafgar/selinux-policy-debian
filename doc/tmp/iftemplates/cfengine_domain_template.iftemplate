@@ -1,0 +1,19 @@
+	gen_require(`
+		attribute cfengine_domain;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	type cfengine_$1_t, cfengine_domain;
+	type cfengine_$1_exec_t;
+	init_daemon_domain(cfengine_$1_t, cfengine_$1_exec_t)
+
+	########################################
+	#
+	# Policy
+	#
+
+	auth_use_nsswitch(cfengine_$1_t)

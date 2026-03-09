@@ -1,0 +1,15 @@
+	gen_require(`
+		type container_config_t;
+	')
+
+	container_run_generic_engine($3, $4)
+
+	container_engine_dbus_chat($2)
+
+	allow $3 self:cap_userns { kill sys_ptrace };
+
+	files_search_etc($2)
+	read_files_pattern($2, container_config_t, container_config_t)
+
+	container_admin_all_files($2)
+	container_admin_all_ro_files($2)

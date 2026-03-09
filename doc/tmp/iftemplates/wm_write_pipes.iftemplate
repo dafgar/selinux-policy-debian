@@ -1,0 +1,5 @@
+	gen_require(`
+		type $1_wm_t;
+	')
+
+	allow $2 $1_wm_t:fifo_file write;

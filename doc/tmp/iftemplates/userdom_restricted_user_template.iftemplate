@@ -1,0 +1,17 @@
+	gen_require(`
+		attribute unpriv_userdomain;
+	')
+
+	userdom_login_user_template($1)
+
+	typeattribute $1_t unpriv_userdomain;
+	domain_interactive_fd($1_t)
+
+	##############################
+	#
+	# Local policy
+	#
+
+	optional_policy(`
+		loadkeys_run($1_t, $1_r)
+	')

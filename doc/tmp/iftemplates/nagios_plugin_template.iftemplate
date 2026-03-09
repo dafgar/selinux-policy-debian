@@ -1,0 +1,24 @@
+	gen_require(`
+		attribute nagios_plugin_domain;
+		type nagios_t, nrpe_t;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	type nagios_$1_plugin_t, nagios_plugin_domain;
+	type nagios_$1_plugin_exec_t;
+	application_domain(nagios_$1_plugin_t, nagios_$1_plugin_exec_t)
+	role system_r types nagios_$1_plugin_t;
+
+	########################################
+	#
+	# Policy
+	#
+
+	domtrans_pattern(nrpe_t, nagios_$1_plugin_exec_t, nagios_$1_plugin_t)
+	allow nagios_t nagios_$1_plugin_exec_t:file ioctl;
+
+	domtrans_pattern(nagios_t, nagios_$1_plugin_exec_t, nagios_$1_plugin_t)

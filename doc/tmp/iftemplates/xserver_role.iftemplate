@@ -1,0 +1,55 @@
+	gen_require(`
+		type iceauth_home_t, xserver_t, xserver_tmp_t, xserver_tmpfs_t, xauth_home_t;
+		type user_fonts_t, user_fonts_cache_t, user_fonts_config_t;
+		type mesa_shader_cache_t, xdm_t;
+	')
+
+	xserver_restricted_role($1, $2, $3, $4)
+
+	# Communicate via System V shared memory.
+	allow $2 xserver_t:shm rw_shm_perms;
+	allow $2 xserver_tmpfs_t:file rw_file_perms;
+
+	# XCB Event Queue: used by the Qt library for example
+	allow $2 xserver_tmp_t:file rw_file_perms;
+
+	allow $2 iceauth_home_t:file manage_file_perms;
+	allow $2 iceauth_home_t:file relabel_file_perms;
+
+	allow $2 xauth_home_t:file manage_file_perms;
+	allow $2 xauth_home_t:file relabel_file_perms;
+
+	manage_dirs_pattern($2, user_fonts_t, user_fonts_t)
+	manage_files_pattern($2, user_fonts_t, user_fonts_t)
+	relabel_dirs_pattern($2, user_fonts_t, user_fonts_t)
+	relabel_files_pattern($2, user_fonts_t, user_fonts_t)
+
+	manage_dirs_pattern($2, user_fonts_cache_t, user_fonts_cache_t)
+	manage_files_pattern($2, user_fonts_cache_t, user_fonts_cache_t)
+	relabel_dirs_pattern($2, user_fonts_cache_t, user_fonts_cache_t)
+	relabel_files_pattern($2, user_fonts_cache_t, user_fonts_cache_t)
+
+	manage_dirs_pattern($2, user_fonts_config_t, user_fonts_config_t)
+	manage_files_pattern($2, user_fonts_config_t, user_fonts_config_t)
+	relabel_dirs_pattern($2, user_fonts_config_t, user_fonts_config_t)
+	relabel_files_pattern($2, user_fonts_config_t, user_fonts_config_t)
+
+	manage_dirs_pattern($2, mesa_shader_cache_t, mesa_shader_cache_t)
+	manage_files_pattern($2, mesa_shader_cache_t, mesa_shader_cache_t)
+	allow $2 mesa_shader_cache_t:file map;
+	relabel_dirs_pattern($2, mesa_shader_cache_t, mesa_shader_cache_t)
+	relabel_files_pattern($2, mesa_shader_cache_t, mesa_shader_cache_t)
+
+	xserver_user_home_dir_filetrans_user_iceauth($2, ".ICEauthority")
+
+	xserver_read_xkb_libs($2)
+
+	allow $2 xdm_t:unix_stream_socket { getattr accept };
+
+	optional_policy(`
+		systemd_user_app_status($1, xserver_t)
+	')
+
+	optional_policy(`
+		xdg_cache_filetrans($2, mesa_shader_cache_t, dir, "mesa_shader_cache")
+	')

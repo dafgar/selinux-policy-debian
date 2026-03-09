@@ -1,0 +1,112 @@
+	gen_require(`
+		type xserver_t, xserver_tmp_t, xserver_tmpfs_t;
+		type user_fonts_t, user_fonts_cache_t, user_fonts_config_t;
+		type iceauth_t, iceauth_exec_t, iceauth_home_t;
+		type xauth_t, xauth_exec_t, xauth_home_t;
+		type xdm_t, xdm_tmp_t;
+	')
+
+	role $4 types { xserver_t xauth_t iceauth_t };
+
+	# Xserver read/write client shm
+	allow xserver_t $2:fd use;
+	allow xserver_t $2:shm rw_shm_perms;
+
+	allow xserver_t $2:process signal;
+
+	allow xserver_t $2:shm rw_shm_perms;
+
+	allow $2 user_fonts_t:dir list_dir_perms;
+	allow $2 user_fonts_t:file read_file_perms;
+
+	allow $2 user_fonts_config_t:dir list_dir_perms;
+	allow $2 user_fonts_config_t:file read_file_perms;
+
+	manage_dirs_pattern($2, user_fonts_cache_t, user_fonts_cache_t)
+	manage_files_pattern($2, user_fonts_cache_t, user_fonts_cache_t)
+
+	stream_connect_pattern($2, xserver_tmp_t, xserver_tmp_t, xserver_t)
+	files_search_tmp($2)
+
+	# Communicate via System V shared memory.
+	allow $2 xserver_t:fd use;
+	allow $2 xserver_t:shm r_shm_perms;
+	allow $2 xserver_tmpfs_t:file { map read_file_perms };
+
+	# allow ps to show iceauth
+	ps_process_pattern($2, iceauth_t)
+
+	domtrans_pattern($2, iceauth_exec_t, iceauth_t)
+
+	allow $2 iceauth_home_t:file read_file_perms;
+
+	domtrans_pattern($2, xauth_exec_t, xauth_t)
+
+	allow $2 xauth_t:process signal;
+
+	# allow ps to show xauth
+	ps_process_pattern($2, xauth_t)
+	allow $2 xserver_t:process signal;
+
+	allow $2 xauth_home_t:file read_file_perms;
+
+	# for when /tmp/.X11-unix is created by the system
+	allow $2 xdm_t:fd use;
+	allow $2 xdm_t:fifo_file rw_inherited_fifo_file_perms;
+	allow $2 xdm_tmp_t:dir search;
+	allow $2 xdm_tmp_t:sock_file { read write };
+	dontaudit $2 xdm_t:tcp_socket { read write };
+
+	# Read /tmp/.X0-lock
+	allow $2 xserver_tmp_t:file read_inherited_file_perms;
+
+	dev_rw_xserver_misc($2)
+	dev_map_xserver_misc($2)
+	dev_rw_power_management($2)
+	dev_read_input($2)
+	dev_read_misc($2)
+	dev_write_misc($2)
+	# open office is looking for the following
+	dev_getattr_agp_dev($2)
+	dev_dontaudit_rw_dri($2)
+	# GNOME checks for usb and other devices:
+	dev_rw_usbfs($2)
+
+	miscfiles_read_fonts($2)
+	miscfiles_watch_fonts_dirs($2)
+
+	xserver_common_x_domain_template(user, $2)  #selint-disable:S-004
+	xserver_domtrans($2)
+	xserver_unconfined($2)
+	xserver_xsession_entry_type($2)
+	xserver_dontaudit_write_log($2)
+	xserver_stream_connect_xdm($2)
+	xserver_use_user_fonts($2)
+	# certain apps want to read xdm.pid file
+	xserver_read_xdm_runtime_files($2)
+	# gnome-session creates socket under /tmp/.ICE-unix/
+	xserver_create_xdm_tmp_sockets($2)
+	# if we allow xserver_create_xdm_tmp_sockets and we use wayland then
+	# we need to unlink as well.  Maybe should use a different type.
+	allow $2 xdm_tmp_t:sock_file { unlink };
+	# Needed for escd, remove if we get escd policy
+	xserver_manage_xdm_tmp_files($2)
+
+	# for the .xsession-errors log file
+	xserver_user_home_dir_filetrans_user_xsession_log($2)
+	xserver_manage_xsession_log($2)
+
+	# Client write xserver shm
+	tunable_policy(`allow_write_xshm',`
+		allow $2 xserver_t:shm rw_shm_perms;
+		allow $2 xserver_tmpfs_t:file rw_file_perms;
+	')
+	tunable_policy(`xserver_allow_dri',`
+		dev_rw_dri($2)
+	')
+
+	optional_policy(`
+		systemd_user_app_status($1, iceauth_t)
+		systemd_user_app_status($1, xauth_t)
+		systemd_user_app_status($1, xserver_t)
+	')

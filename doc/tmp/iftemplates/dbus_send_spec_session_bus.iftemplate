@@ -1,0 +1,6 @@
+	gen_require(`
+		type $1_dbusd_t;
+		class dbus send_msg;
+	')
+
+	allow $2 $1_dbusd_t:dbus send_msg;

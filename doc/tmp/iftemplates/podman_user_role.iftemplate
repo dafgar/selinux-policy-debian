@@ -1,0 +1,16 @@
+	gen_require(`
+		type podman_user_t;
+		type podman_user_conmon_t;
+	')
+
+	podman_run_user($3, $4)
+	podman_run_conmon_user($3, $4)
+
+	optional_policy(`
+		dbus_spec_session_bus_client($1, podman_user_t)
+	')
+
+	optional_policy(`
+		systemd_user_app_status($1, podman_user_t)
+		systemd_user_app_status($1, podman_user_conmon_t)
+	')

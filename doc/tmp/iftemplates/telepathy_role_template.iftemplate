@@ -1,0 +1,68 @@
+	gen_require(`
+		attribute telepathy_domain, telepathy_tmp_content;
+		type telepathy_gabble_t, telepathy_sofiasip_t, telepathy_idle_t;
+		type telepathy_mission_control_t, telepathy_salut_t, telepathy_sunshine_t;
+		type telepathy_stream_engine_t, telepathy_msn_t, telepathy_gabble_exec_t;
+		type telepathy_sofiasip_exec_t, telepathy_idle_exec_t;
+		type telepathy_logger_t, telepathy_logger_exec_t;
+		type telepathy_mission_control_exec_t, telepathy_salut_exec_t;
+		type telepathy_sunshine_exec_t, telepathy_stream_engine_exec_t;
+		type telepathy_msn_exec_t;
+
+		type telepathy_mission_control_xdg_cache_t, telepathy_xdg_cache_t, telepathy_logger_xdg_cache_t;
+		type telepathy_gabble_xdg_cache_t, telepathy_mission_control_t, telepathy_xdg_data_t;
+		type telepathy_mission_control_xdg_data_t, telepathy_sunshine_home_t, telepathy_logger_xdg_data_t;
+		type telepathy_mission_control_home_t;
+	')
+
+	role $4 types telepathy_domain;
+
+	allow $3 telepathy_domain:process { ptrace signal_perms };
+	ps_process_pattern($3, telepathy_domain)
+
+	telepathy_gabble_stream_connect($3)
+	telepathy_msn_stream_connect($3)
+	telepathy_salut_stream_connect($3)
+
+	dbus_spec_session_domain($1, telepathy_gabble_t, telepathy_gabble_exec_t)
+	dbus_spec_session_domain($1, telepathy_sofiasip_t, telepathy_sofiasip_exec_t)
+	dbus_spec_session_domain($1, telepathy_idle_t, telepathy_idle_exec_t)
+	dbus_spec_session_domain($1, telepathy_logger_t, telepathy_logger_exec_t)
+	dbus_spec_session_domain($1, telepathy_mission_control_t, telepathy_mission_control_exec_t)
+	dbus_spec_session_domain($1, telepathy_salut_t, telepathy_salut_exec_t)
+	dbus_spec_session_domain($1, telepathy_sunshine_t, telepathy_sunshine_exec_t)
+	dbus_spec_session_domain($1, telepathy_stream_engine_t, telepathy_stream_engine_exec_t)
+	dbus_spec_session_domain($1, telepathy_msn_t, telepathy_msn_exec_t)
+
+	allow $2 { telepathy_mission_control_xdg_cache_t telepathy_xdg_cache_t telepathy_logger_xdg_cache_t }:dir { manage_dir_perms relabel_dir_perms };
+	allow $2 { telepathy_gabble_xdg_cache_t telepathy_mission_control_home_t telepathy_xdg_data_t }:dir { manage_dir_perms relabel_dir_perms };
+	allow $2 { telepathy_mission_control_xdg_data_t telepathy_sunshine_home_t telepathy_logger_xdg_data_t }:dir { manage_dir_perms relabel_dir_perms };
+
+	allow $2 { telepathy_mission_control_xdg_cache_t telepathy_xdg_cache_t telepathy_logger_xdg_cache_t }:file { manage_file_perms relabel_file_perms };
+	allow $2 { telepathy_gabble_xdg_cache_t telepathy_mission_control_home_t telepathy_xdg_data_t }:file { manage_file_perms relabel_file_perms };
+	allow $2 { telepathy_mission_control_xdg_data_t telepathy_sunshine_home_t telepathy_logger_xdg_data_t }:file { manage_file_perms relabel_file_perms };
+
+	filetrans_pattern($2, telepathy_xdg_cache_t, telepathy_gabble_xdg_cache_t, dir, "gabble")
+	# gnome_cache_filetrans($2, telepathy_gabble_cache_home_t, dir, "wocky")
+
+	filetrans_pattern($2, telepathy_xdg_cache_t, telepathy_logger_xdg_cache_t, dir, "logger")
+	# gnome_data_filetrans($2, telepathy_logger_data_home_t, dir, "TpLogger")
+
+	userdom_user_home_dir_filetrans($2, telepathy_mission_control_home_t, dir, ".mission-control")
+	filetrans_pattern($2, telepathy_xdg_data_t, telepathy_mission_control_xdg_data_t, dir, "mission-control")
+	# gnome_cache_filetrans($2, telepathy_mission_control_cache_home_t, file, ".mc_connections")
+
+	userdom_user_home_dir_filetrans($2, telepathy_sunshine_home_t, dir, ".telepathy-sunshine")
+
+	# gnome_cache_filetrans($2, telepathy_cache_home_t, dir, "telepathy")
+	# gnome_data_filetrans($2, telepathy_data_home_t, dir, "telepathy")
+
+	allow $2 telepathy_tmp_content:dir { manage_dir_perms relabel_dir_perms };
+	allow $2 telepathy_tmp_content:file { manage_file_perms relabel_file_perms };
+	allow $2 telepathy_tmp_content:sock_file { manage_sock_file_perms relabel_sock_file_perms };
+
+	telepathy_mission_control_dbus_chat($3)
+
+	optional_policy(`
+		systemd_user_app_status($1, telepathy_domain)
+	')

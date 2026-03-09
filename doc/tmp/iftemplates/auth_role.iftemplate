@@ -1,0 +1,12 @@
+	gen_require(`
+		type chkpwd_t, chkpwd_exec_t, shadow_t;
+	')
+
+	role $4 types chkpwd_t;
+
+	# Transition from the user domain to this domain.
+	domtrans_pattern($2, chkpwd_exec_t, chkpwd_t)
+
+	ps_process_pattern($2, chkpwd_t)
+
+	dontaudit $2 shadow_t:file read_file_perms;

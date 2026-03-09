@@ -1,0 +1,20 @@
+	gen_require(`
+		type dirmngr_t, dirmngr_exec_t;
+		type dirmngr_tmp_t;
+	')
+
+	role $4 types dirmngr_t;
+
+	domtrans_pattern($3, dirmngr_exec_t, dirmngr_t)
+
+	allow $3 dirmngr_t:process { ptrace signal_perms };
+	ps_process_pattern($3, dirmngr_t)
+
+	allow dirmngr_t $3:fd use;
+	allow dirmngr_t $3:fifo_file rw_inherited_fifo_file_perms;
+
+	allow $2 dirmngr_tmp_t:sock_file { manage_sock_file_perms relabel_sock_file_perms };
+
+	optional_policy(`
+		systemd_user_app_status($1, dirmngr_t)
+	')

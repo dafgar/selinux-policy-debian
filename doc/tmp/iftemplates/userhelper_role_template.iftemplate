@@ -1,0 +1,81 @@
+	gen_require(`
+		attribute userhelper_type, consolehelper_type;
+		attribute_role userhelper_roles, consolehelper_roles;
+		type userhelper_exec_t, consolehelper_exec_t;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	type $1_consolehelper_t, consolehelper_type;
+	userdom_user_application_domain($1_consolehelper_t, consolehelper_exec_t)
+
+	role consolehelper_roles types $1_consolehelper_t;
+	roleattribute $4 consolehelper_roles;
+
+	type $1_userhelper_t, userhelper_type;
+	userdom_user_application_domain($1_userhelper_t, userhelper_exec_t)
+
+	domain_role_change_exemption($1_userhelper_t)
+	domain_obj_id_change_exemption($1_userhelper_t)
+	domain_interactive_fd($1_userhelper_t)
+	domain_subj_id_change_exemption($1_userhelper_t)
+
+	role userhelper_roles types $1_userhelper_t;
+	roleattribute $4 userhelper_roles;
+
+	########################################
+	#
+	# Consolehelper local policy
+	#
+
+	allow $1_consolehelper_t $3:unix_stream_socket connectto;
+
+	domtrans_pattern($3, consolehelper_exec_t, $1_consolehelper_t)
+
+	allow $3 $1_consolehelper_t:process { ptrace signal_perms };
+	ps_process_pattern($3, $1_consolehelper_t)
+
+	auth_use_pam($1_consolehelper_t)
+
+	optional_policy(`
+		dbus_connect_all_session_bus($1_consolehelper_t)
+
+		optional_policy(`
+			userhelper_dbus_chat_all_consolehelper($3)
+		')
+	')
+
+	optional_policy(`
+		systemd_user_app_status($1, $1_consolehelper_t)
+	')
+
+	########################################
+	#
+	# Userhelper local policy
+	#
+
+	domtrans_pattern($3, userhelper_exec_t, $1_userhelper_t)
+
+	dontaudit $3 $1_userhelper_t:process signal;
+
+	corecmd_bin_domtrans($1_userhelper_t, $2)
+
+	auth_domtrans_chk_passwd($1_userhelper_t)
+	auth_use_nsswitch($1_userhelper_t)
+
+	userdom_bin_spec_domtrans_unpriv_users($1_userhelper_t)
+	userdom_entry_spec_domtrans_unpriv_users($1_userhelper_t)
+
+	optional_policy(`
+		tunable_policy(`! secure_mode',`
+			sysadm_bin_spec_domtrans($1_userhelper_t)
+			sysadm_entry_spec_domtrans($1_userhelper_t)
+		')
+	')
+
+	optional_policy(`
+		systemd_user_app_status($1, $1_userhelper_t)
+	')

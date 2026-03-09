@@ -1,0 +1,13 @@
+	gen_require(`
+		attribute container_system_domain;
+		attribute container_engine_system_domain;
+	')
+
+	role $4 types container_engine_system_domain;
+
+	container_base_role($1, $2, $3, $4)
+
+	allow container_system_domain $3:unix_stream_socket rw_stream_socket_perms;
+
+	allow $3 container_engine_system_domain:process { ptrace signal_perms };
+	ps_process_pattern($3, container_engine_system_domain)

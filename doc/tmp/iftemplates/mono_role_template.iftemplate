@@ -1,0 +1,37 @@
+	gen_require(`
+		attribute mono_domain;
+		type mono_exec_t;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	type $1_mono_t, mono_domain;
+	domain_type($1_mono_t)
+	domain_entry_file($1_mono_t, mono_exec_t)
+	role $2 types $1_mono_t;
+
+	domain_interactive_fd($1_mono_t)
+	application_type($1_mono_t)
+
+	########################################
+	#
+	# Policy
+	#
+
+	domtrans_pattern($3, mono_exec_t, $1_mono_t)
+
+	allow $3 $1_mono_t:process { ptrace noatsecure signal_perms };
+	ps_process_pattern($3, $1_mono_t)
+
+	corecmd_bin_domtrans($1_mono_t, $2)
+
+	userdom_manage_user_tmpfs_files($1_mono_t)
+
+	optional_policy(`
+		fs_dontaudit_rw_tmpfs_files($1_mono_t)
+
+		xserver_role($1, $1_mono_t, $3, $4)
+	')

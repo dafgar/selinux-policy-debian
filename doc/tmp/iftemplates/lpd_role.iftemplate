@@ -1,0 +1,31 @@
+	gen_require(`
+		attribute_role lpr_roles;
+		type lpr_t, lpr_exec_t;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	roleattribute $4 lpr_roles;
+
+	########################################
+	#
+	# Policy
+	#
+
+	domtrans_pattern($3, lpr_exec_t, lpr_t)
+
+	allow $3 lpr_t:process { ptrace signal_perms };
+	ps_process_pattern($3, lpr_t)
+
+	dontaudit lpr_t $3:unix_stream_socket { read write };
+
+	optional_policy(`
+		cups_read_config($3)
+	')
+
+	optional_policy(`
+		systemd_user_app_status($1, lpr_t)
+	')

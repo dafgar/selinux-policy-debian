@@ -1,0 +1,22 @@
+	gen_require(`
+		type dockerd_user_t;
+		type dockerd_exec_t;
+	')
+
+	role $4 types dockerd_user_t;
+
+	docker_run_user_daemon($3, $4)
+	docker_run_user_cli($3, $4)
+
+	ifdef(`init_systemd',`
+		systemd_user_daemon_domain($1, dockerd_exec_t, dockerd_user_t)
+		systemd_user_send_systemd_notify($1, dockerd_user_t)
+	')
+
+	optional_policy(`
+		dbus_spec_session_bus_client($1, dockerd_user_t)
+	')
+
+	optional_policy(`
+		rootlesskit_role($1, $2, $3, $4)
+	')

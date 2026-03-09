@@ -1,0 +1,25 @@
+	gen_require(`
+		attribute_role wine_roles;
+		type wine_exec_t, wine_t, wine_tmp_t;
+		type wine_home_t;
+	')
+
+	roleattribute $4 wine_roles;
+
+	domtrans_pattern($3, wine_exec_t, wine_t)
+
+	allow wine_t $3:unix_stream_socket connectto;
+	allow wine_t $3:process signull;
+
+	ps_process_pattern($3, wine_t)
+	allow $3 wine_t:process { ptrace signal_perms };
+
+	allow $3 wine_t:fd use;
+	allow $3 wine_t:shm { associate getattr };
+	allow $3 wine_t:shm rw_shm_perms;
+	allow $3 wine_t:unix_stream_socket connectto;
+
+	allow $2 { wine_tmp_t wine_home_t }:dir { manage_dir_perms relabel_dir_perms };
+	allow $2 { wine_tmp_t wine_home_t }:file { manage_file_perms relabel_file_perms };
+	allow $2 wine_home_t:lnk_file { manage_lnk_file_perms relabel_lnk_file_perms };
+	userdom_user_home_dir_filetrans($2, wine_home_t, dir, ".wine")

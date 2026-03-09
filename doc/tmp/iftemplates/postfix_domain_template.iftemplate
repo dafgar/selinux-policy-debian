@@ -1,0 +1,26 @@
+	gen_require(`
+		attribute postfix_domain;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	type postfix_$1_t, postfix_domain;
+	type postfix_$1_exec_t;
+	domain_type(postfix_$1_t)
+	domain_entry_file(postfix_$1_t, postfix_$1_exec_t)
+	role system_r types postfix_$1_t;
+
+	########################################
+	#
+	# Policy
+	#
+
+	can_exec(postfix_$1_t, postfix_$1_exec_t)
+
+	auth_use_nsswitch(postfix_$1_t)
+	ifdef(`init_systemd',`
+		systemd_dontaudit_connect_machined(postfix_$1_t)
+	')

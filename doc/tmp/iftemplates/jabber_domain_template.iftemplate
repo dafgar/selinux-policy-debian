@@ -1,0 +1,7 @@
+	gen_require(`
+		attribute jabberd_domain;
+	')
+
+	type $1_t, jabberd_domain;
+	type $1_exec_t;
+	init_daemon_domain($1_t, $1_exec_t)

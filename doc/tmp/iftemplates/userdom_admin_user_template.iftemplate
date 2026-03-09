@@ -1,0 +1,137 @@
+	gen_require(`
+		attribute admindomain;
+		class passwd { passwd chfn chsh rootok };
+	')
+
+	##############################
+	#
+	# Declarations
+	#
+
+	# Inherit rules for ordinary users.
+	userdom_login_user_template($1)
+	userdom_common_user_template($1)
+
+	domain_obj_id_change_exemption($1_t)
+	role system_r types $1_t;
+
+	typeattribute $1_t admindomain;
+
+	ifdef(`direct_sysadm_daemon',`
+		domain_system_change_exemption($1_t)
+	')
+
+	##############################
+	#
+	# $1_t local policy
+	#
+
+	allow $1_t self:capability { chown dac_override dac_read_search fowner fsetid kill setgid setuid setpcap linux_immutable net_bind_service net_broadcast net_admin net_raw ipc_lock ipc_owner sys_rawio sys_chroot sys_ptrace sys_pacct sys_admin sys_boot sys_nice sys_resource sys_time sys_tty_config mknod lease setfcap };
+	allow $1_t self:cap_userns sys_ptrace;
+	allow $1_t self:process { setexec setfscreate };
+	allow $1_t self:netlink_audit_socket nlmsg_readpriv;
+	allow $1_t self:tun_socket create;
+	# Set password information for other users.
+	allow $1_t self:passwd { passwd chfn chsh };
+	# Skip authentication when pam_rootok is specified.
+	allow $1_t self:passwd rootok;
+
+	kernel_read_software_raid_state($1_t)
+	kernel_getattr_core_if($1_t)
+	kernel_getattr_message_if($1_t)
+	kernel_change_ring_buffer_level($1_t)
+	kernel_clear_ring_buffer($1_t)
+	kernel_read_ring_buffer($1_t)
+	kernel_get_sysvipc_info($1_t)
+	kernel_rw_all_sysctls($1_t)
+	# signal unlabeled processes:
+	kernel_kill_unlabeled($1_t)
+	kernel_signal_unlabeled($1_t)
+	kernel_sigstop_unlabeled($1_t)
+	kernel_signull_unlabeled($1_t)
+	kernel_sigchld_unlabeled($1_t)
+
+	corenet_tcp_bind_generic_port($1_t)
+	# allow setting up tunnels
+	corenet_rw_tun_tap_dev($1_t)
+
+	dev_getattr_generic_blk_files($1_t)
+	dev_getattr_generic_chr_files($1_t)
+	# for lsof
+	dev_getattr_mtrr_dev($1_t)
+	# Allow MAKEDEV to work
+	dev_create_all_blk_files($1_t)
+	dev_create_all_chr_files($1_t)
+	dev_delete_all_blk_files($1_t)
+	dev_delete_all_chr_files($1_t)
+	dev_rename_all_blk_files($1_t)
+	dev_rename_all_chr_files($1_t)
+	dev_create_generic_symlinks($1_t)
+	dev_rw_wireless($1_t)
+
+	domain_setpriority_all_domains($1_t)
+	domain_read_all_domains_state($1_t)
+	domain_getattr_all_domains($1_t)
+	domain_dontaudit_ptrace_all_domains($1_t)
+	# signal all domains:
+	domain_kill_all_domains($1_t)
+	domain_signal_all_domains($1_t)
+	domain_signull_all_domains($1_t)
+	domain_sigstop_all_domains($1_t)
+	domain_sigstop_all_domains($1_t)
+	domain_sigchld_all_domains($1_t)
+	# for lsof
+	domain_getattr_all_sockets($1_t)
+
+	files_exec_usr_src_files($1_t)
+
+	fs_getattr_all_fs($1_t)
+	fs_set_all_quotas($1_t)
+	fs_exec_noxattr($1_t)
+
+	storage_read_tape($1_t)
+	storage_write_tape($1_t)
+	storage_raw_read_removable_device($1_t)
+	storage_raw_write_removable_device($1_t)
+
+	term_use_all_terms($1_t)
+
+	auth_getattr_shadow($1_t)
+	# Manage almost all files
+	files_manage_non_auth_files($1_t)
+	files_map_non_auth_files($1_t)
+	# Relabel almost all files
+	files_relabel_non_auth_files($1_t)
+
+	init_telinit($1_t)
+
+	logging_send_syslog_msg($1_t)
+
+	modutils_domtrans($1_t)
+
+	# The following rule is temporary until such time that a complete
+	# policy management infrastructure is in place so that an administrator
+	# cannot directly manipulate policy files with arbitrary programs.
+	seutil_manage_src_policy($1_t)
+	# Violates the goal of limiting write access to checkpolicy.
+	# But presently necessary for installing the file_contexts file.
+	seutil_manage_bin_policy($1_t)
+
+	userdom_manage_user_home_content_dirs($1_t)
+	userdom_manage_user_home_content_files($1_t)
+	userdom_manage_user_home_content_symlinks($1_t)
+	userdom_manage_user_home_content_pipes($1_t)
+	userdom_manage_user_home_content_sockets($1_t)
+	userdom_user_home_dir_filetrans_user_home_content($1_t, { dir file lnk_file fifo_file sock_file })
+
+	optional_policy(`
+		postgresql_unconfined($1_t)
+	')
+
+	optional_policy(`
+		usbguard_stream_connect($1_t)
+	')
+
+	optional_policy(`
+		userhelper_exec($1_t)
+	')

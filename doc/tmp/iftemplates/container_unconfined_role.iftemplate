@@ -1,0 +1,25 @@
+	gen_require(`
+		attribute container_domain;
+		type container_config_t;
+	')
+
+	role $4 types container_domain;
+
+	allow $3 container_domain:process transition;
+	allow $3 container_domain:process2 { nnp_transition nosuid_transition };
+	allow container_domain $3:fd use;
+	allow container_domain $3:unix_stream_socket rw_stream_socket_perms;
+
+	allow $3 self:cap_userns { kill sys_ptrace };
+
+	allow $3 container_domain:process { ptrace signal_perms };
+	ps_process_pattern($3, container_domain)
+
+	files_search_etc($2)
+	read_files_pattern($2, container_config_t, container_config_t)
+
+	container_admin_all_files($2)
+	container_admin_all_ro_files($2)
+
+	container_admin_all_user_runtime_content($2)
+	container_manage_all_home_content($2)

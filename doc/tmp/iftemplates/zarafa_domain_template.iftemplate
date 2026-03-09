@@ -1,0 +1,34 @@
+	gen_require(`
+		attribute zarafa_domain, zarafa_logfile, zarafa_pidfile;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	type zarafa_$1_t, zarafa_domain;
+	type zarafa_$1_exec_t;
+	init_daemon_domain(zarafa_$1_t, zarafa_$1_exec_t)
+
+	type zarafa_$1_log_t, zarafa_logfile;
+	logging_log_file(zarafa_$1_log_t)
+
+	type zarafa_$1_runtime_t alias zarafa_$1_var_run_t, zarafa_pidfile;
+	files_runtime_file(zarafa_$1_runtime_t)
+
+	########################################
+	#
+	# Policy
+	#
+
+	manage_files_pattern(zarafa_$1_t, zarafa_$1_runtime_t, zarafa_$1_runtime_t)
+	manage_sock_files_pattern(zarafa_$1_t, zarafa_$1_runtime_t, zarafa_$1_runtime_t)
+	files_runtime_filetrans(zarafa_$1_t, zarafa_$1_runtime_t, { file sock_file })
+
+	append_files_pattern(zarafa_$1_t, zarafa_$1_log_t, zarafa_$1_log_t)
+	create_files_pattern(zarafa_$1_t, zarafa_$1_log_t, zarafa_$1_log_t)
+	setattr_files_pattern(zarafa_$1_t, zarafa_$1_log_t, zarafa_$1_log_t)
+	logging_log_filetrans(zarafa_$1_t, zarafa_$1_log_t, file)
+
+	auth_use_nsswitch(zarafa_$1_t)

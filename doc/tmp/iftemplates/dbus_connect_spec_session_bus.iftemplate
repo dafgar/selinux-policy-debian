@@ -1,0 +1,6 @@
+	gen_require(`
+		type $1_dbusd_t;
+		class dbus acquire_svc;
+	')
+
+	allow $2 $1_dbusd_t:dbus acquire_svc;

@@ -1,0 +1,188 @@
+	gen_require(`
+		attribute systemd_user_session_type, systemd_log_parse_env_type;
+		attribute systemd_user_activated_sock_file_type, systemd_user_unix_stream_activated_socket_type;
+		type systemd_analyze_exec_t;
+		type systemd_conf_home_t, systemd_data_home_t;
+		type systemd_user_runtime_t, systemd_user_runtime_notify_t;
+		type systemd_user_unit_t;
+		type systemd_user_runtime_unit_t, systemd_user_transient_unit_t;
+		type systemd_machined_t, user_devpts_t;
+	')
+
+	#################################
+	#
+	# Declarations
+	#
+	type $1_systemd_t, systemd_user_session_type, systemd_log_parse_env_type;
+	init_pgm_spec_user_daemon_domain($1_systemd_t)
+	domain_user_exemption_target($1_systemd_t)
+	userdom_application_exec_domain($1_systemd_t, $1)
+	ubac_constrained($1_systemd_t)
+	role $2 types $1_systemd_t;
+
+	#################################
+	#
+	# Local policy
+	#
+
+	# This domain is per-role because of the below transitions.
+	# See the systemd --user section of systemd.te for the
+	# remainder of the rules.
+	allow $1_systemd_t self:process { getsched signal };
+	allow $1_systemd_t self:netlink_kobject_uevent_socket create_socket_perms;
+	allow $1_systemd_t self:unix_stream_socket create_stream_socket_perms;
+	allow $1_systemd_t $3:process { setsched rlimitinh signal_perms };
+	corecmd_shell_domtrans($1_systemd_t, $3)
+	corecmd_bin_domtrans($1_systemd_t, $3)
+	corecmd_shell_entry_type($1_systemd_t)
+
+	# systemctl --user rules
+	allow $1_systemd_t systemd_user_unix_stream_activated_socket_type:unix_stream_socket { create_socket_perms listen };
+	allow $1_systemd_t systemd_user_activated_sock_file_type:dir manage_dir_perms;
+	allow $1_systemd_t systemd_user_activated_sock_file_type:sock_file manage_sock_file_perms;
+
+	allow $1_systemd_t systemd_user_runtime_t:blk_file manage_blk_file_perms;
+	allow $1_systemd_t systemd_user_runtime_t:chr_file manage_chr_file_perms;
+	allow $1_systemd_t systemd_user_runtime_t:dir manage_dir_perms;
+	allow $1_systemd_t systemd_user_runtime_t:file manage_file_perms;
+	allow $1_systemd_t systemd_user_runtime_t:fifo_file manage_fifo_file_perms;
+	allow $1_systemd_t systemd_user_runtime_t:lnk_file manage_lnk_file_perms;
+	allow $1_systemd_t systemd_user_runtime_t:sock_file manage_sock_file_perms;
+
+	allow $1_systemd_t systemd_user_runtime_unit_t:dir manage_dir_perms;
+	allow $1_systemd_t systemd_user_runtime_unit_t:file manage_file_perms;
+	allow $1_systemd_t systemd_user_runtime_unit_t:lnk_file manage_lnk_file_perms;
+
+	allow $1_systemd_t systemd_user_transient_unit_t:dir manage_dir_perms;
+	allow $1_systemd_t systemd_user_transient_unit_t:file manage_file_perms;
+	allow $1_systemd_t systemd_user_transient_unit_t:lnk_file manage_lnk_file_perms;
+
+	allow $1_systemd_t $3:dir search_dir_perms;
+	allow $1_systemd_t $3:file read_file_perms;
+	allow $1_systemd_t $3:lnk_file read_lnk_file_perms;
+
+	dev_read_urand($1_systemd_t)
+
+	files_search_home($1_systemd_t)
+	files_watch_etc_dirs($1_systemd_t)
+
+	fs_getattr_xattr_fs($1_systemd_t)
+	fs_manage_cgroup_files($1_systemd_t)
+	fs_watch_cgroup_files($1_systemd_t)
+
+	kernel_dontaudit_getattr_proc($1_systemd_t)
+	# if systemd exists in the initrd, the journal socket stays labeled kernel_t
+	# without this access, user services cannot log to the journal
+	kernel_stream_connect($1_systemd_t)
+
+	selinux_use_status_page($1_systemd_t)
+
+	init_linkable_keyring($1_systemd_t)
+	init_list_unit_dirs($1_systemd_t)
+	init_read_generic_units_files($1_systemd_t)
+	# container engines will move container processes to different slices
+	init_dbus_chat($1_systemd_t)
+
+	# the user@.service unit is restarted when containers are created
+	systemd_get_user_manager_units_status($1_systemd_t)
+	systemd_start_user_manager_units($1_systemd_t)
+	systemd_stop_user_manager_units($1_systemd_t)
+	systemd_reload_user_manager_units($1_systemd_t)
+
+	miscfiles_watch_localization($1_systemd_t)
+
+	mount_read_runtime_files($1_systemd_t)
+	mount_watch_runtime_files($1_systemd_t)
+	mount_watch_reads_runtime_files($1_systemd_t)
+
+	seutil_search_default_contexts($1_systemd_t)
+	seutil_read_file_contexts($1_systemd_t)
+
+	userdom_search_user_home_dirs($1_systemd_t)
+
+	# for machinectl shell
+	term_user_pty($1_systemd_t, user_devpts_t)
+	allow $1_systemd_t user_devpts_t:chr_file rw_file_perms;
+
+	systemd_manage_conf_home_content($1_systemd_t)
+	systemd_manage_data_home_content($1_systemd_t)
+
+	systemd_search_user_runtime_unit_dirs($1_systemd_t)
+	systemd_search_user_transient_unit_dirs($1_systemd_t)
+	systemd_read_user_units_files($1_systemd_t)
+
+	dbus_system_bus_client($1_systemd_t)
+	dbus_spec_session_bus_client($1, $1_systemd_t)
+	dbus_connect_spec_session_bus($1, $1_systemd_t)
+
+	userdom_exec_user_bin_files($1_systemd_t)
+
+	# userdomain rules
+	allow $3 $1_systemd_t:process signal;
+	allow $3 $1_systemd_t:unix_stream_socket rw_stream_socket_perms;
+	# Allow using file descriptors for user environment generators
+	allow $3 $1_systemd_t:fd use;
+	allow $3 $1_systemd_t:fifo_file rw_inherited_fifo_file_perms;
+	stream_connect_pattern($3, systemd_user_runtime_t, systemd_user_runtime_t, $1_systemd_t)
+
+	allow $3 $1_systemd_t:system { disable enable reload start stop status };
+
+	allow $3 systemd_user_runtime_t:dir { manage_dir_perms relabel_dir_perms };
+	allow $3 systemd_user_runtime_t:file { manage_file_perms relabel_file_perms };
+	allow $3 systemd_user_runtime_t:fifo_file { manage_fifo_file_perms relabel_fifo_file_perms };
+	allow $3 systemd_user_runtime_t:lnk_file { manage_lnk_file_perms relabel_lnk_file_perms };
+	allow $3 systemd_user_runtime_t:sock_file { manage_sock_file_perms relabel_sock_file_perms };
+
+	# for "machinectl shell"
+	allow $1_systemd_t systemd_machined_t:fd use;
+	allow $3 systemd_machined_t:fd use;
+	allow $3 systemd_machined_t:dbus send_msg;
+	allow systemd_machined_t $3:dbus send_msg;
+
+	allow $3 systemd_user_runtime_notify_t:sock_file { manage_sock_file_perms relabel_sock_file_perms };
+
+	allow $3 systemd_user_unit_t:service { reload start status stop };
+	allow $3 systemd_conf_home_t:service { reload start status stop };
+
+	can_exec($3, systemd_analyze_exec_t)
+
+	init_dbus_chat($3)
+	init_search_var_lib_dirs($3)
+
+	systemd_list_journal_dirs($3)
+	systemd_read_journal_files($3)
+
+	systemd_manage_conf_home_content($3)
+	systemd_relabel_conf_home_content($3)
+
+	systemd_manage_data_home_content($3)
+	systemd_relabel_data_home_content($3)
+
+	systemd_read_user_units_files($3)
+	systemd_list_user_runtime_unit_dirs($3)
+	systemd_read_user_runtime_units_files($3)
+	systemd_list_user_transient_unit_dirs($3)
+	systemd_read_user_transient_units_files($3)
+
+	systemd_get_user_runtime_units_status($3)
+	systemd_reload_user_runtime_units($3)
+	systemd_start_user_runtime_units($3)
+	systemd_stop_user_runtime_units($3)
+
+	systemd_get_user_transient_units_status($3)
+	systemd_reload_user_transient_units($3)
+	systemd_start_user_transient_units($3)
+	systemd_stop_user_transient_units($3)
+
+	systemd_watch_passwd_runtime_dirs($3)
+
+	optional_policy(`
+		dirmngr_tmp_dir_search($1_systemd_t)
+	')
+
+	optional_policy(`
+		xdg_config_filetrans($1_systemd_t, systemd_conf_home_t, dir, "systemd")
+		xdg_data_filetrans($1_systemd_t, systemd_data_home_t, dir, "systemd")
+		xdg_read_config_files($1_systemd_t)
+		xdg_read_data_files($1_systemd_t)
+	')

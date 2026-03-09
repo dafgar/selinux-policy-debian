@@ -1,0 +1,7 @@
+	gen_require(`
+		type $1_systemd_t;
+	')
+
+	domtrans_pattern($1_systemd_t, $2, $3)
+
+	systemd_user_app_status($1, $3)

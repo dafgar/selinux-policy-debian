@@ -1,0 +1,28 @@
+	gen_require(`
+		attribute djbdns_domain;
+	')
+
+	########################################
+	#
+	# Declarations
+	#
+
+	type djbdns_$1_t, djbdns_domain;
+	type djbdns_$1_exec_t;
+	domain_type(djbdns_$1_t)
+	domain_entry_file(djbdns_$1_t, djbdns_$1_exec_t)
+	role system_r types djbdns_$1_t;
+
+	type djbdns_$1_conf_t;
+	files_config_file(djbdns_$1_conf_t)
+
+	########################################
+	#
+	# Local policy
+	#
+
+	daemontools_service_domain(djbdns_$1_t, djbdns_$1_exec_t)
+	daemontools_read_svc(djbdns_$1_t)
+
+	allow djbdns_$1_t djbdns_$1_conf_t:dir list_dir_perms;
+	allow djbdns_$1_t djbdns_$1_conf_t:file read_file_perms;

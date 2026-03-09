@@ -1,0 +1,43 @@
+	gen_require(`
+		type xdm_t, xdm_tmp_t;
+		type xauth_home_t, iceauth_home_t, xserver_t, xserver_tmpfs_t;
+	')
+
+	allow $2 self:shm create_shm_perms;
+	allow $2 self:unix_dgram_socket create_socket_perms;
+	allow $2 self:unix_stream_socket { connectto create_stream_socket_perms };
+
+	# Read .Xauthority file
+	allow $2 xauth_home_t:file read_file_perms;
+	allow $2 iceauth_home_t:file read_file_perms;
+
+	# for when /tmp/.X11-unix is created by the system
+	allow $2 xdm_t:fd use;
+	allow $2 xdm_t:fifo_file rw_inherited_fifo_file_perms;
+	allow $2 xdm_tmp_t:dir search_dir_perms;
+	allow $2 xdm_tmp_t:sock_file { read write };
+	dontaudit $2 xdm_t:tcp_socket { read write };
+
+	# Allow connections to X server.
+	files_search_tmp($2)
+
+	miscfiles_read_fonts($2)
+
+	userdom_search_user_home_dirs($2)
+	# for .xsession-errors
+	xserver_rw_xsession_log($2)
+
+	xserver_ro_session($2,$3)
+	xserver_use_user_fonts($2)
+
+	xserver_read_xdm_tmp_files($2)
+
+	# X object manager
+	xserver_object_types_template($1)
+	xserver_common_x_domain_template($1,$2)
+
+	# Client write xserver shm
+	tunable_policy(`allow_write_xshm',`
+		allow $2 xserver_t:shm rw_shm_perms;
+		allow $2 xserver_tmpfs_t:file rw_file_perms;
+	')

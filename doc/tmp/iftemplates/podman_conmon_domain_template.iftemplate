@@ -1,0 +1,24 @@
+	gen_require(`
+		attribute conmon_domain;
+		type conmon_exec_t;
+	')
+
+	type $1_conmon_t, conmon_domain;
+	application_domain($1_conmon_t, conmon_exec_t)
+
+	domtrans_pattern($2, conmon_exec_t, $1_conmon_t)
+
+	allow $2 $1_conmon_t:process signull;
+	allow $2 $1_conmon_t:fifo_file setattr;
+	allow $2 $1_conmon_t:unix_stream_socket { connectto rw_stream_socket_perms };
+
+	allow $1_conmon_t $2:tcp_socket rw_stream_socket_perms;
+	allow $1_conmon_t $2:unix_stream_socket rw_stream_socket_perms;
+	allow $1_conmon_t $2:unix_dgram_socket rw_socket_perms;
+	ps_process_pattern($1_conmon_t, $2)
+
+	corecmd_search_bin($1_conmon_t)
+	# conmon will execute crun/runc to create the container,
+	# so transition back to the source domain when creating it
+	container_generic_engine_domtrans($1_conmon_t, $2)
+	container_engine_executable_entrypoint($2)
