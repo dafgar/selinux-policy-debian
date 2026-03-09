@@ -600,6 +600,10 @@ allow systemd_generator_t self:vsock_socket create;
 
 allow systemd_generator_t systemd_unit_t:file getattr;
 
+require
+{
+    type systemd_transient_unit_t;
+}
 allow systemd_generator_t systemd_transient_unit_t:dir list_dir_perms;
 
 allow systemd_generator_t systemd_user_runtime_unit_t:dir manage_dir_perms;

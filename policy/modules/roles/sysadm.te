@@ -24,9 +24,10 @@ gen_tunable(sysadm_allow_rw_inherited_fifo, false)
 
 userdom_admin_user_template(sysadm)
 
-ifndef(`enable_mls',`
+ifndef(`enable_mls',
+	ifndef(`enable_mcs', `
 	userdom_security_admin_template(sysadm_t, sysadm_r)
-')
+'))
 
 ########################################
 #
@@ -95,11 +96,12 @@ ifdef(`distro_gentoo',`
 	init_exec_rc(sysadm_t)
 ')
 
-ifndef(`enable_mls',`
-	logging_manage_audit_log(sysadm_t)
-	logging_manage_audit_config(sysadm_t)
-	logging_run_auditctl(sysadm_t, sysadm_r)
-')
+ifndef(`enable_mls',
+	ifndef(`enable_mcs', `
+		logging_manage_audit_log(sysadm_t)
+		logging_manage_audit_config(sysadm_t)
+		logging_run_auditctl(sysadm_t, sysadm_r)
+'))
 
 ifdef(`init_systemd',`
 	# Allow managing runtime units, for example mount units generated
