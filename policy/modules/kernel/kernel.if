@@ -1670,7 +1670,7 @@ interface(`kernel_write_non_proc_init_mountpoint_files',`
 		attribute proc_type;
 	')
 
-	init_write_mountpoint_files($1, -proc_type)
+	init_write_mountpoint_files($1, proc_type)
 ')
 
 ########################################
@@ -1688,7 +1688,7 @@ interface(`kernel_create_non_proc_init_mountpoint_files',`
 		attribute proc_type;
 	')
 
-	init_create_mountpoint_files($1, -proc_type)
+	init_create_mountpoint_files($1, proc_type)
 ')
 
 ########################################
