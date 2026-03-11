@@ -71691,6 +71691,29 @@ Domain to be exempted.
 </interface>
 </module>
 </layer>
+<layer name="local">
+<summary>
+	Local policy override modules layered above the Debian base policy.
+</summary>
+<module name="local_devicekit_power" filename="policy/modules/local/local_devicekit_power.if">
+</module>
+<module name="local_plymouth" filename="policy/modules/local/local_plymouth.if">
+</module>
+<module name="local_systemd_hostnamed" filename="policy/modules/local/local_systemd_hostnamed.if">
+</module>
+<module name="local_systemd_locale" filename="policy/modules/local/local_systemd_locale.if">
+</module>
+<module name="local_systemd_logind" filename="policy/modules/local/local_systemd_logind.if">
+</module>
+<module name="local_systemd_machined" filename="policy/modules/local/local_systemd_machined.if">
+</module>
+<module name="local_systemd_sessions" filename="policy/modules/local/local_systemd_sessions.if">
+</module>
+<module name="local_systemd_user_runtime_dir" filename="policy/modules/local/local_systemd_user_runtime_dir.if">
+</module>
+<module name="local_test" filename="policy/modules/local/local_test.if">
+</module>
+</layer>
 <layer name="roles">
 <summary>Policy modules for user roles.</summary>
 <module name="auditadm" filename="policy/modules/roles/auditadm.if">
