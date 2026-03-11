@@ -38,9 +38,11 @@ ifdef LOCAL_ROOT
 builddir := $(LOCAL_ROOT)/
 tmpdir := $(LOCAL_ROOT)/tmp
 tags := $(LOCAL_ROOT)/tags
+local_builddir := $(LOCAL_ROOT)/local-build/
 else
 tmpdir := tmp
 tags := tags
+local_builddir := local-build/
 endif
 
 # executable paths
@@ -168,10 +170,12 @@ ifndef LOCAL_ROOT
 mod_conf := $(poldir)/modules.conf
 booleans := $(poldir)/booleans.conf
 tunables := $(poldir)/tunables.conf
+local_mod_conf := $(poldir)/modules-local.conf
 else
 mod_conf := $(local_poldir)/modules.conf
 booleans := $(local_poldir)/booleans.conf
 tunables := $(local_poldir)/tunables.conf
+local_mod_conf := $(local_poldir)/modules-local.conf
 endif
 
 # install paths
@@ -188,9 +192,12 @@ fcpath := $(contextpath)/files/file_contexts
 fcsubspath := $(contextpath)/files/file_contexts.subs_dist
 sharedir := $(prefix)/share/selinux
 modpkgdir := $(sharedir)/$(strip $(NAME))
+local_modpkgdir := $(modpkgdir)/local
 headerdir := $(modpkgdir)/include
 docsdir := $(prefix)/share/doc/$(PKGNAME)
 udicatemplatesdir := $(prefix)/share/udica/templates
+local_tmpdir := $(tmpdir)/local
+LOCAL_MOD_PRIORITY ?= 500
 
 # enable MLS if requested.
 ifeq "$(TYPE)" "mls"
@@ -318,6 +325,14 @@ configmod := module
 
 # modules.conf setting for unused module
 configoff := off
+
+local_layer := $(moddir)/local
+local_detected_mods = $(sort $(wildcard $(local_layer)/*.te) $(basename $(wildcard $(local_layer)/*.te.in)))
+local_conf_mods = $(addsuffix .te,$(sort $(shell $(AWK) '/^[[:blank:]]*[[:alpha:]_][[:alnum:]_]*[[:blank:]]*=/{ if ($$3 == "$(configmod)") print $$1 }' $(local_mod_conf) 2> /dev/null)))
+local_conf_off_mods = $(addsuffix .te,$(sort $(shell $(AWK) '/^[[:blank:]]*[[:alpha:]_][[:alnum:]_]*[[:blank:]]*=/{ if ($$3 == "$(configoff)") print $$1 }' $(local_mod_conf) 2> /dev/null)))
+local_enabled_mods = $(filter $(notdir $(local_detected_mods)),$(local_conf_mods))
+local_mod_pkgs = $(addprefix $(local_builddir),$(local_enabled_mods:.te=.pp))
+local_instpkg = $(addprefix $(local_modpkgdir)/,$(notdir $(local_enabled_mods:.te=.pp)))
 
 # test for module overrides from command line
 mod_test = $(filter $(APPS_OFF), $(APPS_BASE) $(APPS_MODS))
@@ -728,4 +743,46 @@ ifneq ($(generated_fc),)
 endif
 endif
 
-.PHONY: install-src install-appconfig install-headers install-udica-templates build-interface-db generate xml conf html bare tags
+.PHONY: install-src install-appconfig install-headers install-udica-templates build-interface-db generate xml conf html bare tags local-modules install-local load-local reload-local
+
+########################################
+#
+# Local override modules
+#
+local-modules: $(local_mod_pkgs)
+
+install-local: $(local_instpkg)
+
+load-local: $(local_instpkg)
+	@echo "Loading $(NAME) local policy modules at priority $(LOCAL_MOD_PRIORITY)."
+	@if test -z "$(local_enabled_mods)"; then \
+		echo "No local modules are enabled in $(local_mod_conf)." ;\
+		exit 0 ;\
+	fi
+	$(verbose) $(SEMODULE) -s $(NAME) -X $(LOCAL_MOD_PRIORITY) $(foreach mod,$(local_enabled_mods),-i $(local_modpkgdir)/$(notdir $(mod:.te=.pp)))
+
+reload-local: load-local
+
+$(local_tmpdir)/%.mod: $(m4support) $(tmpdir)/generated_definitions.conf $(tmpdir)/all_interfaces.conf $(local_layer)/%.te $(m4terminate)
+	@echo "Compiling $(NAME) local $(@F) module"
+	@test -d $(local_tmpdir) || mkdir -p $(local_tmpdir)
+	$(verbose) $(M4) $(M4PARAM) -s $^ > $(@:.mod=.tmp)
+	$(verbose) $(CHECKMODULE) -m $(@:.mod=.tmp) -o $@
+
+$(local_tmpdir)/%.mod.fc: $(m4support)
+	@test -d $(local_tmpdir) || mkdir -p $(local_tmpdir)
+	@if test -f $(local_layer)/$*.fc; then \
+		$(M4) $(M4PARAM) $(m4support) $(local_layer)/$*.fc > $@ ;\
+	else \
+		: > $@ ;\
+	fi
+
+$(local_builddir)%.pp: $(local_tmpdir)/%.mod $(local_tmpdir)/%.mod.fc
+	@echo "Creating $(NAME) local $(@F) policy package"
+	@test -d $(local_builddir) || mkdir -p $(local_builddir)
+	$(verbose) $(SEMOD_PKG) -o $@ -m $< -f $<.fc
+
+$(local_modpkgdir)/%.pp: $(local_builddir)%.pp
+	@echo "Installing $(NAME) local $(@F) policy package."
+	@$(INSTALL) -d -m 0755 $(@D)
+	$(verbose) $(INSTALL) -m 0644 $^ $@
