@@ -1,0 +1,10 @@
+policy_module(local_syslogd)
+
+gen_require(`
+	type syslogd_t;
+')
+
+# rsyslog reads network sysctls such as /proc/sys/net/ipv6/conf/all/disable_ipv6
+# during early startup to annotate log messages with current kernel network
+# state.  Use the standard kernel interface instead of direct proc rules.
+kernel_read_net_sysctls(syslogd_t)
