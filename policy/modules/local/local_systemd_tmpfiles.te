@@ -1,0 +1,22 @@
+policy_module(local_systemd_tmpfiles)
+
+gen_require(`
+	type bin_t;
+	type cron_spool_t;
+	type security_t;
+	type systemd_tmpfiles_t;
+')
+
+# Early boot tmpfiles processing traverses a small set of configuration and
+# pseudo-filesystem paths that are not covered by the base policy on this
+# system.  Keep the fix narrow to the observed accesses:
+# - symlink metadata reads below bin_t-backed paths such as /etc/profile.d
+# - directory search on cron spool paths
+# - symlink metadata reads in securityfs such as /sys/kernel/security/ima
+
+corecmd_search_bin(systemd_tmpfiles_t)
+allow systemd_tmpfiles_t bin_t:lnk_file read_lnk_file_perms;
+
+cron_search_spool(systemd_tmpfiles_t)
+
+allow systemd_tmpfiles_t security_t:lnk_file read_lnk_file_perms;
