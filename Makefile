@@ -780,7 +780,11 @@ $(local_tmpdir)/%.mod.fc: $(m4support)
 $(local_builddir)%.pp: $(local_tmpdir)/%.mod $(local_tmpdir)/%.mod.fc
 	@echo "Creating $(NAME) local $(@F) policy package"
 	@test -d $(local_builddir) || mkdir -p $(local_builddir)
-	$(verbose) $(SEMOD_PKG) -o $@ -m $< -f $<.fc
+	@if test -s $<.fc; then \
+		$(SEMOD_PKG) -o $@ -m $< -f $<.fc; \
+	else \
+		$(SEMOD_PKG) -o $@ -m $<; \
+	fi
 
 $(local_modpkgdir)/%.pp: $(local_builddir)%.pp
 	@echo "Installing $(NAME) local $(@F) policy package."
