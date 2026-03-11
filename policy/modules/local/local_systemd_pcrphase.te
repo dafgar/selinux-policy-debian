@@ -1,0 +1,16 @@
+policy_module(local_systemd_pcrphase)
+
+gen_require(`
+	type syslogd_tmp_t;
+	type systemd_log_t;
+	type systemd_pcrphase_t;
+')
+
+# systemd-pcrextend records TPM measurements during early boot.  The base
+# policy lets it manage systemd_log_t, but the runtime parent /run/log is
+# created by syslogd and labeled syslogd_tmp_t.  Add the missing bridge so the
+# service can create /run/log/systemd with the intended systemd_log_t label.
+fs_getattr_nsfs_files(systemd_pcrphase_t)
+
+allow systemd_pcrphase_t syslogd_tmp_t:dir rw_dir_perms;
+filetrans_pattern(systemd_pcrphase_t, syslogd_tmp_t, systemd_log_t, dir, "systemd")
