@@ -1,0 +1,22 @@
+policy_module(local_zfs)
+
+gen_require(`
+	type zed_t;
+	type zfs_t;
+')
+
+# Helper scripts shipped under /usr/lib/zfs-linux/{zed.d,zpool.d} are part of
+# the ZFS service implementation, but on this system they are seen as lib_t.
+# zed_t and zfs_t intentionally execute these helpers in-place via /bin/sh,
+# so the correct model is "execute without transition" on a dedicated helper
+# script type, not a transition to a new domain and not a broad allow on lib_t.
+type local_zfs_helper_exec_t;
+files_type(local_zfs_helper_exec_t)
+
+can_exec(zed_t, local_zfs_helper_exec_t)
+can_exec(zfs_t, local_zfs_helper_exec_t)
+
+# zpool status -c invokes helper commands in a separate process group.  This is
+# normal CLI behavior for the ZFS toolchain and should not require a separate
+# domain transition.
+allow zfs_t self:process setpgid;

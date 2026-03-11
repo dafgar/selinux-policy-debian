@@ -1,0 +1,4 @@
+/usr/lib/zfs-linux/zed\.d(/.*)?		gen_context(system_u:object_r:local_zfs_helper_exec_t,s0)
+/usr/lib/zfs-linux/zpool\.d(/.*)?		gen_context(system_u:object_r:local_zfs_helper_exec_t,s0)
+/etc/zfs/zed\.d(/.*)?			gen_context(system_u:object_r:local_zfs_helper_exec_t,s0)
+/etc/zfs/zpool\.d(/.*)?			gen_context(system_u:object_r:local_zfs_helper_exec_t,s0)
