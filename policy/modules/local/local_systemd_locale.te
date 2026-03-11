@@ -1,0 +1,11 @@
+policy_module(local_systemd_locale)
+
+gen_require(`
+	type initrc_t;
+	type systemd_locale_t;
+')
+
+# systemd-localed hits inherited initrc_t sockets during boot handoff.  The
+# observed access is limited to metadata probing and does not justify a broad
+# allow rule against initrc_t sockets.
+dontaudit systemd_locale_t initrc_t:unix_stream_socket { getattr ioctl };

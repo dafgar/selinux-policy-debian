@@ -1,0 +1,11 @@
+policy_module(local_devicekit_power)
+
+gen_require(`
+	type devicekit_power_t;
+	type initrc_t;
+')
+
+# upowerd occasionally probes an inherited initrc_t stream socket during
+# boot handoff.  The observed denial is a failed TCGETS ioctl on a socket
+# it does not use for service operation.
+dontaudit devicekit_power_t initrc_t:unix_stream_socket { getattr ioctl };

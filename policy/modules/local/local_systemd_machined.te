@@ -1,0 +1,10 @@
+policy_module(local_systemd_machined)
+
+gen_require(`
+	type initrc_t;
+	type systemd_machined_t;
+')
+
+# systemd-machined observes inherited initrc_t sockets while boot-time socket
+# activation state is being handed off.  Suppress metadata-only denials.
+dontaudit systemd_machined_t initrc_t:unix_stream_socket { getattr ioctl };

@@ -1,0 +1,11 @@
+policy_module(local_systemd_logind)
+
+gen_require(`
+	type initrc_t;
+	type systemd_logind_t;
+')
+
+# systemd-logind sometimes retains visibility of inherited initrc_t stream
+# sockets during service activation.  Mute only socket metadata probes here.
+# Process-state access to initrc_t tasks is handled separately.
+dontaudit systemd_logind_t initrc_t:unix_stream_socket { getattr ioctl };

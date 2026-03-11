@@ -1,0 +1,11 @@
+policy_module(local_systemd_user_runtime_dir)
+
+gen_require(`
+	type initrc_t;
+	type systemd_user_runtime_dir_t;
+')
+
+# systemd-user-runtime-dir encounters inherited initrc_t sockets during early
+# session setup.  Only getattr was observed, but ioctl is suppressed as the
+# same stale-descriptor probe pattern.
+dontaudit systemd_user_runtime_dir_t initrc_t:unix_stream_socket { getattr ioctl };

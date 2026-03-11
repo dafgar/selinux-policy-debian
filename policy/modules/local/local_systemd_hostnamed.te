@@ -1,0 +1,11 @@
+policy_module(local_systemd_hostnamed)
+
+gen_require(`
+	type initrc_t;
+	type systemd_hostnamed_t;
+')
+
+# systemd-hostnamed may inherit a stale initrc_t socket reference while the
+# system is still converging from initrc_t into final service domains.
+# Suppress metadata probes only; this does not grant usable socket access.
+dontaudit systemd_hostnamed_t initrc_t:unix_stream_socket { getattr ioctl };

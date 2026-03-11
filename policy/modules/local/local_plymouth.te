@@ -1,0 +1,11 @@
+policy_module(local_plymouth)
+
+gen_require(`
+	type initrc_t;
+	type plymouth_t;
+')
+
+# plymouth probes inherited initrc_t stream sockets during early boot and
+# issues TCGETS against sockets that are not terminals.  This is boot
+# handoff noise rather than a missing functional permission.
+dontaudit plymouth_t initrc_t:unix_stream_socket { getattr ioctl };

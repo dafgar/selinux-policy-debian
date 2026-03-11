@@ -1,0 +1,11 @@
+policy_module(local_systemd_sessions)
+
+gen_require(`
+	type initrc_t;
+	type systemd_sessions_t;
+')
+
+# systemd-session workers may inspect an inherited initrc_t socket while the
+# login stack is still crossing out of initrc_t.  This suppresses probe noise
+# without granting connection or data transfer rights.
+dontaudit systemd_sessions_t initrc_t:unix_stream_socket { getattr ioctl };
