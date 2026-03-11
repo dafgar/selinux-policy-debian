@@ -743,7 +743,7 @@ ifneq ($(generated_fc),)
 endif
 endif
 
-.PHONY: install-src install-appconfig install-headers install-udica-templates build-interface-db generate xml conf html bare tags local-modules install-local load-local reload-local
+.PHONY: install-src install-appconfig install-headers install-udica-templates build-interface-db generate xml conf html bare tags local-modules install-local load-local reload-local clean-local
 
 ########################################
 #

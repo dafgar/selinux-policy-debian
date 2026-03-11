@@ -242,4 +242,8 @@ clean:
 	$(verbose) rm -f $(net_contexts) $(net_contexts_nft)
 	$(verbose) rm -fR $(tmpdir)
 
-.PHONY: default all policy base modules install load pure-load clean validate local-modules install-local load-local reload-local
+clean-local:
+	$(verbose) rm -fR $(local_builddir)
+	$(verbose) rm -fR $(local_tmpdir)
+
+.PHONY: default all policy base modules install load pure-load clean clean-local validate local-modules install-local load-local reload-local
