@@ -2,9 +2,14 @@ policy_module(local_syslogd)
 
 gen_require(`
 	type syslogd_t;
+	type tmpfs_t;
 ')
 
 # rsyslog reads network sysctls such as /proc/sys/net/ipv6/conf/all/disable_ipv6
 # during early startup to annotate log messages with current kernel network
 # state.  Use the standard kernel interface instead of direct proc rules.
 kernel_read_net_sysctls(syslogd_t)
+
+# Early boot journald probes may search the tmpfs root before later runtime
+# paths are established. Keep this limited to harmless directory traversal.
+dontaudit syslogd_t tmpfs_t:dir search;
