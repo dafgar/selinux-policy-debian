@@ -58,11 +58,14 @@ template(`wireplumber_role',`
 	dbus_system_bus_client($1_wireplumber_t)
 	logging_send_syslog_msg($1_wireplumber_t)
 	systemd_read_logind_runtime_files($1_wireplumber_t)
+	systemd_watch_logind_runtime_dirs($1_wireplumber_t)
+	systemd_watch_logind_sessions_dirs($1_wireplumber_t)
 	rtkit_scheduled($1_wireplumber_t)
 	dev_read_sound($1_wireplumber_t)
 	dev_write_sound($1_wireplumber_t)
 	dev_read_video_dev($1_wireplumber_t)
 	dev_write_video_dev($1_wireplumber_t)
+	allow $1_wireplumber_t device_t:dir watch;
 	stream_connect_pattern($1_wireplumber_t, user_runtime_t, pipewire_runtime_t, $1_pipewire_t)
 
 	manage_dirs_pattern($1_wireplumber_t, wireplumber_state_t, wireplumber_state_t)
