@@ -9,3 +9,13 @@ gen_require(`
 # sockets during service activation.  Mute only socket metadata probes here.
 # Process-state access to initrc_t tasks is handled separately.
 dontaudit systemd_logind_t initrc_t:unix_stream_socket { getattr ioctl };
+
+# logind also probes the EFI system partition and its backing block device to
+# enumerate boot loader entries.  Grant only the observed DOS filesystem reads
+# and fixed-disk read/ioctl access needed for that inspection path.
+fs_getattr_dos_fs(systemd_logind_t)
+fs_getattr_dos_dirs(systemd_logind_t)
+fs_search_dos(systemd_logind_t)
+fs_read_dos_files(systemd_logind_t)
+
+storage_raw_read_fixed_disk(systemd_logind_t)
