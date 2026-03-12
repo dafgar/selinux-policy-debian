@@ -1,0 +1,2 @@
+/etc/libvirt/hooks(/.*)?		gen_context(system_u:object_r:virt_hook_exec_t,s0)
+

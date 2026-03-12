@@ -1,0 +1,12 @@
+policy_module(local_virt)
+
+gen_require(`
+	type virtd_t;
+')
+
+type virt_hook_exec_t;
+files_type(virt_hook_exec_t)
+
+# Libvirt hook scripts are executable integration points under /etc/libvirt/hooks
+# and should not inherit the generic writable config type.
+can_exec(virtd_t, virt_hook_exec_t)

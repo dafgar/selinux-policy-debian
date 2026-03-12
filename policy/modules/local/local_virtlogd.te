@@ -1,0 +1,8 @@
+policy_module(local_virtlogd)
+
+gen_require(`
+	type virtlogd_t;
+')
+
+# virtlogd resolves its own executable path under /usr/sbin during startup.
+corecmd_search_bin(virtlogd_t)

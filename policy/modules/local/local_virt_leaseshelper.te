@@ -1,0 +1,10 @@
+policy_module(local_virt_leaseshelper)
+
+gen_require(`
+	type virt_leaseshelper_t;
+')
+
+# libvirt_leaseshelper reads /proc/sys/kernel/cap_last_cap and probes procfs
+# filesystem attributes during startup.
+kernel_read_kernel_sysctls(virt_leaseshelper_t)
+kernel_getattr_proc(virt_leaseshelper_t)
