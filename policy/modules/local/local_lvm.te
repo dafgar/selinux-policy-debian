@@ -1,0 +1,12 @@
+policy_module(local_lvm)
+
+gen_require(`
+	type initrc_t;
+	type lvm_t;
+	class sem { associate read unix_read unix_write write };
+')
+
+# During early boot, dmsetup/lvm can inherit a SysV semaphore created in the
+# initrc_t handoff path. This is active IPC use, not mere probe noise, so allow
+# the narrow semaphore access instead of suppressing it.
+allow lvm_t initrc_t:sem { associate read unix_read unix_write write };
