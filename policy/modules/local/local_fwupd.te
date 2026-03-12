@@ -1,0 +1,18 @@
+policy_module(local_fwupd)
+
+gen_require(`
+	type fwupd_conf_t;
+	type fwupd_t;
+')
+
+type fwupd_tmp_t;
+files_tmp_file(fwupd_tmp_t)
+
+# fwupd probes whether its main configuration file is writable. Keep that
+# harmless access() noise hidden rather than treating /etc/fwupd as writable.
+dontaudit fwupd_t fwupd_conf_t:file write;
+
+# fwupd uses SQLite-style temporary files under /var/tmp (etilqs_*).
+manage_dirs_pattern(fwupd_t, fwupd_tmp_t, fwupd_tmp_t)
+manage_files_pattern(fwupd_t, fwupd_tmp_t, fwupd_tmp_t)
+files_tmp_filetrans(fwupd_t, fwupd_tmp_t, file)
