@@ -7,6 +7,9 @@ gen_require(`
 	type ipsec_mgmt_t;
 ')
 
+type ipsec_port_t;
+corenet_port(ipsec_port_t)
+
 # strongSwan mutates TPM2 PKCS#11 state under /etc/tpm2_pkcs11 on this system.
 # Keep the path typing in local_tpm2_pkcs11 and grant ipsec_t access via that
 # module's interface so other consumers can be added without coupling them here.
@@ -15,6 +18,10 @@ local_tpm2_pkcs11_manage_etc(ipsec_t)
 # charon-systemd mmaps /etc/ipsec.secrets during startup. Keep this limited to
 # the existing IPsec key-file type instead of broadening generic etc access.
 allow ipsec_t ipsec_key_file_t:file map;
+
+# Permit outbound connects only to ports an administrator explicitly maps to
+# ipsec_port_t with semanage port.
+allow ipsec_t ipsec_port_t:tcp_socket name_connect;
 
 # charon-systemd uses AF_ALG, packet, and raw IP sockets directly. The base
 # ipsec policy already covers its UDP/TCP/netlink/key sockets; extend only the
