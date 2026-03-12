@@ -71695,9 +71695,37 @@ Domain to be exempted.
 <summary>
 	Local policy override modules layered above the Debian base policy.
 </summary>
+<module name="local_accountsd" filename="policy/modules/local/local_accountsd.if">
+</module>
+<module name="local_bird" filename="policy/modules/local/local_bird.if">
+</module>
+<module name="local_cryptsetup" filename="policy/modules/local/local_cryptsetup.if">
+</module>
+<module name="local_dante" filename="policy/modules/local/local_dante.if">
+</module>
 <module name="local_devicekit_power" filename="policy/modules/local/local_devicekit_power.if">
 </module>
+<module name="local_dnsmasq" filename="policy/modules/local/local_dnsmasq.if">
+</module>
+<module name="local_ifconfig" filename="policy/modules/local/local_ifconfig.if">
+</module>
+<module name="local_ipsec" filename="policy/modules/local/local_ipsec.if">
+</module>
+<module name="local_lowmemorymonitor" filename="policy/modules/local/local_lowmemorymonitor.if">
+</module>
+<module name="local_lvm" filename="policy/modules/local/local_lvm.if">
+</module>
+<module name="local_networkmanager" filename="policy/modules/local/local_networkmanager.if">
+</module>
+<module name="local_pcscd" filename="policy/modules/local/local_pcscd.if">
+</module>
 <module name="local_plymouth" filename="policy/modules/local/local_plymouth.if">
+</module>
+<module name="local_switcheroo" filename="policy/modules/local/local_switcheroo.if">
+</module>
+<module name="local_sysadm" filename="policy/modules/local/local_sysadm.if">
+</module>
+<module name="local_syslogd" filename="policy/modules/local/local_syslogd.if">
 </module>
 <module name="local_systemd_hostnamed" filename="policy/modules/local/local_systemd_hostnamed.if">
 </module>
@@ -71707,11 +71735,37 @@ Domain to be exempted.
 </module>
 <module name="local_systemd_machined" filename="policy/modules/local/local_systemd_machined.if">
 </module>
+<module name="local_systemd_pcrphase" filename="policy/modules/local/local_systemd_pcrphase.if">
+</module>
 <module name="local_systemd_sessions" filename="policy/modules/local/local_systemd_sessions.if">
+</module>
+<module name="local_systemd_tmpfiles" filename="policy/modules/local/local_systemd_tmpfiles.if">
 </module>
 <module name="local_systemd_user_runtime_dir" filename="policy/modules/local/local_systemd_user_runtime_dir.if">
 </module>
 <module name="local_test" filename="policy/modules/local/local_test.if">
+</module>
+<module name="local_tpm2_pkcs11" filename="policy/modules/local/local_tpm2_pkcs11.if">
+<summary>
+Manage TPM2 PKCS#11 state under /etc/tpm2_pkcs11.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to manage the TPM2 PKCS#11 state.
+</summary>
+</param>
+<interface name="local_tpm2_pkcs11_manage_etc" lineno="10">
+<summary>
+Summary is missing!
+</summary>
+<param name="?">
+<summary>
+Parameter descriptions are missing!
+</summary>
+</param>
+</interface>
+</module>
+<module name="local_zfs" filename="policy/modules/local/local_zfs.if">
 </module>
 </layer>
 <layer name="roles">
