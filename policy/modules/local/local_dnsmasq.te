@@ -1,0 +1,10 @@
+policy_module(local_dnsmasq)
+
+gen_require(`
+	type dnsmasq_t;
+')
+
+# dnsmasq reads the packaged DNSSEC trust-anchor data from /usr/share. The
+# file currently carries the generic usr_t label rather than a dnsmasq-specific
+# content type.
+files_read_usr_files(dnsmasq_t)
