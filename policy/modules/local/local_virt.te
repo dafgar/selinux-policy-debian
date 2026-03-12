@@ -1,6 +1,7 @@
 policy_module(local_virt)
 
 gen_require(`
+	type home_root_t;
 	type virtd_t;
 	type userfaultfd_device_t;
 ')
@@ -18,3 +19,6 @@ allow virtd_t userfaultfd_device_t:chr_file setattr_chr_file_perms;
 # Libvirt moves a prepared device tree into the guest namespace and detaches the
 # previous mount during VM setup.
 dev_unmount_fs(virtd_t)
+
+# libvirtd reads the home-root directory during host storage discovery.
+allow virtd_t home_root_t:dir read;
