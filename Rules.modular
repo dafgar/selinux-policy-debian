@@ -47,18 +47,22 @@ base: $(base_pkg)
 
 modules: $(mod_pkgs) $(local_mod_pkgs)
 
-install: $(instpkg) $(appfiles)
+install: $(instpkg) $(local_instpkg) $(appfiles)
 
 ########################################
 #
 # Load all configured modules
 #
-load: $(instpkg) $(appfiles)
+load: $(instpkg) $(local_instpkg) $(appfiles)
 # make sure two directories exist since they are not
 # created by semanage
 	@echo "Loading configured modules."
 	@$(INSTALL) -d -m 0755 $(policypath) $(dir $(fcpath))
 	$(verbose) $(SEMODULE) -s $(NAME) -i $(modpkgdir)/$(notdir $(base_pkg)) $(foreach mod,$(mod_pkgs),-i $(modpkgdir)/$(mod))
+	@if test -n "$(local_enabled_mods)"; then \
+		echo "Loading local modules at priority $(LOCAL_MOD_PRIORITY)." ;\
+		$(SEMODULE) -s $(NAME) -X $(LOCAL_MOD_PRIORITY) $(foreach mod,$(local_enabled_mods),-i $(local_modpkgdir)/$(notdir $(mod:.te=.pp))) ;\
+	fi
 
 ########################################
 #
