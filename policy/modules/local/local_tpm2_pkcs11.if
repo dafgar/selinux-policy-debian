@@ -1,0 +1,18 @@
+## <summary>
+##	Manage TPM2 PKCS#11 state under /etc/tpm2_pkcs11.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to manage the TPM2 PKCS#11 state.
+##	</summary>
+## </param>
+#
+interface(`local_tpm2_pkcs11_manage_etc',`
+	gen_require(`
+		type local_tpm2_pkcs11_etc_t;
+	')
+
+	manage_dirs_pattern($1, local_tpm2_pkcs11_etc_t, local_tpm2_pkcs11_etc_t)
+	manage_files_pattern($1, local_tpm2_pkcs11_etc_t, local_tpm2_pkcs11_etc_t)
+	read_lnk_files_pattern($1, local_tpm2_pkcs11_etc_t, local_tpm2_pkcs11_etc_t)
+')

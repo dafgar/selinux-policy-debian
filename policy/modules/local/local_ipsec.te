@@ -1,0 +1,10 @@
+policy_module(local_ipsec)
+
+gen_require(`
+	type ipsec_t;
+')
+
+# strongSwan mutates TPM2 PKCS#11 state under /etc/tpm2_pkcs11 on this system.
+# Keep the path typing in local_tpm2_pkcs11 and grant ipsec_t access via that
+# module's interface so other consumers can be added without coupling them here.
+local_tpm2_pkcs11_manage_etc(ipsec_t)
