@@ -27,3 +27,6 @@ allow dante_t dante_port_t:tcp_socket name_bind;
 
 # danted opens a raw IP socket during its network initialization path.
 allow dante_t self:rawip_socket create;
+
+# danted sends to its own local datagram socket during normal runtime.
+allow dante_t self:unix_dgram_socket sendto;
