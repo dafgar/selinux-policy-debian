@@ -9,6 +9,7 @@ gen_require(`
 	type systemd_tmpfiles_t;
 	type uuidd_var_lib_t;
 	type user_home_dir_t;
+	type user_tmp_t;
 ')
 
 # Early boot tmpfiles processing traverses a small set of configuration and
@@ -22,6 +23,8 @@ gen_require(`
 #   symlink in /etc/profile.d
 # - metadata updates from tpm2-tss-fapi tmpfiles z- rules for measurement
 #   exports in securityfs; revisit if we later want a more path-specific model
+# - directory metadata updates on a user_tmp_t path observed as "d3"; keep
+#   this limited to setattr until the underlying tmpfiles rule/path is known
 
 corecmd_search_bin(systemd_tmpfiles_t)
 allow systemd_tmpfiles_t bin_t:lnk_file read_lnk_file_perms;
@@ -38,3 +41,5 @@ allow systemd_tmpfiles_t security_t:lnk_file setattr_lnk_file_perms;
 
 allow systemd_tmpfiles_t user_home_dir_t:dir relabel_dir_perms;
 allow systemd_tmpfiles_t ssh_home_t:dir relabel_dir_perms;
+allow systemd_tmpfiles_t user_tmp_t:dir setattr_dir_perms;
+auditallow systemd_tmpfiles_t user_tmp_t:dir setattr_dir_perms;
