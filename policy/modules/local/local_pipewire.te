@@ -1,0 +1,8 @@
+policy_module(local_pipewire)
+
+type pipewire_exec_t;
+application_executable_file(pipewire_exec_t)
+
+# Local PipeWire support is modeled like other per-user media/session services:
+# a shared executable type with per-user domains instantiated through an
+# interface template.

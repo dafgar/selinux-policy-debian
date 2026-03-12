@@ -1,0 +1,48 @@
+## <summary>
+##	Role access for PipeWire.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	The prefix of the user role, for example staff or user.
+##	</summary>
+## </param>
+## <param name="user_domain">
+##	<summary>
+##	User domain for the role.
+##	</summary>
+## </param>
+## <param name="user_exec_domain">
+##	<summary>
+##	User exec domain for execute and transition access.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access.
+##	</summary>
+## </param>
+#
+template(`pipewire_role',`
+	gen_require(`
+		role $4;
+		attribute $3;
+		type pipewire_exec_t;
+	')
+
+	type $1_pipewire_t;
+	userdom_user_application_domain($1_pipewire_t, pipewire_exec_t)
+	role $4 types $1_pipewire_t;
+
+	domtrans_pattern($3, pipewire_exec_t, $1_pipewire_t)
+
+	allow $3 $1_pipewire_t:process { ptrace signal_perms };
+	allow $3 $1_pipewire_t:fd use;
+	ps_process_pattern($3, $1_pipewire_t)
+
+	allow $1_pipewire_t $3:process sigchld;
+
+	optional_policy(`
+		systemd_user_app_status($1, $1_pipewire_t)
+		allow $1_systemd_t $1_pipewire_t:process2 nnp_transition;
+	')
+')
