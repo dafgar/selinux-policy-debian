@@ -1,7 +1,9 @@
 policy_module(local_svirt)
 
 gen_require(`
+	type svirt_tmpfs_t;
 	type svirt_t;
+	type sysctl_vm_overcommit_t;
 	type virt_image_t;
 ')
 
@@ -14,6 +16,10 @@ allow svirt_t virt_image_t:file ioctl;
 # QEMU probes host CPU topology and VM-related sysctls during startup.
 dev_read_sysfs(svirt_t)
 kernel_read_vm_sysctls(svirt_t)
+allow svirt_t sysctl_vm_overcommit_t:file { getattr open read };
 
 # QEMU uses io_uring for asynchronous I/O on guest storage.
 allow svirt_t self:anon_inode { create map read write };
+
+# QEMU maps its own shared tmpfs display surfaces during guest startup.
+allow svirt_t svirt_tmpfs_t:file map;
