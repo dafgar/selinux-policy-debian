@@ -2,6 +2,7 @@ policy_module(local_staff_systemd)
 
 gen_require(`
 	type staff_systemd_t;
+	type unlabeled_t;
 ')
 
 # The user systemd instance creates the per-session GnuPG runtime directory
@@ -12,3 +13,8 @@ local_gpg_manage_runtime_dirs(staff_systemd_t)
 # The user systemd instance also prepares the keyring control socket before
 # handing off to the keyring daemon domain.
 local_gnome_systemd_keyring_socket(staff)
+
+# systemd --user performs generic filesystem probing on inherited fds during
+# session startup. Keep pidfs filesystem getattr noise hidden until there is a
+# concrete need to model it more specifically.
+dontaudit staff_systemd_t unlabeled_t:filesystem getattr;
