@@ -86,10 +86,18 @@ template(`pipewire_role',`
 	userdom_search_user_home_dirs($1_pipewire_t)
 	userdom_search_user_home_content($1_pipewire_t)
 	userdom_search_user_runtime($1_pipewire_t)
+	userdom_rw_user_tmpfs_files($1_pipewire_t)
+	userdom_map_user_tmpfs_files($1_pipewire_t)
+	userdom_delete_user_tmpfs_files($1_pipewire_t)
 	dbus_all_session_bus_client($1_pipewire_t)
 	dbus_write_session_runtime_socket($1_pipewire_t)
 	dbus_system_bus_client($1_pipewire_t)
 	rtkit_scheduled($1_pipewire_t)
+
+	allow $1_pipewire_t pulseaudio_tmp_t:dir manage_dir_perms;
+	allow $1_pipewire_t pulseaudio_tmp_t:file manage_file_perms;
+	allow $1_pipewire_t pulseaudio_tmp_t:sock_file manage_sock_file_perms;
+	userdom_user_runtime_filetrans($1_pipewire_t, pulseaudio_tmp_t, dir, "pulse")
 
 	manage_sock_files_pattern($1_pipewire_t, pipewire_runtime_t, pipewire_runtime_t)
 	userdom_user_runtime_filetrans($1_pipewire_t, pipewire_runtime_t, sock_file, "pipewire-0")
