@@ -2,6 +2,7 @@ policy_module(local_bird)
 
 gen_require(`
 	type bird_runtime_t;
+	type bird_t;
 	type initrc_t;
 ')
 
@@ -11,3 +12,6 @@ gen_require(`
 # type up front instead of teaching bird_t to operate on initrc_runtime_t.
 files_runtime_filetrans(initrc_t, bird_runtime_t, dir, "bird")
 files_runtime_filetrans(initrc_t, bird_runtime_t, sock_file, "bird.ctl")
+
+# BIRD probes socket options on its routing socket during startup.
+allow bird_t self:rawip_socket getopt;
