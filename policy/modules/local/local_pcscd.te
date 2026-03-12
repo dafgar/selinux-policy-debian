@@ -1,0 +1,10 @@
+policy_module(local_pcscd)
+
+gen_require(`
+	type pcscd_t;
+')
+
+# pcscd reads cached udev properties for smartcard reader devices from
+# /run/udev/data/* during reader discovery.
+udev_search_runtime(pcscd_t)
+udev_read_runtime_files(pcscd_t)
