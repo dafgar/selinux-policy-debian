@@ -1,0 +1,17 @@
+## <summary>
+##	Allow a user systemd instance to create and prepare the GNOME keyring
+##	control socket for the corresponding SELinux user prefix.
+## </summary>
+## <param name="prefix">
+##	<summary>
+##	User prefix, for example staff or user.
+##	</summary>
+## </param>
+#
+template(`local_gnome_systemd_keyring_socket',`
+	gen_require(`
+		type $1_gkeyringd_t, gnome_keyring_tmp_t;
+	')
+
+	systemd_user_app_socket_create($1, $1_gkeyringd_t, gnome_keyring_tmp_t)
+')
