@@ -121,6 +121,7 @@ template(`pipewire_role',`
 	ps_process_pattern($1_pipewire_t, $2)
 
 	auth_use_nsswitch($1_pipewire_t)
+	alsa_read_config($1_pipewire_t)
 	miscfiles_read_localization($1_pipewire_t)
 	files_read_usr_files($1_pipewire_t)
 	files_map_usr_files($1_pipewire_t)
