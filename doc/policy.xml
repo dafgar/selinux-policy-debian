@@ -71796,6 +71796,11 @@ Local override module with no exported interfaces.
 Local override module with no exported interfaces.
 </summary>
 </module>
+<module name="local_openvpn" filename="policy/modules/local/local_openvpn.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
+</module>
 <module name="local_pcscd" filename="policy/modules/local/local_pcscd.if">
 <summary>
 Local override module with no exported interfaces.
@@ -71897,6 +71902,11 @@ Role allowed access.
 </template>
 </module>
 <module name="local_plymouth" filename="policy/modules/local/local_plymouth.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
+</module>
+<module name="local_powerprofiles" filename="policy/modules/local/local_powerprofiles.if">
 <summary>
 Local override module with no exported interfaces.
 </summary>
