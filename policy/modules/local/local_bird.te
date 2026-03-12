@@ -13,5 +13,22 @@ gen_require(`
 files_runtime_filetrans(initrc_t, bird_runtime_t, dir, "bird")
 files_runtime_filetrans(initrc_t, bird_runtime_t, sock_file, "bird.ctl")
 
+# BIRD starts as root, prepares its runtime socket state, then drops to the
+# bird account while retaining only the capabilities it needs for routing work.
+# The dac_override grant follows the observed startup sequence where the daemon
+# creates and adjusts control-socket objects before/while changing identity.
+# Keep this decision visible and revisit it if BIRD startup is later reworked
+# to avoid DAC bypass during the privilege-drop path.
+allow bird_t self:capability {
+	chown
+	# dac_override
+	dac_read_search
+	fowner
+	fsetid
+	setgid
+	setuid
+};
+allow bird_t self:process setcap;
+
 # BIRD probes socket options on its routing socket during startup.
 allow bird_t self:rawip_socket getopt;
