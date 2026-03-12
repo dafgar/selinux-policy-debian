@@ -49,6 +49,7 @@ template(`wireplumber_role',`
 	allow $1_wireplumber_t self:process { getsched setrlimit setsched };
 
 	auth_use_nsswitch($1_wireplumber_t)
+	alsa_read_config($1_wireplumber_t)
 	miscfiles_read_localization($1_wireplumber_t)
 	files_read_usr_files($1_wireplumber_t)
 	files_map_usr_files($1_wireplumber_t)
@@ -60,7 +61,9 @@ template(`wireplumber_role',`
 	dbus_all_session_bus_client($1_wireplumber_t)
 	dbus_write_session_runtime_socket($1_wireplumber_t)
 	dbus_system_bus_client($1_wireplumber_t)
+	devicekit_dbus_chat_power($1_wireplumber_t)
 	dev_read_sysfs($1_wireplumber_t)
+	kernel_read_system_state($1_wireplumber_t)
 	logging_send_syslog_msg($1_wireplumber_t)
 	systemd_read_logind_runtime_files($1_wireplumber_t)
 	systemd_watch_logind_runtime_dirs($1_wireplumber_t)
