@@ -1,0 +1,13 @@
+policy_module(local_powerprofiles)
+
+gen_require(`
+	type power_profilesd_t;
+')
+
+type powerprofiles_var_lib_t;
+files_type(powerprofiles_var_lib_t)
+
+# Keep power-profiles-daemon state out of generic var_lib_t so access can stay
+# scoped to this service.
+read_files_pattern(power_profilesd_t, powerprofiles_var_lib_t, powerprofiles_var_lib_t)
+allow power_profilesd_t powerprofiles_var_lib_t:file getattr_file_perms;
