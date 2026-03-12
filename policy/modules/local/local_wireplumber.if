@@ -56,6 +56,8 @@ template(`wireplumber_role',`
 	dbus_system_bus_client($1_wireplumber_t)
 	logging_send_syslog_msg($1_wireplumber_t)
 	systemd_read_logind_runtime_files($1_wireplumber_t)
+	dev_read_sound($1_wireplumber_t)
+	dev_write_sound($1_wireplumber_t)
 
 	manage_dirs_pattern($1_wireplumber_t, wireplumber_state_t, wireplumber_state_t)
 	manage_files_pattern($1_wireplumber_t, wireplumber_state_t, wireplumber_state_t)
