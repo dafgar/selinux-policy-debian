@@ -2,6 +2,7 @@ policy_module(local_virt)
 
 gen_require(`
 	type virtd_t;
+	type userfaultfd_device_t;
 ')
 
 type virt_hook_exec_t;
@@ -10,3 +11,6 @@ files_type(virt_hook_exec_t)
 # Libvirt hook scripts are executable integration points under /etc/libvirt/hooks
 # and should not inherit the generic writable config type.
 can_exec(virtd_t, virt_hook_exec_t)
+
+# libvirtd adjusts metadata on the userfaultfd device node during VM setup.
+allow virtd_t userfaultfd_device_t:chr_file setattr_chr_file_perms;
