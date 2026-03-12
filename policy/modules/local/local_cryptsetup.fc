@@ -1,1 +1,2 @@
-/run/cryptsetup(/.*)?		gen_context(system_u:object_r:local_cryptsetup_runtime_t,s0)
+/run/cryptsetup			-d	gen_context(system_u:object_r:local_cryptsetup_runtime_t,s0)
+/run/cryptsetup/[^/]+		--	gen_context(system_u:object_r:local_cryptsetup_runtime_t,s0)
