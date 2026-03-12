@@ -71996,6 +71996,11 @@ Domain allowed to manage the TPM2 PKCS#11 state.
 </param>
 </interface>
 </module>
+<module name="local_utempter" filename="policy/modules/local/local_utempter.if">
+<summary>
+Local utempter policy adjustments.
+</summary>
+</module>
 <module name="local_virt" filename="policy/modules/local/local_virt.if">
 <summary>
 Local override module with no exported interfaces.
