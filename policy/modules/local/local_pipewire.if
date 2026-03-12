@@ -117,6 +117,8 @@ template(`pipewire_role',`
 
 	allow $1_pipewire_t $3:process sigchld;
 	allow $1_pipewire_t self:process getsched;
+	ps_process_pattern($1_pipewire_t, $1_wireplumber_t)
+	ps_process_pattern($1_pipewire_t, $2)
 
 	auth_use_nsswitch($1_pipewire_t)
 	miscfiles_read_localization($1_pipewire_t)
