@@ -11,3 +11,6 @@ files_type(powerprofiles_var_lib_t)
 # scoped to this service.
 read_files_pattern(power_profilesd_t, powerprofiles_var_lib_t, powerprofiles_var_lib_t)
 allow power_profilesd_t powerprofiles_var_lib_t:file getattr_file_perms;
+
+# The daemon reads cached udev metadata for power-related platform devices.
+udev_read_runtime_files(power_profilesd_t)
