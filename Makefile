@@ -743,13 +743,13 @@ ifneq ($(generated_fc),)
 endif
 endif
 
-.PHONY: install-src install-appconfig install-headers install-udica-templates build-interface-db generate xml conf html bare tags local-modules install-local load-local reload-local clean-local
+.PHONY: install-src install-appconfig install-headers install-udica-templates build-interface-db generate xml conf html bare tags modules-local install-local load-local reload-local clean-local
 
 ########################################
 #
 # Local override modules
 #
-local-modules: $(local_mod_pkgs)
+modules-local: $(local_mod_pkgs)
 
 install-local: $(local_instpkg)
 

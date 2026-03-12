@@ -246,4 +246,4 @@ clean-local:
 	$(verbose) rm -fR $(local_builddir)
 	$(verbose) rm -fR $(local_tmpdir)
 
-.PHONY: default all policy base modules install load pure-load clean clean-local validate local-modules install-local load-local reload-local
+.PHONY: default all policy base modules install load pure-load clean clean-local validate modules-local install-local load-local reload-local
