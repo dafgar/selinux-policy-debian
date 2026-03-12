@@ -65,6 +65,8 @@ template(`wireplumber_role',`
 	dev_write_sound($1_wireplumber_t)
 	dev_read_video_dev($1_wireplumber_t)
 	dev_write_video_dev($1_wireplumber_t)
+	allow $1_wireplumber_t self:bluetooth_socket create_stream_socket_perms;
+	bluetooth_dbus_chat($1_wireplumber_t)
 	allow $1_wireplumber_t device_t:dir watch;
 	stream_connect_pattern($1_wireplumber_t, user_runtime_t, pipewire_runtime_t, $1_pipewire_t)
 	pipewire_rw_tmpfs_files($1_wireplumber_t)
