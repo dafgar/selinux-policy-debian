@@ -1,0 +1,16 @@
+## <summary>
+##	Manage GnuPG runtime directories under the per-user runtime tree.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to create and populate GnuPG runtime directories.
+##	</summary>
+## </param>
+#
+interface(`local_gpg_manage_runtime_dirs',`
+	gen_require(`
+		type gpg_runtime_t;
+	')
+
+	allow $1 gpg_runtime_t:dir { create add_name write };
+')

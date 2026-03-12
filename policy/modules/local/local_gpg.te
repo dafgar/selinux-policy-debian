@@ -1,0 +1,4 @@
+policy_module(local_gpg)
+
+# Generic helper interfaces for local GnuPG runtime adjustments shared by
+# multiple SELinux users and their session managers.

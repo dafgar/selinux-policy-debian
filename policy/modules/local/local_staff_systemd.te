@@ -1,0 +1,10 @@
+policy_module(local_staff_systemd)
+
+gen_require(`
+	type staff_systemd_t;
+')
+
+# The user systemd instance creates the per-session GnuPG runtime directory
+# and populates it with entries such as S.dirmngr before the GnuPG helper
+# domains take over. Keep this limited to the observed directory operations.
+local_gpg_manage_runtime_dirs(staff_systemd_t)
