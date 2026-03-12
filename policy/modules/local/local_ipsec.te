@@ -2,6 +2,7 @@ policy_module(local_ipsec)
 
 gen_require(`
 	type ipsec_t;
+	type ipsec_mgmt_t;
 ')
 
 # strongSwan mutates TPM2 PKCS#11 state under /etc/tpm2_pkcs11 on this system.
@@ -21,3 +22,12 @@ allow ipsec_t self:rawip_socket { create ioctl setopt };
 # device access is attributed to the daemon domain itself. Revisit this if the
 # stack can be moved behind a dedicated TPM broker/domain later.
 dev_rw_tpm(ipsec_t)
+
+# The charon startup helper runs in ipsec_mgmt_t and inherits open sockets and
+# the TPM device from ipsec_t. Allow that helper path to use the inherited
+# objects explicitly rather than broadening generic management domains.
+allow ipsec_mgmt_t ipsec_t:rawip_socket { read write };
+allow ipsec_mgmt_t ipsec_t:netlink_route_socket { read write };
+allow ipsec_mgmt_t ipsec_t:netlink_xfrm_socket { read write };
+allow ipsec_mgmt_t ipsec_t:packet_socket { read write };
+dev_rw_tpm(ipsec_mgmt_t)
