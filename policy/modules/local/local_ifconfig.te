@@ -1,0 +1,12 @@
+policy_module(local_ifconfig)
+
+gen_require(`
+	type ifconfig_t;
+	type tpm_device_t;
+')
+
+# iproute2 helpers are probing the TPM resource manager device in an early
+# networking path. Current evidence suggests this is optional capability
+# detection rather than required network setup, so suppress it for now and
+# revisit if TPM-backed networking features become a real requirement.
+dontaudit ifconfig_t tpm_device_t:chr_file { read write open getattr ioctl lock };
