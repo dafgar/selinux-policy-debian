@@ -1,0 +1,1 @@
+/run/cryptsetup(/.*)?		gen_context(system_u:object_r:local_cryptsetup_runtime_t,s0)

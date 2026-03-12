@@ -1,0 +1,26 @@
+policy_module(local_cryptsetup)
+
+gen_require(`
+	type devicekit_disk_t;
+	type lvm_t;
+	type systemd_homework_t;
+')
+
+type local_cryptsetup_runtime_t;
+files_runtime_file(local_cryptsetup_runtime_t)
+
+# Keep cryptsetup runtime state separate from the broader lvm_runtime_t bucket.
+# /run/cryptsetup is its own path namespace, so a dedicated type is cleaner and
+# lets us grant only the domains that are expected to coordinate with cryptsetup.
+
+manage_dirs_pattern(lvm_t, local_cryptsetup_runtime_t, local_cryptsetup_runtime_t)
+manage_files_pattern(lvm_t, local_cryptsetup_runtime_t, local_cryptsetup_runtime_t)
+files_runtime_filetrans(lvm_t, local_cryptsetup_runtime_t, { dir file })
+
+manage_dirs_pattern(systemd_homework_t, local_cryptsetup_runtime_t, local_cryptsetup_runtime_t)
+manage_files_pattern(systemd_homework_t, local_cryptsetup_runtime_t, local_cryptsetup_runtime_t)
+files_runtime_filetrans(systemd_homework_t, local_cryptsetup_runtime_t, { dir file })
+
+manage_dirs_pattern(devicekit_disk_t, local_cryptsetup_runtime_t, local_cryptsetup_runtime_t)
+manage_files_pattern(devicekit_disk_t, local_cryptsetup_runtime_t, local_cryptsetup_runtime_t)
+files_runtime_filetrans(devicekit_disk_t, local_cryptsetup_runtime_t, { dir file })
