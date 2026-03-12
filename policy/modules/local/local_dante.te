@@ -14,3 +14,6 @@ manage_dirs_pattern(dante_t, local_dante_tmp_t, local_dante_tmp_t)
 manage_files_pattern(dante_t, local_dante_tmp_t, local_dante_tmp_t)
 allow dante_t local_dante_tmp_t:file map;
 files_tmp_filetrans(dante_t, local_dante_tmp_t, file)
+
+# danted queries and adjusts its own scheduling policy during startup.
+allow dante_t self:process { getsched setsched };
