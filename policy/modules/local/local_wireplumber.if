@@ -32,6 +32,7 @@ template(`wireplumber_role',`
 		attribute $3;
 		type $1_pipewire_t;
 		type wireplumber_exec_t, wireplumber_state_t;
+		type tmpfs_t, xdm_tmpfs_t;
 		type pipewire_runtime_t, user_runtime_t;
 	')
 
@@ -79,6 +80,13 @@ template(`wireplumber_role',`
 	stream_connect_pattern($1_wireplumber_t, user_runtime_t, pipewire_runtime_t, $1_pipewire_t)
 	pipewire_rw_tmpfs_files($1_wireplumber_t)
 	pipewire_use_fds($1_wireplumber_t, $1_pipewire_t)
+
+	# LTTng UST wait files under /dev/shm are optional tracing artifacts.
+	# WirePlumber probes them on this desktop stack, but they are not required
+	# for normal media/session function.
+	dontaudit $1_wireplumber_t xdm_tmpfs_t:file { getattr open read map };
+	dontaudit $1_wireplumber_t tmpfs_t:dir { add_name write };
+	dontaudit $1_wireplumber_t tmpfs_t:file { create getattr map open read write };
 
 	manage_dirs_pattern($1_wireplumber_t, wireplumber_state_t, wireplumber_state_t)
 	manage_files_pattern($1_wireplumber_t, wireplumber_state_t, wireplumber_state_t)
