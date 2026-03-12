@@ -56,6 +56,45 @@ interface(`pipewire_pulse_stream_connect',`
 
 ########################################
 ## <summary>
+##	Read and write PipeWire tmpfs-backed shared files.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Client domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`pipewire_rw_tmpfs_files',`
+	gen_require(`
+		type pipewire_tmpfs_t;
+	')
+
+	rw_files_pattern($1, pipewire_tmpfs_t, pipewire_tmpfs_t)
+	allow $1 pipewire_tmpfs_t:file map;
+	allow $1 pipewire_tmpfs_t:dir list_dir_perms;
+')
+
+########################################
+## <summary>
+##	Use file descriptors inherited from the PipeWire server domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Client domain allowed access.
+##	</summary>
+## </param>
+## <param name="server_domain">
+##	<summary>
+##	PipeWire server domain owning the descriptors.
+##	</summary>
+## </param>
+#
+interface(`pipewire_use_fds',`
+	allow $1 $2:fd use;
+')
+
+########################################
+## <summary>
 ##	Role access for PipeWire.
 ## </summary>
 #
@@ -63,7 +102,7 @@ template(`pipewire_role',`
 	gen_require(`
 		role $4;
 		attribute $3;
-		type pipewire_exec_t, pipewire_runtime_t, pulseaudio_tmp_t, user_runtime_t;
+		type pipewire_exec_t, pipewire_runtime_t, pipewire_tmpfs_t, pulseaudio_tmp_t, user_runtime_t;
 	')
 
 	type $1_pipewire_t;
@@ -109,6 +148,11 @@ template(`pipewire_role',`
 	userdom_user_runtime_filetrans($1_pipewire_t, pipewire_runtime_t, sock_file, "pipewire-0")
 	userdom_user_runtime_filetrans($1_pipewire_t, pipewire_runtime_t, sock_file, "pipewire-0-manager")
 	stream_connect_pattern($1_pipewire_t, user_runtime_t, pipewire_runtime_t, $1_pipewire_t)
+
+	manage_dirs_pattern($1_pipewire_t, pipewire_tmpfs_t, pipewire_tmpfs_t)
+	manage_files_pattern($1_pipewire_t, pipewire_tmpfs_t, pipewire_tmpfs_t)
+	allow $1_pipewire_t pipewire_tmpfs_t:file map;
+	fs_tmpfs_filetrans($1_pipewire_t, pipewire_tmpfs_t, { dir file })
 
 	optional_policy(`
 		systemd_user_app_status($1, $1_pipewire_t)

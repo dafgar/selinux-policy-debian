@@ -3,6 +3,9 @@ policy_module(local_pipewire)
 type pipewire_exec_t;
 application_executable_file(pipewire_exec_t)
 
+type pipewire_tmpfs_t;
+userdom_user_tmpfs_file(pipewire_tmpfs_t)
+
 type pipewire_runtime_t;
 userdom_user_runtime_content(pipewire_runtime_t)
 
