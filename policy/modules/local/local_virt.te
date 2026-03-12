@@ -22,3 +22,7 @@ dev_unmount_fs(virtd_t)
 
 # libvirtd reads the home-root directory during host storage discovery.
 allow virtd_t home_root_t:dir read;
+
+# libvirtd needs CAP_SYS_RAWIO on this host during VM setup. Without it, guest
+# startup aborts before the qemu shared-memory runtime files are created.
+allow virtd_t self:capability sys_rawio;
