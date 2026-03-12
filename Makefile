@@ -359,6 +359,13 @@ base_mods += $(filter-out $(cmdline_off) $(cmdline_base) $(cmdline_mods), $(mod_
 mod_mods += $(filter-out $(cmdline_off) $(cmdline_base) $(cmdline_mods), $(mod_conf_mods))
 off_mods += $(filter-out $(cmdline_off) $(cmdline_base) $(cmdline_mods), $(mod_conf_off))
 
+# Local override modules are built and loaded through the separate local layer.
+# Keep them out of the base module package set even though they live under
+# policy/modules for shared interface and documentation generation.
+base_mods := $(filter-out $(notdir $(local_detected_mods)),$(base_mods))
+mod_mods := $(filter-out $(notdir $(local_detected_mods)),$(mod_mods))
+off_mods := $(filter-out $(notdir $(local_detected_mods)),$(off_mods))
+
 # add modules not in modules.conf to the off list
 off_mods += $(filter-out $(base_mods) $(mod_mods) $(off_mods),$(notdir $(detected_mods)))
 
