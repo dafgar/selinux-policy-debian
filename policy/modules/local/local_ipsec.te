@@ -2,6 +2,7 @@ policy_module(local_ipsec)
 
 gen_require(`
 	type ifconfig_t;
+	type ipsec_key_file_t;
 	type ipsec_t;
 	type ipsec_mgmt_t;
 ')
@@ -10,6 +11,10 @@ gen_require(`
 # Keep the path typing in local_tpm2_pkcs11 and grant ipsec_t access via that
 # module's interface so other consumers can be added without coupling them here.
 local_tpm2_pkcs11_manage_etc(ipsec_t)
+
+# charon-systemd mmaps /etc/ipsec.secrets during startup. Keep this limited to
+# the existing IPsec key-file type instead of broadening generic etc access.
+allow ipsec_t ipsec_key_file_t:file map;
 
 # charon-systemd uses AF_ALG, packet, and raw IP sockets directly. The base
 # ipsec policy already covers its UDP/TCP/netlink/key sockets; extend only the
@@ -27,6 +32,8 @@ dev_rw_tpm(ipsec_t)
 # The charon startup helper runs in ipsec_mgmt_t and inherits open sockets and
 # the TPM device from ipsec_t. Allow that helper path to use the inherited
 # objects explicitly rather than broadening generic management domains.
+allow ipsec_mgmt_t self:alg_socket { create bind };
+allow ipsec_mgmt_t self:process getcap;
 allow ipsec_mgmt_t ipsec_t:rawip_socket { read write };
 allow ipsec_mgmt_t ipsec_t:netlink_route_socket { read write };
 allow ipsec_mgmt_t ipsec_t:netlink_xfrm_socket { read write };
