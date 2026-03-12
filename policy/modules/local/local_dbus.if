@@ -1,4 +1,8 @@
 ## <summary>
+##	Local D-Bus content labels and access helpers.
+## </summary>
+
+## <summary>
 ##	Read and watch per-user D-Bus activation service files.
 ## </summary>
 ## <param name="domain">

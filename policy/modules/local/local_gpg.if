@@ -1,4 +1,8 @@
 ## <summary>
+##	Local GnuPG runtime helpers.
+## </summary>
+
+## <summary>
 ##	Manage GnuPG runtime directories under the per-user runtime tree.
 ## </summary>
 ## <param name="domain">

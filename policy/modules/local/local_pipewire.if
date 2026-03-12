@@ -1,4 +1,8 @@
 ## <summary>
+##	Local PipeWire domains and helper interfaces.
+## </summary>
+
+## <summary>
 ##	Role access for PipeWire.
 ## </summary>
 ## <param name="role_prefix">
@@ -43,7 +47,6 @@ interface(`pipewire_stream_connect',`
 ##	<summary>
 ##	PipeWire server domain owning the socket.
 ##	</summary>
-## </param>
 ## </param>
 #
 interface(`pipewire_pulse_stream_connect',`
@@ -97,6 +100,26 @@ interface(`pipewire_use_fds',`
 ## <summary>
 ##	Role access for PipeWire.
 ## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	The prefix of the user role, for example staff or user.
+##	</summary>
+## </param>
+## <param name="user_domain">
+##	<summary>
+##	User domain for the role.
+##	</summary>
+## </param>
+## <param name="user_exec_domain">
+##	<summary>
+##	User exec domain for execute and transition access.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access.
+##	</summary>
+## </param>
 #
 template(`pipewire_role',`
 	gen_require(`

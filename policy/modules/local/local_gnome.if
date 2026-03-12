@@ -1,4 +1,8 @@
 ## <summary>
+##	Local GNOME session helper templates.
+## </summary>
+
+## <summary>
 ##	Allow a user systemd instance to create and prepare the GNOME keyring
 ##	control socket for the corresponding SELinux user prefix.
 ## </summary>

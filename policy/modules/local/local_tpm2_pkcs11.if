@@ -1,4 +1,8 @@
 ## <summary>
+##	Local TPM2 PKCS#11 labeling and access helpers.
+## </summary>
+
+## <summary>
 ##	Manage TPM2 PKCS#11 state under /etc/tpm2_pkcs11.
 ## </summary>
 ## <param name="domain">
