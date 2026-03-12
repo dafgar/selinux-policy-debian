@@ -13,6 +13,12 @@ gen_require(`
 type local_zfs_helper_exec_t;
 files_type(local_zfs_helper_exec_t)
 
+allow zed_t local_zfs_helper_exec_t:dir list_dir_perms;
+allow zed_t local_zfs_helper_exec_t:lnk_file read_lnk_file_perms;
+
+allow zfs_t local_zfs_helper_exec_t:dir search_dir_perms;
+allow zfs_t local_zfs_helper_exec_t:lnk_file read_lnk_file_perms;
+
 can_exec(zed_t, local_zfs_helper_exec_t)
 can_exec(zfs_t, local_zfs_helper_exec_t)
 
