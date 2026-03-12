@@ -1,0 +1,9 @@
+policy_module(local_openvpn)
+
+gen_require(`
+	type openvpn_t;
+')
+
+# OpenVPN queries and adjusts its own capability set during startup while
+# reading protected configuration and preparing its final privilege state.
+allow openvpn_t self:process { getcap setcap };
