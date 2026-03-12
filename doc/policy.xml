@@ -71696,56 +71696,286 @@ Domain to be exempted.
 	Local policy override modules layered above the Debian base policy.
 </summary>
 <module name="local_accountsd" filename="policy/modules/local/local_accountsd.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_bird" filename="policy/modules/local/local_bird.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_cryptsetup" filename="policy/modules/local/local_cryptsetup.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_dante" filename="policy/modules/local/local_dante.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
+</module>
+<module name="local_dbus" filename="policy/modules/local/local_dbus.if">
+<summary>
+Local D-Bus content labels and access helpers.
+</summary>
+<interface name="dbus_read_user_activation_services" lineno="14">
+<summary>
+Read and watch per-user D-Bus activation service files.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to read and watch the activation files.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_devicekit_power" filename="policy/modules/local/local_devicekit_power.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_dnsmasq" filename="policy/modules/local/local_dnsmasq.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
+</module>
+<module name="local_gnome" filename="policy/modules/local/local_gnome.if">
+<summary>
+Local GNOME session helper templates.
+</summary>
+<template name="local_gnome_systemd_keyring_socket" lineno="15">
+<summary>
+Allow a user systemd instance to create and prepare the GNOME keyring
+control socket for the corresponding SELinux user prefix.
+</summary>
+<param name="prefix">
+<summary>
+User prefix, for example staff or user.
+</summary>
+</param>
+</template>
+</module>
+<module name="local_gpg" filename="policy/modules/local/local_gpg.if">
+<summary>
+Local GnuPG runtime helpers.
+</summary>
+<interface name="local_gpg_manage_runtime_dirs" lineno="14">
+<summary>
+Manage GnuPG runtime directories under the per-user runtime tree.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to create and populate GnuPG runtime directories.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_ifconfig" filename="policy/modules/local/local_ifconfig.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_ipsec" filename="policy/modules/local/local_ipsec.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_lowmemorymonitor" filename="policy/modules/local/local_lowmemorymonitor.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_lvm" filename="policy/modules/local/local_lvm.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_networkmanager" filename="policy/modules/local/local_networkmanager.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_pcscd" filename="policy/modules/local/local_pcscd.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
+</module>
+<module name="local_pipewire" filename="policy/modules/local/local_pipewire.if">
+<summary>
+Local PipeWire domains and helper interfaces.
+</summary>
+<interface name="pipewire_stream_connect" lineno="29">
+<summary>
+Role access for PipeWire.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role, for example staff or user.
+</summary>
+</param>
+<param name="user_domain">
+<summary>
+User domain for the role.
+</summary>
+</param>
+<param name="user_exec_domain">
+<summary>
+User exec domain for execute and transition access.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+</interface>
+<interface name="pipewire_pulse_stream_connect" lineno="52">
+<summary>
+Connect to PipeWire's PulseAudio-compatible socket.
+</summary>
+<param name="domain">
+<summary>
+Client domain allowed access.
+</summary>
+</param>
+<param name="server_domain">
+<summary>
+PipeWire server domain owning the socket.
+</summary>
+</param>
+</interface>
+<interface name="pipewire_rw_tmpfs_files" lineno="70">
+<summary>
+Read and write PipeWire tmpfs-backed shared files.
+</summary>
+<param name="domain">
+<summary>
+Client domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="pipewire_use_fds" lineno="95">
+<summary>
+Use file descriptors inherited from the PipeWire server domain.
+</summary>
+<param name="domain">
+<summary>
+Client domain allowed access.
+</summary>
+</param>
+<param name="server_domain">
+<summary>
+PipeWire server domain owning the descriptors.
+</summary>
+</param>
+</interface>
+<template name="pipewire_role" lineno="124">
+<summary>
+Role access for PipeWire.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role, for example staff or user.
+</summary>
+</param>
+<param name="user_domain">
+<summary>
+User domain for the role.
+</summary>
+</param>
+<param name="user_exec_domain">
+<summary>
+User exec domain for execute and transition access.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+</template>
 </module>
 <module name="local_plymouth" filename="policy/modules/local/local_plymouth.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
+</module>
+<module name="local_staff" filename="policy/modules/local/local_staff.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
+</module>
+<module name="local_staff_systemd" filename="policy/modules/local/local_staff_systemd.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
+</module>
+<module name="local_svirt" filename="policy/modules/local/local_svirt.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_switcheroo" filename="policy/modules/local/local_switcheroo.if">
-</module>
-<module name="local_sysadm" filename="policy/modules/local/local_sysadm.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_syslogd" filename="policy/modules/local/local_syslogd.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_systemd_hostnamed" filename="policy/modules/local/local_systemd_hostnamed.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_systemd_locale" filename="policy/modules/local/local_systemd_locale.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_systemd_logind" filename="policy/modules/local/local_systemd_logind.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_systemd_machined" filename="policy/modules/local/local_systemd_machined.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_systemd_pcrphase" filename="policy/modules/local/local_systemd_pcrphase.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_systemd_sessions" filename="policy/modules/local/local_systemd_sessions.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_systemd_tmpfiles" filename="policy/modules/local/local_systemd_tmpfiles.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_systemd_user_runtime_dir" filename="policy/modules/local/local_systemd_user_runtime_dir.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_test" filename="policy/modules/local/local_test.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 <module name="local_tpm2_pkcs11" filename="policy/modules/local/local_tpm2_pkcs11.if">
+<summary>
+Local TPM2 PKCS#11 labeling and access helpers.
+</summary>
+<interface name="local_tpm2_pkcs11_manage_etc" lineno="14">
 <summary>
 Manage TPM2 PKCS#11 state under /etc/tpm2_pkcs11.
 </summary>
@@ -71754,18 +71984,57 @@ Manage TPM2 PKCS#11 state under /etc/tpm2_pkcs11.
 Domain allowed to manage the TPM2 PKCS#11 state.
 </summary>
 </param>
-<interface name="local_tpm2_pkcs11_manage_etc" lineno="10">
-<summary>
-Summary is missing!
-</summary>
-<param name="?">
-<summary>
-Parameter descriptions are missing!
-</summary>
-</param>
 </interface>
 </module>
+<module name="local_virt" filename="policy/modules/local/local_virt.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
+</module>
+<module name="local_virt_leaseshelper" filename="policy/modules/local/local_virt_leaseshelper.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
+</module>
+<module name="local_virtlogd" filename="policy/modules/local/local_virtlogd.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
+</module>
+<module name="local_wireplumber" filename="policy/modules/local/local_wireplumber.if">
+<summary>
+Local WirePlumber domains and helper interfaces.
+</summary>
+<template name="wireplumber_role" lineno="29">
+<summary>
+Role access for WirePlumber.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role, for example staff or user.
+</summary>
+</param>
+<param name="user_domain">
+<summary>
+User domain for the role.
+</summary>
+</param>
+<param name="user_exec_domain">
+<summary>
+User exec domain for execute and transition access.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+</template>
+</module>
 <module name="local_zfs" filename="policy/modules/local/local_zfs.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
 </module>
 </layer>
 <layer name="roles">
