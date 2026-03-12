@@ -22,11 +22,48 @@
 ##	</summary>
 ## </param>
 #
+interface(`pipewire_stream_connect',`
+	gen_require(`
+		type pipewire_runtime_t;
+	')
+
+	stream_connect_pattern($1, user_runtime_t, pipewire_runtime_t, $2)
+')
+
+########################################
+## <summary>
+##	Connect to PipeWire's PulseAudio-compatible socket.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Client domain allowed access.
+##	</summary>
+## </param>
+## <param name="server_domain">
+##	<summary>
+##	PipeWire server domain owning the socket.
+##	</summary>
+## </param>
+## </param>
+#
+interface(`pipewire_pulse_stream_connect',`
+	gen_require(`
+		type pulseaudio_tmp_t;
+	')
+
+	stream_connect_pattern($1, pulseaudio_tmp_t, pulseaudio_tmp_t, $2)
+')
+
+########################################
+## <summary>
+##	Role access for PipeWire.
+## </summary>
+#
 template(`pipewire_role',`
 	gen_require(`
 		role $4;
 		attribute $3;
-		type pipewire_exec_t, pipewire_runtime_t, user_runtime_t;
+		type pipewire_exec_t, pipewire_runtime_t, pulseaudio_tmp_t, user_runtime_t;
 	')
 
 	type $1_pipewire_t;
@@ -61,6 +98,7 @@ template(`pipewire_role',`
 
 	optional_policy(`
 		systemd_user_app_status($1, $1_pipewire_t)
+		systemd_user_app_socket_create($1, $1_pipewire_t, pulseaudio_tmp_t)
 		allow $1_systemd_t $1_pipewire_t:process2 nnp_transition;
 	')
 ')

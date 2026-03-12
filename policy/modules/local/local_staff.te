@@ -4,6 +4,8 @@ gen_require(`
 	type nsfs_t;
 	type staff_dbusd_t;
 	type staff_t;
+	type staff_wm_t;
+	type staff_pipewire_t;
 ')
 
 pipewire_role(staff, staff_t, staff_application_exec_domain, staff_r)
@@ -14,3 +16,7 @@ wireplumber_role(staff, staff_t, staff_application_exec_domain, staff_r)
 dontaudit staff_t nsfs_t:file getattr;
 
 dbus_read_user_activation_services(staff_dbusd_t)
+
+pipewire_stream_connect(staff_t, staff_pipewire_t)
+pipewire_stream_connect(staff_wm_t, staff_pipewire_t)
+pipewire_pulse_stream_connect(staff_t, staff_pipewire_t)
