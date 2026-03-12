@@ -1,0 +1,8 @@
+policy_module(local_bluetooth)
+
+gen_require(`
+	type bluetooth_t;
+')
+
+# bluetoothd reads cached HID metadata from /run/udev/data during device setup.
+udev_read_runtime_files(bluetooth_t)
