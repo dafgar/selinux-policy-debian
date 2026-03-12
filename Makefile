@@ -759,7 +759,7 @@ load-local: $(local_instpkg)
 		echo "No local modules are enabled in $(local_mod_conf)." ;\
 		exit 0 ;\
 	fi
-	$(verbose) $(SEMODULE) -s $(NAME) -X $(LOCAL_MOD_PRIORITY) $(foreach mod,$(local_enabled_mods),-i $(local_modpkgdir)/$(notdir $(mod:.te=.pp)))
+	$(verbose) $(SEMODULE) -s $(NAME) -X $(LOCAL_MOD_PRIORITY) $(foreach mod,$(local_enabled_mods),-i $(local_builddir)$(notdir $(mod:.te=.pp)))
 
 reload-local: load-local
 
@@ -771,7 +771,7 @@ $(local_tmpdir)/%.mod: $(m4support) $(tmpdir)/generated_definitions.conf $(tmpdi
 
 $(local_tmpdir)/%.mod.fc: $(m4support)
 	@test -d $(local_tmpdir) || mkdir -p $(local_tmpdir)
-	@if test -f $(local_layer)/$*.fc; then \
+	@if test -f $(local_layer)/$*.fc && grep -q '[^[:space:]]' $(local_layer)/$*.fc; then \
 		$(M4) $(M4PARAM) $(m4support) $(local_layer)/$*.fc > $@ ;\
 	else \
 		: > $@ ;\
