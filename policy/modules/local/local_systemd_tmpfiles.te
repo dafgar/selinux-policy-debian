@@ -5,7 +5,9 @@ gen_require(`
 	type cron_spool_t;
 	type security_t;
 	type ssh_home_t;
+	type systemd_networkd_var_lib_t;
 	type systemd_tmpfiles_t;
+	type uuidd_var_lib_t;
 	type user_home_dir_t;
 ')
 
@@ -16,7 +18,10 @@ gen_require(`
 # - directory search on cron spool paths
 # - symlink metadata reads in securityfs such as /sys/kernel/security/ima
 # - relabel operations from tmpfiles rules managing cron spool, provisioned
-#   root home directories, and the shell-extra symlink in /etc/profile.d
+#   root home directories, uuid/network state dirs, and the shell-extra
+#   symlink in /etc/profile.d
+# - metadata updates from tpm2-tss-fapi tmpfiles z- rules for measurement
+#   exports in securityfs; revisit if we later want a more path-specific model
 
 corecmd_search_bin(systemd_tmpfiles_t)
 allow systemd_tmpfiles_t bin_t:lnk_file read_lnk_file_perms;
@@ -24,8 +29,12 @@ allow systemd_tmpfiles_t bin_t:lnk_file relabel_lnk_file_perms;
 
 cron_search_spool(systemd_tmpfiles_t)
 allow systemd_tmpfiles_t cron_spool_t:dir relabel_dir_perms;
+allow systemd_tmpfiles_t systemd_networkd_var_lib_t:dir relabel_dir_perms;
+allow systemd_tmpfiles_t uuidd_var_lib_t:dir relabel_dir_perms;
 
 allow systemd_tmpfiles_t security_t:lnk_file read_lnk_file_perms;
+allow systemd_tmpfiles_t security_t:file setattr_file_perms;
+allow systemd_tmpfiles_t security_t:lnk_file setattr_lnk_file_perms;
 
 allow systemd_tmpfiles_t user_home_dir_t:dir relabel_dir_perms;
 allow systemd_tmpfiles_t ssh_home_t:dir relabel_dir_perms;
