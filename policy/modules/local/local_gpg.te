@@ -1,4 +1,13 @@
 policy_module(local_gpg)
 
+gen_require(`
+	type gpg_agent_t;
+')
+
+# gpg-agent launches scdaemon from /usr/lib/gnupg, which is labeled gpg_exec_t
+# in the base policy. Reuse the shared gpg executable access pattern so smartcard
+# support works for all SELinux user roles that enter gpg_agent_t.
+gpg_exec(gpg_agent_t)
+
 # Generic helper interfaces for local GnuPG runtime adjustments shared by
 # multiple SELinux users and their session managers.
