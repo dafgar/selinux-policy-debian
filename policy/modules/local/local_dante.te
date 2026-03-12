@@ -24,3 +24,6 @@ allow dante_t self:process { getsched setsched };
 # Bind only ports that an administrator explicitly maps to dante_port_t
 # with semanage port, rather than hardwiring a numeric port choice here.
 allow dante_t dante_port_t:tcp_socket name_bind;
+
+# danted opens a raw IP socket during its network initialization path.
+allow dante_t self:rawip_socket create;
