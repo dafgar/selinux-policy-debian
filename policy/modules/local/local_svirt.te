@@ -1,0 +1,12 @@
+policy_module(local_svirt)
+
+gen_require(`
+	type svirt_t;
+	type virt_image_t;
+')
+
+# QEMU needs normal managed access to guest image files under virt_image_t.
+virt_manage_images(svirt_t)
+
+# The image open path also issues file ioctls on qcow2 storage.
+allow svirt_t virt_image_t:file ioctl;
