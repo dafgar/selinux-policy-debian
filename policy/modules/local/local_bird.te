@@ -1,0 +1,13 @@
+policy_module(local_bird)
+
+gen_require(`
+	type bird_runtime_t;
+	type initrc_t;
+')
+
+# The base bird policy expects /run/bird and /run/bird.ctl to be bird_runtime_t,
+# but in early boot they can be pre-created by initrc_t and fall into the
+# generic initrc_runtime_t bucket. Create those runtime objects with the bird
+# type up front instead of teaching bird_t to operate on initrc_runtime_t.
+files_runtime_filetrans(initrc_t, bird_runtime_t, dir, "bird")
+files_runtime_filetrans(initrc_t, bird_runtime_t, sock_file, "bird.ctl")
