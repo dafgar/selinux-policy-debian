@@ -1,0 +1,10 @@
+policy_module(local_wireplumber)
+
+type wireplumber_exec_t;
+application_executable_file(wireplumber_exec_t)
+
+type wireplumber_state_t;
+userdom_user_home_content(wireplumber_state_t)
+
+# WirePlumber is part of the user media/session stack but needs its own domain
+# and dedicated state label instead of reusing the older pulseaudio types.

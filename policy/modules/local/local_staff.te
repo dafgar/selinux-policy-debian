@@ -7,6 +7,7 @@ gen_require(`
 ')
 
 pipewire_role(staff, staff_t, staff_application_exec_domain, staff_r)
+wireplumber_role(staff, staff_t, staff_application_exec_domain, staff_r)
 
 # User-session helpers such as systemctl --user may stat namespace file handles
 # during generic runtime probing. Keep this limited to harmless metadata lookup.

@@ -1,0 +1,51 @@
+## <summary>
+##	Role access for WirePlumber.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	The prefix of the user role, for example staff or user.
+##	</summary>
+## </param>
+## <param name="user_domain">
+##	<summary>
+##	User domain for the role.
+##	</summary>
+## </param>
+## <param name="user_exec_domain">
+##	<summary>
+##	User exec domain for execute and transition access.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access.
+##	</summary>
+## </param>
+#
+template(`wireplumber_role',`
+	gen_require(`
+		role $4;
+		attribute $3;
+		type wireplumber_exec_t, wireplumber_state_t;
+	')
+
+	type $1_wireplumber_t;
+	userdom_user_application_domain($1_wireplumber_t, wireplumber_exec_t)
+	role $4 types $1_wireplumber_t;
+
+	domtrans_pattern($3, wireplumber_exec_t, $1_wireplumber_t)
+
+	allow $3 $1_wireplumber_t:process { ptrace signal_perms };
+	allow $3 $1_wireplumber_t:fd use;
+	ps_process_pattern($3, $1_wireplumber_t)
+
+	allow $1_wireplumber_t $3:process sigchld;
+
+	manage_dirs_pattern($1_wireplumber_t, wireplumber_state_t, wireplumber_state_t)
+	manage_files_pattern($1_wireplumber_t, wireplumber_state_t, wireplumber_state_t)
+
+	optional_policy(`
+		systemd_user_app_status($1, $1_wireplumber_t)
+		allow $1_systemd_t $1_wireplumber_t:process2 nnp_transition;
+	')
+')
