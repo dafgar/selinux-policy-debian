@@ -2,6 +2,7 @@ policy_module(local_powerprofiles)
 
 gen_require(`
 	type power_profilesd_t;
+	type sysfs_t;
 ')
 
 type powerprofiles_var_lib_t;
@@ -14,3 +15,6 @@ allow power_profilesd_t powerprofiles_var_lib_t:file getattr_file_perms;
 
 # The daemon reads cached udev metadata for power-related platform devices.
 udev_read_runtime_files(power_profilesd_t)
+
+# The daemon watches ACPI firmware state for platform power-profile changes.
+allow power_profilesd_t sysfs_t:dir watch;
