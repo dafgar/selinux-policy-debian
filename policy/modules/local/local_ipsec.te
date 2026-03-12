@@ -1,6 +1,7 @@
 policy_module(local_ipsec)
 
 gen_require(`
+	type ifconfig_t;
 	type ipsec_t;
 	type ipsec_mgmt_t;
 ')
@@ -31,3 +32,13 @@ allow ipsec_mgmt_t ipsec_t:netlink_route_socket { read write };
 allow ipsec_mgmt_t ipsec_t:netlink_xfrm_socket { read write };
 allow ipsec_mgmt_t ipsec_t:packet_socket { read write };
 dev_rw_tpm(ipsec_mgmt_t)
+
+# `ip link add ipsec1 type xfrm ...` runs in ifconfig_t and inherits sockets
+# from the IPsec startup pipeline. Keep this limited to the ipsec_t-owned
+# sockets that were observed in the AVCs.
+allow ifconfig_t ipsec_t:udp_socket { read write };
+allow ifconfig_t ipsec_t:rawip_socket { read write };
+allow ifconfig_t ipsec_t:netlink_route_socket { read write };
+allow ifconfig_t ipsec_t:netlink_xfrm_socket { read write };
+allow ifconfig_t ipsec_t:unix_stream_socket { read write };
+allow ifconfig_t ipsec_t:packet_socket { read write };
