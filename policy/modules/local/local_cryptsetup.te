@@ -15,12 +15,15 @@ files_runtime_file(local_cryptsetup_runtime_t)
 
 manage_dirs_pattern(lvm_t, local_cryptsetup_runtime_t, local_cryptsetup_runtime_t)
 manage_files_pattern(lvm_t, local_cryptsetup_runtime_t, local_cryptsetup_runtime_t)
-files_runtime_filetrans(lvm_t, local_cryptsetup_runtime_t, { dir file })
+files_runtime_filetrans(lvm_t, local_cryptsetup_runtime_t, dir, "cryptsetup")
+filetrans_pattern(lvm_t, local_cryptsetup_runtime_t, local_cryptsetup_runtime_t, file)
 
 manage_dirs_pattern(systemd_homework_t, local_cryptsetup_runtime_t, local_cryptsetup_runtime_t)
 manage_files_pattern(systemd_homework_t, local_cryptsetup_runtime_t, local_cryptsetup_runtime_t)
-files_runtime_filetrans(systemd_homework_t, local_cryptsetup_runtime_t, { dir file })
+files_runtime_filetrans(systemd_homework_t, local_cryptsetup_runtime_t, dir, "cryptsetup")
+filetrans_pattern(systemd_homework_t, local_cryptsetup_runtime_t, local_cryptsetup_runtime_t, file)
 
 manage_dirs_pattern(devicekit_disk_t, local_cryptsetup_runtime_t, local_cryptsetup_runtime_t)
 manage_files_pattern(devicekit_disk_t, local_cryptsetup_runtime_t, local_cryptsetup_runtime_t)
-files_runtime_filetrans(devicekit_disk_t, local_cryptsetup_runtime_t, { dir file })
+files_runtime_filetrans(devicekit_disk_t, local_cryptsetup_runtime_t, dir, "cryptsetup")
+filetrans_pattern(devicekit_disk_t, local_cryptsetup_runtime_t, local_cryptsetup_runtime_t, file)
