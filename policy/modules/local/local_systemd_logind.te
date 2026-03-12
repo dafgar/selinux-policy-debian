@@ -16,6 +16,7 @@ dontaudit systemd_logind_t initrc_t:unix_stream_socket { getattr ioctl };
 fs_getattr_dos_fs(systemd_logind_t)
 fs_getattr_dos_dirs(systemd_logind_t)
 fs_search_dos(systemd_logind_t)
+allow systemd_logind_t dosfs_t:dir list_dir_perms;
 fs_read_dos_files(systemd_logind_t)
 
 storage_raw_read_fixed_disk(systemd_logind_t)
