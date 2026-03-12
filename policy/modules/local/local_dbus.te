@@ -1,0 +1,7 @@
+policy_module(local_dbus)
+
+type dbus_xdg_services_t;
+xdg_data_content(dbus_xdg_services_t)
+
+# Per-user D-Bus activation service files under ~/.local/share/dbus-1/services
+# are distinct from generic XDG data and are consumed by the session bus.

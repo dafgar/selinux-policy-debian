@@ -1,0 +1,20 @@
+## <summary>
+##	Read and watch per-user D-Bus activation service files.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to read and watch the activation files.
+##	</summary>
+## </param>
+#
+interface(`dbus_read_user_activation_services',`
+	gen_require(`
+		type dbus_xdg_services_t;
+	')
+
+	read_files_pattern($1, dbus_xdg_services_t, dbus_xdg_services_t)
+	list_dirs_pattern($1, dbus_xdg_services_t, dbus_xdg_services_t)
+	read_lnk_files_pattern($1, dbus_xdg_services_t, dbus_xdg_services_t)
+	allow $1 dbus_xdg_services_t:dir watch;
+	allow $1 dbus_xdg_services_t:file watch;
+')

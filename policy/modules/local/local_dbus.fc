@@ -1,0 +1,1 @@
+HOME_DIR/\.local/share/dbus-1/services(/.*)?	gen_context(system_u:object_r:dbus_xdg_services_t,s0)
