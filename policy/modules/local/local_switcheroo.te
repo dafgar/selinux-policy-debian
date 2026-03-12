@@ -1,0 +1,9 @@
+policy_module(local_switcheroo)
+
+gen_require(`
+	type switcheroo_t;
+')
+
+# switcheroo-control reads cached udev properties for DRM devices from
+# /run/udev/data/* during graphics hardware discovery.
+udev_read_runtime_files(switcheroo_t)
