@@ -21,7 +21,7 @@ files_runtime_filetrans(initrc_t, bird_runtime_t, sock_file, "bird.ctl")
 # to avoid DAC bypass during the privilege-drop path.
 allow bird_t self:capability {
 	chown
-	# dac_override
+	dac_override
 	dac_read_search
 	fowner
 	fsetid
