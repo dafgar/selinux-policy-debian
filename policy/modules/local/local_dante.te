@@ -30,3 +30,6 @@ allow dante_t self:rawip_socket create;
 
 # danted sends to its own local datagram socket during normal runtime.
 allow dante_t self:unix_dgram_socket sendto;
+
+# danted connects to remote HTTPS endpoints during request handling.
+corenet_tcp_connect_http_port(dante_t)
