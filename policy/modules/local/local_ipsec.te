@@ -16,3 +16,8 @@ allow ipsec_t self:capability net_raw;
 allow ipsec_t self:alg_socket { create bind };
 allow ipsec_t self:packet_socket { create ioctl read setopt };
 allow ipsec_t self:rawip_socket { create ioctl setopt };
+
+# strongSwan reaches the TPM through libtpm2_pkcs11.so inside ipsec_t, so the
+# device access is attributed to the daemon domain itself. Revisit this if the
+# stack can be moved behind a dedicated TPM broker/domain later.
+dev_rw_tpm(ipsec_t)
