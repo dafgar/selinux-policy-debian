@@ -16,6 +16,7 @@ wireplumber_role(staff, staff_t, staff_application_exec_domain, staff_r)
 dontaudit staff_t nsfs_t:file getattr;
 
 dbus_read_user_activation_services(staff_dbusd_t)
+low_mem_mon_dbus_chat(staff_t)
 
 pipewire_stream_connect(staff_t, staff_pipewire_t)
 pipewire_stream_connect(staff_wm_t, staff_pipewire_t)
