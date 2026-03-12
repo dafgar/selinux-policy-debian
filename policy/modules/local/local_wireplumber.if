@@ -46,7 +46,7 @@ template(`wireplumber_role',`
 	ps_process_pattern($3, $1_wireplumber_t)
 
 	allow $1_wireplumber_t $3:process sigchld;
-	allow $1_wireplumber_t self:process getsched;
+	allow $1_wireplumber_t self:process { getsched setrlimit setsched };
 
 	auth_use_nsswitch($1_wireplumber_t)
 	miscfiles_read_localization($1_wireplumber_t)
@@ -60,6 +60,7 @@ template(`wireplumber_role',`
 	dbus_all_session_bus_client($1_wireplumber_t)
 	dbus_write_session_runtime_socket($1_wireplumber_t)
 	dbus_system_bus_client($1_wireplumber_t)
+	dev_read_sysfs($1_wireplumber_t)
 	logging_send_syslog_msg($1_wireplumber_t)
 	systemd_read_logind_runtime_files($1_wireplumber_t)
 	systemd_watch_logind_runtime_dirs($1_wireplumber_t)
