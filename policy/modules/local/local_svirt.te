@@ -10,3 +10,7 @@ virt_manage_images(svirt_t)
 
 # The image open path also issues file ioctls on qcow2 storage.
 allow svirt_t virt_image_t:file ioctl;
+
+# QEMU probes host CPU topology and VM-related sysctls during startup.
+dev_read_sysfs(svirt_t)
+kernel_read_vm_sysctls(svirt_t)
