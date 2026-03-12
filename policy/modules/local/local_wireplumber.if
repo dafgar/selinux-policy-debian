@@ -40,6 +40,14 @@ template(`wireplumber_role',`
 	ps_process_pattern($3, $1_wireplumber_t)
 
 	allow $1_wireplumber_t $3:process sigchld;
+	allow $1_wireplumber_t self:process getsched;
+
+	auth_use_nsswitch($1_wireplumber_t)
+	miscfiles_read_localization($1_wireplumber_t)
+	files_read_usr_files($1_wireplumber_t)
+	files_map_usr_files($1_wireplumber_t)
+	userdom_search_user_home_dirs($1_wireplumber_t)
+	userdom_search_user_home_content($1_wireplumber_t)
 
 	manage_dirs_pattern($1_wireplumber_t, wireplumber_state_t, wireplumber_state_t)
 	manage_files_pattern($1_wireplumber_t, wireplumber_state_t, wireplumber_state_t)
