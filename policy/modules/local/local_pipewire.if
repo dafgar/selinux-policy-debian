@@ -26,7 +26,7 @@ template(`pipewire_role',`
 	gen_require(`
 		role $4;
 		attribute $3;
-		type pipewire_exec_t;
+		type pipewire_exec_t, pipewire_runtime_t, user_runtime_t;
 	')
 
 	type $1_pipewire_t;
@@ -52,6 +52,12 @@ template(`pipewire_role',`
 	dbus_all_session_bus_client($1_pipewire_t)
 	dbus_write_session_runtime_socket($1_pipewire_t)
 	dbus_system_bus_client($1_pipewire_t)
+	rtkit_scheduled($1_pipewire_t)
+
+	manage_sock_files_pattern($1_pipewire_t, pipewire_runtime_t, pipewire_runtime_t)
+	userdom_user_runtime_filetrans($1_pipewire_t, pipewire_runtime_t, sock_file, "pipewire-0")
+	userdom_user_runtime_filetrans($1_pipewire_t, pipewire_runtime_t, sock_file, "pipewire-0-manager")
+	stream_connect_pattern($1_pipewire_t, user_runtime_t, pipewire_runtime_t, $1_pipewire_t)
 
 	optional_policy(`
 		systemd_user_app_status($1, $1_pipewire_t)
