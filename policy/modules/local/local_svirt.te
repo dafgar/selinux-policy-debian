@@ -4,6 +4,7 @@ gen_require(`
 	type svirt_tmpfs_t;
 	type svirt_t;
 	type sysctl_vm_overcommit_t;
+	type virtd_t;
 	type virt_image_t;
 ')
 
@@ -23,3 +24,6 @@ allow svirt_t self:anon_inode { create map read write };
 
 # QEMU maps its own shared tmpfs display surfaces during guest startup.
 allow svirt_t svirt_tmpfs_t:file map;
+
+# QEMU inspects libvirtd process state during the startup handoff.
+ps_process_pattern(svirt_t, virtd_t)
