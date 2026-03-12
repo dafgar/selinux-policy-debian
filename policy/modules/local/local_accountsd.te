@@ -1,0 +1,9 @@
+policy_module(local_accountsd)
+
+gen_require(`
+	type accountsd_t;
+')
+
+# accounts-daemon resolves display-manager.service via readlink during login
+# manager discovery.  Grant only generic systemd unit symlink reads here.
+init_read_generic_units_symlinks(accountsd_t)
