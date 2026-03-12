@@ -1,0 +1,9 @@
+policy_module(local_lowmemorymonitor)
+
+gen_require(`
+	type low_mem_mon_t;
+')
+
+# low-memory-monitor replies over the system bus to the display manager during
+# session startup.
+xserver_dbus_chat_xdm(low_mem_mon_t)
