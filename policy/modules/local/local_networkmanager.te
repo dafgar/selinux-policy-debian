@@ -1,0 +1,10 @@
+policy_module(local_networkmanager)
+
+gen_require(`
+	type NetworkManager_t;
+	type xdg_cache_t;
+')
+
+# NetworkManager probes standard XDG cache paths while evaluating connection
+# state. Access to root's cache tree is not required for normal operation.
+dontaudit NetworkManager_t xdg_cache_t:dir search;
