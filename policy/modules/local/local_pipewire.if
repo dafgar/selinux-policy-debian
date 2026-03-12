@@ -99,7 +99,9 @@ template(`pipewire_role',`
 	allow $1_pipewire_t pulseaudio_tmp_t:sock_file manage_sock_file_perms;
 	userdom_user_runtime_filetrans($1_pipewire_t, pulseaudio_tmp_t, dir, "pulse")
 
+	manage_files_pattern($1_pipewire_t, pipewire_runtime_t, pipewire_runtime_t)
 	manage_sock_files_pattern($1_pipewire_t, pipewire_runtime_t, pipewire_runtime_t)
+	userdom_user_runtime_filetrans($1_pipewire_t, pipewire_runtime_t, file, "pipewire-0.lock")
 	userdom_user_runtime_filetrans($1_pipewire_t, pipewire_runtime_t, sock_file, "pipewire-0")
 	userdom_user_runtime_filetrans($1_pipewire_t, pipewire_runtime_t, sock_file, "pipewire-0-manager")
 	stream_connect_pattern($1_pipewire_t, user_runtime_t, pipewire_runtime_t, $1_pipewire_t)
