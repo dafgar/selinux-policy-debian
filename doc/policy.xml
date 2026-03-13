@@ -71724,7 +71724,7 @@ Local override module with no exported interfaces.
 <summary>
 Local D-Bus content labels and access helpers.
 </summary>
-<interface name="dbus_read_user_activation_services" lineno="14">
+<interface name="dbus_read_user_activation_services" lineno="15">
 <summary>
 Read and watch per-user D-Bus activation service files.
 </summary>
@@ -71752,6 +71752,10 @@ Local fwupd policy adjustments.
 </module>
 <module name="local_git" filename="policy/modules/local/local_git.if">
 <summary>
+Local Git helper interfaces.
+</summary>
+<interface name="local_git_search_user_paths" lineno="15">
+<summary>
 Allow Git client domains to search user helper paths.
 </summary>
 <param name="domain">
@@ -71759,17 +71763,8 @@ Allow Git client domains to search user helper paths.
 Domain allowed access.
 </summary>
 </param>
-<interface name="local_git_search_user_paths" lineno="10">
-<summary>
-Summary is missing!
-</summary>
-<param name="?">
-<summary>
-Parameter descriptions are missing!
-</summary>
-</param>
 </interface>
-<interface name="local_git_dontaudit_pager_history" lineno="29">
+<interface name="local_git_dontaudit_pager_history" lineno="34">
 <summary>
 Do not audit pager history accesses from Git client domains.
 </summary>
@@ -71784,7 +71779,7 @@ Domain to suppress pager history noise for.
 <summary>
 Local GNOME session helper templates.
 </summary>
-<template name="local_gnome_systemd_keyring_socket" lineno="15">
+<template name="local_gnome_systemd_keyring_socket" lineno="16">
 <summary>
 Allow a user systemd instance to create and prepare the GNOME keyring
 control socket for the corresponding SELinux user prefix.
@@ -71800,7 +71795,7 @@ User prefix, for example staff or user.
 <summary>
 Local GnuPG runtime helpers.
 </summary>
-<interface name="local_gpg_manage_runtime_dirs" lineno="14">
+<interface name="local_gpg_manage_runtime_dirs" lineno="15">
 <summary>
 Manage GnuPG runtime directories under the per-user runtime tree.
 </summary>
@@ -71850,32 +71845,22 @@ Local override module with no exported interfaces.
 <summary>
 Local PipeWire domains and helper interfaces.
 </summary>
-<interface name="pipewire_stream_connect" lineno="29">
+<interface name="pipewire_stream_connect" lineno="20">
 <summary>
-Role access for PipeWire.
+Connect to PipeWire runtime sockets.
 </summary>
-<param name="role_prefix">
+<param name="domain">
 <summary>
-The prefix of the user role, for example staff or user.
-</summary>
-</param>
-<param name="user_domain">
-<summary>
-User domain for the role.
+Client domain allowed access.
 </summary>
 </param>
-<param name="user_exec_domain">
+<param name="server_domain">
 <summary>
-User exec domain for execute and transition access.
-</summary>
-</param>
-<param name="role">
-<summary>
-Role allowed access.
+PipeWire server domain owning the socket.
 </summary>
 </param>
 </interface>
-<interface name="pipewire_pulse_stream_connect" lineno="52">
+<interface name="pipewire_pulse_stream_connect" lineno="43">
 <summary>
 Connect to PipeWire's PulseAudio-compatible socket.
 </summary>
@@ -71890,7 +71875,7 @@ PipeWire server domain owning the socket.
 </summary>
 </param>
 </interface>
-<interface name="pipewire_rw_tmpfs_files" lineno="70">
+<interface name="pipewire_rw_tmpfs_files" lineno="61">
 <summary>
 Read and write PipeWire tmpfs-backed shared files.
 </summary>
@@ -71900,7 +71885,7 @@ Client domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pipewire_use_fds" lineno="95">
+<interface name="pipewire_use_fds" lineno="86">
 <summary>
 Use file descriptors inherited from the PipeWire server domain.
 </summary>
@@ -71915,7 +71900,7 @@ PipeWire server domain owning the descriptors.
 </summary>
 </param>
 </interface>
-<template name="pipewire_role" lineno="124">
+<template name="pipewire_role" lineno="115">
 <summary>
 Role access for PipeWire.
 </summary>
@@ -72035,7 +72020,7 @@ Local override module with no exported interfaces.
 <summary>
 Local TPM2 PKCS#11 labeling and access helpers.
 </summary>
-<interface name="local_tpm2_pkcs11_manage_etc" lineno="14">
+<interface name="local_tpm2_pkcs11_manage_etc" lineno="15">
 <summary>
 Manage TPM2 PKCS#11 state under /etc/tpm2_pkcs11.
 </summary>
@@ -72070,7 +72055,7 @@ Local override module with no exported interfaces.
 <summary>
 Local WirePlumber domains and helper interfaces.
 </summary>
-<template name="wireplumber_role" lineno="29">
+<template name="wireplumber_role" lineno="30">
 <summary>
 Role access for WirePlumber.
 </summary>
