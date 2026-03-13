@@ -1,4 +1,9 @@
 ## <summary>
+##	Local Git helper interfaces.
+## </summary>
+
+########################################
+## <summary>
 ##	Allow Git client domains to search user helper paths.
 ## </summary>
 ## <param name="domain">

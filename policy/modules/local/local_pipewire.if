@@ -2,27 +2,18 @@
 ##	Local PipeWire domains and helper interfaces.
 ## </summary>
 
+########################################
 ## <summary>
-##	Role access for PipeWire.
+##	Connect to PipeWire runtime sockets.
 ## </summary>
-## <param name="role_prefix">
+## <param name="domain">
 ##	<summary>
-##	The prefix of the user role, for example staff or user.
+##	Client domain allowed access.
 ##	</summary>
 ## </param>
-## <param name="user_domain">
+## <param name="server_domain">
 ##	<summary>
-##	User domain for the role.
-##	</summary>
-## </param>
-## <param name="user_exec_domain">
-##	<summary>
-##	User exec domain for execute and transition access.
-##	</summary>
-## </param>
-## <param name="role">
-##	<summary>
-##	Role allowed access.
+##	PipeWire server domain owning the socket.
 ##	</summary>
 ## </param>
 #
