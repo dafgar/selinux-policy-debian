@@ -71816,6 +71816,46 @@ Local override module with no exported interfaces.
 Local override module with no exported interfaces.
 </summary>
 </module>
+<module name="local_kdeconnect" filename="policy/modules/local/local_kdeconnect.if">
+<summary>
+Local KDE Connect domains and helper interfaces.
+</summary>
+<template name="kdeconnect_role" lineno="30">
+<summary>
+Role access for KDE Connect.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role, for example staff or user.
+</summary>
+</param>
+<param name="user_domain">
+<summary>
+User domain for the role.
+</summary>
+</param>
+<param name="user_exec_domain">
+<summary>
+User exec domain for execute and transition access.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+</template>
+<interface name="local_kdeconnect_bind_port" lineno="69">
+<summary>
+Allow a domain to use KDE Connect listener sockets directly.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to bind KDE Connect sockets.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_lowmemorymonitor" filename="policy/modules/local/local_lowmemorymonitor.if">
 <summary>
 Local override module with no exported interfaces.

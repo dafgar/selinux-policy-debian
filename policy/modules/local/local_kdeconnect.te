@@ -1,0 +1,11 @@
+policy_module(local_kdeconnect)
+
+type kdeconnect_exec_t;
+application_executable_file(kdeconnect_exec_t)
+
+type kdeconnect_port_t;
+corenet_port(kdeconnect_port_t)
+
+# Local KDE Connect support is modeled as a dedicated user service domain with
+# a separate listener port type. Keep the numeric port mapping under sysadm
+# control via semanage port instead of hardcoding it here.
