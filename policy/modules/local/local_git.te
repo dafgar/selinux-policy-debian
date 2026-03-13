@@ -1,0 +1,5 @@
+policy_module(local_git)
+
+## <summary>
+##	Local Git helper interfaces.
+## </summary>

@@ -71750,6 +71750,36 @@ Local override module with no exported interfaces.
 Local fwupd policy adjustments.
 </summary>
 </module>
+<module name="local_git" filename="policy/modules/local/local_git.if">
+<summary>
+Allow Git client domains to search user helper paths.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+<interface name="local_git_search_user_paths" lineno="10">
+<summary>
+Summary is missing!
+</summary>
+<param name="?">
+<summary>
+Parameter descriptions are missing!
+</summary>
+</param>
+</interface>
+<interface name="local_git_dontaudit_pager_history" lineno="29">
+<summary>
+Do not audit pager history accesses from Git client domains.
+</summary>
+<param name="domain">
+<summary>
+Domain to suppress pager history noise for.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_gnome" filename="policy/modules/local/local_gnome.if">
 <summary>
 Local GNOME session helper templates.
@@ -71918,8 +71948,18 @@ Local override module with no exported interfaces.
 </module>
 <module name="local_powerprofiles" filename="policy/modules/local/local_powerprofiles.if">
 <summary>
-Local override module with no exported interfaces.
+Local power-profiles policy interfaces.
 </summary>
+<interface name="powerprofiles_dbus_chat" lineno="15">
+<summary>
+Send and receive messages from power_profilesd_t over D-Bus.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_staff" filename="policy/modules/local/local_staff.if">
 <summary>

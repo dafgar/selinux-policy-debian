@@ -3,6 +3,7 @@ policy_module(local_staff)
 gen_require(`
 	type nsfs_t;
 	type staff_dbusd_t;
+	type staff_git_t;
 	type staff_t;
 	type staff_wm_t;
 	type staff_pipewire_t;
@@ -23,6 +24,9 @@ powerprofiles_dbus_chat(staff_t)
 # flatpak --print-updated-env exchanges a systemd-created memfd in the user
 # session. Keep this limited to read/write on systemd_user_tmpfs_t files.
 allow staff_t systemd_user_tmpfs_t:file rw_file_perms;
+
+local_git_search_user_paths(staff_git_t)
+local_git_dontaudit_pager_history(staff_git_t)
 
 pipewire_stream_connect(staff_t, staff_pipewire_t)
 pipewire_stream_connect(staff_wm_t, staff_pipewire_t)

@@ -1,0 +1,36 @@
+## <summary>
+##	Allow Git client domains to search user helper paths.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_git_search_user_paths',`
+	gen_require(`
+		type user_bin_t;
+	')
+
+	allow $1 user_bin_t:dir search;
+	xdg_search_data_dirs($1)
+')
+
+########################################
+## <summary>
+##	Do not audit pager history accesses from Git client domains.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain to suppress pager history noise for.
+##	</summary>
+## </param>
+#
+interface(`local_git_dontaudit_pager_history',`
+	gen_require(`
+		type user_home_dir_t, xdg_data_t;
+	')
+
+	dontaudit $1 xdg_data_t:dir { open read };
+	dontaudit $1 user_home_dir_t:file { open read getattr write create setattr unlink rename };
+')
