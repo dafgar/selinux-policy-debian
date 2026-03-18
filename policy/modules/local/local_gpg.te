@@ -2,7 +2,6 @@ policy_module(local_gpg)
 
 gen_require(`
 	type gpg_agent_t;
-	type security_t, selinux_config_t;
 ')
 
 # gpg-agent launches scdaemon from /usr/lib/gnupg, which is labeled gpg_exec_t
@@ -14,11 +13,6 @@ gpg_exec(gpg_agent_t)
 # the user session bus in the agent domain.
 dbus_all_session_bus_client(gpg_agent_t)
 dbus_write_session_runtime_socket(gpg_agent_t)
-
-# pinentry probes SELinux support with statfs(selinuxfs) and checks for the
-# presence of /etc/selinux during startup.
-allow gpg_agent_t security_t:filesystem getattr;
-allow gpg_agent_t selinux_config_t:dir search;
 
 # Generic helper interfaces for local GnuPG runtime adjustments shared by
 # multiple SELinux users and their session managers.
