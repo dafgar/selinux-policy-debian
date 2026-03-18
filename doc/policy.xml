@@ -71805,6 +71805,16 @@ Domain allowed to create and populate GnuPG runtime directories.
 </summary>
 </param>
 </interface>
+<interface name="local_gpg_prompter_dbus_chat" lineno="33">
+<summary>
+Allow gpg-agent to talk to a user-domain graphical prompter over D-Bus.
+</summary>
+<param name="user_domain">
+<summary>
+User domain receiving the graphical prompt requests.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_ifconfig" filename="policy/modules/local/local_ifconfig.if">
 <summary>
