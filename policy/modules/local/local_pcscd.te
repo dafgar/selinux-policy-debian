@@ -7,3 +7,6 @@ gen_require(`
 # pcscd performs low-risk filesystem metadata probes on sysfs while discovering
 # smartcard-related devices. Keep this limited to filesystem getattr.
 dev_getattr_sysfs(pcscd_t)
+
+# pcscd reads udev metadata for smartcard-related USB devices under /run/udev.
+udev_read_runtime_files(pcscd_t)
