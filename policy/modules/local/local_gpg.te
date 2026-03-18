@@ -9,5 +9,10 @@ gen_require(`
 # support works for all SELinux user roles that enter gpg_agent_t.
 gpg_exec(gpg_agent_t)
 
+# pinentry-gnome3 is started from gpg-agent on this desktop stack and talks to
+# the user session bus in the agent domain.
+dbus_all_session_bus_client(gpg_agent_t)
+dbus_write_session_runtime_socket(gpg_agent_t)
+
 # Generic helper interfaces for local GnuPG runtime adjustments shared by
 # multiple SELinux users and their session managers.
