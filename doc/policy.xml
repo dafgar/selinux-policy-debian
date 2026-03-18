@@ -71878,7 +71878,7 @@ Local override module with no exported interfaces.
 </module>
 <module name="local_pcscd" filename="policy/modules/local/local_pcscd.if">
 <summary>
-Local override module with no exported interfaces.
+Local pcscd policy adjustments.
 </summary>
 </module>
 <module name="local_pipewire" filename="policy/modules/local/local_pipewire.if">
