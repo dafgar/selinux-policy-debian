@@ -1,0 +1,18 @@
+policy_module(local_chargethresholdhelper)
+
+type chargethresholdhelper_t;
+type chargethresholdhelper_exec_t;
+
+application_executable_file(chargethresholdhelper_exec_t)
+domain_type(chargethresholdhelper_t)
+domain_entry_file(chargethresholdhelper_t, chargethresholdhelper_exec_t)
+
+gen_require(`
+	type system_dbusd_t;
+')
+
+domtrans_pattern(system_dbusd_t, chargethresholdhelper_exec_t, chargethresholdhelper_t)
+
+dev_write_sysfs_dirs(chargethresholdhelper_t)
+dev_create_sysfs_files(chargethresholdhelper_t)
+dev_write_sysfs(chargethresholdhelper_t)

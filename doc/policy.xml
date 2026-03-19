@@ -71710,6 +71710,11 @@ Local override module with no exported interfaces.
 Local bluetooth policy adjustments.
 </summary>
 </module>
+<module name="local_chargethresholdhelper" filename="policy/modules/local/local_chargethresholdhelper.if">
+<summary>
+Local policy for the KDE charge-threshold helper domain.
+</summary>
+</module>
 <module name="local_cryptsetup" filename="policy/modules/local/local_cryptsetup.if">
 <summary>
 Local override module with no exported interfaces.
