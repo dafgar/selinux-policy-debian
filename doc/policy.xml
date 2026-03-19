@@ -71866,6 +71866,11 @@ Domain allowed to bind KDE Connect sockets.
 </param>
 </interface>
 </module>
+<module name="local_kded_smart" filename="policy/modules/local/local_kded_smart.if">
+<summary>
+Local policy for the KDE SMART helper domain.
+</summary>
+</module>
 <module name="local_lowmemorymonitor" filename="policy/modules/local/local_lowmemorymonitor.if">
 <summary>
 Local override module with no exported interfaces.

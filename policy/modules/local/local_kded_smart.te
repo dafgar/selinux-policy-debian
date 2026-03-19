@@ -1,0 +1,22 @@
+policy_module(local_kded_smart)
+
+type kded_smart_helper_t;
+type kded_smart_helper_exec_t;
+
+application_executable_file(kded_smart_helper_exec_t)
+domain_type(kded_smart_helper_t)
+domain_entry_file(kded_smart_helper_t, kded_smart_helper_exec_t)
+
+gen_require(`
+	type system_dbusd_t;
+')
+
+domtrans_pattern(system_dbusd_t, kded_smart_helper_exec_t, kded_smart_helper_t)
+
+fstools_exec(kded_smart_helper_t)
+files_search_var_lib(kded_smart_helper_t)
+fsdaemon_read_lib(kded_smart_helper_t)
+storage_raw_read_fixed_disk(kded_smart_helper_t)
+
+# smartctl issues NVMe ioctls on the probed disk node.
+allow kded_smart_helper_t fixed_disk_device_t:blk_file ioctl;
