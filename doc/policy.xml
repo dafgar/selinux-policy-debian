@@ -72101,6 +72101,11 @@ Domain allowed to manage the TPM2 PKCS#11 state.
 </param>
 </interface>
 </module>
+<module name="local_usbguard" filename="policy/modules/local/local_usbguard.if">
+<summary>
+Local USBGuard noise suppressions.
+</summary>
+</module>
 <module name="local_utempter" filename="policy/modules/local/local_utempter.if">
 <summary>
 Local utempter policy adjustments.

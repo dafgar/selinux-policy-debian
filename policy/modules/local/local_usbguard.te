@@ -1,0 +1,7 @@
+policy_module(local_usbguard)
+
+gen_require(`
+	type usbguard_t;
+')
+
+kernel_dontaudit_search_debugfs(usbguard_t)
