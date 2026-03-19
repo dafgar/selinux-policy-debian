@@ -8,6 +8,7 @@ gen_require(`
 	type staff_wm_t;
 	type staff_pipewire_t;
 	type systemd_user_tmpfs_t;
+	type ssh_home_t;
 	type tmp_t;
 ')
 
@@ -22,6 +23,9 @@ dontaudit staff_t nsfs_t:file getattr;
 # goa-identity-service watches /tmp as part of temporary session plumbing.
 # Keep this in the noise bucket rather than broadening generic temp access.
 dontaudit staff_t tmp_t:dir watch;
+
+# konsole watches ~/.ssh/config for user-session convenience, not core SSH use.
+dontaudit staff_t ssh_home_t:file watch;
 
 dbus_read_user_activation_services(staff_dbusd_t)
 low_mem_mon_dbus_chat(staff_t)
