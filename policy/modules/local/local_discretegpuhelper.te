@@ -1,0 +1,16 @@
+policy_module(local_discretegpuhelper)
+
+type discretegpuhelper_t;
+type discretegpuhelper_exec_t;
+
+application_executable_file(discretegpuhelper_exec_t)
+domain_type(discretegpuhelper_t)
+domain_entry_file(discretegpuhelper_t, discretegpuhelper_exec_t)
+
+gen_require(`
+	type system_dbusd_t, debugfs_t;
+')
+
+domtrans_pattern(system_dbusd_t, discretegpuhelper_exec_t, discretegpuhelper_t)
+
+search_dirs_pattern(discretegpuhelper_t, debugfs_t, debugfs_t)
