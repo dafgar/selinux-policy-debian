@@ -128,6 +128,7 @@ template(`pipewire_role',`
 	allow $3 $1_pipewire_t:process { ptrace signal_perms };
 	allow $3 $1_pipewire_t:fd use;
 	ps_process_pattern($3, $1_pipewire_t)
+	ps_process_pattern($1_pipewire_t, $3)
 
 	allow $1_pipewire_t $3:process sigchld;
 	allow $1_pipewire_t self:process { getsched setrlimit setsched };
@@ -151,6 +152,11 @@ template(`pipewire_role',`
 	dbus_system_bus_client($1_pipewire_t)
 	rtkit_scheduled($1_pipewire_t)
 	dev_read_sysfs($1_pipewire_t)
+	dev_read_sound($1_pipewire_t)
+	dev_write_sound($1_pipewire_t)
+	dev_getattr_video_dev($1_pipewire_t)
+	dev_read_video_dev($1_pipewire_t)
+	dev_write_video_dev($1_pipewire_t)
 	logging_send_syslog_msg($1_pipewire_t)
 
 	allow $1_pipewire_t pulseaudio_tmp_t:dir manage_dir_perms;
@@ -161,9 +167,11 @@ template(`pipewire_role',`
 	# The base sound-device interfaces cover read/write/map, but PipeWire also
 	# needs ALSA control/sequencer ioctls on sound_device_t for normal startup.
 	allow $1_pipewire_t sound_device_t:chr_file ioctl;
+	allow $1_pipewire_t v4l_device_t:chr_file ioctl;
 
 	manage_files_pattern($1_pipewire_t, pipewire_runtime_t, pipewire_runtime_t)
 	manage_sock_files_pattern($1_pipewire_t, pipewire_runtime_t, pipewire_runtime_t)
+	userdom_user_runtime_filetrans($1_pipewire_t, pipewire_runtime_t, file, "pipewire-0.lock")
 	userdom_user_runtime_filetrans($1_pipewire_t, pipewire_runtime_t, sock_file, "pipewire-0")
 	userdom_user_runtime_filetrans($1_pipewire_t, pipewire_runtime_t, sock_file, "pipewire-0-manager")
 	stream_connect_pattern($1_pipewire_t, user_runtime_t, pipewire_runtime_t, $1_pipewire_t)
