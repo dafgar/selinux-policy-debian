@@ -72161,6 +72161,26 @@ Role allowed access.
 Local override module with no exported interfaces.
 </summary>
 </module>
+<module name="local_zotero" filename="policy/modules/local/local_zotero.if">
+<summary>
+Local Zotero domain interfaces.
+</summary>
+<interface name="local_zotero_role" lineno="20">
+<summary>
+Allow a role to transition into the Zotero application domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to Zotero.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the Zotero domain.
+</summary>
+</param>
+</interface>
+</module>
 </layer>
 <layer name="roles">
 <summary>Policy modules for user roles.</summary>

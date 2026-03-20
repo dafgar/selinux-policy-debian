@@ -1,0 +1,34 @@
+## <summary>
+##	Local Zotero domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the Zotero application domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to Zotero.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the Zotero domain.
+##	</summary>
+## </param>
+#
+interface(`local_zotero_role',`
+	gen_require(`
+		type zotero_t, zotero_exec_t;
+		role $2;
+	')
+
+	role $2 types zotero_t;
+	domtrans_pattern($1, zotero_exec_t, zotero_t)
+
+	allow $1 zotero_t:fd use;
+	allow $1 zotero_t:process { ptrace signal_perms };
+	ps_process_pattern($1, zotero_t)
+
+	allow zotero_t $1:process sigchld;
+')
