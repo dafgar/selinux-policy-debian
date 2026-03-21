@@ -1,6 +1,7 @@
 policy_module(local_pcscd)
 
 gen_require(`
+	type mozilla_t;
 	type pcscd_t;
 	type thunderbird_t;
 ')
@@ -14,3 +15,7 @@ udev_read_runtime_files(pcscd_t)
 
 # pcscd inspects Thunderbird client processes while servicing smartcard access.
 ps_process_pattern(pcscd_t, thunderbird_t)
+
+# Firefox/Mozilla clients use the same PC/SC path and trigger the same minimal
+# peer /proc inspection by pcscd.
+ps_process_pattern(pcscd_t, mozilla_t)
