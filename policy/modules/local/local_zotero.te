@@ -48,6 +48,8 @@ allow zotero_t user_runtime_t:sock_file { unlink };
 xserver_read_xkb_libs(zotero_t)
 xserver_rw_mesa_shader_cache(zotero_t)
 dev_rw_dri(zotero_t)
+allow zotero_t self:fifo_file read;
 allow zotero_t self:process setsched;
 allow zotero_t self:cap_userns sys_admin;
+allow zotero_t self:tcp_socket { connect getopt };
 allow zotero_t self:user_namespace create;
