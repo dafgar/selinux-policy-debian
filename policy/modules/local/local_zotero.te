@@ -9,3 +9,9 @@ role zotero_roles types zotero_t;
 
 type zotero_home_t;
 userdom_user_home_content(zotero_home_t)
+
+gen_require(`
+	type staff_systemd_t;
+')
+
+allow zotero_t staff_systemd_t:unix_stream_socket { read write };
