@@ -37,3 +37,5 @@ xserver_read_xkb_libs(zotero_t)
 xserver_rw_mesa_shader_cache(zotero_t)
 dev_rw_dri(zotero_t)
 allow zotero_t self:process setsched;
+allow zotero_t self:cap_userns sys_admin;
+allow zotero_t self:user_namespace create;
