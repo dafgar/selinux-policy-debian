@@ -17,3 +17,21 @@ interface(`local_mplayer_x11_connect',`
 
 	allow mplayer_t $1:unix_stream_socket connectto;
 ')
+
+#######################################
+## <summary>
+##	Allow MPlayer to connect to the user PulseAudio-compatible PipeWire socket.
+## </summary>
+## <param name="role_prefix">
+## <summary>
+##	User role prefix that owns the PipeWire server domain.
+## </summary>
+## </param>
+#
+interface(`local_mplayer_pipewire_pulse_connect',`
+	gen_require(`
+		type mplayer_t;
+	')
+
+	pipewire_pulse_stream_connect(mplayer_t, $1_pipewire_t)
+')
