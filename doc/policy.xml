@@ -71945,7 +71945,7 @@ PipeWire server domain owning the socket.
 </summary>
 </param>
 </interface>
-<interface name="pipewire_pulse_stream_connect" lineno="43">
+<interface name="pipewire_pulse_stream_connect" lineno="44">
 <summary>
 Connect to PipeWire's PulseAudio-compatible socket.
 </summary>
@@ -71960,7 +71960,7 @@ PipeWire server domain owning the socket.
 </summary>
 </param>
 </interface>
-<interface name="pipewire_rw_tmpfs_files" lineno="61">
+<interface name="pipewire_rw_tmpfs_files" lineno="62">
 <summary>
 Read and write PipeWire tmpfs-backed shared files.
 </summary>
@@ -71970,7 +71970,7 @@ Client domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pipewire_use_fds" lineno="86">
+<interface name="pipewire_use_fds" lineno="87">
 <summary>
 Use file descriptors inherited from the PipeWire server domain.
 </summary>
@@ -71985,7 +71985,7 @@ PipeWire server domain owning the descriptors.
 </summary>
 </param>
 </interface>
-<template name="pipewire_role" lineno="115">
+<template name="pipewire_role" lineno="116">
 <summary>
 Role access for PipeWire.
 </summary>
@@ -72039,6 +72039,11 @@ Local override module with no exported interfaces.
 <module name="local_staff_systemd" filename="policy/modules/local/local_staff_systemd.if">
 <summary>
 Local override module with no exported interfaces.
+</summary>
+</module>
+<module name="local_staff_wm" filename="policy/modules/local/local_staff_wm.if">
+<summary>
+Local staff window-manager policy adjustments.
 </summary>
 </module>
 <module name="local_svirt" filename="policy/modules/local/local_svirt.if">

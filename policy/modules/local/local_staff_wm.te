@@ -1,0 +1,9 @@
+policy_module(local_staff_wm)
+
+gen_require(`
+	type staff_pipewire_t;
+	type staff_wm_t;
+')
+
+pipewire_stream_connect(staff_wm_t, staff_pipewire_t)
+pipewire_rw_tmpfs_files(staff_wm_t)
