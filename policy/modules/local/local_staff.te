@@ -40,8 +40,8 @@ allow staff_t systemd_user_tmpfs_t:file rw_file_perms;
 # Plasma shell querying Firefox scheduler metadata is desktop integration noise.
 dontaudit staff_t mozilla_t:process getsched;
 
-local_git_search_user_paths(staff_git_t)
-local_git_dontaudit_pager_history(staff_git_t)
+local_git_search_user_paths(staff)
+local_git_dontaudit_pager_history(staff)
 local_mplayer_pipewire_pulse_connect(staff)
 local_mplayer_x11_connect(staff_t)
 local_mozilla_pipewire_pulse_connect(staff)
