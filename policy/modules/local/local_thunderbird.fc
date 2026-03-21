@@ -1,1 +1,2 @@
 HOME_DIR/\.cache/thunderbird(/.*)?	gen_context(system_u:object_r:thunderbird_xdg_cache_t,s0)
+HOME_DIR/\.cache/mesa_shader_cache_db(/.*)?	gen_context(system_u:object_r:mesa_shader_cache_t,s0)
