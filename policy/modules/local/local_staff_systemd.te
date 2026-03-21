@@ -2,6 +2,7 @@ policy_module(local_staff_systemd)
 
 gen_require(`
 	type kernel_t;
+	type staff_sudo_t;
 	type staff_systemd_t;
 	type unlabeled_t;
 ')
@@ -31,3 +32,7 @@ dontaudit staff_systemd_t unlabeled_t:filesystem getattr;
 # as kworker/R-rcu_gp. Keep this kernel-thread procfs metadata noise hidden.
 dontaudit staff_systemd_t kernel_t:dir search;
 dontaudit staff_systemd_t kernel_t:file { getattr ioctl open read };
+
+# The user systemd instance also accounts for user processes and may inspect
+# sudo-managed processes via /proc.
+ps_process_pattern(staff_systemd_t, staff_sudo_t)
