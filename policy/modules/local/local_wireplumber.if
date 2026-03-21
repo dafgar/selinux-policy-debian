@@ -80,6 +80,7 @@ template(`wireplumber_role',`
 	dev_read_video_dev($1_wireplumber_t)
 	dev_write_video_dev($1_wireplumber_t)
 	allow $1_wireplumber_t self:bluetooth_socket create_stream_socket_perms;
+	bluetooth_use($1_wireplumber_t)
 	allow $1_wireplumber_t self:netlink_kobject_uevent_socket create_socket_perms;
 	bluetooth_dbus_chat($1_wireplumber_t)
 	allow $1_wireplumber_t device_t:dir watch;
