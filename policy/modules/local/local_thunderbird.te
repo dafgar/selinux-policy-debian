@@ -14,6 +14,7 @@ dbus_write_session_runtime_socket(thunderbird_t)
 pulseaudio_client_domain(thunderbird_t)
 pipewire_pulse_stream_connect(thunderbird_t, staff_pipewire_t)
 ps_process_pattern(staff_pipewire_t, thunderbird_t)
+corenet_udp_bind_generic_node(thunderbird_t)
 
 pcscd_read_runtime_files(thunderbird_t)
 pcscd_stream_connect(thunderbird_t)
