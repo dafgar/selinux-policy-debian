@@ -1,6 +1,7 @@
 policy_module(local_staff_systemd)
 
 gen_require(`
+	type kernel_t;
 	type staff_systemd_t;
 	type unlabeled_t;
 ')
@@ -25,3 +26,8 @@ local_zotero_systemd_socket_inherit(staff_systemd_t)
 # session startup. Keep pidfs filesystem getattr noise hidden until there is a
 # concrete need to model it more specifically.
 dontaudit staff_systemd_t unlabeled_t:filesystem getattr;
+
+# The user systemd instance scans /proc and can hit kernel worker entries such
+# as kworker/R-rcu_gp. Keep this kernel-thread procfs metadata noise hidden.
+dontaudit staff_systemd_t kernel_t:dir search;
+dontaudit staff_systemd_t kernel_t:file { getattr ioctl open read };
