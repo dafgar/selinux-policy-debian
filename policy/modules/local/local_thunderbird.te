@@ -1,0 +1,8 @@
+policy_module(local_thunderbird)
+
+gen_require(`
+	type thunderbird_t;
+')
+
+pcscd_read_runtime_files(thunderbird_t)
+pcscd_stream_connect(thunderbird_t)
