@@ -5,6 +5,7 @@ gen_require(`
 	type mozilla_t;
 	type mozilla_tmpfs_t;
 	type pipewire_runtime_t;
+	type systemd_user_runtime_t;
 	type user_runtime_t;
 	type staff_pipewire_t;
 	type var_lib_t;
@@ -47,5 +48,6 @@ allow mozilla_t self:process execmem;
 # KWin maps Firefox-owned Wayland cursor buffers from mozilla_tmpfs_t.
 allow staff_wm_t mozilla_tmpfs_t:file map;
 
+dontaudit mozilla_t systemd_user_runtime_t:dir { getattr search };
 dontaudit mozilla_t xdg_cache_t:file { read write };
 dontaudit mozilla_t { var_lib_t xdg_config_t xdg_data_t }:dir watch;
