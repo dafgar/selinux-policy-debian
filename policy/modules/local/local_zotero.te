@@ -16,6 +16,11 @@ xdg_cache_content(zotero_xdg_cache_t)
 type zotero_tmp_t;
 files_tmp_file(zotero_tmp_t)
 
+manage_dirs_pattern(zotero_t, zotero_home_t, zotero_home_t)
+manage_files_pattern(zotero_t, zotero_home_t, zotero_home_t)
+manage_lnk_files_pattern(zotero_t, zotero_home_t, zotero_home_t)
+userdom_user_home_dir_filetrans_user_home_content(zotero_t, { dir file lnk_file }, ".zotero")
+
 manage_dirs_pattern(zotero_t, zotero_xdg_cache_t, zotero_xdg_cache_t)
 manage_files_pattern(zotero_t, zotero_xdg_cache_t, zotero_xdg_cache_t)
 manage_lnk_files_pattern(zotero_t, zotero_xdg_cache_t, zotero_xdg_cache_t)
@@ -23,6 +28,7 @@ xdg_cache_filetrans(zotero_t, zotero_xdg_cache_t, dir, "zotero")
 
 manage_dirs_pattern(zotero_t, zotero_tmp_t, zotero_tmp_t)
 manage_files_pattern(zotero_t, zotero_tmp_t, zotero_tmp_t)
+manage_lnk_files_pattern(zotero_t, zotero_tmp_t, zotero_tmp_t)
 files_tmp_filetrans(zotero_t, zotero_tmp_t, { dir file }, "zotero")
 
 gen_require(`
