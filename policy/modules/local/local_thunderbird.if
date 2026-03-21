@@ -6,9 +6,9 @@
 ## <summary>
 ##	Allow Thunderbird to connect to a PipeWire Pulse-compatible socket.
 ## </summary>
-## <param name="server_domain">
+## <param name="role_prefix">
 ##	<summary>
-##	PipeWire server domain owning the socket.
+##	User role prefix that owns the PipeWire server domain.
 ##	</summary>
 ## </param>
 #
@@ -17,16 +17,16 @@ interface(`local_thunderbird_pipewire_pulse_connect',`
 		type thunderbird_t;
 	')
 
-	pipewire_pulse_stream_connect(thunderbird_t, $1)
+	pipewire_pulse_stream_connect(thunderbird_t, $1_pipewire_t)
 ')
 
 ########################################
 ## <summary>
 ##	Allow a PipeWire domain to inspect Thunderbird through /proc.
 ## </summary>
-## <param name="pipewire_domain">
+## <param name="role_prefix">
 ##	<summary>
-##	PipeWire domain performing client lookup.
+##	User role prefix that owns the PipeWire domain.
 ##	</summary>
 ## </param>
 #
@@ -35,7 +35,7 @@ interface(`local_thunderbird_pipewire_process_lookup',`
 		type thunderbird_t;
 	')
 
-	ps_process_pattern($1, thunderbird_t)
+	ps_process_pattern($1_pipewire_t, thunderbird_t)
 ')
 
 ########################################

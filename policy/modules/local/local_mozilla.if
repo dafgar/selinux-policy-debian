@@ -6,9 +6,9 @@
 ## <summary>
 ##	Allow Firefox to connect to a PipeWire Pulse-compatible socket.
 ## </summary>
-## <param name="server_domain">
+## <param name="role_prefix">
 ##	<summary>
-##	PipeWire server domain owning the socket.
+##	User role prefix that owns the PipeWire server domain.
 ##	</summary>
 ## </param>
 #
@@ -17,7 +17,7 @@ interface(`local_mozilla_pipewire_pulse_connect',`
 		type mozilla_t;
 	')
 
-	pipewire_pulse_stream_connect(mozilla_t, $1)
+	pipewire_pulse_stream_connect(mozilla_t, $1_pipewire_t)
 ')
 
 ########################################
