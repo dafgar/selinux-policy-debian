@@ -33,6 +33,7 @@ corenet_udp_bind_generic_node(thunderbird_t)
 
 pcscd_read_runtime_files(thunderbird_t)
 pcscd_stream_connect(thunderbird_t)
+logging_search_logs(thunderbird_t)
 
 xdg_search_config_dirs(thunderbird_t)
 xdg_read_config_files(thunderbird_t)
