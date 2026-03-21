@@ -85,7 +85,7 @@ allow zotero_t staff_systemd_t:unix_stream_socket { getattr ioctl read write };
 allow zotero_t system_dbusd_runtime_t:sock_file write;
 allow zotero_t self:fifo_file { getattr read write };
 allow zotero_t self:netlink_route_socket { create_socket_perms nlmsg_read };
-allow zotero_t self:process { getsched setsched signal };
+allow zotero_t self:process { execmem getsched setsched signal };
 allow zotero_t self:unix_dgram_socket create_socket_perms;
 allow zotero_t self:cap_userns sys_admin;
 allow zotero_t self:tcp_socket { connect getopt };
