@@ -1,8 +1,14 @@
 policy_module(local_tpm2_pkcs11)
 
-type local_tpm2_pkcs11_etc_t;
-files_config_file(local_tpm2_pkcs11_etc_t)
+type tpm2_pkcs11_etc_t;
+files_config_file(tpm2_pkcs11_etc_t)
+
+type tpm2_pkcs11_home_t;
+userdom_user_home_content(tpm2_pkcs11_home_t)
 
 # Keep TPM2 PKCS#11 state under /etc/tpm2_pkcs11 separate from generic etc_t.
 # Multiple domains may need this path; add consumers here explicitly instead of
 # coupling the type to a single service.
+
+# Keep user TPM2 PKCS#11 state under ~/.tpm2_pkcs11 separate from generic
+# user_home_t. Add consumers explicitly instead of broadening generic home access.
