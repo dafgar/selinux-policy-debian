@@ -1,11 +1,33 @@
 policy_module(local_thunderbird)
 
 gen_require(`
+	type staff_pipewire_t;
+	type user_runtime_t;
 	type thunderbird_t;
 ')
 
 corecmd_exec_bin(thunderbird_t)
 corecmd_search_bin(thunderbird_t)
 
+dbus_write_session_runtime_socket(thunderbird_t)
+
+pulseaudio_client_domain(thunderbird_t)
+pipewire_pulse_stream_connect(thunderbird_t, staff_pipewire_t)
+ps_process_pattern(staff_pipewire_t, thunderbird_t)
+
 pcscd_read_runtime_files(thunderbird_t)
 pcscd_stream_connect(thunderbird_t)
+
+xdg_search_config_dirs(thunderbird_t)
+
+gnome_mmap_read_xdg_config_files(thunderbird_t)
+gnome_watch_xdg_config_dirs(thunderbird_t)
+
+userdom_search_user_runtime(thunderbird_t)
+allow thunderbird_t user_runtime_t:dir { add_name write };
+allow thunderbird_t user_runtime_t:sock_file { create unlink write };
+
+xserver_read_xkb_libs(thunderbird_t)
+xserver_rw_mesa_shader_cache(thunderbird_t)
+dev_rw_dri(thunderbird_t)
+dev_read_sysfs(thunderbird_t)
