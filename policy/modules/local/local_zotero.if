@@ -17,7 +17,7 @@
 ##	</summary>
 ## </param>
 #
-interface(`local_zotero_role',`
+interface(`zotero_role',`
 	gen_require(`
 		type zotero_t, zotero_exec_t;
 		role $2;
