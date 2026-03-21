@@ -38,7 +38,7 @@ allow mozilla_t user_runtime_t:sock_file { create unlink write };
 allow mozilla_t alsa_var_lib_t:dir search;
 allow mozilla_t pipewire_runtime_t:sock_file write;
 allow mozilla_t tpm2_pkcs11_home_t:dir { getattr search };
-allow mozilla_t tpm2_pkcs11_home_t:file read_file_perms;
+manage_files_pattern(mozilla_t, tpm2_pkcs11_home_t, tpm2_pkcs11_home_t)
 
 # Firefox uses same-domain ptrace within its own process tree for sandboxing
 # and crash/process management.
