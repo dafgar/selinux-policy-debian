@@ -35,6 +35,7 @@ gen_require(`
 	type staff_t;
 	type staff_systemd_t;
 	type user_runtime_t;
+	type xdg_config_t;
 ')
 
 allow zotero_t staff_systemd_t:unix_stream_socket { read write };
@@ -48,11 +49,13 @@ files_map_usr_files(zotero_t)
 files_exec_usr_files(zotero_t)
 corecmd_search_bin(zotero_t)
 dbus_spec_session_bus_client(staff, zotero_t)
+dbus_list_system_bus_runtime(zotero_t)
 dev_read_sysfs(zotero_t)
 fs_getattr_all_fs(zotero_t)
 fs_search_cgroup_dirs(zotero_t)
 gnome_mmap_read_xdg_config_files(zotero_t)
 gnome_watch_xdg_config_dirs(zotero_t)
+logging_search_logs(zotero_t)
 userdom_search_user_home_dirs(zotero_t)
 userdom_search_user_home_content(zotero_t)
 xdg_search_config_dirs(zotero_t)
@@ -65,6 +68,7 @@ allow zotero_t user_runtime_t:dir { add_name remove_name };
 allow zotero_t user_runtime_t:dir write;
 allow zotero_t user_runtime_t:sock_file { create unlink write };
 allow zotero_t user_tmp_t:dir { getattr search };
+allow zotero_t xdg_config_t:dir read;
 xserver_stream_connect(zotero_t)
 xserver_read_xkb_libs(zotero_t)
 xserver_rw_mesa_shader_cache(zotero_t)
