@@ -71700,6 +71700,11 @@ Domain to be exempted.
 Local override module with no exported interfaces.
 </summary>
 </module>
+<module name="local_backlighthelper" filename="policy/modules/local/local_backlighthelper.if">
+<summary>
+Local policy for the KDE backlight helper domain.
+</summary>
+</module>
 <module name="local_bird" filename="policy/modules/local/local_bird.if">
 <summary>
 Local override module with no exported interfaces.

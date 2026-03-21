@@ -1,0 +1,14 @@
+policy_module(local_backlighthelper)
+
+type backlighthelper_t;
+type backlighthelper_exec_t;
+
+application_executable_file(backlighthelper_exec_t)
+domain_type(backlighthelper_t)
+domain_entry_file(backlighthelper_t, backlighthelper_exec_t)
+
+gen_require(`
+	type system_dbusd_t;
+')
+
+domtrans_pattern(system_dbusd_t, backlighthelper_exec_t, backlighthelper_t)
