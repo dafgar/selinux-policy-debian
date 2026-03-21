@@ -24,6 +24,7 @@ xdg_read_config_files(thunderbird_t)
 fs_search_cgroup_dirs(thunderbird_t)
 fs_getattr_cgroup_files(thunderbird_t)
 fs_read_cgroup_files(thunderbird_t)
+dontaudit thunderbird_t xdg_cache_t:file { read write };
 
 gnome_mmap_read_xdg_config_files(thunderbird_t)
 gnome_watch_xdg_config_dirs(thunderbird_t)
