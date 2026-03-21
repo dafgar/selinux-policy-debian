@@ -53,7 +53,7 @@ files_exec_usr_files(zotero_t)
 corecmd_search_bin(zotero_t)
 dbus_spec_session_bus_client(staff, zotero_t)
 dbus_connect_system_bus(zotero_t)
-dbus_list_system_bus_runtime(zotero_t)
+dbus_system_bus_client(zotero_t)
 dbus_write_session_runtime_socket(zotero_t)
 dev_read_sysfs(zotero_t)
 dev_read_urand(zotero_t)
@@ -87,6 +87,8 @@ wm_map_tmpfs_files(zotero_t)
 wm_rw_tmpfs_files(zotero_t)
 allow zotero_t staff_t:unix_stream_socket connectto;
 allow zotero_t staff_systemd_t:unix_stream_socket { getattr ioctl read write };
+# Keep the direct session-bus runtime sockfile write; system-bus runtime access
+# is covered via dbus_system_bus_client(zotero_t).
 allow zotero_t system_dbusd_runtime_t:sock_file write;
 allow zotero_t syslogd_runtime_t:dir search;
 allow zotero_t tmpfs_t:dir search;
