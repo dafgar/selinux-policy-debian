@@ -33,6 +33,7 @@ gen_require(`
 allow zotero_t staff_systemd_t:unix_stream_socket { read write };
 
 miscfiles_read_localization(zotero_t)
+kernel_read_system_state(zotero_t)
 sysnet_read_config(zotero_t)
 files_read_etc_files(zotero_t)
 files_read_usr_files(zotero_t)
@@ -42,9 +43,11 @@ gnome_mmap_read_xdg_config_files(zotero_t)
 gnome_watch_xdg_config_dirs(zotero_t)
 userdom_search_user_home_dirs(zotero_t)
 xdg_search_data_dirs(zotero_t)
+userdom_search_user_runtime(zotero_t)
 userdom_map_user_tmp_files(zotero_t)
 allow zotero_t user_runtime_t:dir { remove_name };
 allow zotero_t user_runtime_t:sock_file { unlink };
+xserver_stream_connect(zotero_t)
 xserver_read_xkb_libs(zotero_t)
 xserver_rw_mesa_shader_cache(zotero_t)
 dev_rw_dri(zotero_t)
