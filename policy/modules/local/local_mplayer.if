@@ -1,0 +1,19 @@
+## <summary>Local policy for MPlayer session integration.</summary>
+
+#######################################
+## <summary>
+##	Allow MPlayer to connect to the user X11 socket peer domain.
+## </summary>
+## <param name="xserver_domain">
+## <summary>
+##	Domain owning the X11 socket peer.
+## </summary>
+## </param>
+#
+interface(`local_mplayer_x11_connect',`
+	gen_require(`
+		type mplayer_t;
+	')
+
+	allow mplayer_t $1:unix_stream_socket connectto;
+')
