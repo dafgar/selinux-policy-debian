@@ -18,6 +18,7 @@ gen_require(`
 	type thunderbird_t;
 	type user_home_dir_t;
 	type var_lib_t;
+	type virt_var_lib_t;
 	type staff_wm_t;
 	type xdg_config_t;
 	type xdg_data_t;
@@ -54,6 +55,7 @@ dontaudit thunderbird_t sysctl_fs_t:dir search;
 dontaudit thunderbird_t boot_t:dir search;
 dontaudit thunderbird_t fusefs_t:dir write;
 dontaudit thunderbird_t random_device_t:chr_file getattr;
+dontaudit thunderbird_t virt_var_lib_t:dir search;
 dontaudit thunderbird_t urandom_device_t:chr_file write;
 dontaudit thunderbird_t user_home_dir_t:file { open read write };
 dontaudit thunderbird_t user_runtime_t:file { open read write };
