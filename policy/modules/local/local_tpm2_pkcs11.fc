@@ -1,2 +1,2 @@
 /etc/tpm2_pkcs11(/.*)?		gen_context(system_u:object_r:tpm2_pkcs11_etc_t,s0)
-HOME_DIR/\.tpm2_pkcs11(/.*)?	gen_context(staff_u:object_r:tpm2_pkcs11_home_t,s0)
+HOME_DIR/\.tpm2_pkcs11(/.*)?	gen_context(system_u:object_r:tpm2_pkcs11_home_t,s0)
