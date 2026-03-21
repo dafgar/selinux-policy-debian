@@ -60,7 +60,8 @@ dev_rw_dri(zotero_t)
 allow zotero_t staff_t:unix_stream_socket connectto;
 allow zotero_t staff_systemd_t:unix_stream_socket { getattr ioctl read write };
 allow zotero_t self:fifo_file read;
-allow zotero_t self:process setsched;
+allow zotero_t self:netlink_route_socket create_socket_perms;
+allow zotero_t self:process { getsched setsched };
 allow zotero_t self:cap_userns sys_admin;
 allow zotero_t self:tcp_socket { connect getopt };
 allow zotero_t self:user_namespace create;
