@@ -50,10 +50,13 @@ files_map_usr_files(zotero_t)
 files_exec_usr_files(zotero_t)
 corecmd_search_bin(zotero_t)
 dbus_spec_session_bus_client(staff, zotero_t)
+dbus_connect_system_bus(zotero_t)
 dbus_list_system_bus_runtime(zotero_t)
 dbus_write_session_runtime_socket(zotero_t)
 dev_read_sysfs(zotero_t)
+dev_read_urand(zotero_t)
 fs_getattr_all_fs(zotero_t)
+fs_read_cgroup_files(zotero_t)
 fs_search_cgroup_dirs(zotero_t)
 gnome_mmap_read_xdg_config_files(zotero_t)
 gnome_watch_xdg_config_dirs(zotero_t)
@@ -70,7 +73,7 @@ allow zotero_t user_runtime_t:dir { add_name remove_name };
 allow zotero_t user_runtime_t:dir write;
 allow zotero_t user_runtime_t:sock_file { create unlink write };
 allow zotero_t user_tmp_t:dir { getattr search };
-allow zotero_t xdg_config_t:dir read;
+allow zotero_t xdg_config_t:dir { read watch };
 xserver_stream_connect(zotero_t)
 xserver_read_xkb_libs(zotero_t)
 xserver_use_user_fonts(zotero_t)
