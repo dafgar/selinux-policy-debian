@@ -20,3 +20,7 @@ fs_read_cgroup_files(mozilla_t)
 # Firefox creates a per-instance Wayland proxy socket under /run/user/$UID.
 allow mozilla_t user_runtime_t:dir { add_name write };
 allow mozilla_t user_runtime_t:sock_file { create unlink write };
+
+# Firefox uses same-domain ptrace within its own process tree for sandboxing
+# and crash/process management.
+allow mozilla_t self:process ptrace;
