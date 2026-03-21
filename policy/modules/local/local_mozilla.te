@@ -7,3 +7,11 @@ gen_require(`
 # Firefox uses the PC/SC runtime socket for smartcard/token access.
 pcscd_read_runtime_files(mozilla_t)
 pcscd_stream_connect(mozilla_t)
+
+# Low-risk desktop/runtime baseline for Firefox under the current GNOME/KWin
+# user session: read dconf/GTK settings, XKB data, and its cgroup state.
+gnome_mmap_read_xdg_config_files(mozilla_t)
+gnome_watch_xdg_config_dirs(mozilla_t)
+xserver_read_xkb_libs(mozilla_t)
+fs_search_cgroup_dirs(mozilla_t)
+fs_read_cgroup_files(mozilla_t)
