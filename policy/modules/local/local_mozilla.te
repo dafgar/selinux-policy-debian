@@ -5,7 +5,10 @@ gen_require(`
 	type mozilla_tmpfs_t;
 	type tpm2_pkcs11_home_t;
 	type user_runtime_t;
+	type var_lib_t;
 	type staff_wm_t;
+	type xdg_config_t;
+	type xdg_data_t;
 	class file map;
 ')
 
@@ -34,3 +37,5 @@ allow mozilla_t self:process execmem;
 
 # KWin maps Firefox-owned Wayland cursor buffers from mozilla_tmpfs_t.
 allow staff_wm_t mozilla_tmpfs_t:file map;
+
+dontaudit mozilla_t { var_lib_t xdg_config_t xdg_data_t }:dir watch;
