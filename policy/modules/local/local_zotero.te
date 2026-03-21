@@ -45,6 +45,8 @@ allow zotero_t staff_systemd_t:unix_stream_socket { read write };
 
 miscfiles_read_localization(zotero_t)
 kernel_read_system_state(zotero_t)
+# Zotero still probes Mozilla/NSS home state for user certificate storage.
+mozilla_read_user_home_files(zotero_t)
 sysnet_read_config(zotero_t)
 files_read_etc_files(zotero_t)
 files_read_usr_files(zotero_t)
