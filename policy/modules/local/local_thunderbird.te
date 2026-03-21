@@ -78,6 +78,7 @@ dev_read_sysfs(thunderbird_t)
 wm_map_tmpfs_files(thunderbird_t)
 
 ntp_dbus_chat(thunderbird_t)
+systemd_dbus_chat_logind(thunderbird_t)
 
 allow thunderbird_t self:cap_userns { sys_admin sys_chroot sys_ptrace };
 allow thunderbird_t self:process { ptrace setcap setrlimit };
