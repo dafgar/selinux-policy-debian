@@ -43,6 +43,7 @@ dontaudit staff_t mozilla_t:process getsched;
 
 local_git_search_user_paths(staff_git_t)
 local_git_dontaudit_pager_history(staff_git_t)
+local_zotero_stream_connect(staff_t)
 
 # kwin_wayland updates per-user desktop integration artifacts under ~/.local/share.
 xdg_manage_data(staff_wm_t)

@@ -40,8 +40,6 @@ gen_require(`
 	type pcscd_runtime_t;
 	type random_device_t;
 	type root_t;
-	type staff_t;
-	type staff_systemd_t;
 	type systemd_machined_runtime_t;
 	type system_dbusd_runtime_t;
 	type syslogd_runtime_t;
@@ -55,8 +53,6 @@ gen_require(`
 	type user_runtime_t;
 	type xdg_config_t;
 ')
-
-allow zotero_t staff_systemd_t:unix_stream_socket { read write };
 
 miscfiles_read_localization(zotero_t)
 kernel_read_system_state(zotero_t)
@@ -109,8 +105,6 @@ miscfiles_read_fonts(zotero_t)
 dev_rw_dri(zotero_t)
 wm_map_tmpfs_files(zotero_t)
 wm_rw_tmpfs_files(zotero_t)
-allow zotero_t staff_t:unix_stream_socket connectto;
-allow zotero_t staff_systemd_t:unix_stream_socket { getattr ioctl read write };
 # Keep the direct session-bus runtime sockfile write; system-bus runtime access
 # is covered via dbus_system_bus_client(zotero_t).
 allow zotero_t system_dbusd_runtime_t:sock_file write;

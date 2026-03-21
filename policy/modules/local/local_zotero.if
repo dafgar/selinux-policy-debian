@@ -32,3 +32,40 @@ interface(`local_zotero_role',`
 
 	allow zotero_t $1:process sigchld;
 ')
+
+########################################
+## <summary>
+##	Allow Zotero to use an inherited user-systemd stream socket.
+## </summary>
+## <param name="systemd_domain">
+##	<summary>
+##	User systemd domain owning the inherited socket and fd.
+##	</summary>
+## </param>
+#
+interface(`local_zotero_systemd_socket_inherit',`
+	gen_require(`
+		type zotero_t;
+	')
+
+	allow zotero_t $1:fd use;
+	allow zotero_t $1:unix_stream_socket { getattr ioctl read write };
+')
+
+########################################
+## <summary>
+##	Allow Zotero to connect to a desktop-owned stream socket.
+## </summary>
+## <param name="peer_domain">
+##	<summary>
+##	Domain owning the peer socket.
+##	</summary>
+## </param>
+#
+interface(`local_zotero_stream_connect',`
+	gen_require(`
+		type zotero_t;
+	')
+
+	allow zotero_t $1:unix_stream_socket connectto;
+')

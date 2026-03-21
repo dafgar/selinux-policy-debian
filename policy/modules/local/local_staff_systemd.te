@@ -17,6 +17,10 @@ local_gnome_systemd_keyring_socket(staff)
 # utempter can inherit a stream socket fd from the user systemd instance.
 local_utempter_systemd_socket_inherit(staff_systemd_t)
 
+# Zotero inherits a stream socket fd from the user systemd instance during
+# startup and uses metadata/ioctl on that same parent-owned socket.
+local_zotero_systemd_socket_inherit(staff_systemd_t)
+
 # systemd --user performs generic filesystem probing on inherited fds during
 # session startup. Keep pidfs filesystem getattr noise hidden until there is a
 # concrete need to model it more specifically.
