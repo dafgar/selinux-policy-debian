@@ -20,6 +20,7 @@ files_tmp_file(zotero_tmp_t)
 manage_dirs_pattern(zotero_t, zotero_home_t, zotero_home_t)
 manage_files_pattern(zotero_t, zotero_home_t, zotero_home_t)
 manage_lnk_files_pattern(zotero_t, zotero_home_t, zotero_home_t)
+allow zotero_t zotero_home_t:file map;
 userdom_user_home_dir_filetrans_user_home_content(zotero_t, { dir file lnk_file }, ".zotero")
 
 manage_dirs_pattern(zotero_t, zotero_xdg_cache_t, zotero_xdg_cache_t)
