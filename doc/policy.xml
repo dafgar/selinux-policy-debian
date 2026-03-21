@@ -71780,6 +71780,11 @@ Domain allowed to query fwupd and receive replies.
 </param>
 </interface>
 </module>
+<module name="local_getty" filename="policy/modules/local/local_getty.if">
+<summary>
+Local policy for getty integration adjustments.
+</summary>
+</module>
 <module name="local_git" filename="policy/modules/local/local_git.if">
 <summary>
 Local Git helper interfaces.

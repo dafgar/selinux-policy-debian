@@ -1,0 +1,11 @@
+policy_module(local_getty)
+
+gen_require(`
+	type getty_t;
+	type tmpfs_t;
+')
+
+# systemd per-unit credentials currently fall back to tmpfs_t on this host.
+# Keep getty limited to the observed directory lookup, but revisit this once
+# /run/credentials has a better typed model.
+allow getty_t tmpfs_t:dir { getattr open read };
