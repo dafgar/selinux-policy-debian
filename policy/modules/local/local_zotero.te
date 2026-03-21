@@ -26,6 +26,7 @@ manage_files_pattern(zotero_t, zotero_tmp_t, zotero_tmp_t)
 files_tmp_filetrans(zotero_t, zotero_tmp_t, { dir file }, "zotero")
 
 gen_require(`
+	type staff_t;
 	type staff_systemd_t;
 	type user_runtime_t;
 ')
@@ -39,12 +40,14 @@ files_read_etc_files(zotero_t)
 files_read_usr_files(zotero_t)
 files_map_usr_files(zotero_t)
 files_exec_usr_files(zotero_t)
+dbus_write_session_runtime_socket(zotero_t)
 gnome_mmap_read_xdg_config_files(zotero_t)
 gnome_watch_xdg_config_dirs(zotero_t)
 userdom_search_user_home_dirs(zotero_t)
 xdg_search_data_dirs(zotero_t)
 userdom_search_user_runtime(zotero_t)
 userdom_map_user_tmp_files(zotero_t)
+userdom_write_user_tmp_sockets(zotero_t)
 allow zotero_t user_runtime_t:dir { remove_name };
 allow zotero_t user_runtime_t:sock_file { unlink };
 xserver_stream_connect(zotero_t)
