@@ -40,6 +40,7 @@ gen_require(`
 	type root_t;
 	type staff_t;
 	type staff_systemd_t;
+	type systemd_machined_runtime_t;
 	type system_dbusd_runtime_t;
 	type syslogd_runtime_t;
 	type thunderbird_exec_t;
@@ -109,6 +110,7 @@ allow zotero_t staff_systemd_t:unix_stream_socket { getattr ioctl read write };
 allow zotero_t system_dbusd_runtime_t:sock_file write;
 allow zotero_t syslogd_runtime_t:dir search;
 dontaudit zotero_t random_device_t:chr_file getattr;
+dontaudit zotero_t systemd_machined_runtime_t:dir search;
 allow zotero_t tmpfs_t:dir search;
 allow zotero_t tmpfs_t:file open;
 allow zotero_t tmpfs_t:file { read map write };
