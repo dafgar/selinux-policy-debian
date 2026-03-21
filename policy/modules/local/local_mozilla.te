@@ -5,7 +5,6 @@ gen_require(`
 	type mozilla_t;
 	type mozilla_tmpfs_t;
 	type pipewire_runtime_t;
-	type tpm2_pkcs11_home_t;
 	type user_runtime_t;
 	type staff_pipewire_t;
 	type var_lib_t;
@@ -32,14 +31,13 @@ corenet_tcp_connect_all_ports(mozilla_t)
 pulseaudio_client_domain(mozilla_t)
 pipewire_pulse_stream_connect(mozilla_t, staff_pipewire_t)
 dev_rw_tpm(mozilla_t)
+local_tpm2_pkcs11_manage_home_files(mozilla_t)
 
 # Firefox creates a per-instance Wayland proxy socket under /run/user/$UID.
 allow mozilla_t user_runtime_t:dir { add_name write };
 allow mozilla_t user_runtime_t:sock_file { create unlink write };
 allow mozilla_t alsa_var_lib_t:dir search;
 allow mozilla_t pipewire_runtime_t:sock_file write;
-allow mozilla_t tpm2_pkcs11_home_t:dir { getattr search };
-manage_files_pattern(mozilla_t, tpm2_pkcs11_home_t, tpm2_pkcs11_home_t)
 
 # Firefox uses same-domain ptrace within its own process tree for sandboxing
 # and crash/process management.
