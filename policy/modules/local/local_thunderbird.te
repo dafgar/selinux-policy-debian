@@ -50,6 +50,8 @@ dev_rw_dri(thunderbird_t)
 dev_read_sysfs(thunderbird_t)
 wm_map_tmpfs_files(thunderbird_t)
 
+ntp_dbus_chat(thunderbird_t)
+
 allow thunderbird_t self:cap_userns { sys_admin sys_chroot sys_ptrace };
 allow thunderbird_t self:process { ptrace setcap setrlimit };
 allow thunderbird_t self:user_namespace create;
