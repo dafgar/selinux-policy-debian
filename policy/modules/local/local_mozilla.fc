@@ -1,1 +1,2 @@
-
+/usr/lib/firefox-esr/crashhelper	gen_context(system_u:object_r:bin_t,s0)
+/usr/lib/firefox-esr/vaapitest	gen_context(system_u:object_r:bin_t,s0)
