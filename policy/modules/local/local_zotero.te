@@ -44,17 +44,21 @@ dbus_spec_session_bus_client(staff, zotero_t)
 gnome_mmap_read_xdg_config_files(zotero_t)
 gnome_watch_xdg_config_dirs(zotero_t)
 userdom_search_user_home_dirs(zotero_t)
+xdg_search_config_dirs(zotero_t)
 xdg_search_data_dirs(zotero_t)
 userdom_search_user_runtime(zotero_t)
 userdom_map_user_tmp_files(zotero_t)
 userdom_write_user_tmp_sockets(zotero_t)
 allow zotero_t user_runtime_t:dir { remove_name };
+allow zotero_t user_runtime_t:dir write;
 allow zotero_t user_runtime_t:sock_file { unlink };
+allow zotero_t user_tmp_t:dir { getattr search };
 xserver_stream_connect(zotero_t)
 xserver_read_xkb_libs(zotero_t)
 xserver_rw_mesa_shader_cache(zotero_t)
 dev_rw_dri(zotero_t)
 allow zotero_t staff_t:unix_stream_socket connectto;
+allow zotero_t staff_systemd_t:unix_stream_socket { getattr ioctl read write };
 allow zotero_t self:fifo_file read;
 allow zotero_t self:process setsched;
 allow zotero_t self:cap_userns sys_admin;
