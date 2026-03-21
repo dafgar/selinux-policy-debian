@@ -115,6 +115,7 @@ allow zotero_t self:unix_dgram_socket create_socket_perms;
 allow zotero_t self:unix_stream_socket connectto;
 allow zotero_t self:cap_userns sys_admin;
 allow zotero_t self:tcp_socket create_socket_perms;
+allow zotero_t self:tcp_socket listen;
 allow zotero_t self:tcp_socket { connect getopt };
 allow zotero_t self:udp_socket create_socket_perms;
 allow zotero_t self:user_namespace create;
