@@ -45,6 +45,7 @@ gen_require(`
 	type systemd_machined_runtime_t;
 	type system_dbusd_runtime_t;
 	type syslogd_runtime_t;
+	type tpm2_pkcs11_home_t;
 	type thunderbird_exec_t;
 	type tmpfs_t;
 	type user_home_t;
@@ -143,4 +144,5 @@ dontaudit zotero_t { var_t var_lib_t }:dir read;
 dontaudit zotero_t user_home_t:file read;
 dontaudit zotero_t mozilla_exec_t:file execute;
 dontaudit zotero_t pcscd_runtime_t:dir search;
+dontaudit zotero_t tpm2_pkcs11_home_t:dir search;
 dontaudit zotero_t thunderbird_exec_t:file execute;
