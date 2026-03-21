@@ -2,6 +2,7 @@ policy_module(local_thunderbird)
 
 gen_require(`
 	type etc_t;
+	type mplayer_exec_t;
 	type staff_pipewire_t;
 	type user_runtime_t;
 	type usr_t;
@@ -31,6 +32,7 @@ fs_getattr_cgroup_files(thunderbird_t)
 fs_read_cgroup_files(thunderbird_t)
 dontaudit thunderbird_t xdg_cache_t:file { read write };
 dontaudit thunderbird_t { etc_t usr_t var_lib_t xdg_config_t xdg_data_t }:dir watch;
+dontaudit thunderbird_t mplayer_exec_t:file execute;
 
 gnome_mmap_read_xdg_config_files(thunderbird_t)
 gnome_watch_xdg_config_dirs(thunderbird_t)
