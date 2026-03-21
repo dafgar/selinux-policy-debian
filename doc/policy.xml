@@ -72109,11 +72109,6 @@ Local override module with no exported interfaces.
 Local override module with no exported interfaces.
 </summary>
 </module>
-<module name="local_systemd_credentials" filename="policy/modules/local/local_systemd_credentials.if">
-<summary>
-Local labeling for systemd service credential runtime content.
-</summary>
-</module>
 <module name="local_systemd_hostnamed" filename="policy/modules/local/local_systemd_hostnamed.if">
 <summary>
 Local override module with no exported interfaces.
