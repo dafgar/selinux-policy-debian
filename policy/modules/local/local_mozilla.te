@@ -24,6 +24,7 @@ xserver_read_xkb_libs(mozilla_t)
 fs_search_cgroup_dirs(mozilla_t)
 fs_read_cgroup_files(mozilla_t)
 wm_map_tmpfs_files(mozilla_t)
+corenet_tcp_connect_all_ports(mozilla_t)
 
 # Firefox creates a per-instance Wayland proxy socket under /run/user/$UID.
 allow mozilla_t user_runtime_t:dir { add_name write };
