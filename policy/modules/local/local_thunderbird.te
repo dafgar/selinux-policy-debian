@@ -31,3 +31,7 @@ xserver_read_xkb_libs(thunderbird_t)
 xserver_rw_mesa_shader_cache(thunderbird_t)
 dev_rw_dri(thunderbird_t)
 dev_read_sysfs(thunderbird_t)
+
+allow thunderbird_t self:cap_userns { sys_admin sys_chroot };
+allow thunderbird_t self:process { setcap setrlimit };
+allow thunderbird_t self:user_namespace create;
