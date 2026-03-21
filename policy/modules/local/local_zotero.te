@@ -34,6 +34,7 @@ files_tmp_filetrans(zotero_t, zotero_tmp_t, { dir file }, "zotero")
 gen_require(`
 	type staff_t;
 	type staff_systemd_t;
+	type system_dbusd_runtime_t;
 	type user_runtime_t;
 	type xdg_config_t;
 ')
@@ -50,6 +51,7 @@ files_exec_usr_files(zotero_t)
 corecmd_search_bin(zotero_t)
 dbus_spec_session_bus_client(staff, zotero_t)
 dbus_list_system_bus_runtime(zotero_t)
+dbus_write_session_runtime_socket(zotero_t)
 dev_read_sysfs(zotero_t)
 fs_getattr_all_fs(zotero_t)
 fs_search_cgroup_dirs(zotero_t)
@@ -71,11 +73,13 @@ allow zotero_t user_tmp_t:dir { getattr search };
 allow zotero_t xdg_config_t:dir read;
 xserver_stream_connect(zotero_t)
 xserver_read_xkb_libs(zotero_t)
+xserver_use_user_fonts(zotero_t)
 xserver_rw_mesa_shader_cache(zotero_t)
 miscfiles_read_fonts(zotero_t)
 dev_rw_dri(zotero_t)
 allow zotero_t staff_t:unix_stream_socket connectto;
 allow zotero_t staff_systemd_t:unix_stream_socket { getattr ioctl read write };
+allow zotero_t system_dbusd_runtime_t:sock_file write;
 allow zotero_t self:fifo_file { getattr read write };
 allow zotero_t self:netlink_route_socket { create_socket_perms nlmsg_read };
 allow zotero_t self:process { getsched setsched signal };
