@@ -1,9 +1,14 @@
 policy_module(local_thunderbird)
 
 gen_require(`
+	type boot_t;
 	type etc_t;
+	type fusefs_t;
 	type mplayer_exec_t;
+	type random_device_t;
 	type staff_pipewire_t;
+	type sysctl_fs_t;
+	type thunderbird_tmp_t;
 	type thunderbird_xdg_cache_t;
 	type thunderbird_tmpfs_t;
 	type user_runtime_t;
@@ -36,7 +41,12 @@ allow thunderbird_t thunderbird_xdg_cache_t:file map;
 dontaudit thunderbird_t xdg_cache_t:file { read write };
 dontaudit thunderbird_t { etc_t usr_t var_lib_t xdg_config_t xdg_data_t }:dir watch;
 dontaudit thunderbird_t mplayer_exec_t:file execute;
+dontaudit thunderbird_t thunderbird_tmp_t:file map;
 dontaudit thunderbird_t thunderbird_tmpfs_t:file execute;
+dontaudit thunderbird_t sysctl_fs_t:dir search;
+dontaudit thunderbird_t boot_t:dir search;
+dontaudit thunderbird_t fusefs_t:dir write;
+dontaudit thunderbird_t random_device_t:chr_file getattr;
 
 gnome_mmap_read_xdg_config_files(thunderbird_t)
 gnome_watch_xdg_config_dirs(thunderbird_t)
