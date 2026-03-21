@@ -2,6 +2,7 @@ policy_module(local_staff)
 
 gen_require(`
 	type nsfs_t;
+	type mozilla_t;
 	type staff_dbusd_t;
 	type staff_git_t;
 	type staff_t;
@@ -36,6 +37,9 @@ local_gpg_prompter_dbus_chat(staff_t)
 # flatpak --print-updated-env exchanges a systemd-created memfd in the user
 # session. Keep this limited to read/write on systemd_user_tmpfs_t files.
 allow staff_t systemd_user_tmpfs_t:file rw_file_perms;
+
+# Plasma shell querying Firefox scheduler metadata is desktop integration noise.
+dontaudit staff_t mozilla_t:process getsched;
 
 local_git_search_user_paths(staff_git_t)
 local_git_dontaudit_pager_history(staff_git_t)
