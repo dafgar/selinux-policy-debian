@@ -63,6 +63,7 @@ fs_search_cgroup_dirs(zotero_t)
 gnome_mmap_read_xdg_config_files(zotero_t)
 gnome_watch_xdg_config_dirs(zotero_t)
 logging_search_logs(zotero_t)
+logging_send_syslog_msg(zotero_t)
 userdom_search_user_home_dirs(zotero_t)
 userdom_search_user_home_content(zotero_t)
 xdg_search_config_dirs(zotero_t)
@@ -86,7 +87,7 @@ allow zotero_t staff_t:unix_stream_socket connectto;
 allow zotero_t staff_systemd_t:unix_stream_socket { getattr ioctl read write };
 allow zotero_t system_dbusd_runtime_t:sock_file write;
 allow zotero_t syslogd_runtime_t:dir search;
-allow zotero_t tmpfs_t:file write;
+allow zotero_t tmpfs_t:file { map write };
 allow zotero_t tmp_t:file create;
 allow zotero_t self:fifo_file { getattr read write };
 allow zotero_t self:netlink_route_socket { create_socket_perms nlmsg_read };
