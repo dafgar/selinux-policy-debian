@@ -116,3 +116,8 @@ allow zotero_t self:tcp_socket create_socket_perms;
 allow zotero_t self:tcp_socket { connect getopt };
 allow zotero_t self:udp_socket create_socket_perms;
 allow zotero_t self:user_namespace create;
+
+# Evince can run in zotero_t after direct execution, but keep recent-files
+# history updates denied rather than broadening generic xdg_data_t writes.
+dontaudit zotero_t xdg_data_t:dir write;
+dontaudit zotero_t xdg_data_t:file setattr;
