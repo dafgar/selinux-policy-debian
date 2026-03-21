@@ -7,9 +7,7 @@ gen_require(`
 	type pipewire_runtime_t;
 	type systemd_user_runtime_t;
 	type user_runtime_t;
-	type staff_pipewire_t;
 	type var_lib_t;
-	type staff_wm_t;
 	type xdg_cache_t;
 	type xdg_config_t;
 	type xdg_data_t;
@@ -31,7 +29,6 @@ files_map_etc_files(mozilla_t)
 wm_map_tmpfs_files(mozilla_t)
 corenet_tcp_connect_all_ports(mozilla_t)
 pulseaudio_client_domain(mozilla_t)
-pipewire_pulse_stream_connect(mozilla_t, staff_pipewire_t)
 dev_rw_tpm(mozilla_t)
 local_tpm2_pkcs11_manage_home_files(mozilla_t)
 
@@ -45,9 +42,6 @@ allow mozilla_t pipewire_runtime_t:sock_file write;
 # and crash/process management.
 allow mozilla_t self:process ptrace;
 allow mozilla_t self:process execmem;
-
-# KWin maps Firefox-owned Wayland cursor buffers from mozilla_tmpfs_t.
-allow staff_wm_t mozilla_tmpfs_t:file map;
 
 dontaudit mozilla_t systemd_user_runtime_t:dir { getattr search };
 dontaudit mozilla_t xdg_cache_t:file { read write };

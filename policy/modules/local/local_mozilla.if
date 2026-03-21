@@ -1,3 +1,40 @@
 ## <summary>
 ##	Local Mozilla adjustments.
 ## </summary>
+
+########################################
+## <summary>
+##	Allow Firefox to connect to a PipeWire Pulse-compatible socket.
+## </summary>
+## <param name="server_domain">
+##	<summary>
+##	PipeWire server domain owning the socket.
+##	</summary>
+## </param>
+#
+interface(`local_mozilla_pipewire_pulse_connect',`
+	gen_require(`
+		type mozilla_t;
+	')
+
+	pipewire_pulse_stream_connect(mozilla_t, $1)
+')
+
+########################################
+## <summary>
+##	Allow a window-manager domain to map Firefox tmpfs buffers.
+## </summary>
+## <param name="wm_domain">
+##	<summary>
+##	Window-manager domain mapping the buffers.
+##	</summary>
+## </param>
+#
+interface(`local_mozilla_wm_tmpfs_map',`
+	gen_require(`
+		type mozilla_tmpfs_t;
+		class file map;
+	')
+
+	allow $1 mozilla_tmpfs_t:file map;
+')

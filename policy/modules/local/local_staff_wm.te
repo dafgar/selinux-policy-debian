@@ -7,3 +7,4 @@ gen_require(`
 
 pipewire_stream_connect(staff_wm_t, staff_pipewire_t)
 pipewire_rw_tmpfs_files(staff_wm_t)
+local_mozilla_wm_tmpfs_map(staff_wm_t)
