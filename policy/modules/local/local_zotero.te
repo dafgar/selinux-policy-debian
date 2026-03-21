@@ -100,7 +100,7 @@ allow zotero_t tmpfs_t:file open;
 allow zotero_t tmpfs_t:file { read map write };
 # MozillaUpdateLock-* is created under /tmp with a variable name, so keep the
 # generic tmp_t fallback limited to the exact lock-file operations observed.
-allow zotero_t tmp_t:file { create open read lock };
+allow zotero_t tmp_t:file { create open read lock unlink };
 allow zotero_t self:fifo_file { getattr read write };
 allow zotero_t self:netlink_route_socket { create_socket_perms nlmsg_read };
 allow zotero_t self:process { execmem getsched setsched signal };
