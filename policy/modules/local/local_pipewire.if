@@ -116,7 +116,7 @@ template(`pipewire_role',`
 	gen_require(`
 		role $4;
 		attribute $3;
-		type pipewire_exec_t, pipewire_runtime_t, pipewire_tmpfs_t, pulseaudio_tmp_t, user_runtime_t;
+		type mozilla_t, pipewire_exec_t, pipewire_runtime_t, pipewire_tmpfs_t, pulseaudio_tmp_t, user_runtime_t;
 	')
 
 	type $1_pipewire_t;
@@ -134,6 +134,7 @@ template(`pipewire_role',`
 	allow $1_pipewire_t self:process { getsched setrlimit setsched };
 	ps_process_pattern($1_pipewire_t, $1_wireplumber_t)
 	ps_process_pattern($1_pipewire_t, $2)
+	ps_process_pattern($1_pipewire_t, mozilla_t)
 
 	auth_use_nsswitch($1_pipewire_t)
 	alsa_read_config($1_pipewire_t)
