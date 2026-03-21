@@ -9,6 +9,7 @@ gen_require(`
 	type systemd_tmpfiles_t;
 	type uuidd_var_lib_t;
 	type user_home_dir_t;
+	type user_runtime_t;
 	type user_tmp_t;
 ')
 
@@ -40,6 +41,8 @@ allow systemd_tmpfiles_t security_t:file setattr_file_perms;
 allow systemd_tmpfiles_t security_t:lnk_file setattr_lnk_file_perms;
 
 allow systemd_tmpfiles_t user_home_dir_t:dir relabel_dir_perms;
+allow systemd_tmpfiles_t user_runtime_t:dir manage_dir_perms;
+allow systemd_tmpfiles_t user_runtime_t:file manage_file_perms;
 allow systemd_tmpfiles_t ssh_home_t:dir relabel_dir_perms;
 allow systemd_tmpfiles_t user_tmp_t:dir setattr_dir_perms;
 auditallow systemd_tmpfiles_t user_tmp_t:dir setattr_dir_perms;
