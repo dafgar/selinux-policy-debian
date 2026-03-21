@@ -31,6 +31,7 @@ wm_map_tmpfs_files(mozilla_t)
 corenet_tcp_connect_all_ports(mozilla_t)
 pulseaudio_client_domain(mozilla_t)
 pipewire_pulse_stream_connect(mozilla_t, staff_pipewire_t)
+dev_rw_tpm(mozilla_t)
 
 # Firefox creates a per-instance Wayland proxy socket under /run/user/$UID.
 allow mozilla_t user_runtime_t:dir { add_name write };
