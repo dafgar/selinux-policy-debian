@@ -71896,6 +71896,11 @@ Local override module with no exported interfaces.
 Local override module with no exported interfaces.
 </summary>
 </module>
+<module name="local_mozilla" filename="policy/modules/local/local_mozilla.if">
+<summary>
+Local Mozilla adjustments.
+</summary>
+</module>
 <module name="local_networkmanager" filename="policy/modules/local/local_networkmanager.if">
 <summary>
 Local override module with no exported interfaces.
