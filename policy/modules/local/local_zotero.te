@@ -23,3 +23,7 @@ gen_require(`
 ')
 
 allow zotero_t staff_systemd_t:unix_stream_socket { read write };
+
+miscfiles_read_localization(zotero_t)
+sysnet_read_config(zotero_t)
+files_read_etc_files(zotero_t)
