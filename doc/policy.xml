@@ -71910,6 +71910,39 @@ Local override module with no exported interfaces.
 <summary>
 Local Mozilla adjustments.
 </summary>
+<interface name="local_mozilla_pipewire_pulse_connect" lineno="15">
+<summary>
+Allow Firefox to connect to a PipeWire Pulse-compatible socket.
+</summary>
+<param name="server_domain">
+<summary>
+PipeWire server domain owning the socket.
+</summary>
+</param>
+</interface>
+<interface name="local_mozilla_wm_tmpfs_map" lineno="33">
+<summary>
+Allow a window-manager domain to map Firefox tmpfs buffers.
+</summary>
+<param name="wm_domain">
+<summary>
+Window-manager domain mapping the buffers.
+</summary>
+</param>
+</interface>
+</module>
+<module name="local_mplayer" filename="policy/modules/local/local_mplayer.if">
+<summary>Local policy for MPlayer session integration.</summary>
+<interface name="local_mplayer_x11_connect" lineno="13">
+<summary>
+Allow MPlayer to connect to the user X11 socket peer domain.
+</summary>
+<param name="xserver_domain">
+<summary>
+Domain owning the X11 socket peer.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_networkmanager" filename="policy/modules/local/local_networkmanager.if">
 <summary>
@@ -72110,6 +72143,36 @@ Local override module with no exported interfaces.
 <summary>
 Local Thunderbird policy adjustments.
 </summary>
+<interface name="local_thunderbird_pipewire_pulse_connect" lineno="15">
+<summary>
+Allow Thunderbird to connect to a PipeWire Pulse-compatible socket.
+</summary>
+<param name="server_domain">
+<summary>
+PipeWire server domain owning the socket.
+</summary>
+</param>
+</interface>
+<interface name="local_thunderbird_pipewire_process_lookup" lineno="33">
+<summary>
+Allow a PipeWire domain to inspect Thunderbird through /proc.
+</summary>
+<param name="pipewire_domain">
+<summary>
+PipeWire domain performing client lookup.
+</summary>
+</param>
+</interface>
+<interface name="local_thunderbird_wm_dontaudit_tmpfs_use" lineno="51">
+<summary>
+Dontaudit a WM domain using Thunderbird tmpfs buffers and inherited fds.
+</summary>
+<param name="wm_domain">
+<summary>
+Window-manager domain using Thunderbird-owned objects.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_tpm2_pkcs11" filename="policy/modules/local/local_tpm2_pkcs11.if">
 <summary>
@@ -72145,6 +72208,16 @@ Local USBGuard noise suppressions.
 <summary>
 Local utempter policy adjustments.
 </summary>
+<interface name="local_utempter_systemd_socket_inherit" lineno="15">
+<summary>
+Allow utempter to use an inherited user-systemd stream socket.
+</summary>
+<param name="systemd_domain">
+<summary>
+User systemd domain owning the inherited socket and fd.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_virt" filename="policy/modules/local/local_virt.if">
 <summary>
@@ -72212,6 +72285,26 @@ Domain allowed to execute and transition to Zotero.
 <param name="role">
 <summary>
 Role allowed access to the Zotero domain.
+</summary>
+</param>
+</interface>
+<interface name="local_zotero_systemd_socket_inherit" lineno="46">
+<summary>
+Allow Zotero to use an inherited user-systemd stream socket.
+</summary>
+<param name="systemd_domain">
+<summary>
+User systemd domain owning the inherited socket and fd.
+</summary>
+</param>
+</interface>
+<interface name="local_zotero_stream_connect" lineno="65">
+<summary>
+Allow Zotero to connect to a desktop-owned stream socket.
+</summary>
+<param name="peer_domain">
+<summary>
+Domain owning the peer socket.
 </summary>
 </param>
 </interface>
