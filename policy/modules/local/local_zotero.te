@@ -113,7 +113,7 @@ allow zotero_t self:netlink_route_socket { create_socket_perms nlmsg_read };
 allow zotero_t self:process { execmem getsched setcap setsched signal };
 allow zotero_t self:unix_dgram_socket create_socket_perms;
 allow zotero_t self:unix_stream_socket connectto;
-allow zotero_t self:cap_userns sys_admin;
+allow zotero_t self:cap_userns { sys_admin sys_chroot };
 allow zotero_t self:tcp_socket create_socket_perms;
 allow zotero_t self:tcp_socket listen;
 allow zotero_t self:tcp_socket { connect getopt };
