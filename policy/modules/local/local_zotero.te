@@ -20,6 +20,7 @@ xdg_cache_filetrans(zotero_t, zotero_xdg_cache_t, dir, "zotero")
 
 gen_require(`
 	type staff_systemd_t;
+	type user_runtime_t;
 ')
 
 allow zotero_t staff_systemd_t:unix_stream_socket { read write };
@@ -27,3 +28,8 @@ allow zotero_t staff_systemd_t:unix_stream_socket { read write };
 miscfiles_read_localization(zotero_t)
 sysnet_read_config(zotero_t)
 files_read_etc_files(zotero_t)
+gnome_mmap_read_xdg_config_files(zotero_t)
+gnome_watch_xdg_config_dirs(zotero_t)
+userdom_map_user_tmp_files(zotero_t)
+allow zotero_t user_runtime_t:dir { remove_name };
+allow zotero_t user_runtime_t:sock_file { unlink };
