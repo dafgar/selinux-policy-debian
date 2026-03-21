@@ -71783,9 +71783,9 @@ Local Git helper interfaces.
 <summary>
 Allow Git client domains to search user helper paths.
 </summary>
-<param name="domain">
+<param name="role_prefix">
 <summary>
-Domain allowed access.
+User role prefix that owns the Git client domain.
 </summary>
 </param>
 </interface>
@@ -71793,9 +71793,9 @@ Domain allowed access.
 <summary>
 Do not audit pager history accesses from Git client domains.
 </summary>
-<param name="domain">
+<param name="role_prefix">
 <summary>
-Domain to suppress pager history noise for.
+User role prefix that owns the Git client domain.
 </summary>
 </param>
 </interface>
@@ -71914,9 +71914,9 @@ Local Mozilla adjustments.
 <summary>
 Allow Firefox to connect to a PipeWire Pulse-compatible socket.
 </summary>
-<param name="server_domain">
+<param name="role_prefix">
 <summary>
-PipeWire server domain owning the socket.
+User role prefix that owns the PipeWire server domain.
 </summary>
 </param>
 </interface>
@@ -71940,6 +71940,16 @@ Allow MPlayer to connect to the user X11 socket peer domain.
 <param name="xserver_domain">
 <summary>
 Domain owning the X11 socket peer.
+</summary>
+</param>
+</interface>
+<interface name="local_mplayer_pipewire_pulse_connect" lineno="31">
+<summary>
+Allow MPlayer to connect to the user PulseAudio-compatible PipeWire socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the PipeWire server domain.
 </summary>
 </param>
 </interface>
@@ -72147,9 +72157,9 @@ Local Thunderbird policy adjustments.
 <summary>
 Allow Thunderbird to connect to a PipeWire Pulse-compatible socket.
 </summary>
-<param name="server_domain">
+<param name="role_prefix">
 <summary>
-PipeWire server domain owning the socket.
+User role prefix that owns the PipeWire server domain.
 </summary>
 </param>
 </interface>
@@ -72157,9 +72167,9 @@ PipeWire server domain owning the socket.
 <summary>
 Allow a PipeWire domain to inspect Thunderbird through /proc.
 </summary>
-<param name="pipewire_domain">
+<param name="role_prefix">
 <summary>
-PipeWire domain performing client lookup.
+User role prefix that owns the PipeWire domain.
 </summary>
 </param>
 </interface>
@@ -72273,7 +72283,7 @@ Local override module with no exported interfaces.
 <summary>
 Local Zotero domain interfaces.
 </summary>
-<interface name="local_zotero_role" lineno="20">
+<interface name="zotero_role" lineno="20">
 <summary>
 Allow a role to transition into the Zotero application domain.
 </summary>
