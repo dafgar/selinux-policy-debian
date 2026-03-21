@@ -71764,6 +71764,16 @@ Local override module with no exported interfaces.
 <summary>
 Local fwupd policy adjustments.
 </summary>
+<interface name="local_fwupd_dbus_chat" lineno="15">
+<summary>
+Chat with the fwupd daemon over D-Bus.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to query fwupd and receive replies.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_git" filename="policy/modules/local/local_git.if">
 <summary>

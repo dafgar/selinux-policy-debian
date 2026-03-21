@@ -3,6 +3,7 @@ policy_module(local_fwupd)
 gen_require(`
 	type fwupd_conf_t;
 	type fwupd_t;
+	type staff_t;
 ')
 
 type fwupd_tmp_t;
@@ -16,3 +17,5 @@ dontaudit fwupd_t fwupd_conf_t:file write;
 manage_dirs_pattern(fwupd_t, fwupd_tmp_t, fwupd_tmp_t)
 manage_files_pattern(fwupd_t, fwupd_tmp_t, fwupd_tmp_t)
 files_tmp_filetrans(fwupd_t, fwupd_tmp_t, file)
+
+local_fwupd_dbus_chat(staff_t)

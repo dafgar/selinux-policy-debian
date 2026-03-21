@@ -1,3 +1,23 @@
 ## <summary>
 ## Local fwupd policy adjustments.
 ## </summary>
+
+########################################
+## <summary>
+##	Chat with the fwupd daemon over D-Bus.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to query fwupd and receive replies.
+##	</summary>
+## </param>
+#
+interface(`local_fwupd_dbus_chat',`
+	gen_require(`
+		type fwupd_t;
+		class dbus send_msg;
+	')
+
+	allow $1 fwupd_t:dbus send_msg;
+	allow fwupd_t $1:dbus send_msg;
+')
