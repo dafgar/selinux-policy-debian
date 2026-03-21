@@ -6,12 +6,11 @@ gen_require(`
 	type fusefs_t;
 	type mplayer_exec_t;
 	type random_device_t;
-	type staff_pipewire_t;
 	type systemd_logind_t;
 	type sysctl_fs_t;
 	type thunderbird_tmp_t;
-	type thunderbird_xdg_cache_t;
 	type thunderbird_tmpfs_t;
+	type thunderbird_xdg_cache_t;
 	type urandom_device_t;
 	type user_runtime_t;
 	type usr_t;
@@ -19,11 +18,9 @@ gen_require(`
 	type user_home_dir_t;
 	type var_lib_t;
 	type virt_var_lib_t;
-	type staff_wm_t;
 	type xdg_config_t;
 	type xdg_data_t;
 	class dbus send_msg;
-	class fd use;
 ')
 
 corecmd_exec_bin(thunderbird_t)
@@ -32,8 +29,6 @@ corecmd_search_bin(thunderbird_t)
 dbus_write_session_runtime_socket(thunderbird_t)
 
 pulseaudio_client_domain(thunderbird_t)
-pipewire_pulse_stream_connect(thunderbird_t, staff_pipewire_t)
-ps_process_pattern(staff_pipewire_t, thunderbird_t)
 corenet_udp_bind_generic_node(thunderbird_t)
 
 pcscd_read_runtime_files(thunderbird_t)
@@ -59,8 +54,6 @@ dontaudit thunderbird_t virt_var_lib_t:dir search;
 dontaudit thunderbird_t urandom_device_t:chr_file write;
 dontaudit thunderbird_t user_home_dir_t:file { open read write };
 dontaudit thunderbird_t user_runtime_t:file { open read write };
-dontaudit staff_wm_t thunderbird_tmpfs_t:file { getattr map read write };
-dontaudit staff_wm_t thunderbird_t:fd use;
 dontaudit systemd_logind_t thunderbird_t:dbus send_msg;
 
 gnome_mmap_read_xdg_config_files(thunderbird_t)

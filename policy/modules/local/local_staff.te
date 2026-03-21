@@ -44,6 +44,8 @@ dontaudit staff_t mozilla_t:process getsched;
 local_git_search_user_paths(staff_git_t)
 local_git_dontaudit_pager_history(staff_git_t)
 local_mozilla_pipewire_pulse_connect(staff_pipewire_t)
+local_thunderbird_pipewire_pulse_connect(staff_pipewire_t)
+local_thunderbird_pipewire_process_lookup(staff_pipewire_t)
 local_zotero_stream_connect(staff_t)
 
 # kwin_wayland updates per-user desktop integration artifacts under ~/.local/share.

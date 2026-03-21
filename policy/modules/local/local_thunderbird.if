@@ -1,3 +1,60 @@
 ## <summary>
 ##	Local Thunderbird policy adjustments.
 ## </summary>
+
+########################################
+## <summary>
+##	Allow Thunderbird to connect to a PipeWire Pulse-compatible socket.
+## </summary>
+## <param name="server_domain">
+##	<summary>
+##	PipeWire server domain owning the socket.
+##	</summary>
+## </param>
+#
+interface(`local_thunderbird_pipewire_pulse_connect',`
+	gen_require(`
+		type thunderbird_t;
+	')
+
+	pipewire_pulse_stream_connect(thunderbird_t, $1)
+')
+
+########################################
+## <summary>
+##	Allow a PipeWire domain to inspect Thunderbird through /proc.
+## </summary>
+## <param name="pipewire_domain">
+##	<summary>
+##	PipeWire domain performing client lookup.
+##	</summary>
+## </param>
+#
+interface(`local_thunderbird_pipewire_process_lookup',`
+	gen_require(`
+		type thunderbird_t;
+	')
+
+	ps_process_pattern($1, thunderbird_t)
+')
+
+########################################
+## <summary>
+##	Dontaudit a WM domain using Thunderbird tmpfs buffers and inherited fds.
+## </summary>
+## <param name="wm_domain">
+##	<summary>
+##	Window-manager domain using Thunderbird-owned objects.
+##	</summary>
+## </param>
+#
+interface(`local_thunderbird_wm_dontaudit_tmpfs_use',`
+	gen_require(`
+		type thunderbird_t;
+		type thunderbird_tmpfs_t;
+		class fd use;
+	')
+
+	dontaudit $1 thunderbird_tmpfs_t:file { getattr map read write };
+	dontaudit $1 thunderbird_t:fd use;
+')
