@@ -34,7 +34,6 @@ manage_lnk_files_pattern(zotero_t, zotero_tmp_t, zotero_tmp_t)
 files_tmp_filetrans(zotero_t, zotero_tmp_t, { dir file }, "zotero")
 
 gen_require(`
-	type random_device_t;
 	type staff_t;
 	type staff_systemd_t;
 	type system_dbusd_runtime_t;
@@ -103,7 +102,6 @@ allow zotero_t staff_systemd_t:unix_stream_socket { getattr ioctl read write };
 # is covered via dbus_system_bus_client(zotero_t).
 allow zotero_t system_dbusd_runtime_t:sock_file write;
 allow zotero_t syslogd_runtime_t:dir search;
-allow zotero_t random_device_t:chr_file getattr;
 allow zotero_t tmpfs_t:dir search;
 allow zotero_t tmpfs_t:file open;
 allow zotero_t tmpfs_t:file { read map write };
