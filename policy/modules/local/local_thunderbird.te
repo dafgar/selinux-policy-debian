@@ -4,5 +4,8 @@ gen_require(`
 	type thunderbird_t;
 ')
 
+corecmd_exec_bin(thunderbird_t)
+corecmd_search_bin(thunderbird_t)
+
 pcscd_read_runtime_files(thunderbird_t)
 pcscd_stream_connect(thunderbird_t)
