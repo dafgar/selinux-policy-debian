@@ -6,6 +6,7 @@ type zotero_t;
 type zotero_exec_t;
 userdom_user_application_domain(zotero_t, zotero_exec_t)
 role zotero_roles types zotero_t;
+can_exec(zotero_t, zotero_exec_t)
 
 type zotero_home_t;
 userdom_user_home_content(zotero_home_t)
