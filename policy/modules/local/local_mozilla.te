@@ -2,7 +2,10 @@ policy_module(local_mozilla)
 
 gen_require(`
 	type mozilla_t;
+	type mozilla_tmpfs_t;
 	type user_runtime_t;
+	type staff_wm_t;
+	class file map;
 ')
 
 # Firefox uses the PC/SC runtime socket for smartcard/token access.
@@ -24,3 +27,6 @@ allow mozilla_t user_runtime_t:sock_file { create unlink write };
 # Firefox uses same-domain ptrace within its own process tree for sandboxing
 # and crash/process management.
 allow mozilla_t self:process ptrace;
+
+# KWin maps Firefox-owned Wayland cursor buffers from mozilla_tmpfs_t.
+allow staff_wm_t mozilla_tmpfs_t:file map;
