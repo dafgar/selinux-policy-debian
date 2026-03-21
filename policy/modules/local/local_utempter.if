@@ -1,3 +1,22 @@
 ## <summary>
 ## Local utempter policy adjustments.
 ## </summary>
+
+########################################
+## <summary>
+##	Allow utempter to use an inherited user-systemd stream socket.
+## </summary>
+## <param name="systemd_domain">
+##	<summary>
+##	User systemd domain owning the inherited socket and fd.
+##	</summary>
+## </param>
+#
+interface(`local_utempter_systemd_socket_inherit',`
+	gen_require(`
+		type utempter_t;
+	')
+
+	allow utempter_t $1:fd use;
+	allow utempter_t $1:unix_stream_socket { getattr read write };
+')

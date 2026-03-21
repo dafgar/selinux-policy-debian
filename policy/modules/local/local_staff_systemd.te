@@ -14,6 +14,9 @@ local_gpg_manage_runtime_dirs(staff_systemd_t)
 # handing off to the keyring daemon domain.
 local_gnome_systemd_keyring_socket(staff)
 
+# utempter can inherit a stream socket fd from the user systemd instance.
+local_utempter_systemd_socket_inherit(staff_systemd_t)
+
 # systemd --user performs generic filesystem probing on inherited fds during
 # session startup. Keep pidfs filesystem getattr noise hidden until there is a
 # concrete need to model it more specifically.

@@ -1,12 +1,1 @@
 policy_module(local_utempter)
-
-gen_require(`
-	type staff_systemd_t;
-	type utempter_t;
-')
-
-# utempter is launched from the user systemd instance and can inherit an open
-# stream socket fd from the parent. Allow only the observed inherited-fd use and
-# socket metadata/data access on that parent-owned socket.
-allow utempter_t staff_systemd_t:fd use;
-allow utempter_t staff_systemd_t:unix_stream_socket { getattr read write };
