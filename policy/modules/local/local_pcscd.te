@@ -2,6 +2,7 @@ policy_module(local_pcscd)
 
 gen_require(`
 	type pcscd_t;
+	type thunderbird_t;
 ')
 
 # pcscd performs low-risk filesystem metadata probes on sysfs while discovering
@@ -10,3 +11,6 @@ dev_getattr_sysfs(pcscd_t)
 
 # pcscd reads udev metadata for smartcard-related USB devices under /run/udev.
 udev_read_runtime_files(pcscd_t)
+
+# pcscd inspects Thunderbird client processes while servicing smartcard access.
+ps_process_pattern(pcscd_t, thunderbird_t)
