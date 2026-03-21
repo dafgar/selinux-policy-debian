@@ -36,6 +36,8 @@ files_tmp_filetrans(zotero_t, zotero_tmp_t, { dir file }, "zotero")
 
 gen_require(`
 	type etc_t;
+	type mozilla_exec_t;
+	type pcscd_runtime_t;
 	type random_device_t;
 	type root_t;
 	type staff_t;
@@ -45,6 +47,9 @@ gen_require(`
 	type syslogd_runtime_t;
 	type thunderbird_exec_t;
 	type tmpfs_t;
+	type user_home_t;
+	type var_lib_t;
+	type var_t;
 	type usr_t;
 	type user_runtime_t;
 	type xdg_config_t;
@@ -134,4 +139,8 @@ allow zotero_t self:user_namespace create;
 dontaudit zotero_t xdg_data_t:dir write;
 dontaudit zotero_t xdg_data_t:file setattr;
 dontaudit zotero_t { etc_t root_t usr_t xdg_data_t }:dir watch;
+dontaudit zotero_t { var_t var_lib_t }:dir read;
+dontaudit zotero_t user_home_t:file read;
+dontaudit zotero_t mozilla_exec_t:file execute;
+dontaudit zotero_t pcscd_runtime_t:dir search;
 dontaudit zotero_t thunderbird_exec_t:file execute;
