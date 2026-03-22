@@ -1,3 +1,4 @@
 policy_module(local_auditadm)
 
 local_systemd_logind_use_inherited_sudo_fds(auditadm)
+local_sudo_dontaudit_runtime_probes(auditadm)

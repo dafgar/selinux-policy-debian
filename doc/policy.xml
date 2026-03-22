@@ -72109,6 +72109,21 @@ Local override module with no exported interfaces.
 Local staff window-manager policy adjustments.
 </summary>
 </module>
+<module name="local_sudo" filename="policy/modules/local/local_sudo.if">
+<summary>
+Local sudo helper interfaces.
+</summary>
+<interface name="local_sudo_dontaudit_runtime_probes" lineno="15">
+<summary>
+Keep generic sudo runtime probes in the noise bucket.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role, for example staff or user.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_svirt" filename="policy/modules/local/local_svirt.if">
 <summary>
 Local override module with no exported interfaces.

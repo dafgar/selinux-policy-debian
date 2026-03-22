@@ -1,0 +1,26 @@
+## <summary>
+##	Local sudo helper interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Keep generic sudo runtime probes in the noise bucket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	The prefix of the user role, for example staff or user.
+##	</summary>
+## </param>
+#
+interface(`local_sudo_dontaudit_runtime_probes',`
+	gen_require(`
+		type $1_sudo_t;
+		type cgroup_t;
+		type init_t;
+		class capability net_admin;
+	')
+
+	dontaudit $1_sudo_t cgroup_t:dir search;
+	dontaudit $1_sudo_t init_t:dir search;
+	dontaudit $1_sudo_t self:capability net_admin;
+')
