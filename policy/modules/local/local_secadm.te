@@ -1,3 +1,13 @@
 policy_module(local_secadm)
 
+gen_require(`
+	type cgroup_t;
+	type init_t;
+	type secadm_sudo_t;
+')
+
 local_systemd_logind_use_inherited_sudo_fds(secadm)
+
+dontaudit secadm_sudo_t cgroup_t:dir search;
+dontaudit secadm_sudo_t init_t:dir search;
+dontaudit secadm_sudo_t self:capability net_admin;
