@@ -72084,6 +72084,11 @@ Domain allowed access.
 </param>
 </interface>
 </module>
+<module name="local_secadm" filename="policy/modules/local/local_secadm.if">
+<summary>
+Local secadm role bindings.
+</summary>
+</module>
 <module name="local_staff" filename="policy/modules/local/local_staff.if">
 <summary>
 Local override module with no exported interfaces.

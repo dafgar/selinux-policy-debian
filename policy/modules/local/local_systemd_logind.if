@@ -14,6 +14,7 @@
 #
 interface(`local_systemd_logind_use_inherited_sudo_fds',`
 	gen_require(`
+		type $1_sudo_t;
 		type systemd_logind_t;
 		class fd use;
 	')
