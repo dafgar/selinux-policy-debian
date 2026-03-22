@@ -89,6 +89,7 @@ template(`wireplumber_role',`
 	stream_connect_pattern($1_wireplumber_t, user_runtime_t, pipewire_runtime_t, $1_pipewire_t)
 	pipewire_rw_tmpfs_files($1_wireplumber_t)
 	pipewire_use_fds($1_wireplumber_t, $1_pipewire_t)
+	allow $1_wireplumber_t session_dbusd_runtime_t:sock_file getattr;
 
 	# LTTng UST wait files under /dev/shm are optional tracing artifacts.
 	# WirePlumber probes them on this desktop stack, but they are not required
