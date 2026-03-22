@@ -72126,8 +72126,18 @@ Local override module with no exported interfaces.
 </module>
 <module name="local_systemd_logind" filename="policy/modules/local/local_systemd_logind.if">
 <summary>
-Local override module with no exported interfaces.
+Local systemd-logind helper interfaces.
 </summary>
+<interface name="local_systemd_logind_use_inherited_sudo_fds" lineno="15">
+<summary>
+Allow logind to use an inherited fd owned by a sudo domain.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role, for example staff or user.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_systemd_machined" filename="policy/modules/local/local_systemd_machined.if">
 <summary>

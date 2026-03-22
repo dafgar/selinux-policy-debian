@@ -1,3 +1,22 @@
 ## <summary>
-##	Local override module with no exported interfaces.
+##	Local systemd-logind helper interfaces.
 ## </summary>
+
+########################################
+## <summary>
+##	Allow logind to use an inherited fd owned by a sudo domain.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	The prefix of the user role, for example staff or user.
+##	</summary>
+## </param>
+#
+interface(`local_systemd_logind_use_inherited_sudo_fds',`
+	gen_require(`
+		type systemd_logind_t;
+		class fd use;
+	')
+
+	allow systemd_logind_t $1_sudo_t:fd use;
+')
