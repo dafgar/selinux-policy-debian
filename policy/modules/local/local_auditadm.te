@@ -1,0 +1,3 @@
+policy_module(local_auditadm)
+
+local_systemd_logind_use_inherited_sudo_fds(auditadm)

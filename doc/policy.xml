@@ -71700,6 +71700,11 @@ Domain to be exempted.
 Local override module with no exported interfaces.
 </summary>
 </module>
+<module name="local_auditadm" filename="policy/modules/local/local_auditadm.if">
+<summary>
+Local auditadm role bindings.
+</summary>
+</module>
 <module name="local_backlighthelper" filename="policy/modules/local/local_backlighthelper.if">
 <summary>
 Local policy for the KDE backlight helper domain.
@@ -72237,6 +72242,11 @@ Domain allowed access.
 <module name="local_usbguard" filename="policy/modules/local/local_usbguard.if">
 <summary>
 Local USBGuard noise suppressions.
+</summary>
+</module>
+<module name="local_user" filename="policy/modules/local/local_user.if">
+<summary>
+Local user role bindings.
 </summary>
 </module>
 <module name="local_utempter" filename="policy/modules/local/local_utempter.if">
