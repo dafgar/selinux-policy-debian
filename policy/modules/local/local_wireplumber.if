@@ -92,9 +92,9 @@ template(`wireplumber_role',`
 	allow $1_wireplumber_t tmpfs_t:dir add_name;
 	allow $1_wireplumber_t tmpfs_t:dir search;
 	allow $1_wireplumber_t tmpfs_t:dir write;
-	allow $1_wireplumber_t tmpfs_t:file { create getattr };
+	create_files_pattern($1_wireplumber_t, tmpfs_t, tmpfs_t)
+	rw_files_pattern($1_wireplumber_t, tmpfs_t, tmpfs_t)
 	allow $1_wireplumber_t tmpfs_t:file map;
-	allow $1_wireplumber_t tmpfs_t:file write;
 	allow $1_wireplumber_t alsa_var_lib_t:dir search;
 	stream_connect_pattern($1_wireplumber_t, user_runtime_t, pipewire_runtime_t, $1_pipewire_t)
 	pipewire_rw_tmpfs_files($1_wireplumber_t)
