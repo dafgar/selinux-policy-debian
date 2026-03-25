@@ -72368,6 +72368,16 @@ Domain owning the peer socket.
 </summary>
 </param>
 </interface>
+<interface name="local_zotero_dbus_chat" lineno="83">
+<summary>
+Allow Zotero to chat with a desktop-owned D-Bus service.
+</summary>
+<param name="peer_domain">
+<summary>
+Domain owning the D-Bus service.
+</summary>
+</param>
+</interface>
 </module>
 </layer>
 <layer name="roles">
