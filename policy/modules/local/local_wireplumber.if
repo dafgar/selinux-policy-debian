@@ -31,6 +31,8 @@ template(`wireplumber_role',`
 	gen_require(`
 		role $4;
 		attribute $3;
+		class dbus { acquire_svc send_msg };
+		type $1_dbusd_t;
 		type $1_pipewire_t;
 		type wireplumber_exec_t, wireplumber_state_t;
 		type alsa_var_lib_t;
@@ -64,6 +66,9 @@ template(`wireplumber_role',`
 	dbus_all_session_bus_client($1_wireplumber_t)
 	dbus_write_session_runtime_socket($1_wireplumber_t)
 	dbus_system_bus_client($1_wireplumber_t)
+	allow $1_wireplumber_t $1_dbusd_t:dbus acquire_svc;
+	allow $1_wireplumber_t $2:dbus send_msg;
+	allow $2 $1_wireplumber_t:dbus send_msg;
 	devicekit_dbus_chat_power($1_wireplumber_t)
 	udev_read_runtime_files($1_wireplumber_t)
 	dev_read_sysfs($1_wireplumber_t)
