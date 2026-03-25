@@ -44,7 +44,7 @@ ps_process_pattern(staff_systemd_t, staff_sudo_t)
 
 # The user systemd manager starts the PipeWire user services and needs the
 # usual inherited-exec process bits for those transitions.
-allow staff_systemd_t staff_pipewire_t:process { noatsecure siginh };
+allow staff_systemd_t staff_pipewire_t:process { noatsecure rlimitinh siginh };
 allow staff_systemd_t staff_wireplumber_t:process { noatsecure rlimitinh siginh };
 
 # The session bus updates the user-manager environment and requests a reload.
