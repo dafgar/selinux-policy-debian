@@ -30,6 +30,10 @@ local_zotero_systemd_socket_inherit(staff_systemd_t)
 # systemd instance during launch.
 local_evolution_alarm_systemd_inherit(staff)
 
+# Thunderbird inherits the usual process attributes from the user systemd
+# instance during launch.
+local_thunderbird_systemd_inherit(staff)
+
 # systemd --user performs generic filesystem probing on inherited fds during
 # session startup. Keep pidfs filesystem getattr noise hidden until there is a
 # concrete need to model it more specifically.

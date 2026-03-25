@@ -72234,7 +72234,18 @@ User role prefix that owns the PipeWire domain.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_wm_dontaudit_tmpfs_use" lineno="51">
+<interface name="local_thunderbird_systemd_inherit" lineno="52">
+<summary>
+Allow a user systemd instance to launch Thunderbird with the usual
+inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+<interface name="local_thunderbird_wm_dontaudit_tmpfs_use" lineno="71">
 <summary>
 Dontaudit a WM domain using Thunderbird tmpfs buffers and inherited fds.
 </summary>

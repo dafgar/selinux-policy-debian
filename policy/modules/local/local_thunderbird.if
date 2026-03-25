@@ -40,6 +40,26 @@ interface(`local_thunderbird_pipewire_process_lookup',`
 
 ########################################
 ## <summary>
+## Allow a user systemd instance to launch Thunderbird with the usual
+## inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_thunderbird_systemd_inherit',`
+	gen_require(`
+		type thunderbird_t;
+		type $1_systemd_t;
+	')
+
+	allow $1_systemd_t thunderbird_t:process { noatsecure rlimitinh siginh };
+')
+
+########################################
+## <summary>
 ##	Dontaudit a WM domain using Thunderbird tmpfs buffers and inherited fds.
 ## </summary>
 ## <param name="wm_domain">
