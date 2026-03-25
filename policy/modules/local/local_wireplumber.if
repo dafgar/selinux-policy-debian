@@ -89,6 +89,7 @@ template(`wireplumber_role',`
 	allow $1_wireplumber_t self:netlink_kobject_uevent_socket create_socket_perms;
 	bluetooth_dbus_chat($1_wireplumber_t)
 	allow $1_wireplumber_t device_t:dir watch;
+	allow $1_wireplumber_t tmpfs_t:dir add_name;
 	allow $1_wireplumber_t tmpfs_t:dir search;
 	allow $1_wireplumber_t tmpfs_t:dir write;
 	allow $1_wireplumber_t tmpfs_t:file map;
