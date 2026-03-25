@@ -85,6 +85,7 @@ userdom_search_user_home_dirs(zotero_t)
 userdom_search_user_home_content(zotero_t)
 xdg_manage_downloads(zotero_t)
 xdg_read_config_files(zotero_t)
+xdg_manage_data(zotero_t)
 xdg_read_data_files(zotero_t)
 xdg_search_config_dirs(zotero_t)
 xdg_search_data_dirs(zotero_t)
@@ -129,10 +130,6 @@ allow zotero_t self:tcp_socket { connect getopt };
 allow zotero_t self:udp_socket create_socket_perms;
 allow zotero_t self:user_namespace create;
 
-# Evince can run in zotero_t after direct execution, but keep recent-files
-# history updates denied rather than broadening generic xdg_data_t writes.
-dontaudit zotero_t xdg_data_t:dir write;
-dontaudit zotero_t xdg_data_t:file setattr;
 dontaudit zotero_t { etc_t root_t usr_t xdg_data_t }:dir watch;
 dontaudit zotero_t { var_t var_lib_t }:dir read;
 dontaudit zotero_t user_home_t:file read;
