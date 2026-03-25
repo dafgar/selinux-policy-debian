@@ -4,6 +4,7 @@ gen_require(`
 	type kernel_t;
 	type staff_sudo_t;
 	type staff_systemd_t;
+	type staff_t;
 	type staff_wm_t;
 	type systemd_user_runtime_notify_t;
 	type unlabeled_t;
@@ -50,6 +51,10 @@ dontaudit staff_systemd_t kernel_t:file { getattr ioctl open read };
 # The user systemd instance also accounts for user processes and may inspect
 # sudo-managed processes via /proc.
 ps_process_pattern(staff_systemd_t, staff_sudo_t)
+
+# Generic user applications launched by the staff user manager and staying in
+# staff_t need the usual inherited-exec process bits.
+allow staff_systemd_t staff_t:process { noatsecure siginh };
 
 # The session bus updates the user-manager environment and requests a reload.
 allow staff_dbusd_t staff_systemd_t:system reload;
