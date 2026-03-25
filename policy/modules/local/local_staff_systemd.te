@@ -4,6 +4,7 @@ gen_require(`
 	type kernel_t;
 	type staff_sudo_t;
 	type staff_systemd_t;
+	type systemd_user_runtime_notify_t;
 	type unlabeled_t;
 ')
 
@@ -36,3 +37,6 @@ dontaudit staff_systemd_t kernel_t:file { getattr ioctl open read };
 # The user systemd instance also accounts for user processes and may inspect
 # sudo-managed processes via /proc.
 ps_process_pattern(staff_systemd_t, staff_sudo_t)
+
+# systemd --user rotates its per-session notify socket during session setup.
+allow staff_systemd_t systemd_user_runtime_notify_t:sock_file unlink;
