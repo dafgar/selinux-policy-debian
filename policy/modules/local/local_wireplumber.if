@@ -36,6 +36,7 @@ template(`wireplumber_role',`
 		type $1_pipewire_t;
 		type wireplumber_exec_t, wireplumber_state_t;
 		type alsa_var_lib_t;
+		type dma_device_t;
 		type sysfs_t;
 		type tmpfs_t, xdm_tmpfs_t;
 		type pipewire_runtime_t, user_runtime_t;
@@ -84,6 +85,7 @@ template(`wireplumber_role',`
 	allow $1_wireplumber_t sysfs_t:filesystem getattr;
 	dev_read_sound($1_wireplumber_t)
 	dev_write_sound($1_wireplumber_t)
+	allow $1_wireplumber_t dma_device_t:chr_file { read write };
 	dev_read_video_dev($1_wireplumber_t)
 	dev_write_video_dev($1_wireplumber_t)
 	allow $1_wireplumber_t self:bluetooth_socket create_stream_socket_perms;
