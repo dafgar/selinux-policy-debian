@@ -90,6 +90,8 @@ template(`wireplumber_role',`
 	bluetooth_dbus_chat($1_wireplumber_t)
 	allow $1_wireplumber_t device_t:dir watch;
 	allow $1_wireplumber_t tmpfs_t:dir search;
+	allow $1_wireplumber_t tmpfs_t:dir write;
+	allow $1_wireplumber_t tmpfs_t:file write;
 	allow $1_wireplumber_t alsa_var_lib_t:dir search;
 	stream_connect_pattern($1_wireplumber_t, user_runtime_t, pipewire_runtime_t, $1_pipewire_t)
 	pipewire_rw_tmpfs_files($1_wireplumber_t)
@@ -100,8 +102,6 @@ template(`wireplumber_role',`
 	# WirePlumber probes them on this desktop stack, but they are not required
 	# for normal media/session function.
 	dontaudit $1_wireplumber_t xdm_tmpfs_t:file { getattr open read map };
-	dontaudit $1_wireplumber_t tmpfs_t:dir { add_name write };
-	dontaudit $1_wireplumber_t tmpfs_t:file { create getattr map open read write };
 
 	manage_dirs_pattern($1_wireplumber_t, wireplumber_state_t, wireplumber_state_t)
 	manage_files_pattern($1_wireplumber_t, wireplumber_state_t, wireplumber_state_t)
