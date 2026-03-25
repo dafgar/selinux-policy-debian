@@ -97,6 +97,7 @@ allow zotero_t user_runtime_t:dir { add_name remove_name };
 allow zotero_t user_runtime_t:dir write;
 allow zotero_t user_runtime_t:sock_file { create unlink write };
 allow zotero_t user_tmp_t:dir { getattr search };
+allow zotero_t xdg_data_t:dir watch;
 allow zotero_t xdg_config_t:dir { read watch };
 xserver_stream_connect(zotero_t)
 xserver_read_xkb_libs(zotero_t)
@@ -132,7 +133,6 @@ allow zotero_t self:user_namespace create;
 
 dontaudit zotero_t { etc_t root_t usr_t xdg_data_t }:dir watch;
 dontaudit zotero_t { var_t var_lib_t }:dir read;
-dontaudit zotero_t user_home_t:file read;
 dontaudit zotero_t mozilla_exec_t:file execute;
 dontaudit zotero_t pcscd_runtime_t:dir search;
 dontaudit zotero_t tpm2_pkcs11_home_t:dir search;
