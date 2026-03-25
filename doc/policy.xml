@@ -71754,6 +71754,17 @@ Domain allowed to read and watch the activation files.
 </summary>
 </param>
 </interface>
+<interface name="local_dbus_systemd_inherit" lineno="38">
+<summary>
+Allow a user systemd instance to launch the user session bus with the usual
+inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd and D-Bus domains.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_devicekit_power" filename="policy/modules/local/local_devicekit_power.if">
 <summary>

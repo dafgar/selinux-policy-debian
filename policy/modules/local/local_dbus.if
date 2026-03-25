@@ -23,3 +23,22 @@ interface(`dbus_read_user_activation_services',`
 	allow $1 dbus_xdg_services_t:dir watch;
 	allow $1 dbus_xdg_services_t:file watch;
 ')
+
+########################################
+## <summary>
+## Allow a user systemd instance to launch the user session bus with the usual
+## inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd and D-Bus domains.
+##	</summary>
+## </param>
+#
+interface(`local_dbus_systemd_inherit',`
+	gen_require(`
+		type $1_systemd_t, $1_dbusd_t;
+	')
+
+	allow $1_systemd_t $1_dbusd_t:process { noatsecure rlimitinh siginh };
+')

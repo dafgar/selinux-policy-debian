@@ -1,7 +1,6 @@
 policy_module(local_staff_systemd)
 
 gen_require(`
-	type staff_dbusd_t;
 	type kernel_t;
 	type staff_sudo_t;
 	type staff_systemd_t;
@@ -14,6 +13,10 @@ gen_require(`
 # and populates it with entries such as S.dirmngr before the GnuPG helper
 # domains take over. Keep this limited to the observed directory operations.
 local_gpg_manage_runtime_dirs(staff_systemd_t)
+
+# The user systemd instance launches the user session bus and the bus keeps the
+# usual inherited-exec process attributes.
+local_dbus_systemd_inherit(staff)
 
 # The user systemd instance also prepares the keyring control socket before
 # handing off to the keyring daemon domain.
