@@ -118,7 +118,9 @@ template(`pipewire_role',`
 		role $4;
 		attribute $3;
 		type mozilla_t, mplayer_t, pipewire_exec_t, pipewire_runtime_t, pipewire_tmpfs_t, pulseaudio_tmp_t, user_runtime_t;
+		type $1_dbusd_t;
 		type proc_t, security_t, selinux_config_t;
+		class dbus { acquire_svc send_msg };
 	')
 
 	type $1_pipewire_t;
@@ -162,6 +164,9 @@ template(`pipewire_role',`
 	dbus_all_session_bus_client($1_pipewire_t)
 	dbus_write_session_runtime_socket($1_pipewire_t)
 	dbus_system_bus_client($1_pipewire_t)
+	allow $1_pipewire_t $1_dbusd_t:dbus acquire_svc;
+	allow $1_pipewire_t $2:dbus send_msg;
+	allow $2 $1_pipewire_t:dbus send_msg;
 	rtkit_scheduled($1_pipewire_t)
 	dev_read_sysfs($1_pipewire_t)
 	dev_read_sound($1_pipewire_t)
