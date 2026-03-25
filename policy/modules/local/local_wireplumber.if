@@ -52,7 +52,7 @@ template(`wireplumber_role',`
 	ps_process_pattern($3, $1_wireplumber_t)
 
 	allow $1_wireplumber_t $3:process sigchld;
-	allow $1_wireplumber_t self:process { getsched setrlimit setsched };
+	allow $1_wireplumber_t self:process { getsched setrlimit setsched signal };
 
 	auth_use_nsswitch($1_wireplumber_t)
 	alsa_read_config($1_wireplumber_t)
