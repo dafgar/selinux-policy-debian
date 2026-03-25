@@ -71770,6 +71770,22 @@ Local policy for the KDE discrete GPU helper domain.
 Local override module with no exported interfaces.
 </summary>
 </module>
+<module name="local_evolution" filename="policy/modules/local/local_evolution.if">
+<summary>
+Local Evolution helper interfaces.
+</summary>
+<interface name="local_evolution_alarm_systemd_inherit" lineno="16">
+<summary>
+Allow a user systemd instance to launch Evolution alarm helpers with the
+usual inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role, for example staff or user.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_fwupd" filename="policy/modules/local/local_fwupd.if">
 <summary>
 Local fwupd policy adjustments.
