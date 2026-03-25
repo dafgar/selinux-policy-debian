@@ -118,6 +118,7 @@ template(`pipewire_role',`
 		role $4;
 		attribute $3;
 		type mozilla_t, mplayer_t, pipewire_exec_t, pipewire_runtime_t, pipewire_tmpfs_t, pulseaudio_tmp_t, user_runtime_t;
+		type proc_t, security_t, selinux_config_t;
 	')
 
 	type $1_pipewire_t;
@@ -145,9 +146,12 @@ template(`pipewire_role',`
 	auth_use_nsswitch($1_pipewire_t)
 	alsa_read_config($1_pipewire_t)
 	miscfiles_read_localization($1_pipewire_t)
+	allow $1_pipewire_t security_t:filesystem getattr;
 	xdg_search_config_dirs($1_pipewire_t)
 	files_read_usr_files($1_pipewire_t)
 	files_map_usr_files($1_pipewire_t)
+	allow $1_pipewire_t proc_t:file read;
+	allow $1_pipewire_t selinux_config_t:dir search;
 	userdom_search_user_home_dirs($1_pipewire_t)
 	userdom_search_user_home_content($1_pipewire_t)
 	userdom_search_user_runtime($1_pipewire_t)
