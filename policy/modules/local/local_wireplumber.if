@@ -118,6 +118,7 @@ template(`wireplumber_role',`
 
 	optional_policy(`
 		systemd_user_app_status($1, $1_wireplumber_t)
+		allow $1_systemd_t $1_wireplumber_t:process { noatsecure rlimitinh siginh };
 		allow $1_systemd_t $1_wireplumber_t:process2 nnp_transition;
 	')
 ')
