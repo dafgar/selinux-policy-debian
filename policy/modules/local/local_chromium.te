@@ -10,6 +10,7 @@ gen_require(`
 	type locale_t;
 	type mozilla_exec_t;
 	type pcscd_runtime_t;
+	type pcscd_t;
 	type pulseaudio_tmp_t;
 	type pulseaudio_xdg_config_t;
 	type pipewire_runtime_t;
@@ -50,6 +51,7 @@ allow chromium_t devlog_t:sock_file write;
 allow chromium_t syslogd_t:unix_dgram_socket sendto;
 allow chromium_t pcscd_runtime_t:dir search;
 allow chromium_t pcscd_runtime_t:sock_file { getattr write };
+allow chromium_t pcscd_t:unix_stream_socket connectto;
 allow chromium_t locale_t:dir watch;
 allow chromium_t debugfs_t:dir search;
 
