@@ -72325,6 +72325,36 @@ Domain allowed access.
 </param>
 </interface>
 </module>
+<module name="local_safeeyes" filename="policy/modules/local/local_safeeyes.if">
+<summary>
+Local SafeEyes role template.
+</summary>
+<template name="safeeyes_role" lineno="30">
+<summary>
+Role access for SafeEyes.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role, for example staff or user.
+</summary>
+</param>
+<param name="user_domain">
+<summary>
+User domain for the role.
+</summary>
+</param>
+<param name="user_exec_domain">
+<summary>
+User exec domain for execute and transition access.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+</template>
+</module>
 <module name="local_secadm" filename="policy/modules/local/local_secadm.if">
 <summary>
 Local secadm role bindings.

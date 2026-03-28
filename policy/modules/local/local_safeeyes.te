@@ -1,0 +1,4 @@
+policy_module(local_safeeyes)
+
+type safeeyes_exec_t;
+application_executable_file(safeeyes_exec_t)
