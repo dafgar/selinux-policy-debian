@@ -71729,6 +71729,17 @@ Local policy for the KDE charge-threshold helper domain.
 <summary>
 Local Chromium policy adjustments.
 </summary>
+<interface name="local_chromium_pipewire_pulse_connect" lineno="16">
+<summary>
+Allow Chromium to connect to the PulseAudio-compatible PipeWire socket for
+a given role prefix.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the PipeWire server domain.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_command_not_found" filename="policy/modules/local/local_command_not_found.if">
 <summary>

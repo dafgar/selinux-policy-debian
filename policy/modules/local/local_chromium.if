@@ -1,3 +1,22 @@
 ## <summary>
 ## Local Chromium policy adjustments.
 ## </summary>
+
+########################################
+## <summary>
+## Allow Chromium to connect to the PulseAudio-compatible PipeWire socket for
+## a given role prefix.
+## </summary>
+## <param name="role_prefix">
+## <summary>
+## User role prefix that owns the PipeWire server domain.
+## </summary>
+## </param>
+#
+interface(`local_chromium_pipewire_pulse_connect',`
+	gen_require(`
+		type chromium_t;
+	')
+
+	pipewire_pulse_stream_connect(chromium_t, $1_pipewire_t)
+')
