@@ -32,7 +32,7 @@ template(`gvfs_role',`
 		role $4;
 		attribute $3;
 		type gvfsd_exec_t, gvfsd_fuse_exec_t, gvfsd_runtime_t, fusefs_t;
-		type mount_t, sysctl_vm_t;
+		type mount_t, sysctl_vm_t, sysctl_vm_overcommit_t;
 		type $1_systemd_t, $1_dbusd_t;
 		type session_dbusd_runtime_t;
 		type bin_t, proc_t;
@@ -87,6 +87,7 @@ template(`gvfs_role',`
 	userdom_search_user_runtime($1_gvfsd_t)
 	userdom_search_user_runtime($1_gvfsd_fuse_t)
 	allow $1_gvfsd_fuse_t sysctl_vm_t:dir search;
+	allow $1_gvfsd_fuse_t sysctl_vm_overcommit_t:file read;
 
 	allow $1_gvfsd_t self:fifo_file { getattr read write };
 	allow { $1_gvfsd_t $1_gvfsd_fuse_t } $1_systemd_t:unix_stream_socket { read write };
