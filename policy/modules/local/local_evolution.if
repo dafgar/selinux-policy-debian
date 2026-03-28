@@ -21,3 +21,31 @@ interface(`local_evolution_alarm_systemd_inherit',`
 
 	allow $1_systemd_t evolution_alarm_t:process { noatsecure rlimitinh siginh };
 ')
+
+########################################
+## <summary>
+## Allow Evolution alarm helpers to integrate with the desktop session.
+## </summary>
+## <param name="role_prefix">
+## <summary>
+## The prefix of the user role, for example staff or user.
+## </summary>
+## </param>
+#
+interface(`local_evolution_alarm_desktop',`
+	gen_require(`
+		type evolution_alarm_t;
+		type evolution_xdg_config_t;
+		type gnome_xdg_config_t;
+		type wm_tmpfs_t;
+		type $1;
+		class dir { getattr read search watch };
+		class file map;
+		class unix_stream_socket connectto;
+	')
+
+	allow evolution_alarm_t $1:unix_stream_socket connectto;
+	allow evolution_alarm_t evolution_xdg_config_t:dir { getattr read search watch };
+	allow evolution_alarm_t gnome_xdg_config_t:dir watch;
+	allow evolution_alarm_t wm_tmpfs_t:file map;
+')

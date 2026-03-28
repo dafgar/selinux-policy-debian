@@ -56,6 +56,7 @@ systemd_use_passwd_agent_fds(staff_sudo_t)
 # graphical display can fail. Keep this limited to fd use.
 local_systemd_logind_use_inherited_sudo_fds(staff)
 local_sudo_dontaudit_runtime_probes(staff)
+local_evolution_alarm_desktop(staff_t)
 local_mplayer_pipewire_pulse_connect(staff)
 local_chromium_pipewire_pulse_connect(staff)
 local_chromium_mpris_publish(staff)
