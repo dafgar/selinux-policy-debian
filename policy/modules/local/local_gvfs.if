@@ -32,6 +32,9 @@ template(`gvfs_role',`
 		role $4;
 		attribute $3;
 		type gvfsd_exec_t, gvfsd_fuse_exec_t, gvfsd_runtime_t;
+		type $1_systemd_t;
+		type session_dbusd_runtime_t;
+		type bin_t;
 	')
 
 	type $1_gvfsd_t;
@@ -58,10 +61,12 @@ template(`gvfs_role',`
 	dbus_write_session_runtime_socket($1_gvfsd_t)
 	dbus_all_session_bus_client($1_gvfsd_fuse_t)
 	dbus_write_session_runtime_socket($1_gvfsd_fuse_t)
+	allow $1_gvfsd_t session_dbusd_runtime_t:sock_file getattr;
 	files_read_usr_files($1_gvfsd_t)
 	files_map_usr_files($1_gvfsd_t)
 	files_read_usr_files($1_gvfsd_fuse_t)
 	files_map_usr_files($1_gvfsd_fuse_t)
+	allow $1_gvfsd_t bin_t:dir search;
 	miscfiles_read_localization($1_gvfsd_t)
 	miscfiles_read_localization($1_gvfsd_fuse_t)
 	xdg_search_config_dirs($1_gvfsd_t)
@@ -70,6 +75,9 @@ template(`gvfs_role',`
 	xdg_search_data_dirs($1_gvfsd_fuse_t)
 	userdom_search_user_runtime($1_gvfsd_t)
 	userdom_search_user_runtime($1_gvfsd_fuse_t)
+
+	allow $1_gvfsd_t self:fifo_file { getattr read write };
+	allow { $1_gvfsd_t $1_gvfsd_fuse_t } $1_systemd_t:unix_stream_socket { read write };
 
 	manage_dirs_pattern($1_gvfsd_fuse_t, gvfsd_runtime_t, gvfsd_runtime_t)
 	userdom_user_runtime_filetrans($1_gvfsd_fuse_t, gvfsd_runtime_t, dir, "gvfs")
