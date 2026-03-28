@@ -1,0 +1,4 @@
+policy_module(local_discover_notifier)
+
+type discover_notifier_exec_t;
+application_executable_file(discover_notifier_exec_t)
