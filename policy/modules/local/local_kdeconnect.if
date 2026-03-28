@@ -31,7 +31,7 @@ template(`kdeconnect_role',`
 	gen_require(`
 		role $4;
 		attribute $3;
-		type kdeconnect_exec_t, kdeconnect_port_t;
+		type kdeconnect_exec_t, kdeconnect_port_t, port_t;
 	')
 
 	type $1_kdeconnect_t;
@@ -47,6 +47,8 @@ template(`kdeconnect_role',`
 	allow $1_kdeconnect_t $3:process sigchld;
 	tunable_policy(`local_kdeconnect_use_bluetooth',`
 		allow $1_kdeconnect_t self:bluetooth_socket { bind create getattr listen setopt };
+	',`
+		dontaudit $1_kdeconnect_t self:bluetooth_socket { bind create getattr listen setopt };
 	')
 	tunable_policy(`local_kdeconnect_use_network',`
 		allow $1_kdeconnect_t self:tcp_socket node_bind;
@@ -54,6 +56,12 @@ template(`kdeconnect_role',`
 		allow $1_kdeconnect_t kdeconnect_port_t:tcp_socket name_bind;
 		allow $1_kdeconnect_t kdeconnect_port_t:udp_socket name_bind;
 		corenet_udp_bind_generic_port($1_kdeconnect_t)
+	',`
+		dontaudit $1_kdeconnect_t self:tcp_socket node_bind;
+		dontaudit $1_kdeconnect_t self:udp_socket node_bind;
+		dontaudit $1_kdeconnect_t kdeconnect_port_t:tcp_socket name_bind;
+		dontaudit $1_kdeconnect_t kdeconnect_port_t:udp_socket name_bind;
+		dontaudit $1_kdeconnect_t port_t:udp_socket name_bind;
 	')
 
 	optional_policy(`
@@ -74,11 +82,13 @@ template(`kdeconnect_role',`
 #
 interface(`local_kdeconnect_bind_port',`
 	gen_require(`
-		type kdeconnect_port_t;
+		type kdeconnect_port_t, port_t;
 	')
 
 	tunable_policy(`local_kdeconnect_use_bluetooth',`
 		allow $1 self:bluetooth_socket { bind create getattr listen setopt };
+	',`
+		dontaudit $1 self:bluetooth_socket { bind create getattr listen setopt };
 	')
 	tunable_policy(`local_kdeconnect_use_network',`
 		allow $1 self:tcp_socket node_bind;
@@ -86,5 +96,11 @@ interface(`local_kdeconnect_bind_port',`
 		allow $1 kdeconnect_port_t:tcp_socket name_bind;
 		allow $1 kdeconnect_port_t:udp_socket name_bind;
 		corenet_udp_bind_generic_port($1)
+	',`
+		dontaudit $1 self:tcp_socket node_bind;
+		dontaudit $1 self:udp_socket node_bind;
+		dontaudit $1 kdeconnect_port_t:tcp_socket name_bind;
+		dontaudit $1 kdeconnect_port_t:udp_socket name_bind;
+		dontaudit $1 port_t:udp_socket name_bind;
 	')
 ')
