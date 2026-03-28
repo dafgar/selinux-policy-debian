@@ -45,10 +45,12 @@ template(`kdeconnect_role',`
 	ps_process_pattern($3, $1_kdeconnect_t)
 
 	allow $1_kdeconnect_t $3:process sigchld;
-	allow $1_kdeconnect_t self:bluetooth_socket create;
+	allow $1_kdeconnect_t self:bluetooth_socket { bind create getattr listen setopt };
 	allow $1_kdeconnect_t self:tcp_socket node_bind;
+	allow $1_kdeconnect_t self:udp_socket node_bind;
 	allow $1_kdeconnect_t kdeconnect_port_t:tcp_socket name_bind;
 	allow $1_kdeconnect_t kdeconnect_port_t:udp_socket name_bind;
+	corenet_udp_bind_generic_port($1_kdeconnect_t)
 
 	optional_policy(`
 		systemd_user_app_status($1, $1_kdeconnect_t)
@@ -71,8 +73,10 @@ interface(`local_kdeconnect_bind_port',`
 		type kdeconnect_port_t;
 	')
 
-	allow $1 self:bluetooth_socket create;
+	allow $1 self:bluetooth_socket { bind create getattr listen setopt };
 	allow $1 self:tcp_socket node_bind;
+	allow $1 self:udp_socket node_bind;
 	allow $1 kdeconnect_port_t:tcp_socket name_bind;
 	allow $1 kdeconnect_port_t:udp_socket name_bind;
+	corenet_udp_bind_generic_port($1)
 ')
