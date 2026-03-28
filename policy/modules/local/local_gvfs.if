@@ -93,4 +93,5 @@ template(`gvfs_role',`
 	allow mount_t $1_gvfsd_t:fifo_file { read write };
 	allow mount_t $1_gvfsd_fuse_t:unix_stream_socket { getattr read write };
 	allow mount_t $1_systemd_t:fd use;
+	allow mount_t $1_systemd_t:unix_stream_socket { read write };
 ')
