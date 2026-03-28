@@ -17,10 +17,18 @@ interface(`local_sudo_dontaudit_runtime_probes',`
 		type $1_sudo_t;
 		type cgroup_t;
 		type init_t;
+		type user_home_dir_t;
 		class capability net_admin;
+		class dir { add_name write };
+		class file { create getattr open read };
+		class filesystem getattr;
 	')
 
 	dontaudit $1_sudo_t cgroup_t:dir search;
+	dontaudit $1_sudo_t cgroup_t:filesystem getattr;
 	dontaudit $1_sudo_t init_t:dir search;
+	dontaudit $1_sudo_t init_t:file { getattr open read };
+	dontaudit $1_sudo_t user_home_dir_t:dir { add_name write };
+	dontaudit $1_sudo_t user_home_dir_t:file create;
 	dontaudit $1_sudo_t self:capability net_admin;
 ')
