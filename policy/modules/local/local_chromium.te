@@ -1,0 +1,10 @@
+policy_module(local_chromium)
+
+gen_require(`
+	type chromium_t;
+	type user_tmp_t;
+')
+
+# Wayland display sockets like wayland-0 are currently labeled user_tmp_t on
+# this system. Chromium needs write access to connect to the compositor socket.
+allow chromium_t user_tmp_t:sock_file write;

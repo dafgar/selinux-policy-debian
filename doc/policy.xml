@@ -71725,6 +71725,11 @@ Local bluetooth policy adjustments.
 Local policy for the KDE charge-threshold helper domain.
 </summary>
 </module>
+<module name="local_chromium" filename="policy/modules/local/local_chromium.if">
+<summary>
+Local Chromium policy adjustments.
+</summary>
+</module>
 <module name="local_command_not_found" filename="policy/modules/local/local_command_not_found.if">
 <summary>
 Local file-context override for the command-not-found helper.
