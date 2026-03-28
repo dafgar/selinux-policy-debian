@@ -54,6 +54,7 @@ template(`gvfs_role',`
 
 	allow $1_gvfsd_t $3:process sigchld;
 	allow $1_gvfsd_fuse_t { $3 $1_gvfsd_t }:process sigchld;
+	allow $1_gvfsd_fuse_t self:process signal;
 	allow $1_gvfsd_t $1_gvfsd_fuse_t:process { noatsecure rlimitinh siginh };
 
 	auth_use_nsswitch($1_gvfsd_t)
