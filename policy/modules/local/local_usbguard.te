@@ -6,4 +6,4 @@ gen_require(`
 ')
 
 kernel_dontaudit_search_debugfs(usbguard_t)
-allow usbguard_t proc_t:file { open read };
+allow usbguard_t proc_t:file { getattr open read };
