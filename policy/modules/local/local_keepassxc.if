@@ -55,4 +55,5 @@ template(`keepassxc_role',`
 	xdg_search_config_dirs($1_keepassxc_t)
 	xdg_search_data_dirs($1_keepassxc_t)
 	userdom_search_user_runtime($1_keepassxc_t)
+	local_systemd_inherit_user_service($1, $1_keepassxc_t)
 ')

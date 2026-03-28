@@ -1,0 +1,28 @@
+## <summary>
+## Local systemd helper interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a user systemd instance to launch a user service domain with the
+##	usual inherited-exec process bits and systemd socket backchannel.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+## <param name="domain">
+##	<summary>
+##	Target user service domain.
+##	</summary>
+## </param>
+#
+interface(`local_systemd_inherit_user_service',`
+	gen_require(`
+		type $1_systemd_t;
+	')
+
+	allow $1_systemd_t $2:process { noatsecure rlimitinh siginh };
+	allow $2 $1_systemd_t:unix_stream_socket { read write };
+')
