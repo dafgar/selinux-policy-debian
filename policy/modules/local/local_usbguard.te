@@ -1,7 +1,9 @@
 policy_module(local_usbguard)
 
 gen_require(`
+	type proc_t;
 	type usbguard_t;
 ')
 
 kernel_dontaudit_search_debugfs(usbguard_t)
+allow usbguard_t proc_t:file read;
