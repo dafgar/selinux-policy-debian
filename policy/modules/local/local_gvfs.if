@@ -32,7 +32,7 @@ template(`gvfs_role',`
 		role $4;
 		attribute $3;
 		type gvfsd_exec_t, gvfsd_fuse_exec_t, gvfsd_runtime_t;
-		type $1_systemd_t;
+		type $1_systemd_t, $1_dbusd_t;
 		type session_dbusd_runtime_t;
 		type bin_t, proc_t;
 	')
@@ -61,6 +61,7 @@ template(`gvfs_role',`
 	dbus_write_session_runtime_socket($1_gvfsd_t)
 	dbus_all_session_bus_client($1_gvfsd_fuse_t)
 	dbus_write_session_runtime_socket($1_gvfsd_fuse_t)
+	allow $1_gvfsd_t $1_dbusd_t:dbus acquire_svc;
 	allow $1_gvfsd_t session_dbusd_runtime_t:sock_file getattr;
 	files_read_usr_files($1_gvfsd_t)
 	files_map_usr_files($1_gvfsd_t)
