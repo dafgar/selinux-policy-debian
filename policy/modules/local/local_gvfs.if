@@ -62,6 +62,8 @@ template(`gvfs_role',`
 	dbus_write_session_runtime_socket($1_gvfsd_t)
 	dbus_all_session_bus_client($1_gvfsd_fuse_t)
 	dbus_write_session_runtime_socket($1_gvfsd_fuse_t)
+	allow $3 $1_gvfsd_t:dbus send_msg;
+	allow $1_gvfsd_t $3:dbus send_msg;
 	allow $1_gvfsd_fuse_t $1_gvfsd_t:dbus send_msg;
 	allow $1_gvfsd_t $1_gvfsd_fuse_t:dbus send_msg;
 	allow $1_gvfsd_t $1_dbusd_t:dbus acquire_svc;
