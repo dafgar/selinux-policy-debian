@@ -71854,6 +71854,16 @@ The prefix of the user role, for example staff or user.
 </summary>
 </param>
 </interface>
+<interface name="local_evolution_alarm_desktop" lineno="35">
+<summary>
+Allow Evolution alarm helpers to integrate with the desktop session.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role, for example staff or user.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_fwupd" filename="policy/modules/local/local_fwupd.if">
 <summary>
