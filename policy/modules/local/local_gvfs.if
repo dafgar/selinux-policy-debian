@@ -91,6 +91,7 @@ template(`gvfs_role',`
 
 	storage_rw_fuse($1_gvfsd_fuse_t)
 	mount_run($1_gvfsd_fuse_t, $4)
+	allow $1_gvfsd_fuse_t mount_t:process { noatsecure rlimitinh siginh };
 	mount_use_fds($1_gvfsd_fuse_t)
 	mount_signal($1_gvfsd_fuse_t)
 	allow mount_t gvfsd_runtime_t:dir { getattr search write mounton };
