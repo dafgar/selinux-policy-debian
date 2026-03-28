@@ -1,0 +1,4 @@
+HOME_DIR/code(/.*)?/\.git/hooks(/.*)?	gen_context(system_u:object_r:git_home_hook_t,s0)
+HOME_DIR/code(/.*)?/\.git(/.*)?		gen_context(system_u:object_r:git_home_t,s0)
+HOME_DIR/code(/.*)?			-d	gen_context(system_u:object_r:code_dir_t,s0)
+HOME_DIR/code(/.*)?			--	gen_context(system_u:object_r:code_file_t,s0)
