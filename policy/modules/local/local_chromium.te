@@ -4,6 +4,7 @@ gen_require(`
 	type alsa_var_lib_t;
 	type chromium_t;
 	type gnome_xdg_config_t;
+	type pipewire_runtime_t;
 	type proc_t;
 	type security_t;
 	type selinux_config_t;
@@ -17,6 +18,7 @@ gen_require(`
 # Wayland display sockets like wayland-0 are currently labeled user_tmp_t on
 # this system. Chromium needs write access to connect to the compositor socket.
 allow chromium_t user_tmp_t:sock_file write;
+allow chromium_t pipewire_runtime_t:sock_file write;
 
 # Chromium probes SELinux, procfs, sysfs, and XKB data during startup and
 # feature detection.
