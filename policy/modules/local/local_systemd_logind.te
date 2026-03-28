@@ -3,12 +3,22 @@ policy_module(local_systemd_logind)
 gen_require(`
 	type initrc_t;
 	type systemd_logind_t;
+	type tmpfs_t;
+	type usbguard_tmpfs_t;
 ')
 
 # systemd-logind sometimes retains visibility of inherited initrc_t stream
 # sockets during service activation.  Mute only socket metadata probes here.
 # Process-state access to initrc_t tasks is handled separately.
 dontaudit systemd_logind_t initrc_t:unix_stream_socket { getattr ioctl };
+
+# logind occasionally stats LTTng wait files in /dev/shm while walking user
+# tmpfs state. Keep this generic tmpfs metadata probe out of the logs.
+dontaudit systemd_logind_t tmpfs_t:file getattr;
+
+# logind also inspects transient USBGuard runtime directories during startup
+# probing, but does not need directory read visibility for normal function.
+dontaudit systemd_logind_t usbguard_tmpfs_t:dir read;
 
 # logind also probes the EFI system partition and its backing block device to
 # enumerate boot loader entries.  Grant only the observed DOS filesystem reads
