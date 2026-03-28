@@ -31,7 +31,7 @@ template(`gvfs_role',`
 	gen_require(`
 		role $4;
 		attribute $3;
-		type gvfsd_exec_t, gvfsd_fuse_exec_t, gvfsd_runtime_t;
+		type gvfsd_exec_t, gvfsd_fuse_exec_t, gvfsd_runtime_t, fusefs_t;
 		type $1_systemd_t, $1_dbusd_t;
 		type session_dbusd_runtime_t;
 		type bin_t, proc_t;
@@ -92,6 +92,7 @@ template(`gvfs_role',`
 	allow $1_gvfsd_fuse_t gvfsd_runtime_t:dir mounton;
 
 	storage_rw_fuse($1_gvfsd_fuse_t)
+	allow $1_gvfsd_fuse_t fusefs_t:dir getattr;
 	mount_run($1_gvfsd_fuse_t, $4)
 	allow $1_gvfsd_fuse_t mount_t:process { noatsecure rlimitinh siginh };
 	mount_use_fds($1_gvfsd_fuse_t)
