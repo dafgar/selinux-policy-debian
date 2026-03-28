@@ -45,6 +45,7 @@ local_git_use_urandom(staff)
 local_git_config_lockfile_trans(staff)
 local_git_shell_hooks(staff, staff_t)
 local_git_dontaudit_pager_history(staff)
+gvfs_role(staff, staff_t, staff_application_exec_domain, staff_r)
 local_code_role(staff, staff_t)
 local_code_git_client(staff)
 

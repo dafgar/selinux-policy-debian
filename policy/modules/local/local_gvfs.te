@@ -1,0 +1,11 @@
+policy_module(local_gvfs)
+
+type gvfsd_exec_t;
+application_executable_file(gvfsd_exec_t)
+
+type gvfsd_fuse_exec_t;
+application_executable_file(gvfsd_fuse_exec_t)
+
+type gvfsd_runtime_t;
+userdom_user_runtime_content(gvfsd_runtime_t)
+files_mountpoint(gvfsd_runtime_t)
