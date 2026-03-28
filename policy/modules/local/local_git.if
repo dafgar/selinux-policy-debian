@@ -56,6 +56,7 @@ interface(`local_git_use_urandom',`
 	')
 
 	allow $1_git_t urandom_device_t:chr_file { open read };
+	allow $1_git_t self:process signal;
 ')
 
 ########################################
