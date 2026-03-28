@@ -1,0 +1,4 @@
+policy_module(local_xdg_document_portal)
+
+type xdg_document_portal_exec_t;
+application_executable_file(xdg_document_portal_exec_t)
