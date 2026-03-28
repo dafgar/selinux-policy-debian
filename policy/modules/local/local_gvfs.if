@@ -67,7 +67,7 @@ template(`gvfs_role',`
 	files_map_usr_files($1_gvfsd_t)
 	files_read_usr_files($1_gvfsd_fuse_t)
 	files_map_usr_files($1_gvfsd_fuse_t)
-	allow { $1_gvfsd_t $1_gvfsd_fuse_t } proc_t:file { open read };
+	allow { $1_gvfsd_t $1_gvfsd_fuse_t } proc_t:file { getattr open read };
 	allow $1_gvfsd_t bin_t:dir search;
 	miscfiles_read_localization($1_gvfsd_t)
 	miscfiles_read_localization($1_gvfsd_fuse_t)
