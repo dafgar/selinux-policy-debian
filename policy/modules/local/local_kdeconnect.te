@@ -6,7 +6,19 @@ application_executable_file(kdeconnect_exec_t)
 type kdeconnect_port_t;
 corenet_port(kdeconnect_port_t)
 
+## <desc>
+## <p>
+## Allow KDE Connect to use its Bluetooth transport backend.
+## </p>
+## </desc>
 gen_tunable(local_kdeconnect_use_bluetooth, true)
+
+## <desc>
+## <p>
+## Allow KDE Connect to use its network transport backends, including the
+## fixed listener port and dynamically allocated UDP sockets.
+## </p>
+## </desc>
 gen_tunable(local_kdeconnect_use_network, true)
 
 # Local KDE Connect support is modeled as a dedicated user service domain with

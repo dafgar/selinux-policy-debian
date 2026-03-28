@@ -72056,7 +72056,7 @@ Role allowed access.
 </summary>
 </param>
 </template>
-<interface name="local_kdeconnect_bind_port" lineno="69">
+<interface name="local_kdeconnect_bind_port" lineno="83">
 <summary>
 Allow a domain to use KDE Connect listener sockets directly.
 </summary>
@@ -72066,6 +72066,21 @@ Domain allowed to bind KDE Connect sockets.
 </summary>
 </param>
 </interface>
+<tunable name="local_kdeconnect_use_bluetooth" dftval="true">
+<desc>
+<p>
+Allow KDE Connect to use its Bluetooth transport backend.
+</p>
+</desc>
+</tunable>
+<tunable name="local_kdeconnect_use_network" dftval="true">
+<desc>
+<p>
+Allow KDE Connect to use its network transport backends, including the
+fixed listener port and dynamically allocated UDP sockets.
+</p>
+</desc>
+</tunable>
 </module>
 <module name="local_kded_smart" filename="policy/modules/local/local_kded_smart.if">
 <summary>
