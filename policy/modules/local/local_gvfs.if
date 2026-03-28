@@ -87,4 +87,6 @@ template(`gvfs_role',`
 	mount_run($1_gvfsd_fuse_t, $4)
 	mount_use_fds($1_gvfsd_fuse_t)
 	mount_signal($1_gvfsd_fuse_t)
+	allow mount_t $1_gvfsd_t:fd use;
+	allow mount_t $1_gvfsd_fuse_t:unix_stream_socket { read write };
 ')
