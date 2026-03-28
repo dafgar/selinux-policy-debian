@@ -45,6 +45,7 @@ local_git_use_urandom(staff)
 local_git_config_lockfile_trans(staff)
 local_git_dontaudit_pager_history(staff)
 local_code_role(staff, staff_t)
+local_code_git_client(staff)
 
 # The systemd tty password agent may inherit the invoking sudo session tty fd.
 systemd_use_passwd_agent_fds(staff_sudo_t)

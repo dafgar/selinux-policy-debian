@@ -71771,6 +71771,17 @@ User domain that manages the working tree.
 </summary>
 </param>
 </interface>
+<interface name="local_code_git_client" lineno="46">
+<summary>
+Allow Git client domains to manage working tree content in code trees and
+preserve code labels for files they create.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Git client domain.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_command_not_found" filename="policy/modules/local/local_command_not_found.if">
 <summary>

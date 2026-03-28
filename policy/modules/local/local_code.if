@@ -31,3 +31,26 @@ interface(`local_code_role',`
 	filetrans_pattern($2, code_dir_t, code_file_t, file)
 	filetrans_pattern($1_git_t, code_dir_t, git_home_t, dir, ".git")
 ')
+
+########################################
+## <summary>
+## Allow Git client domains to manage working tree content in code trees and
+## preserve code labels for files they create.
+## </summary>
+## <param name="role_prefix">
+## <summary>
+## User role prefix that owns the Git client domain.
+## </summary>
+## </param>
+#
+interface(`local_code_git_client',`
+	gen_require(`
+		type code_dir_t, code_file_t;
+	')
+
+	manage_dirs_pattern($1_git_t, code_dir_t, code_dir_t)
+	manage_files_pattern($1_git_t, code_dir_t, code_file_t)
+	manage_lnk_files_pattern($1_git_t, code_dir_t, code_file_t)
+	filetrans_pattern($1_git_t, code_dir_t, code_dir_t, dir)
+	filetrans_pattern($1_git_t, code_dir_t, code_file_t, file)
+')
