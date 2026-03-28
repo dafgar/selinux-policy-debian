@@ -1,0 +1,4 @@
+policy_module(local_gkrellm)
+
+type gkrellm_exec_t;
+application_executable_file(gkrellm_exec_t)
