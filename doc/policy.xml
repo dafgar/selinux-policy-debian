@@ -71987,6 +71987,36 @@ User domain receiving the graphical prompt requests.
 </param>
 </interface>
 </module>
+<module name="local_gvfs" filename="policy/modules/local/local_gvfs.if">
+<summary>
+Local GVFS domains and helper interfaces.
+</summary>
+<template name="gvfs_role" lineno="30">
+<summary>
+Role access for GVFS user daemons.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role, for example staff or user.
+</summary>
+</param>
+<param name="user_domain">
+<summary>
+User domain for the role.
+</summary>
+</param>
+<param name="user_exec_domain">
+<summary>
+User exec domain for execute and transition access.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+</template>
+</module>
 <module name="local_ifconfig" filename="policy/modules/local/local_ifconfig.if">
 <summary>
 Local override module with no exported interfaces.
