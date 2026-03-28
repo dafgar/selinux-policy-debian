@@ -3,3 +3,4 @@
 /usr/lib/gvfs/gvfsd			--	gen_context(system_u:object_r:gvfsd_exec_t,s0)
 /usr/lib/gvfs/gvfsd-fuse		--	gen_context(system_u:object_r:gvfsd_fuse_exec_t,s0)
 /run/user/[^/]+/gvfs(/.*)?		gen_context(system_u:object_r:gvfsd_runtime_t,s0)
+/run/user/[^/]+/gvfsd(/.*)?		gen_context(system_u:object_r:gvfsd_runtime_t,s0)

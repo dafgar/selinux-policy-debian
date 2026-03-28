@@ -79,8 +79,10 @@ template(`gvfs_role',`
 	allow $1_gvfsd_t self:fifo_file { getattr read write };
 	allow { $1_gvfsd_t $1_gvfsd_fuse_t } $1_systemd_t:unix_stream_socket { read write };
 
+	manage_dirs_pattern($1_gvfsd_t, gvfsd_runtime_t, gvfsd_runtime_t)
+	userdom_user_runtime_filetrans($1_gvfsd_t, gvfsd_runtime_t, dir, "gvfs")
+	userdom_user_runtime_filetrans($1_gvfsd_t, gvfsd_runtime_t, dir, "gvfsd")
 	manage_dirs_pattern($1_gvfsd_fuse_t, gvfsd_runtime_t, gvfsd_runtime_t)
-	userdom_user_runtime_filetrans($1_gvfsd_fuse_t, gvfsd_runtime_t, dir, "gvfs")
 	allow $1_gvfsd_fuse_t gvfsd_runtime_t:dir mounton;
 
 	storage_rw_fuse($1_gvfsd_fuse_t)
