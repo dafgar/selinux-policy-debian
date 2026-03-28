@@ -4,6 +4,7 @@ gen_require(`
 	type alsa_var_lib_t;
 	type chromium_t;
 	type chromium_xdg_config_t;
+	type debugfs_t;
 	type devlog_t;
 	type gnome_xdg_config_t;
 	type locale_t;
@@ -47,6 +48,7 @@ allow chromium_t syslogd_runtime_t:dir search;
 allow chromium_t devlog_t:sock_file write;
 allow chromium_t pcscd_runtime_t:dir search;
 allow chromium_t locale_t:dir watch;
+allow chromium_t debugfs_t:dir search;
 
 # Chromium's audio and camera helper services enumerate ALSA state and V4L
 # devices during startup.
