@@ -117,7 +117,7 @@ template(`pipewire_role',`
 	gen_require(`
 		role $4;
 		attribute $3;
-		type mozilla_t, mplayer_t, pipewire_exec_t, pipewire_runtime_t, pipewire_tmpfs_t, pulseaudio_tmp_t, user_runtime_t;
+		type chromium_t, mozilla_t, mplayer_t, pipewire_exec_t, pipewire_runtime_t, pipewire_tmpfs_t, pulseaudio_tmp_t, user_runtime_t;
 		type $1_dbusd_t;
 		type proc_t, security_t, selinux_config_t;
 		class dbus { acquire_svc send_msg };
@@ -142,6 +142,7 @@ template(`pipewire_role',`
 	allow $1_pipewire_t self:process { getsched setrlimit setsched };
 	ps_process_pattern($1_pipewire_t, $1_wireplumber_t)
 	ps_process_pattern($1_pipewire_t, $2)
+	ps_process_pattern($1_pipewire_t, chromium_t)
 	ps_process_pattern($1_pipewire_t, mozilla_t)
 	ps_process_pattern($1_pipewire_t, mplayer_t)
 
