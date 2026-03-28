@@ -39,3 +39,21 @@ interface(`local_git_dontaudit_pager_history',`
 	dontaudit $1_git_t xdg_data_t:dir { open read };
 	dontaudit $1_git_t user_home_dir_t:file { open read getattr write create setattr unlink rename };
 ')
+
+########################################
+## <summary>
+## Allow Git client domains to read from /dev/urandom.
+## </summary>
+## <param name="role_prefix">
+## <summary>
+## User role prefix that owns the Git client domain.
+## </summary>
+## </param>
+#
+interface(`local_git_use_urandom',`
+	gen_require(`
+		type urandom_device_t;
+	')
+
+	allow $1_git_t urandom_device_t:chr_file { open read };
+')
