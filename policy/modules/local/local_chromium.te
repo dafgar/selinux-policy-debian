@@ -54,3 +54,4 @@ allow chromium_t v4l_device_t:chr_file { getattr ioctl map open read write };
 # Chromium setup.
 dontaudit chromium_t mozilla_exec_t:file getattr;
 dontaudit chromium_t chromium_xdg_config_t:file execute;
+dontaudit chromium_t user_tmp_t:file write;
