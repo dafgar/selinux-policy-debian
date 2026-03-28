@@ -1,0 +1,4 @@
+policy_module(local_powerdevil)
+
+type powerdevil_exec_t;
+application_executable_file(powerdevil_exec_t)

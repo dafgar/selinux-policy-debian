@@ -18,6 +18,7 @@ kdeconnect_role(staff, staff_t, staff_application_exec_domain, staff_r)
 keepassxc_role(staff, staff_t, staff_application_exec_domain, staff_r)
 gkrellm_role(staff, staff_t, staff_application_exec_domain, staff_r)
 safeeyes_role(staff, staff_t, staff_application_exec_domain, staff_r)
+powerdevil_role(staff, staff_t, staff_application_exec_domain, staff_r)
 zotero_role(staff_application_exec_domain, staff_r)
 
 # User-session helpers such as systemctl --user may stat namespace file handles
