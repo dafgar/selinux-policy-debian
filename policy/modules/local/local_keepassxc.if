@@ -1,0 +1,58 @@
+## <summary>
+## Local KeepassXC role template.
+## </summary>
+
+########################################
+## <summary>
+##	Role access for KeepassXC.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	The prefix of the user role, for example staff or user.
+##	</summary>
+## </param>
+## <param name="user_domain">
+##	<summary>
+##	User domain for the role.
+##	</summary>
+## </param>
+## <param name="user_exec_domain">
+##	<summary>
+##	User exec domain for execute and transition access.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access.
+##	</summary>
+## </param>
+#
+template(`keepassxc_role',`
+	gen_require(`
+		role $4;
+		attribute $3;
+		type keepassxc_exec_t;
+	')
+
+	type $1_keepassxc_t;
+	userdom_user_application_domain($1_keepassxc_t, keepassxc_exec_t)
+	role $4 types $1_keepassxc_t;
+
+	domtrans_pattern($3, keepassxc_exec_t, $1_keepassxc_t)
+
+	allow $3 $1_keepassxc_t:process { ptrace signal_perms };
+	allow $3 $1_keepassxc_t:fd use;
+	ps_process_pattern($3, $1_keepassxc_t)
+
+	allow $1_keepassxc_t $3:process sigchld;
+
+	auth_use_nsswitch($1_keepassxc_t)
+	dbus_all_session_bus_client($1_keepassxc_t)
+	dbus_write_session_runtime_socket($1_keepassxc_t)
+	files_read_usr_files($1_keepassxc_t)
+	files_map_usr_files($1_keepassxc_t)
+	miscfiles_read_localization($1_keepassxc_t)
+	xdg_search_config_dirs($1_keepassxc_t)
+	xdg_search_data_dirs($1_keepassxc_t)
+	userdom_search_user_runtime($1_keepassxc_t)
+')

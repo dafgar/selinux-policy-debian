@@ -1,0 +1,4 @@
+policy_module(local_keepassxc)
+
+type keepassxc_exec_t;
+application_executable_file(keepassxc_exec_t)
