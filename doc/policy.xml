@@ -72087,6 +72087,36 @@ fixed listener port and dynamically allocated UDP sockets.
 Local policy for the KDE SMART helper domain.
 </summary>
 </module>
+<module name="local_keepassxc" filename="policy/modules/local/local_keepassxc.if">
+<summary>
+Local KeepassXC role template.
+</summary>
+<template name="keepassxc_role" lineno="30">
+<summary>
+Role access for KeepassXC.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role, for example staff or user.
+</summary>
+</param>
+<param name="user_domain">
+<summary>
+User domain for the role.
+</summary>
+</param>
+<param name="user_exec_domain">
+<summary>
+User exec domain for execute and transition access.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+</template>
+</module>
 <module name="local_lowmemorymonitor" filename="policy/modules/local/local_lowmemorymonitor.if">
 <summary>
 Local override module with no exported interfaces.
