@@ -71919,6 +71919,22 @@ User role prefix that owns the Git client domain.
 </summary>
 </param>
 </interface>
+<interface name="local_git_shell_hooks" lineno="99">
+<summary>
+Allow Git client domains to execute shell-based hooks by transitioning
+back to the user domain through the system shell interpreter.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Git client domain.
+</summary>
+</param>
+<param name="user_domain">
+<summary>
+User domain that should run the hook payload.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_gnome" filename="policy/modules/local/local_gnome.if">
 <summary>
