@@ -72405,7 +72405,27 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_wm_dontaudit_tmpfs_use" lineno="71">
+<interface name="local_thunderbird_publish_bus_name" lineno="71">
+<summary>
+Allow Thunderbird to publish its session bus name.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session D-Bus daemon.
+</summary>
+</param>
+</interface>
+<interface name="local_thunderbird_dbus_chat" lineno="90">
+<summary>
+Allow Thunderbird to chat with a peer desktop service over D-Bus.
+</summary>
+<param name="peer_domain">
+<summary>
+Desktop service domain, such as staff_t.
+</summary>
+</param>
+</interface>
+<interface name="local_thunderbird_wm_dontaudit_tmpfs_use" lineno="109">
 <summary>
 Dontaudit a WM domain using Thunderbird tmpfs buffers and inherited fds.
 </summary>
