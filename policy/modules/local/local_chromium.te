@@ -49,6 +49,7 @@ allow chromium_t syslogd_runtime_t:dir search;
 allow chromium_t devlog_t:sock_file write;
 allow chromium_t syslogd_t:unix_dgram_socket sendto;
 allow chromium_t pcscd_runtime_t:dir search;
+allow chromium_t pcscd_runtime_t:sock_file getattr;
 allow chromium_t locale_t:dir watch;
 allow chromium_t debugfs_t:dir search;
 
