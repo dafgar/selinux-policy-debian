@@ -72471,6 +72471,27 @@ Local USBGuard noise suppressions.
 Local user role bindings.
 </summary>
 </module>
+<module name="local_userdomain" filename="policy/modules/local/local_userdomain.if">
+<summary>
+Local userdomain policy helpers.
+</summary>
+<interface name="local_userdomain_dontaudit_generic_home_when_disabled" lineno="21">
+<summary>
+When a generic-user-content read boolean is disabled, suppress the
+resulting generic home traversal/read denials for a domain.
+</summary>
+<param name="boolean_name">
+<summary>
+Name of the existing read_generic_user_content boolean.
+</summary>
+</param>
+<param name="domain">
+<summary>
+Domain whose generic home denials should be muted.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_utempter" filename="policy/modules/local/local_utempter.if">
 <summary>
 Local utempter policy adjustments.
