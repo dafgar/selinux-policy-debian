@@ -49,6 +49,7 @@ template(`keepassxc_role',`
 	auth_use_nsswitch($1_keepassxc_t)
 	dbus_all_session_bus_client($1_keepassxc_t)
 	dbus_write_session_runtime_socket($1_keepassxc_t)
+	systemd_dbus_chat_logind($1_keepassxc_t)
 	files_read_usr_files($1_keepassxc_t)
 	files_map_usr_files($1_keepassxc_t)
 	miscfiles_read_localization($1_keepassxc_t)
