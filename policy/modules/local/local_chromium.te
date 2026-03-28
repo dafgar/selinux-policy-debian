@@ -7,6 +7,7 @@ gen_require(`
 	type devlog_t;
 	type gnome_xdg_config_t;
 	type mozilla_exec_t;
+	type pcscd_runtime_t;
 	type pulseaudio_tmp_t;
 	type pulseaudio_xdg_config_t;
 	type pipewire_runtime_t;
@@ -43,6 +44,7 @@ allow chromium_t gnome_xdg_config_t:file { getattr map open read };
 allow chromium_t xdg_cache_t:file { getattr open read write };
 allow chromium_t syslogd_runtime_t:dir search;
 allow chromium_t devlog_t:sock_file write;
+allow chromium_t pcscd_runtime_t:dir search;
 
 # Chromium's audio and camera helper services enumerate ALSA state and V4L
 # devices during startup.
