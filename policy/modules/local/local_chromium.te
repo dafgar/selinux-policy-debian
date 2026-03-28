@@ -4,10 +4,13 @@ gen_require(`
 	type alsa_var_lib_t;
 	type chromium_t;
 	type gnome_xdg_config_t;
+	type pulseaudio_tmp_t;
+	type pulseaudio_xdg_config_t;
 	type pipewire_runtime_t;
 	type proc_t;
 	type security_t;
 	type selinux_config_t;
+	type staff_pipewire_t;
 	type sysfs_t;
 	type user_tmp_t;
 	type v4l_device_t;
@@ -39,4 +42,8 @@ allow chromium_t xdg_cache_t:file { getattr open read write };
 # Chromium's audio and camera helper services enumerate ALSA state and V4L
 # devices during startup.
 allow chromium_t alsa_var_lib_t:dir search;
-allow chromium_t v4l_device_t:chr_file getattr;
+allow chromium_t pulseaudio_tmp_t:dir read;
+allow chromium_t pulseaudio_xdg_config_t:dir search;
+allow chromium_t pulseaudio_xdg_config_t:file { lock open read };
+allow chromium_t staff_pipewire_t:unix_stream_socket connectto;
+allow chromium_t v4l_device_t:chr_file { getattr ioctl map open read write };
