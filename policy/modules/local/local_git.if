@@ -57,3 +57,23 @@ interface(`local_git_use_urandom',`
 
 	allow $1_git_t urandom_device_t:chr_file { open read };
 ')
+
+########################################
+## <summary>
+## Label Git global config lockfiles with the Git XDG config type.
+## </summary>
+## <param name="role_prefix">
+## <summary>
+## User role prefix that owns the Git client domain.
+## </summary>
+## </param>
+#
+interface(`local_git_config_lockfile_trans',`
+	gen_require(`
+		type git_xdg_config_t;
+		type user_home_dir_t;
+	')
+
+	filetrans_pattern($1_git_t, user_home_dir_t, git_xdg_config_t, file, ".gitconfig.lock")
+	filetrans_pattern($1_git_t, user_home_dir_t, git_xdg_config_t, file, ".git-credentials.lock")
+')

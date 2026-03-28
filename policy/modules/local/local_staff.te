@@ -42,6 +42,7 @@ dontaudit staff_t mozilla_t:process getsched;
 
 local_git_search_user_paths(staff)
 local_git_use_urandom(staff)
+local_git_config_lockfile_trans(staff)
 local_git_dontaudit_pager_history(staff)
 
 # The systemd tty password agent may inherit the invoking sudo session tty fd.
