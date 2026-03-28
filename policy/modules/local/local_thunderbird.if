@@ -60,6 +60,44 @@ interface(`local_thunderbird_systemd_inherit',`
 
 ########################################
 ## <summary>
+##	Allow Thunderbird to publish its session bus name.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session D-Bus daemon.
+##	</summary>
+## </param>
+#
+interface(`local_thunderbird_publish_bus_name',`
+	gen_require(`
+		type thunderbird_t;
+		type $1_dbusd_t;
+	')
+
+	allow thunderbird_t $1_dbusd_t:dbus acquire_svc;
+')
+
+########################################
+## <summary>
+##	Allow Thunderbird to chat with a peer desktop service over D-Bus.
+## </summary>
+## <param name="peer_domain">
+##	<summary>
+##	Desktop service domain, such as staff_t.
+##	</summary>
+## </param>
+#
+interface(`local_thunderbird_dbus_chat',`
+	gen_require(`
+		type thunderbird_t;
+	')
+
+	allow thunderbird_t $1:dbus send_msg;
+	allow $1 thunderbird_t:dbus send_msg;
+')
+
+########################################
+## <summary>
 ##	Dontaudit a WM domain using Thunderbird tmpfs buffers and inherited fds.
 ## </summary>
 ## <param name="wm_domain">
