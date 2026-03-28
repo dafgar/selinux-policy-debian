@@ -76,7 +76,7 @@ template(`gvfs_role',`
 	allow $1_gvfsd_fuse_t gvfsd_runtime_t:dir mounton;
 
 	storage_rw_fuse($1_gvfsd_fuse_t)
-	mount_domtrans($1_gvfsd_fuse_t)
+	mount_run($1_gvfsd_fuse_t, $4)
 	mount_use_fds($1_gvfsd_fuse_t)
 	mount_signal($1_gvfsd_fuse_t)
 ')
