@@ -2,9 +2,23 @@ policy_module(local_chromium)
 
 gen_require(`
 	type chromium_t;
+	type proc_t;
+	type security_t;
+	type selinux_config_t;
+	type sysfs_t;
 	type user_tmp_t;
+	type xkb_var_lib_t;
 ')
 
 # Wayland display sockets like wayland-0 are currently labeled user_tmp_t on
 # this system. Chromium needs write access to connect to the compositor socket.
 allow chromium_t user_tmp_t:sock_file write;
+
+# Chromium probes SELinux, procfs, sysfs, and XKB data during startup and
+# feature detection.
+allow chromium_t security_t:filesystem getattr;
+allow chromium_t selinux_config_t:dir search;
+allow chromium_t proc_t:file read;
+allow chromium_t sysfs_t:file read;
+allow chromium_t sysfs_t:lnk_file read;
+allow chromium_t xkb_var_lib_t:dir getattr;
