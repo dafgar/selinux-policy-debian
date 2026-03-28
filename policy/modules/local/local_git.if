@@ -76,4 +76,5 @@ interface(`local_git_config_lockfile_trans',`
 
 	filetrans_pattern($1_git_t, user_home_dir_t, git_xdg_config_t, file, ".gitconfig.lock")
 	filetrans_pattern($1_git_t, user_home_dir_t, git_xdg_config_t, file, ".git-credentials.lock")
+	allow $1_git_t git_xdg_config_t:file map;
 ')
