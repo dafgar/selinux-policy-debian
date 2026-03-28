@@ -71854,7 +71854,7 @@ The prefix of the user role, for example staff or user.
 </summary>
 </param>
 </interface>
-<interface name="local_evolution_alarm_desktop" lineno="35">
+<interface name="local_evolution_alarm_desktop" lineno="34">
 <summary>
 Allow Evolution alarm helpers to integrate with the desktop session.
 </summary>
@@ -71945,6 +71945,36 @@ User domain that should run the hook payload.
 </summary>
 </param>
 </interface>
+</module>
+<module name="local_gkrellm" filename="policy/modules/local/local_gkrellm.if">
+<summary>
+Local GKrellM role template.
+</summary>
+<template name="gkrellm_role" lineno="30">
+<summary>
+Role access for GKrellM.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role, for example staff or user.
+</summary>
+</param>
+<param name="user_domain">
+<summary>
+User domain for the role.
+</summary>
+</param>
+<param name="user_exec_domain">
+<summary>
+User exec domain for execute and transition access.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access.
+</summary>
+</param>
+</template>
 </module>
 <module name="local_gnome" filename="policy/modules/local/local_gnome.if">
 <summary>
@@ -72345,6 +72375,27 @@ Local override module with no exported interfaces.
 Local override module with no exported interfaces.
 </summary>
 </module>
+<module name="local_systemd" filename="policy/modules/local/local_systemd.if">
+<summary>
+Local systemd helper interfaces.
+</summary>
+<interface name="local_systemd_inherit_user_service" lineno="21">
+<summary>
+Allow a user systemd instance to launch a user service domain with the
+usual inherited-exec process bits and systemd socket backchannel.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+<param name="domain">
+<summary>
+Target user service domain.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_systemd_hostnamed" filename="policy/modules/local/local_systemd_hostnamed.if">
 <summary>
 Local override module with no exported interfaces.
@@ -72435,7 +72486,7 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_publish_bus_name" lineno="71">
+<interface name="local_thunderbird_publish_bus_name" lineno="70">
 <summary>
 Allow Thunderbird to publish its session bus name.
 </summary>
@@ -72445,7 +72496,7 @@ User role prefix that owns the session D-Bus daemon.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_dbus_chat" lineno="90">
+<interface name="local_thunderbird_dbus_chat" lineno="89">
 <summary>
 Allow Thunderbird to chat with a peer desktop service over D-Bus.
 </summary>
@@ -72455,7 +72506,7 @@ Desktop service domain, such as staff_t.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_wm_dontaudit_tmpfs_use" lineno="109">
+<interface name="local_thunderbird_wm_dontaudit_tmpfs_use" lineno="108">
 <summary>
 Dontaudit a WM domain using Thunderbird tmpfs buffers and inherited fds.
 </summary>
