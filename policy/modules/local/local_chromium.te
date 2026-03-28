@@ -3,7 +3,9 @@ policy_module(local_chromium)
 gen_require(`
 	type alsa_var_lib_t;
 	type chromium_t;
+	type chromium_xdg_config_t;
 	type gnome_xdg_config_t;
+	type mozilla_exec_t;
 	type pulseaudio_tmp_t;
 	type pulseaudio_xdg_config_t;
 	type pipewire_runtime_t;
@@ -47,3 +49,8 @@ allow chromium_t pulseaudio_tmp_t:dir read;
 allow chromium_t pulseaudio_xdg_config_t:dir search;
 allow chromium_t pulseaudio_xdg_config_t:file { lock open read };
 allow chromium_t v4l_device_t:chr_file { getattr ioctl map open read write };
+
+# Optional browser/DRM integration probes are not needed for the current
+# Chromium setup.
+dontaudit chromium_t mozilla_exec_t:file getattr;
+dontaudit chromium_t chromium_xdg_config_t:file execute;
