@@ -31,6 +31,7 @@ corenet_tcp_connect_all_ports(mozilla_t)
 pulseaudio_client_domain(mozilla_t)
 dev_rw_tpm(mozilla_t)
 local_tpm2_pkcs11_manage_home_files(mozilla_t)
+local_userdomain_dontaudit_generic_home_when_disabled(`mozilla_read_generic_user_content', mozilla_t)
 
 # Firefox creates a per-instance Wayland proxy socket under /run/user/$UID.
 allow mozilla_t user_runtime_t:dir { add_name write };

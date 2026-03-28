@@ -34,6 +34,7 @@ corenet_udp_bind_generic_node(thunderbird_t)
 pcscd_read_runtime_files(thunderbird_t)
 pcscd_stream_connect(thunderbird_t)
 logging_search_logs(thunderbird_t)
+local_userdomain_dontaudit_generic_home_when_disabled(`thunderbird_read_generic_user_content', thunderbird_t)
 
 xdg_search_config_dirs(thunderbird_t)
 xdg_read_config_files(thunderbird_t)

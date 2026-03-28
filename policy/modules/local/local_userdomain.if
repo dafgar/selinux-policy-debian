@@ -1,0 +1,30 @@
+## <summary>
+## Local userdomain policy helpers.
+## </summary>
+
+########################################
+## <summary>
+## When a generic-user-content read boolean is disabled, suppress the
+## resulting generic home traversal/read denials for a domain.
+## </summary>
+## <param name="boolean_name">
+##	<summary>
+##	Name of the existing read_generic_user_content boolean.
+##	</summary>
+## </param>
+## <param name="domain">
+##	<summary>
+##	Domain whose generic home denials should be muted.
+##	</summary>
+## </param>
+#
+interface(`local_userdomain_dontaudit_generic_home_when_disabled',`
+	tunable_policy(`$1',`
+	',`
+		userdom_dontaudit_getattr_user_home_dirs($2)
+		userdom_dontaudit_search_user_home_dirs($2)
+		userdom_dontaudit_list_user_home_dirs($2)
+		userdom_dontaudit_search_user_home_content($2)
+		userdom_dontaudit_read_user_home_content_files($2)
+	')
+')
