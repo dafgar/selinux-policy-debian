@@ -71751,6 +71751,27 @@ User role prefix that owns the session D-Bus domain.
 </param>
 </interface>
 </module>
+<module name="local_code" filename="policy/modules/local/local_code.if">
+<summary>
+Local code-tree labeling helpers.
+</summary>
+<interface name="local_code_role" lineno="21">
+<summary>
+Manage code trees under the user's code workspace and transition nested
+Git metadata to the base Git home types.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Git client domain.
+</summary>
+</param>
+<param name="user_domain">
+<summary>
+User domain that manages the working tree.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_command_not_found" filename="policy/modules/local/local_command_not_found.if">
 <summary>
 Local file-context override for the command-not-found helper.
@@ -71860,6 +71881,26 @@ User role prefix that owns the Git client domain.
 <interface name="local_git_dontaudit_pager_history" lineno="34">
 <summary>
 Do not audit pager history accesses from Git client domains.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Git client domain.
+</summary>
+</param>
+</interface>
+<interface name="local_git_use_urandom" lineno="53">
+<summary>
+Allow Git client domains to read from /dev/urandom.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Git client domain.
+</summary>
+</param>
+</interface>
+<interface name="local_git_config_lockfile_trans" lineno="72">
+<summary>
+Label Git global config lockfiles with the Git XDG config type.
 </summary>
 <param name="role_prefix">
 <summary>
