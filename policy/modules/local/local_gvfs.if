@@ -34,7 +34,7 @@ template(`gvfs_role',`
 		type gvfsd_exec_t, gvfsd_fuse_exec_t, gvfsd_runtime_t;
 		type $1_systemd_t;
 		type session_dbusd_runtime_t;
-		type bin_t;
+		type bin_t, proc_t;
 	')
 
 	type $1_gvfsd_t;
@@ -66,6 +66,7 @@ template(`gvfs_role',`
 	files_map_usr_files($1_gvfsd_t)
 	files_read_usr_files($1_gvfsd_fuse_t)
 	files_map_usr_files($1_gvfsd_fuse_t)
+	allow $1_gvfsd_t proc_t:file read;
 	allow $1_gvfsd_t bin_t:dir search;
 	miscfiles_read_localization($1_gvfsd_t)
 	miscfiles_read_localization($1_gvfsd_fuse_t)
