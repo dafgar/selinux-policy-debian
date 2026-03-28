@@ -51,6 +51,7 @@ interface(`local_code_git_client',`
 	manage_dirs_pattern($1_git_t, code_dir_t, code_dir_t)
 	manage_files_pattern($1_git_t, code_dir_t, code_file_t)
 	manage_lnk_files_pattern($1_git_t, code_dir_t, code_file_t)
+	mmap_read_files_pattern($1_git_t, code_dir_t, code_file_t)
 	filetrans_pattern($1_git_t, code_dir_t, code_dir_t, dir)
 	filetrans_pattern($1_git_t, code_dir_t, code_file_t, file)
 ')
