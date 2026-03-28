@@ -20,3 +20,23 @@ interface(`local_chromium_pipewire_pulse_connect',`
 
 	pipewire_pulse_stream_connect(chromium_t, $1_pipewire_t)
 ')
+
+########################################
+## <summary>
+## Allow Chromium to publish its MPRIS service on the per-role session bus.
+## </summary>
+## <param name="role_prefix">
+## <summary>
+## User role prefix that owns the session D-Bus domain.
+## </summary>
+## </param>
+#
+interface(`local_chromium_mpris_publish',`
+	gen_require(`
+		type chromium_t;
+		type $1_dbusd_t;
+		class dbus acquire_svc;
+	')
+
+	allow chromium_t $1_dbusd_t:dbus acquire_svc;
+')
