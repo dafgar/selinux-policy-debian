@@ -79,3 +79,23 @@ interface(`local_git_config_lockfile_trans',`
 	filetrans_pattern($1_git_t, user_home_dir_t, git_xdg_config_t, file, ".git-credentials.lock")
 	allow $1_git_t git_xdg_config_t:file map;
 ')
+
+########################################
+## <summary>
+## Allow Git client domains to execute shell-based hooks by transitioning
+## back to the user domain through the system shell interpreter.
+## </summary>
+## <param name="role_prefix">
+## <summary>
+## User role prefix that owns the Git client domain.
+## </summary>
+## </param>
+## <param name="user_domain">
+## <summary>
+## User domain that should run the hook payload.
+## </summary>
+## </param>
+#
+interface(`local_git_shell_hooks',`
+	corecmd_shell_domtrans($1_git_t, $2)
+')
