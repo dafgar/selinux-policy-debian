@@ -52,10 +52,9 @@ interface(`local_thunderbird_pipewire_process_lookup',`
 interface(`local_thunderbird_systemd_inherit',`
 	gen_require(`
 		type thunderbird_t;
-		type $1_systemd_t;
 	')
 
-	allow $1_systemd_t thunderbird_t:process { noatsecure rlimitinh siginh };
+	local_systemd_inherit_user_service($1, thunderbird_t)
 ')
 
 ########################################

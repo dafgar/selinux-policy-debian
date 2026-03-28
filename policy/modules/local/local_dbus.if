@@ -37,8 +37,8 @@ interface(`dbus_read_user_activation_services',`
 #
 interface(`local_dbus_systemd_inherit',`
 	gen_require(`
-		type $1_systemd_t, $1_dbusd_t;
+		type $1_dbusd_t;
 	')
 
-	allow $1_systemd_t $1_dbusd_t:process { noatsecure rlimitinh siginh };
+	local_systemd_inherit_user_service($1, $1_dbusd_t)
 ')

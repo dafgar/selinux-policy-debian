@@ -208,7 +208,7 @@ template(`pipewire_role',`
 		userdom_user_runtime_filetrans($1_systemd_t, pipewire_runtime_t, file, "pipewire-0-manager.lock")
 		userdom_user_runtime_filetrans($1_systemd_t, pipewire_runtime_t, sock_file, "pipewire-0")
 		userdom_user_runtime_filetrans($1_systemd_t, pipewire_runtime_t, sock_file, "pipewire-0-manager")
-		allow $1_systemd_t $1_pipewire_t:process { noatsecure rlimitinh siginh };
+		local_systemd_inherit_user_service($1, $1_pipewire_t)
 		allow $1_systemd_t $1_pipewire_t:process2 nnp_transition;
 	')
 ')

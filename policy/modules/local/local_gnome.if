@@ -19,5 +19,5 @@ template(`local_gnome_systemd_keyring_socket',`
 	')
 
 	systemd_user_app_socket_create($1, $1_gkeyringd_t, gnome_keyring_tmp_t)
-	allow $1_systemd_t $1_gkeyringd_t:process { noatsecure rlimitinh siginh };
+	local_systemd_inherit_user_service($1, $1_gkeyringd_t)
 ')
