@@ -17,6 +17,7 @@ gen_require(`
 	type proc_t;
 	type security_t;
 	type selinux_config_t;
+	type bluetooth_t;
 	type syslogd_t;
 	type syslogd_runtime_t;
 	type sysfs_t;
@@ -24,6 +25,7 @@ gen_require(`
 	type v4l_device_t;
 	type xkb_var_lib_t;
 	type xdg_cache_t;
+	class dbus send_msg;
 ')
 
 # Wayland display sockets like wayland-0 are currently labeled user_tmp_t on
@@ -68,3 +70,4 @@ allow chromium_t v4l_device_t:chr_file { getattr ioctl map open read write };
 dontaudit chromium_t mozilla_exec_t:file getattr;
 dontaudit chromium_t chromium_xdg_config_t:file execute;
 dontaudit chromium_t user_tmp_t:file write;
+dontaudit chromium_t bluetooth_t:dbus send_msg;
