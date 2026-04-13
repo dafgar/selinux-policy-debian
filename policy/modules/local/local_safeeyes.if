@@ -84,12 +84,12 @@ template(`safeeyes_role',`
 	allow $1_safeeyes_t bin_t:lnk_file { getattr read };
 	allow $1_safeeyes_t self:unix_dgram_socket { create write };
 	allow $1_safeeyes_t user_tmp_t:dir { getattr search };
-	allow $1_safeeyes_t user_tmp_t:file { open read write };
+	allow $1_safeeyes_t user_tmp_t:file { map open read write };
 	allow $1_safeeyes_t gnome_xdg_config_t:dir search;
 	allow $1_safeeyes_t gnome_xdg_config_t:file { open read };
 	allow $1_safeeyes_t user_tmp_t:sock_file write;
 	allow $1_safeeyes_t $3:unix_stream_socket connectto;
-	allow $1_safeeyes_t self:process { setrlimit setsched };
+	allow $1_safeeyes_t self:process { setrlimit setsched signal };
 	allow $1_safeeyes_t proc_t:file { getattr open read };
 	allow $1_safeeyes_t security_t:filesystem getattr;
 	allow $1_safeeyes_t selinux_config_t:dir search;
