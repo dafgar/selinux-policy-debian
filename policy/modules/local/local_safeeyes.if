@@ -94,6 +94,7 @@ template(`safeeyes_role',`
 	allow $1_safeeyes_t self:process { setrlimit setsched signal };
 	allow $1_safeeyes_t self:tcp_socket listen;
 	allow $1_safeeyes_t proc_t:file { getattr open read };
+	allow $1_safeeyes_t proc_t:dir read;
 	allow $1_safeeyes_t security_t:filesystem getattr;
 	allow $1_safeeyes_t selinux_config_t:dir search;
 	allow $1_safeeyes_t sysctl_vm_t:dir search;
