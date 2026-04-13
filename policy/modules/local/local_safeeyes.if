@@ -50,6 +50,9 @@ template(`safeeyes_role',`
 	dbus_all_session_bus_client($1_safeeyes_t)
 	dbus_write_session_runtime_socket($1_safeeyes_t)
 	systemd_dbus_chat_logind($1_safeeyes_t)
+	allow $1_safeeyes_t bin_t:dir { getattr open read search };
+	allow $1_safeeyes_t bin_t:file { execute getattr map open read };
+	allow $1_safeeyes_t bin_t:lnk_file read;
 	files_read_usr_files($1_safeeyes_t)
 	files_map_usr_files($1_safeeyes_t)
 	miscfiles_read_localization($1_safeeyes_t)
