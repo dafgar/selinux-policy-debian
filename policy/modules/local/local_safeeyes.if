@@ -53,6 +53,8 @@ template(`safeeyes_role',`
 		attribute $3;
 		type safeeyes_exec_t;
 		type safeeyes_xdg_config_t;
+		type cert_t;
+		type user_tmp_t;
 	')
 
 	type $1_safeeyes_t;
@@ -75,9 +77,11 @@ template(`safeeyes_role',`
 	allow $1_safeeyes_t $1_systemd_t:unix_stream_socket { getattr ioctl };
 	allow $1_safeeyes_t bin_t:dir { getattr open read search };
 	allow $1_safeeyes_t bin_t:file { execute getattr map open read };
-	allow $1_safeeyes_t bin_t:lnk_file read;
+	allow $1_safeeyes_t bin_t:lnk_file { getattr read };
+	allow $1_safeeyes_t user_tmp_t:sock_file write;
+	allow $1_safeeyes_t $3:unix_stream_socket connectto;
 	allow $1_safeeyes_t self:process { setrlimit setsched };
-	allow $1_safeeyes_t proc_t:file { open read };
+	allow $1_safeeyes_t proc_t:file { getattr open read };
 	allow $1_safeeyes_t security_t:filesystem getattr;
 	allow $1_safeeyes_t selinux_config_t:dir search;
 	allow $1_safeeyes_t sysctl_vm_t:dir search;
@@ -94,5 +98,6 @@ template(`safeeyes_role',`
 	userdom_search_user_runtime($1_safeeyes_t)
 	local_systemd_inherit_user_service($1, $1_safeeyes_t)
 
+	dontaudit $1_safeeyes_t cert_t:dir search;
 	dontaudit $1_safeeyes_t tmpfs_t:file getattr;
 ')
