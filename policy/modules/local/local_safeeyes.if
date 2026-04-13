@@ -53,7 +53,9 @@ template(`safeeyes_role',`
 		attribute $3;
 		type safeeyes_exec_t;
 		type safeeyes_xdg_config_t;
+		type safeeyes_tmpfs_t;
 		type cert_t;
+		type gnome_xdg_config_t;
 		type user_tmp_t;
 	')
 
@@ -78,6 +80,9 @@ template(`safeeyes_role',`
 	allow $1_safeeyes_t bin_t:dir { getattr open read search };
 	allow $1_safeeyes_t bin_t:file { execute getattr map open read };
 	allow $1_safeeyes_t bin_t:lnk_file { getattr read };
+	allow $1_safeeyes_t self:unix_dgram_socket create;
+	allow $1_safeeyes_t user_tmp_t:dir { getattr search };
+	allow $1_safeeyes_t gnome_xdg_config_t:dir search;
 	allow $1_safeeyes_t user_tmp_t:sock_file write;
 	allow $1_safeeyes_t $3:unix_stream_socket connectto;
 	allow $1_safeeyes_t self:process { setrlimit setsched };
@@ -90,6 +95,8 @@ template(`safeeyes_role',`
 	manage_files_pattern($1_safeeyes_t, safeeyes_xdg_config_t, safeeyes_xdg_config_t)
 	manage_lnk_files_pattern($1_safeeyes_t, safeeyes_xdg_config_t, safeeyes_xdg_config_t)
 	xdg_config_filetrans($1_safeeyes_t, safeeyes_xdg_config_t, dir, "safeeyes")
+	manage_files_pattern($1_safeeyes_t, safeeyes_tmpfs_t, safeeyes_tmpfs_t)
+	fs_tmpfs_filetrans($1_safeeyes_t, safeeyes_tmpfs_t, file)
 	files_read_usr_files($1_safeeyes_t)
 	files_map_usr_files($1_safeeyes_t)
 	miscfiles_read_localization($1_safeeyes_t)

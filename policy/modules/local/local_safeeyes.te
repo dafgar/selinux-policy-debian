@@ -5,3 +5,6 @@ application_executable_file(safeeyes_exec_t)
 
 type safeeyes_xdg_config_t;
 xdg_config_content(safeeyes_xdg_config_t)
+
+type safeeyes_tmpfs_t;
+userdom_user_tmpfs_file(safeeyes_tmpfs_t)
