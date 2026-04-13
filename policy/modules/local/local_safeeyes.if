@@ -88,10 +88,11 @@ template(`safeeyes_role',`
 	allow $1_safeeyes_t user_tmp_t:dir { getattr search };
 	allow $1_safeeyes_t user_tmp_t:file { map open read write };
 	allow $1_safeeyes_t gnome_xdg_config_t:dir search;
-	allow $1_safeeyes_t gnome_xdg_config_t:file { open read };
+	allow $1_safeeyes_t gnome_xdg_config_t:file { getattr map open read };
 	allow $1_safeeyes_t user_tmp_t:sock_file write;
 	allow $1_safeeyes_t $3:unix_stream_socket connectto;
 	allow $1_safeeyes_t self:process { setrlimit setsched signal };
+	allow $1_safeeyes_t self:tcp_socket listen;
 	allow $1_safeeyes_t proc_t:file { getattr open read };
 	allow $1_safeeyes_t security_t:filesystem getattr;
 	allow $1_safeeyes_t selinux_config_t:dir search;
@@ -108,10 +109,14 @@ template(`safeeyes_role',`
 	files_map_usr_files($1_safeeyes_t)
 	miscfiles_read_localization($1_safeeyes_t)
 	allow $1_safeeyes_t xkb_var_lib_t:dir { getattr read search };
+	allow $1_safeeyes_t xkb_var_lib_t:file { getattr map open read };
+	allow $1_safeeyes_t wm_tmpfs_t:file { map read write };
 	xdg_search_config_dirs($1_safeeyes_t)
 	xdg_search_data_dirs($1_safeeyes_t)
 	userdom_search_user_runtime($1_safeeyes_t)
 	local_systemd_inherit_user_service($1, $1_safeeyes_t)
+	corenet_tcp_bind_generic_node($1_safeeyes_t)
+	corenet_tcp_bind_generic_port($1_safeeyes_t)
 	allow $1_safeeyes_t $1_gvfsd_t:dbus send_msg;
 	allow $1_gvfsd_t $1_safeeyes_t:dbus send_msg;
 
