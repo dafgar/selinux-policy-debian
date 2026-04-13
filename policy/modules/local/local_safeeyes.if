@@ -74,6 +74,12 @@ template(`safeeyes_role',`
 	allow $1_safeeyes_t bin_t:dir { getattr open read search };
 	allow $1_safeeyes_t bin_t:file { execute getattr map open read };
 	allow $1_safeeyes_t bin_t:lnk_file read;
+	allow $1_safeeyes_t self:process { setrlimit setsched };
+	allow $1_safeeyes_t proc_t:file { open read };
+	allow $1_safeeyes_t security_t:filesystem getattr;
+	allow $1_safeeyes_t selinux_config_t:dir search;
+	allow $1_safeeyes_t sysctl_vm_t:dir search;
+	allow $1_safeeyes_t sysctl_vm_overcommit_t:file { open read };
 	files_read_usr_files($1_safeeyes_t)
 	files_map_usr_files($1_safeeyes_t)
 	miscfiles_read_localization($1_safeeyes_t)
