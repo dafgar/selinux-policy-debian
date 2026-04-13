@@ -1,1 +1,2 @@
 /usr/bin/safeeyes		--	gen_context(system_u:object_r:safeeyes_exec_t,s0)
+HOME_DIR/\.config/safeeyes(/.*)?	gen_context(system_u:object_r:safeeyes_xdg_config_t,s0)

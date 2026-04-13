@@ -52,6 +52,7 @@ template(`safeeyes_role',`
 		role $4;
 		attribute $3;
 		type safeeyes_exec_t;
+		type safeeyes_xdg_config_t;
 	')
 
 	type $1_safeeyes_t;
@@ -81,6 +82,10 @@ template(`safeeyes_role',`
 	allow $1_safeeyes_t selinux_config_t:dir search;
 	allow $1_safeeyes_t sysctl_vm_t:dir search;
 	allow $1_safeeyes_t sysctl_vm_overcommit_t:file { open read };
+	manage_dirs_pattern($1_safeeyes_t, safeeyes_xdg_config_t, safeeyes_xdg_config_t)
+	manage_files_pattern($1_safeeyes_t, safeeyes_xdg_config_t, safeeyes_xdg_config_t)
+	manage_lnk_files_pattern($1_safeeyes_t, safeeyes_xdg_config_t, safeeyes_xdg_config_t)
+	xdg_config_filetrans($1_safeeyes_t, safeeyes_xdg_config_t, dir, "safeeyes")
 	files_read_usr_files($1_safeeyes_t)
 	files_map_usr_files($1_safeeyes_t)
 	miscfiles_read_localization($1_safeeyes_t)
