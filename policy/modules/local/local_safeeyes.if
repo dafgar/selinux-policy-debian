@@ -69,10 +69,12 @@ template(`safeeyes_role',`
 
 	allow $3 $1_safeeyes_t:process { ptrace signal_perms };
 	allow $3 $1_safeeyes_t:fd use;
+	allow $3 $1_safeeyes_t:dbus send_msg;
 	ps_process_pattern($3, $1_safeeyes_t)
 	dontaudit $3 $1_safeeyes_t:process getsched;
 
 	allow $1_safeeyes_t $3:process sigchld;
+	allow $1_safeeyes_t $3:dbus send_msg;
 
 	auth_use_nsswitch($1_safeeyes_t)
 	dbus_all_session_bus_client($1_safeeyes_t)
@@ -110,6 +112,8 @@ template(`safeeyes_role',`
 	xdg_search_data_dirs($1_safeeyes_t)
 	userdom_search_user_runtime($1_safeeyes_t)
 	local_systemd_inherit_user_service($1, $1_safeeyes_t)
+	allow $1_safeeyes_t $1_gvfsd_t:dbus send_msg;
+	allow $1_gvfsd_t $1_safeeyes_t:dbus send_msg;
 
 	dontaudit $1_safeeyes_t cert_t:dir search;
 	dontaudit $1_safeeyes_t syslogd_runtime_t:dir search;
