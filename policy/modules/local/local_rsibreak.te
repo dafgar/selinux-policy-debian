@@ -1,0 +1,7 @@
+policy_module(local_rsibreak)
+
+type rsibreak_exec_t;
+application_executable_file(rsibreak_exec_t)
+
+type rsibreak_xdg_config_t;
+xdg_config_content(rsibreak_xdg_config_t)

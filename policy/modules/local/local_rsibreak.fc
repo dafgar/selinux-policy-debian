@@ -1,0 +1,3 @@
+/usr/bin/rsibreak		--	gen_context(system_u:object_r:rsibreak_exec_t,s0)
+HOME_DIR/\.config/rsibreakrc		gen_context(system_u:object_r:rsibreak_xdg_config_t,s0)
+HOME_DIR/\.config/rsibreak\.notifyrc	gen_context(system_u:object_r:rsibreak_xdg_config_t,s0)
