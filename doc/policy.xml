@@ -72389,7 +72389,17 @@ Domain allowed access.
 <summary>
 Local SafeEyes role template.
 </summary>
-<template name="safeeyes_role" lineno="30">
+<interface name="local_safeeyes_pipewire_connect" lineno="15">
+<summary>
+Allow SafeEyes to use the user PipeWire audio path.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the PipeWire server domain.
+</summary>
+</param>
+</interface>
+<template name="safeeyes_role" lineno="50">
 <summary>
 Role access for SafeEyes.
 </summary>
