@@ -39,6 +39,7 @@ allow chromium_t pipewire_runtime_t:sock_file write;
 allow chromium_t security_t:filesystem getattr;
 allow chromium_t selinux_config_t:dir search;
 allow chromium_t proc_t:file read;
+dev_getattr_sysfs(chromium_t)
 allow chromium_t sysfs_t:file read;
 allow chromium_t sysfs_t:lnk_file read;
 allow chromium_t xkb_var_lib_t:dir { getattr read search };
