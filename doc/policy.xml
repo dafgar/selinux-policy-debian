@@ -71920,6 +71920,16 @@ Domain owning the X11/Wayland socket peer.
 </summary>
 </param>
 </interface>
+<interface name="local_evince_dbus_chat" lineno="92">
+<summary>
+Allow Evince to chat with a desktop-owned D-Bus service.
+</summary>
+<param name="peer_domain">
+<summary>
+Domain owning the D-Bus service.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_evolution" filename="policy/modules/local/local_evolution.if">
 <summary>
