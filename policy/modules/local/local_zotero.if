@@ -108,3 +108,25 @@ interface(`local_zotero_write_wayland_clipboard_pipes',`
 	allow $1 zotero_t:fd use;
 	allow $1 zotero_t:fifo_file write_inherited_fifo_file_perms;
 ')
+
+########################################
+## <summary>
+##	Allow a domain to read documents stored under Zotero's home content
+##	(e.g. a viewer opening a PDF from Zotero's attachment storage).
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed read access.
+##	</summary>
+## </param>
+#
+interface(`local_zotero_read_home_content',`
+	gen_require(`
+		type zotero_home_t;
+	')
+
+	list_dirs_pattern($1, zotero_home_t, zotero_home_t)
+	read_files_pattern($1, zotero_home_t, zotero_home_t)
+	read_lnk_files_pattern($1, zotero_home_t, zotero_home_t)
+	allow $1 zotero_home_t:file map;
+')

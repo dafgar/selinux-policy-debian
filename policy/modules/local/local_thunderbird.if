@@ -134,3 +134,25 @@ interface(`local_thunderbird_write_wayland_clipboard_pipes',`
 	allow $1 thunderbird_t:fd use;
 	allow $1 thunderbird_t:fifo_file write_inherited_fifo_file_perms;
 ')
+
+########################################
+## <summary>
+##	Allow a domain to read attachments Thunderbird staged in its per-pid
+##	temporary directory (e.g. a viewer opening an attachment Thunderbird
+##	handed off).
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed read access.
+##	</summary>
+## </param>
+#
+interface(`local_thunderbird_read_tmp_content',`
+	gen_require(`
+		type thunderbird_tmp_t;
+	')
+
+	list_dirs_pattern($1, thunderbird_tmp_t, thunderbird_tmp_t)
+	read_files_pattern($1, thunderbird_tmp_t, thunderbird_tmp_t)
+	allow $1 thunderbird_tmp_t:file map;
+')

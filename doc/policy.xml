@@ -72733,6 +72733,18 @@ Domain writing clipboard data into Thunderbird's inherited pipe.
 </summary>
 </param>
 </interface>
+<interface name="local_thunderbird_read_tmp_content" lineno="150">
+<summary>
+Allow a domain to read attachments Thunderbird staged in its per-pid
+temporary directory (e.g. a viewer opening an attachment Thunderbird
+handed off).
+</summary>
+<param name="domain">
+<summary>
+Domain allowed read access.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_tpm2_pkcs11" filename="policy/modules/local/local_tpm2_pkcs11.if">
 <summary>
@@ -72941,6 +72953,17 @@ Allow a Wayland clipboard peer to write Zotero-owned transfer pipes.
 <param name="domain">
 <summary>
 Domain writing clipboard data into Zotero's inherited pipe.
+</summary>
+</param>
+</interface>
+<interface name="local_zotero_read_home_content" lineno="123">
+<summary>
+Allow a domain to read documents stored under Zotero's home content
+(e.g. a viewer opening a PDF from Zotero's attachment storage).
+</summary>
+<param name="domain">
+<summary>
+Domain allowed read access.
 </summary>
 </param>
 </interface>
