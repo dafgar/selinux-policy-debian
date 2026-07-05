@@ -71750,6 +71750,16 @@ User role prefix that owns the session D-Bus domain.
 </summary>
 </param>
 </interface>
+<interface name="local_chromium_write_wayland_clipboard_pipes" lineno="54">
+<summary>
+Allow a Wayland clipboard peer to write Chromium-owned transfer pipes.
+</summary>
+<param name="domain">
+<summary>
+Domain writing clipboard data into Chromium's inherited pipe.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_code" filename="policy/modules/local/local_code.if">
 <summary>
@@ -72208,6 +72218,16 @@ Allow a window-manager domain to map Firefox tmpfs buffers.
 <param name="wm_domain">
 <summary>
 Window-manager domain mapping the buffers.
+</summary>
+</param>
+</interface>
+<interface name="local_mozilla_write_wayland_clipboard_pipes" lineno="52">
+<summary>
+Allow a Wayland clipboard peer to write Firefox-owned transfer pipes.
+</summary>
+<param name="domain">
+<summary>
+Domain writing clipboard data into Firefox's inherited pipe.
 </summary>
 </param>
 </interface>
