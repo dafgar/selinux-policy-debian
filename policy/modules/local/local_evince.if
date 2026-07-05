@@ -28,6 +28,7 @@ interface(`evince_role',`
 
 	allow $1 evince_t:fd use;
 	allow $1 evince_t:process { ptrace signal_perms };
+	allow $1 evince_t:process { noatsecure rlimitinh siginh };
 	ps_process_pattern($1, evince_t)
 
 	allow evince_t $1:process sigchld;
@@ -54,7 +55,26 @@ interface(`local_evince_domtrans',`
 
 	allow $1 evince_t:fd use;
 	allow $1 evince_t:process { ptrace signal_perms };
+	allow $1 evince_t:process { noatsecure rlimitinh siginh };
 	ps_process_pattern($1, evince_t)
 
 	allow evince_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Allow Evince to connect to the user X11/Wayland socket peer domain.
+## </summary>
+## <param name="xserver_domain">
+##	<summary>
+##	Domain owning the X11/Wayland socket peer.
+##	</summary>
+## </param>
+#
+interface(`local_evince_x11_connect',`
+	gen_require(`
+		type evince_t;
+	')
+
+	allow evince_t $1:unix_stream_socket connectto;
 ')
