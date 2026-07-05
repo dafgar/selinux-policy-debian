@@ -1,0 +1,72 @@
+policy_module(local_evince)
+
+attribute_role evince_roles;
+
+type evince_t;
+type evince_exec_t;
+userdom_user_application_domain(evince_t, evince_exec_t)
+role evince_roles types evince_t;
+can_exec(evince_t, evince_exec_t)
+
+type evince_xdg_config_t;
+xdg_config_content(evince_xdg_config_t)
+
+type evince_xdg_cache_t;
+xdg_cache_content(evince_xdg_cache_t)
+
+type evince_tmp_t;
+files_tmp_file(evince_tmp_t)
+
+manage_dirs_pattern(evince_t, evince_xdg_config_t, evince_xdg_config_t)
+manage_files_pattern(evince_t, evince_xdg_config_t, evince_xdg_config_t)
+xdg_config_filetrans(evince_t, evince_xdg_config_t, dir, "evince")
+
+manage_dirs_pattern(evince_t, evince_xdg_cache_t, evince_xdg_cache_t)
+manage_files_pattern(evince_t, evince_xdg_cache_t, evince_xdg_cache_t)
+xdg_cache_filetrans(evince_t, evince_xdg_cache_t, dir, "evince")
+
+manage_dirs_pattern(evince_t, evince_tmp_t, evince_tmp_t)
+manage_files_pattern(evince_t, evince_tmp_t, evince_tmp_t)
+files_tmp_filetrans(evince_t, evince_tmp_t, { dir file })
+
+miscfiles_read_localization(evince_t)
+miscfiles_read_fonts(evince_t)
+kernel_read_system_state(evince_t)
+files_read_etc_files(evince_t)
+files_read_usr_files(evince_t)
+files_map_usr_files(evince_t)
+corecmd_search_bin(evince_t)
+dev_read_sysfs(evince_t)
+dev_read_urand(evince_t)
+dev_rw_dri(evince_t)
+fs_getattr_all_fs(evince_t)
+dbus_spec_session_bus_client(staff, evince_t)
+dbus_write_session_runtime_socket(evince_t)
+systemd_dbus_chat_logind(evince_t)
+
+# Evince opens documents from anywhere under the user's home directory, not
+# just a dedicated app subdirectory, so it needs general read access to
+# home content in addition to its own config/cache/tmp types above.
+userdom_search_user_home_dirs(evince_t)
+userdom_search_user_home_content(evince_t)
+userdom_read_user_home_content_files(evince_t)
+userdom_search_user_runtime(evince_t)
+userdom_manage_user_tmp_files(evince_t)
+userdom_map_user_tmp_files(evince_t)
+
+xdg_read_config_files(evince_t)
+xdg_search_config_dirs(evince_t)
+xdg_search_data_dirs(evince_t)
+xdg_read_data_files(evince_t)
+xdg_manage_downloads(evince_t)
+
+xserver_stream_connect(evince_t)
+xserver_read_xkb_libs(evince_t)
+xserver_use_user_fonts(evince_t)
+xserver_rw_mesa_shader_cache(evince_t)
+wm_map_tmpfs_files(evince_t)
+wm_rw_tmpfs_files(evince_t)
+
+allow evince_t self:process { execmem getsched signal };
+allow evince_t self:unix_dgram_socket create_socket_perms;
+allow evince_t self:fifo_file rw_fifo_file_perms;

@@ -1,0 +1,3 @@
+/usr/bin/evince			--	gen_context(system_u:object_r:evince_exec_t,s0)
+HOME_DIR/\.config/evince(/.*)?		gen_context(system_u:object_r:evince_xdg_config_t,s0)
+HOME_DIR/\.cache/evince(/.*)?		gen_context(system_u:object_r:evince_xdg_cache_t,s0)

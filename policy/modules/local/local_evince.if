@@ -1,0 +1,34 @@
+## <summary>
+##	Local Evince domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the Evince application domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to Evince.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the Evince domain.
+##	</summary>
+## </param>
+#
+interface(`evince_role',`
+	gen_require(`
+		type evince_t, evince_exec_t;
+		role $2;
+	')
+
+	role $2 types evince_t;
+	domtrans_pattern($1, evince_exec_t, evince_t)
+
+	allow $1 evince_t:fd use;
+	allow $1 evince_t:process { ptrace signal_perms };
+	ps_process_pattern($1, evince_t)
+
+	allow evince_t $1:process sigchld;
+')
