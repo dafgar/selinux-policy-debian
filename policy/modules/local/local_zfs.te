@@ -30,3 +30,8 @@ dev_read_urand(zfs_t)
 # normal CLI behavior for the ZFS toolchain and should not require a separate
 # domain transition.
 allow zfs_t self:process setpgid;
+
+# zfs mount auto-creates the mountpoint directory (e.g. under a user's home
+# dir), which needs DAC override to mkdir/traverse regardless of the parent
+# directory's owner/mode.
+allow zfs_t self:capability { dac_override dac_read_search };
