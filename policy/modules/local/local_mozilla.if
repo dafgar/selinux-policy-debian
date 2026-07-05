@@ -38,22 +38,3 @@ interface(`local_mozilla_wm_tmpfs_map',`
 
 	allow $1 mozilla_tmpfs_t:file map;
 ')
-
-########################################
-## <summary>
-##	Allow a Wayland clipboard peer to write Firefox-owned transfer pipes.
-## </summary>
-## <param name="domain">
-##	<summary>
-##	Domain writing clipboard data into Firefox's inherited pipe.
-##	</summary>
-## </param>
-#
-interface(`local_mozilla_write_wayland_clipboard_pipes',`
-	gen_require(`
-		type mozilla_t;
-	')
-
-	allow $1 mozilla_t:fd use;
-	allow $1 mozilla_t:fifo_file write_inherited_fifo_file_perms;
-')

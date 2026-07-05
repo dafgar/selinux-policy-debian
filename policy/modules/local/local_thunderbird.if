@@ -118,25 +118,6 @@ interface(`local_thunderbird_wm_dontaudit_tmpfs_use',`
 
 ########################################
 ## <summary>
-##	Allow a Wayland clipboard peer to write Thunderbird-owned transfer pipes.
-## </summary>
-## <param name="domain">
-##	<summary>
-##	Domain writing clipboard data into Thunderbird's inherited pipe.
-##	</summary>
-## </param>
-#
-interface(`local_thunderbird_write_wayland_clipboard_pipes',`
-	gen_require(`
-		type thunderbird_t;
-	')
-
-	allow $1 thunderbird_t:fd use;
-	allow $1 thunderbird_t:fifo_file write_inherited_fifo_file_perms;
-')
-
-########################################
-## <summary>
 ##	Allow a domain to read attachments Thunderbird staged in its per-pid
 ##	temporary directory (e.g. a viewer opening an attachment Thunderbird
 ##	handed off).

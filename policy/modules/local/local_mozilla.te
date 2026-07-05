@@ -2,6 +2,8 @@ policy_module(local_mozilla)
 
 gen_require(`
 	type alsa_var_lib_t;
+	type chromium_t;
+	type evince_t;
 	type mozilla_t;
 	type mozilla_tmpfs_t;
 	type pipewire_runtime_t;
@@ -41,7 +43,8 @@ allow mozilla_t pipewire_runtime_t:sock_file write;
 
 # Wayland clipboard transfers can pass an inherited pipe fd from Chromium to
 # Firefox when pasting between browser domains.
-local_chromium_write_wayland_clipboard_pipes(mozilla_t)
+local_clipboard_pipe_write(chromium_t, mozilla_t)
+local_clipboard_pipe_write(evince_t, mozilla_t)
 local_evince_domtrans(mozilla_t)
 
 # Firefox uses same-domain ptrace within its own process tree for sandboxing

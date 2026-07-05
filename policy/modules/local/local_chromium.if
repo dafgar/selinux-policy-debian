@@ -40,22 +40,3 @@ interface(`local_chromium_mpris_publish',`
 
 	allow chromium_t $1_dbusd_t:dbus acquire_svc;
 ')
-
-########################################
-## <summary>
-## Allow a Wayland clipboard peer to write Chromium-owned transfer pipes.
-## </summary>
-## <param name="domain">
-## <summary>
-## Domain writing clipboard data into Chromium's inherited pipe.
-## </summary>
-## </param>
-#
-interface(`local_chromium_write_wayland_clipboard_pipes',`
-	gen_require(`
-		type chromium_t;
-	')
-
-	allow $1 chromium_t:fd use;
-	allow $1 chromium_t:fifo_file write_inherited_fifo_file_perms;
-')

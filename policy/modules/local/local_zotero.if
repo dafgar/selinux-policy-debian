@@ -92,25 +92,6 @@ interface(`local_zotero_dbus_chat',`
 
 ########################################
 ## <summary>
-##	Allow a Wayland clipboard peer to write Zotero-owned transfer pipes.
-## </summary>
-## <param name="domain">
-##	<summary>
-##	Domain writing clipboard data into Zotero's inherited pipe.
-##	</summary>
-## </param>
-#
-interface(`local_zotero_write_wayland_clipboard_pipes',`
-	gen_require(`
-		type zotero_t;
-	')
-
-	allow $1 zotero_t:fd use;
-	allow $1 zotero_t:fifo_file write_inherited_fifo_file_perms;
-')
-
-########################################
-## <summary>
 ##	Allow a domain to read documents stored under Zotero's home content
 ##	(e.g. a viewer opening a PDF from Zotero's attachment storage).
 ## </summary>

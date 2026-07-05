@@ -71750,13 +71750,25 @@ User role prefix that owns the session D-Bus domain.
 </summary>
 </param>
 </interface>
-<interface name="local_chromium_write_wayland_clipboard_pipes" lineno="54">
+</module>
+<module name="local_clipboard" filename="policy/modules/local/local_clipboard.if">
 <summary>
-Allow a Wayland clipboard peer to write Chromium-owned transfer pipes.
+Shared interfaces for Wayland clipboard pipe hand-offs between local
+desktop application domains.
 </summary>
-<param name="domain">
+<interface name="local_clipboard_pipe_write" lineno="22">
 <summary>
-Domain writing clipboard data into Chromium's inherited pipe.
+Allow a domain to write into another domain's inherited Wayland
+clipboard transfer pipe.
+</summary>
+<param name="owner_domain">
+<summary>
+Domain that created and owns the clipboard pipe.
+</summary>
+</param>
+<param name="writer_domain">
+<summary>
+Domain writing clipboard data into the owner's inherited pipe.
 </summary>
 </param>
 </interface>
@@ -72288,16 +72300,6 @@ Window-manager domain mapping the buffers.
 </summary>
 </param>
 </interface>
-<interface name="local_mozilla_write_wayland_clipboard_pipes" lineno="52">
-<summary>
-Allow a Wayland clipboard peer to write Firefox-owned transfer pipes.
-</summary>
-<param name="domain">
-<summary>
-Domain writing clipboard data into Firefox's inherited pipe.
-</summary>
-</param>
-</interface>
 </module>
 <module name="local_mplayer" filename="policy/modules/local/local_mplayer.if">
 <summary>Local policy for MPlayer session integration.</summary>
@@ -72733,17 +72735,7 @@ Window-manager domain using Thunderbird-owned objects.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_write_wayland_clipboard_pipes" lineno="129">
-<summary>
-Allow a Wayland clipboard peer to write Thunderbird-owned transfer pipes.
-</summary>
-<param name="domain">
-<summary>
-Domain writing clipboard data into Thunderbird's inherited pipe.
-</summary>
-</param>
-</interface>
-<interface name="local_thunderbird_read_tmp_content" lineno="150">
+<interface name="local_thunderbird_read_tmp_content" lineno="131">
 <summary>
 Allow a domain to read attachments Thunderbird staged in its per-pid
 temporary directory (e.g. a viewer opening an attachment Thunderbird
@@ -72956,17 +72948,7 @@ Domain owning the D-Bus service.
 </summary>
 </param>
 </interface>
-<interface name="local_zotero_write_wayland_clipboard_pipes" lineno="103">
-<summary>
-Allow a Wayland clipboard peer to write Zotero-owned transfer pipes.
-</summary>
-<param name="domain">
-<summary>
-Domain writing clipboard data into Zotero's inherited pipe.
-</summary>
-</param>
-</interface>
-<interface name="local_zotero_read_home_content" lineno="123">
+<interface name="local_zotero_read_home_content" lineno="104">
 <summary>
 Allow a domain to read documents stored under Zotero's home content
 (e.g. a viewer opening a PDF from Zotero's attachment storage).

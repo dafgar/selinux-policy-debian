@@ -1,0 +1,25 @@
+## <summary>
+##	Shared interfaces for Wayland clipboard pipe hand-offs between local
+##	desktop application domains.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a domain to write into another domain's inherited Wayland
+##	clipboard transfer pipe.
+## </summary>
+## <param name="owner_domain">
+##	<summary>
+##	Domain that created and owns the clipboard pipe.
+##	</summary>
+## </param>
+## <param name="writer_domain">
+##	<summary>
+##	Domain writing clipboard data into the owner's inherited pipe.
+##	</summary>
+## </param>
+#
+interface(`local_clipboard_pipe_write',`
+	allow $2 $1:fd use;
+	allow $2 $1:fifo_file write_inherited_fifo_file_perms;
+')
