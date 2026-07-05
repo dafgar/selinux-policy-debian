@@ -32,3 +32,29 @@ interface(`evince_role',`
 
 	allow evince_t $1:process sigchld;
 ')
+
+########################################
+## <summary>
+##	Allow a domain to transition into the Evince application domain
+##	without adding it to a new role (the domain's existing role already
+##	has access to Evince).
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to execute and transition to Evince.
+##	</summary>
+## </param>
+#
+interface(`local_evince_domtrans',`
+	gen_require(`
+		type evince_t, evince_exec_t;
+	')
+
+	domtrans_pattern($1, evince_exec_t, evince_t)
+
+	allow $1 evince_t:fd use;
+	allow $1 evince_t:process { ptrace signal_perms };
+	ps_process_pattern($1, evince_t)
+
+	allow evince_t $1:process sigchld;
+')

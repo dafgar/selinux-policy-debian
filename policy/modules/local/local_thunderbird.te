@@ -78,6 +78,7 @@ systemd_dbus_chat_logind(thunderbird_t)
 # Wayland clipboard transfers can pass an inherited pipe fd from Chromium to
 # Thunderbird when pasting between confined desktop applications.
 local_chromium_write_wayland_clipboard_pipes(thunderbird_t)
+local_evince_domtrans(thunderbird_t)
 
 allow thunderbird_t self:cap_userns { sys_admin sys_chroot sys_ptrace };
 allow thunderbird_t self:process { ptrace setcap setrlimit };
