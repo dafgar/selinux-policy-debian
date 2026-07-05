@@ -72666,6 +72666,16 @@ Window-manager domain using Thunderbird-owned objects.
 </summary>
 </param>
 </interface>
+<interface name="local_thunderbird_write_wayland_clipboard_pipes" lineno="129">
+<summary>
+Allow a Wayland clipboard peer to write Thunderbird-owned transfer pipes.
+</summary>
+<param name="domain">
+<summary>
+Domain writing clipboard data into Thunderbird's inherited pipe.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_tpm2_pkcs11" filename="policy/modules/local/local_tpm2_pkcs11.if">
 <summary>
@@ -72864,6 +72874,16 @@ Allow Zotero to chat with a desktop-owned D-Bus service.
 <param name="peer_domain">
 <summary>
 Domain owning the D-Bus service.
+</summary>
+</param>
+</interface>
+<interface name="local_zotero_write_wayland_clipboard_pipes" lineno="103">
+<summary>
+Allow a Wayland clipboard peer to write Zotero-owned transfer pipes.
+</summary>
+<param name="domain">
+<summary>
+Domain writing clipboard data into Zotero's inherited pipe.
 </summary>
 </param>
 </interface>

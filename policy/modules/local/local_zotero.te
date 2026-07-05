@@ -108,6 +108,9 @@ miscfiles_read_fonts(zotero_t)
 dev_rw_dri(zotero_t)
 wm_map_tmpfs_files(zotero_t)
 wm_rw_tmpfs_files(zotero_t)
+# Wayland clipboard transfers can pass an inherited pipe fd from Chromium to
+# Zotero when pasting between confined desktop applications.
+local_chromium_write_wayland_clipboard_pipes(zotero_t)
 # Keep the direct session-bus runtime sockfile write; system-bus runtime access
 # is covered via dbus_system_bus_client(zotero_t).
 allow zotero_t system_dbusd_runtime_t:sock_file write;

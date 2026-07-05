@@ -71,6 +71,7 @@ allow chromium_t v4l_device_t:chr_file { getattr ioctl map open read write };
 # applications to Chromium when pasting between confined domains.
 local_mozilla_write_wayland_clipboard_pipes(chromium_t)
 local_thunderbird_write_wayland_clipboard_pipes(chromium_t)
+local_zotero_write_wayland_clipboard_pipes(chromium_t)
 
 # Optional browser/DRM integration probes are not needed for the current
 # Chromium setup.
