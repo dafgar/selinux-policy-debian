@@ -55,6 +55,15 @@ dbus_write_session_runtime_socket(evince_t)
 systemd_dbus_chat_logind(evince_t)
 local_gvfs_dbus_chat(staff, evince_t)
 
+# glib/D-Bus GUID lookup: checks the legacy /var/lib/dbus/machine-id path
+# first, falling back to /etc/machine-id.
+dbus_read_lib_files(evince_t)
+files_read_etc_runtime_files(evince_t)
+
+# Some GTK/Cairo/audio paths still use classic SysV shared memory alongside
+# the memfd path handled above.
+allow evince_t self:shm create_shm_perms;
+
 # Evince opens documents from anywhere under the user's home directory, not
 # just a dedicated app subdirectory, so it needs general read access to
 # home content in addition to its own config/cache/tmp types above.
@@ -65,6 +74,10 @@ userdom_search_user_runtime(evince_t)
 userdom_manage_user_tmp_files(evince_t)
 userdom_map_user_tmp_files(evince_t)
 userdom_use_inherited_user_terminals(evince_t)
+# The Wayland socket path itself can land under user_tmp_t; connecting to it
+# needs write on the socket file in addition to the connectto grant on the
+# compositor's socket object (see local_evince_x11_connect in local_staff.te).
+userdom_write_user_tmp_sockets(evince_t)
 
 xdg_read_config_files(evince_t)
 xdg_search_config_dirs(evince_t)
@@ -90,11 +103,14 @@ allow evince_t self:fifo_file rw_fifo_file_perms;
 
 gen_require(`
 	type etc_t;
+	type evolution_exec_t;
+	type root_t;
 	type selinux_config_t;
 	type thunderbird_exec_t;
 	type user_bin_t;
 	type usr_t;
 	type var_lib_t;
+	type var_t;
 	type xdg_config_t;
 	type xdg_data_t;
 	type xdg_downloads_t;
@@ -109,10 +125,11 @@ dontaudit evince_t user_bin_t:dir search;
 
 # GIO "Open With"/content-type app-chooser validates other apps' Exec=
 # targets; same noise Zotero already dontaudits for the same reason.
-dontaudit evince_t thunderbird_exec_t:file { execute getattr };
+dontaudit evince_t { thunderbird_exec_t evolution_exec_t }:file { execute getattr };
 
 # GIO app-database/desktop-file live-refresh watches across unrelated system
-# locations (Flatpak install, desktop-file dirs, XDG config/downloads) -
-# cosmetic "Open With" menu upkeep, not required to view a document.
-dontaudit evince_t { etc_t usr_t var_lib_t xdg_config_t xdg_data_t xdg_downloads_t }:dir watch;
-dontaudit evince_t var_lib_t:dir read;
+# locations (Flatpak install, desktop-file dirs, XDG config/downloads,
+# walking up to the root dir) - cosmetic "Open With" menu upkeep, not
+# required to view a document.
+dontaudit evince_t { etc_t root_t usr_t var_lib_t xdg_config_t xdg_data_t xdg_downloads_t }:dir watch;
+dontaudit evince_t { var_lib_t var_t }:dir read;
