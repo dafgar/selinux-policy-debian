@@ -67,9 +67,10 @@ allow chromium_t pulseaudio_xdg_config_t:dir search;
 allow chromium_t pulseaudio_xdg_config_t:file { lock open read };
 allow chromium_t v4l_device_t:chr_file { getattr ioctl map open read write };
 
-# Wayland clipboard transfers can pass an inherited pipe fd from Firefox to
-# Chromium when pasting between browser domains.
+# Wayland clipboard transfers can pass an inherited pipe fd from peer desktop
+# applications to Chromium when pasting between confined domains.
 local_mozilla_write_wayland_clipboard_pipes(chromium_t)
+local_thunderbird_write_wayland_clipboard_pipes(chromium_t)
 
 # Optional browser/DRM integration probes are not needed for the current
 # Chromium setup.
