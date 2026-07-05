@@ -72128,6 +72128,21 @@ Role allowed access.
 </summary>
 </param>
 </template>
+<interface name="local_gvfs_dbus_chat" lineno="131">
+<summary>
+Allow a domain to chat with the role's GVFS daemon over D-Bus.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role owning the GVFS daemon, for example staff.
+</summary>
+</param>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages with the GVFS daemon.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_ifconfig" filename="policy/modules/local/local_ifconfig.if">
 <summary>

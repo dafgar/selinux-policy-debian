@@ -53,6 +53,7 @@ fs_getattr_all_fs(evince_t)
 dbus_spec_session_bus_client(staff, evince_t)
 dbus_write_session_runtime_socket(evince_t)
 systemd_dbus_chat_logind(evince_t)
+local_gvfs_dbus_chat(staff, evince_t)
 
 # Evince opens documents from anywhere under the user's home directory, not
 # just a dedicated app subdirectory, so it needs general read access to
