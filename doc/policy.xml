@@ -71898,6 +71898,18 @@ Role allowed access to the Evince domain.
 </summary>
 </param>
 </interface>
+<interface name="local_evince_domtrans" lineno="48">
+<summary>
+Allow a domain to transition into the Evince application domain
+without adding it to a new role (the domain's existing role already
+has access to Evince).
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to execute and transition to Evince.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_evolution" filename="policy/modules/local/local_evolution.if">
 <summary>
