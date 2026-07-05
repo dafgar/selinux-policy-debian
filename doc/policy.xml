@@ -71898,7 +71898,7 @@ Role allowed access to the Evince domain.
 </summary>
 </param>
 </interface>
-<interface name="local_evince_domtrans" lineno="48">
+<interface name="local_evince_domtrans" lineno="49">
 <summary>
 Allow a domain to transition into the Evince application domain
 without adding it to a new role (the domain's existing role already
@@ -71907,6 +71907,16 @@ has access to Evince).
 <param name="domain">
 <summary>
 Domain allowed to execute and transition to Evince.
+</summary>
+</param>
+</interface>
+<interface name="local_evince_x11_connect" lineno="74">
+<summary>
+Allow Evince to connect to the user X11/Wayland socket peer domain.
+</summary>
+<param name="xserver_domain">
+<summary>
+Domain owning the X11/Wayland socket peer.
 </summary>
 </param>
 </interface>
