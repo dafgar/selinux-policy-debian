@@ -13,10 +13,11 @@ pipewire_stream_connect(staff_wm_t, staff_pipewire_t)
 pipewire_rw_tmpfs_files(staff_wm_t)
 local_mozilla_wm_tmpfs_map(staff_wm_t)
 local_thunderbird_wm_dontaudit_tmpfs_use(staff_wm_t)
+local_chromium_write_wayland_clipboard_pipes(staff_wm_t)
+local_mozilla_write_wayland_clipboard_pipes(staff_wm_t)
 
 allow staff_wm_t evolution_alarm_t:fd use;
 allow staff_wm_t evolution_alarm_tmpfs_t:file { getattr map read write };
-allow staff_wm_t chromium_t:fd use;
 allow staff_wm_t chromium_tmpfs_t:file map;
 
 # kwin_wayland updates per-user desktop integration artifacts under ~/.local/share.
