@@ -22,6 +22,10 @@ allow zfs_t local_zfs_helper_exec_t:lnk_file read_lnk_file_perms;
 can_exec(zed_t, local_zfs_helper_exec_t)
 can_exec(zfs_t, local_zfs_helper_exec_t)
 
+# zfs create -o encryption=on -o keyformat=passphrase reads /dev/urandom to
+# derive key material for the new encrypted dataset.
+dev_read_urand(zfs_t)
+
 # zpool status -c invokes helper commands in a separate process group.  This is
 # normal CLI behavior for the ZFS toolchain and should not require a separate
 # domain transition.
