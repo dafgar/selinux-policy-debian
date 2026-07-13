@@ -32,6 +32,7 @@ template(`gkrellm_role',`
 		role $4;
 		attribute $3;
 		type gkrellm_exec_t;
+		type gkrellm_home_t;
 	')
 
 	type $1_gkrellm_t;
@@ -57,4 +58,13 @@ template(`gkrellm_role',`
 	xdg_search_data_dirs($1_gkrellm_t)
 	userdom_search_user_runtime($1_gkrellm_t)
 	local_systemd_inherit_user_service($1, $1_gkrellm_t)
+
+	manage_dirs_pattern($1_gkrellm_t, gkrellm_home_t, gkrellm_home_t)
+	manage_files_pattern($1_gkrellm_t, gkrellm_home_t, gkrellm_home_t)
+	manage_lnk_files_pattern($1_gkrellm_t, gkrellm_home_t, gkrellm_home_t)
+	userdom_user_home_dir_filetrans_user_home_content($1_gkrellm_t, { dir file lnk_file }, ".gkrellm2")
+
+	kernel_read_system_state($1_gkrellm_t)
+	kernel_read_network_state($1_gkrellm_t)
+	dev_read_sysfs($1_gkrellm_t)
 ')

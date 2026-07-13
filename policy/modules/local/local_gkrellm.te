@@ -2,3 +2,6 @@ policy_module(local_gkrellm)
 
 type gkrellm_exec_t;
 application_executable_file(gkrellm_exec_t)
+
+type gkrellm_home_t;
+userdom_user_home_content(gkrellm_home_t)

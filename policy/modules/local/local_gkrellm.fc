@@ -1,1 +1,2 @@
 /usr/bin/gkrellm		--	gen_context(system_u:object_r:gkrellm_exec_t,s0)
+HOME_DIR/\.gkrellm2(/.*)?	gen_context(system_u:object_r:gkrellm_home_t,s0)
