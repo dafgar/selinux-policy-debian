@@ -58,6 +58,7 @@ template(`gkrellm_role',`
 	xdg_search_data_dirs($1_gkrellm_t)
 	userdom_search_user_runtime($1_gkrellm_t)
 	local_systemd_inherit_user_service($1, $1_gkrellm_t)
+	allow $1_gkrellm_t $1_systemd_t:unix_stream_socket { getattr ioctl };
 
 	manage_dirs_pattern($1_gkrellm_t, gkrellm_home_t, gkrellm_home_t)
 	manage_files_pattern($1_gkrellm_t, gkrellm_home_t, gkrellm_home_t)
@@ -66,5 +67,8 @@ template(`gkrellm_role',`
 
 	kernel_read_system_state($1_gkrellm_t)
 	kernel_read_network_state($1_gkrellm_t)
+	kernel_read_kernel_sysctls($1_gkrellm_t)
 	dev_read_sysfs($1_gkrellm_t)
+
+	allow $1_gkrellm_t $2:unix_stream_socket connectto;
 ')
