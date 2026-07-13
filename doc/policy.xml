@@ -72079,6 +72079,21 @@ Role allowed access.
 </summary>
 </param>
 </template>
+<tunable name="local_gkrellm_use_hddtemp" dftval="false">
+<desc>
+<p>
+Allow GKrellM's hddtemp plugin to connect to a local hddtemp daemon over
+TCP to read hard-disk temperatures.
+</p>
+</desc>
+</tunable>
+<tunable name="local_gkrellm_read_mail_spool" dftval="false">
+<desc>
+<p>
+Allow GKrellM's mail-check plugin to look for a local mail spool file.
+</p>
+</desc>
+</tunable>
 </module>
 <module name="local_gnome" filename="policy/modules/local/local_gnome.if">
 <summary>

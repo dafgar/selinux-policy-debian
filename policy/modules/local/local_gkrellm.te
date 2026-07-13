@@ -5,3 +5,18 @@ application_executable_file(gkrellm_exec_t)
 
 type gkrellm_home_t;
 userdom_user_home_content(gkrellm_home_t)
+
+## <desc>
+## <p>
+## Allow GKrellM's hddtemp plugin to connect to a local hddtemp daemon over
+## TCP to read hard-disk temperatures.
+## </p>
+## </desc>
+gen_tunable(local_gkrellm_use_hddtemp, false)
+
+## <desc>
+## <p>
+## Allow GKrellM's mail-check plugin to look for a local mail spool file.
+## </p>
+## </desc>
+gen_tunable(local_gkrellm_read_mail_spool, false)
