@@ -72473,6 +72473,22 @@ Role allowed access.
 </summary>
 </param>
 </template>
+<interface name="local_powerdevil_dbus_chat" lineno="81">
+<summary>
+Send and receive D-Bus messages with PowerDevil, e.g. to inhibit
+screen/system idle during media playback.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role owning PowerDevil, for example staff.
+</summary>
+</param>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages with PowerDevil.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_powerprofiles" filename="policy/modules/local/local_powerprofiles.if">
 <summary>

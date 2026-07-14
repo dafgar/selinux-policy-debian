@@ -61,3 +61,28 @@ template(`powerdevil_role',`
 	userdom_search_user_runtime($1_powerdevil_t)
 	local_systemd_inherit_user_service($1, $1_powerdevil_t)
 ')
+
+########################################
+## <summary>
+##	Send and receive D-Bus messages with PowerDevil, e.g. to inhibit
+##	screen/system idle during media playback.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	The prefix of the user role owning PowerDevil, for example staff.
+##	</summary>
+## </param>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to exchange D-Bus messages with PowerDevil.
+##	</summary>
+## </param>
+#
+interface(`local_powerdevil_dbus_chat',`
+	gen_require(`
+		type $1_powerdevil_t;
+	')
+
+	allow $2 $1_powerdevil_t:dbus send_msg;
+	allow $1_powerdevil_t $2:dbus send_msg;
+')
