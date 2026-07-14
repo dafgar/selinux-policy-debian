@@ -41,6 +41,14 @@ allow mozilla_t user_runtime_t:sock_file { create unlink write };
 allow mozilla_t alsa_var_lib_t:dir search;
 allow mozilla_t pipewire_runtime_t:sock_file write;
 
+# Hardware-accelerated video decode hands zero-copy frame buffers to the GPU
+# process via /dev/udmabuf.
+dev_rw_dma_dev(mozilla_t)
+
+# The GPU process creates and mmaps the RADV Vulkan shader-cache index
+# (~/.cache/radv_builtin_shaders) under the generic XDG cache label.
+allow mozilla_t xdg_cache_t:file { create getattr map open read write };
+
 # Wayland clipboard transfers can pass an inherited pipe fd from Chromium to
 # Firefox when pasting between browser domains.
 local_clipboard_pipe_write(chromium_t, mozilla_t)
@@ -53,5 +61,4 @@ allow mozilla_t self:process ptrace;
 allow mozilla_t self:process execmem;
 
 dontaudit mozilla_t systemd_user_runtime_t:dir { getattr search };
-dontaudit mozilla_t xdg_cache_t:file { read write };
 dontaudit mozilla_t { var_lib_t xdg_config_t xdg_data_t }:dir watch;

@@ -50,10 +50,12 @@ allow chromium_t xkb_var_lib_t:dir { getattr read search };
 allow chromium_t xkb_var_lib_t:file { getattr map open read };
 
 # Chromium reads desktop configuration through dconf and updates GPU shader
-# cache state under the generic XDG cache label.
+# cache state under the generic XDG cache label. The GPU process creates and
+# mmaps the RADV Vulkan shader-cache index (~/.cache/radv_builtin_shaders)
+# under this same label.
 allow chromium_t gnome_xdg_config_t:dir { read search };
 allow chromium_t gnome_xdg_config_t:file { getattr map open read };
-allow chromium_t xdg_cache_t:file { getattr open read write };
+allow chromium_t xdg_cache_t:file { create getattr map open read write };
 allow chromium_t syslogd_runtime_t:dir search;
 allow chromium_t devlog_t:sock_file write;
 allow chromium_t syslogd_t:unix_dgram_socket sendto;
@@ -70,6 +72,10 @@ allow chromium_t pulseaudio_tmp_t:dir read;
 allow chromium_t pulseaudio_xdg_config_t:dir search;
 allow chromium_t pulseaudio_xdg_config_t:file { lock open read };
 allow chromium_t v4l_device_t:chr_file { getattr ioctl map open read write };
+
+# Hardware-accelerated video decode hands zero-copy frame buffers to the GPU
+# process via /dev/udmabuf.
+dev_rw_dma_dev(chromium_t)
 
 # Wayland clipboard transfers can pass an inherited pipe fd from peer desktop
 # applications to Chromium when pasting between confined domains.
