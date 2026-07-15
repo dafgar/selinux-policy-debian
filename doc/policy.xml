@@ -71750,6 +71750,28 @@ User role prefix that owns the session D-Bus domain.
 </summary>
 </param>
 </interface>
+<interface name="local_chromium_powerdevil_dbus_chat" lineno="55">
+<summary>
+Allow Chromium to inhibit screen/system idle via PowerDevil for a given
+role prefix while media is playing.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the PowerDevil domain.
+</summary>
+</param>
+</interface>
+<interface name="local_chromium_gvfs_dbus_chat" lineno="74">
+<summary>
+Allow Chromium to query gvfs for mountable locations from its file
+picker, for a given role prefix.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the gvfs domain.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_clipboard" filename="policy/modules/local/local_clipboard.if">
 <summary>

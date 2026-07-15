@@ -40,3 +40,41 @@ interface(`local_chromium_mpris_publish',`
 
 	allow chromium_t $1_dbusd_t:dbus acquire_svc;
 ')
+
+########################################
+## <summary>
+## Allow Chromium to inhibit screen/system idle via PowerDevil for a given
+## role prefix while media is playing.
+## </summary>
+## <param name="role_prefix">
+## <summary>
+## User role prefix that owns the PowerDevil domain.
+## </summary>
+## </param>
+#
+interface(`local_chromium_powerdevil_dbus_chat',`
+	gen_require(`
+		type chromium_t;
+	')
+
+	local_powerdevil_dbus_chat($1, chromium_t)
+')
+
+########################################
+## <summary>
+## Allow Chromium to query gvfs for mountable locations from its file
+## picker, for a given role prefix.
+## </summary>
+## <param name="role_prefix">
+## <summary>
+## User role prefix that owns the gvfs domain.
+## </summary>
+## </param>
+#
+interface(`local_chromium_gvfs_dbus_chat',`
+	gen_require(`
+		type chromium_t;
+	')
+
+	local_gvfs_dbus_chat($1, chromium_t)
+')

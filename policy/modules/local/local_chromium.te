@@ -77,11 +77,6 @@ allow chromium_t v4l_device_t:chr_file { getattr ioctl map open read write };
 # process via /dev/udmabuf.
 dev_rw_dma_dev(chromium_t)
 
-# Chromium inhibits screen/system idle via PowerDevil while media is playing,
-# and queries gvfs for mountable locations from its file picker.
-local_powerdevil_dbus_chat(staff, chromium_t)
-local_gvfs_dbus_chat(staff, chromium_t)
-
 # Wayland clipboard transfers can pass an inherited pipe fd from peer desktop
 # applications to Chromium when pasting between confined domains.
 local_clipboard_pipe_write(mozilla_t, chromium_t)
