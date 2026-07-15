@@ -71964,6 +71964,17 @@ Domain owning the D-Bus service.
 </summary>
 </param>
 </interface>
+<interface name="local_evince_gvfs_dbus_chat" lineno="112">
+<summary>
+Allow Evince to query gvfs for mountable locations, for a given role
+prefix.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the gvfs domain.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_evolution" filename="policy/modules/local/local_evolution.if">
 <summary>

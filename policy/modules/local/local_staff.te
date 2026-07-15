@@ -26,6 +26,7 @@ zotero_role(staff_application_exec_domain, staff_r)
 evince_role(staff_application_exec_domain, staff_r)
 local_evince_x11_connect(staff_t)
 local_evince_dbus_chat(staff_t)
+local_evince_gvfs_dbus_chat(staff)
 
 # User-session helpers such as systemctl --user may stat namespace file handles
 # during generic runtime probing. Keep this limited to harmless metadata lookup.

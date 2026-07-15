@@ -53,7 +53,6 @@ fs_getattr_all_fs(evince_t)
 dbus_spec_session_bus_client(staff, evince_t)
 dbus_write_session_runtime_socket(evince_t)
 systemd_dbus_chat_logind(evince_t)
-local_gvfs_dbus_chat(staff, evince_t)
 
 # glib/D-Bus GUID lookup: checks the legacy /var/lib/dbus/machine-id path
 # first, falling back to /etc/machine-id.

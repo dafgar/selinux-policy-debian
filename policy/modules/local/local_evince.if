@@ -97,3 +97,22 @@ interface(`local_evince_dbus_chat',`
 	allow evince_t $1:dbus send_msg;
 	allow $1 evince_t:dbus send_msg;
 ')
+
+########################################
+## <summary>
+## Allow Evince to query gvfs for mountable locations, for a given role
+## prefix.
+## </summary>
+## <param name="role_prefix">
+## <summary>
+## User role prefix that owns the gvfs domain.
+## </summary>
+## </param>
+#
+interface(`local_evince_gvfs_dbus_chat',`
+	gen_require(`
+		type evince_t;
+	')
+
+	local_gvfs_dbus_chat($1, evince_t)
+')
