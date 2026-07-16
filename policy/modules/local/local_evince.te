@@ -81,7 +81,7 @@ userdom_write_user_tmp_sockets(evince_t)
 # Documents opened from another confined app's own storage need explicit
 # read access to that app's content type - generic user_home_t grants above
 # don't cover it.
-zotero_read_home_content(evince_t)
+local_zotero_read_home_content(evince_t)
 local_thunderbird_read_tmp_content(evince_t)
 
 xdg_read_config_files(evince_t)

@@ -101,7 +101,7 @@ interface(`local_zotero_dbus_chat',`
 ##	</summary>
 ## </param>
 #
-interface(`zotero_read_home_content',`
+interface(`local_zotero_read_home_content',`
 	gen_require(`
 		type zotero_home_t;
 	')

@@ -71835,7 +71835,7 @@ Local override module with no exported interfaces.
 <summary>
 Local D-Bus content labels and access helpers.
 </summary>
-<interface name="dbus_read_user_activation_services" lineno="15">
+<interface name="local_dbus_read_user_activation_services" lineno="15">
 <summary>
 Read and watch per-user D-Bus activation service files.
 </summary>
@@ -72395,7 +72395,7 @@ Local pcscd policy adjustments.
 <summary>
 Local PipeWire domains and helper interfaces.
 </summary>
-<interface name="pipewire_stream_connect" lineno="20">
+<interface name="local_pipewire_stream_connect" lineno="20">
 <summary>
 Connect to PipeWire runtime sockets.
 </summary>
@@ -72410,7 +72410,7 @@ PipeWire server domain owning the socket.
 </summary>
 </param>
 </interface>
-<interface name="pipewire_pulse_stream_connect" lineno="44">
+<interface name="local_pipewire_pulse_stream_connect" lineno="44">
 <summary>
 Connect to PipeWire's PulseAudio-compatible socket.
 </summary>
@@ -72425,7 +72425,7 @@ PipeWire server domain owning the socket.
 </summary>
 </param>
 </interface>
-<interface name="pipewire_rw_tmpfs_files" lineno="62">
+<interface name="local_pipewire_rw_tmpfs_files" lineno="62">
 <summary>
 Read and write PipeWire tmpfs-backed shared files.
 </summary>
@@ -72435,7 +72435,7 @@ Client domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="pipewire_use_fds" lineno="87">
+<interface name="local_pipewire_use_fds" lineno="87">
 <summary>
 Use file descriptors inherited from the PipeWire server domain.
 </summary>
@@ -72527,7 +72527,7 @@ Domain allowed to exchange D-Bus messages with PowerDevil.
 <summary>
 Local power-profiles policy interfaces.
 </summary>
-<interface name="powerprofiles_dbus_chat" lineno="15">
+<interface name="local_powerprofiles_dbus_chat" lineno="15">
 <summary>
 Send and receive messages from power_profilesd_t over D-Bus.
 </summary>
@@ -73037,7 +73037,7 @@ Domain owning the D-Bus service.
 </summary>
 </param>
 </interface>
-<interface name="zotero_read_home_content" lineno="104">
+<interface name="local_zotero_read_home_content" lineno="104">
 <summary>
 Allow a domain to read documents stored under Zotero's home content
 (e.g. a viewer opening a PDF from Zotero's attachment storage).

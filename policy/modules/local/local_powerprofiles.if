@@ -12,7 +12,7 @@
 ##	</summary>
 ## </param>
 #
-interface(`powerprofiles_dbus_chat',`
+interface(`local_powerprofiles_dbus_chat',`
 	gen_require(`
 		type power_profilesd_t;
 		class dbus send_msg;

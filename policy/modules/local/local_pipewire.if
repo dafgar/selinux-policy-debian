@@ -17,7 +17,7 @@
 ##	</summary>
 ## </param>
 #
-interface(`pipewire_stream_connect',`
+interface(`local_pipewire_stream_connect',`
 	gen_require(`
 		type pipewire_runtime_t;
 		type user_runtime_t;
@@ -41,7 +41,7 @@ interface(`pipewire_stream_connect',`
 ##	</summary>
 ## </param>
 #
-interface(`pipewire_pulse_stream_connect',`
+interface(`local_pipewire_pulse_stream_connect',`
 	gen_require(`
 		type pulseaudio_tmp_t;
 	')
@@ -59,7 +59,7 @@ interface(`pipewire_pulse_stream_connect',`
 ##	</summary>
 ## </param>
 #
-interface(`pipewire_rw_tmpfs_files',`
+interface(`local_pipewire_rw_tmpfs_files',`
 	gen_require(`
 		type pipewire_tmpfs_t;
 	')
@@ -84,7 +84,7 @@ interface(`pipewire_rw_tmpfs_files',`
 ##	</summary>
 ## </param>
 #
-interface(`pipewire_use_fds',`
+interface(`local_pipewire_use_fds',`
 	allow $1 $2:fd use;
 ')
 
@@ -129,9 +129,9 @@ template(`pipewire_role',`
 
 	domtrans_pattern($3, pipewire_exec_t, $1_pipewire_t)
 
-	pipewire_stream_connect($2, $1_pipewire_t)
-	pipewire_pulse_stream_connect($2, $1_pipewire_t)
-	pipewire_rw_tmpfs_files($2)
+	local_pipewire_stream_connect($2, $1_pipewire_t)
+	local_pipewire_pulse_stream_connect($2, $1_pipewire_t)
+	local_pipewire_rw_tmpfs_files($2)
 
 	allow $3 $1_pipewire_t:process { ptrace signal_perms };
 	allow $3 $1_pipewire_t:fd use;

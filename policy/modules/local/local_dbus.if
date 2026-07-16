@@ -12,7 +12,7 @@
 ##	</summary>
 ## </param>
 #
-interface(`dbus_read_user_activation_services',`
+interface(`local_dbus_read_user_activation_services',`
 	gen_require(`
 		type dbus_xdg_services_t;
 	')

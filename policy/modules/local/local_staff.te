@@ -39,9 +39,9 @@ dontaudit staff_t tmp_t:dir watch;
 # konsole watches ~/.ssh/config for user-session convenience, not core SSH use.
 dontaudit staff_t ssh_home_t:file watch;
 
-dbus_read_user_activation_services(staff_dbusd_t)
+local_dbus_read_user_activation_services(staff_dbusd_t)
 low_mem_mon_dbus_chat(staff_t)
-powerprofiles_dbus_chat(staff_t)
+local_powerprofiles_dbus_chat(staff_t)
 local_gpg_prompter_dbus_chat(staff_t)
 
 # flatpak --print-updated-env exchanges a systemd-created memfd in the user

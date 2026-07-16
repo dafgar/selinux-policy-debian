@@ -12,8 +12,8 @@ gen_require(`
 	type zotero_t;
 ')
 
-pipewire_stream_connect(staff_wm_t, staff_pipewire_t)
-pipewire_rw_tmpfs_files(staff_wm_t)
+local_pipewire_stream_connect(staff_wm_t, staff_pipewire_t)
+local_pipewire_rw_tmpfs_files(staff_wm_t)
 local_mozilla_wm_tmpfs_map(staff_wm_t)
 local_thunderbird_wm_dontaudit_tmpfs_use(staff_wm_t)
 local_clipboard_pipe_write(chromium_t, staff_wm_t)

@@ -33,5 +33,5 @@ interface(`local_mplayer_pipewire_pulse_connect',`
 		type mplayer_t;
 	')
 
-	pipewire_pulse_stream_connect(mplayer_t, $1_pipewire_t)
+	local_pipewire_pulse_stream_connect(mplayer_t, $1_pipewire_t)
 ')

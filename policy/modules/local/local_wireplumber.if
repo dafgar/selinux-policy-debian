@@ -104,8 +104,8 @@ template(`wireplumber_role',`
 	allow $1_wireplumber_t tmpfs_t:file map;
 	allow $1_wireplumber_t alsa_var_lib_t:dir search;
 	stream_connect_pattern($1_wireplumber_t, user_runtime_t, pipewire_runtime_t, $1_pipewire_t)
-	pipewire_rw_tmpfs_files($1_wireplumber_t)
-	pipewire_use_fds($1_wireplumber_t, $1_pipewire_t)
+	local_pipewire_rw_tmpfs_files($1_wireplumber_t)
+	local_pipewire_use_fds($1_wireplumber_t, $1_pipewire_t)
 	allow $1_wireplumber_t session_dbusd_runtime_t:sock_file getattr;
 
 	# LTTng UST wait files under /dev/shm are optional tracing artifacts.

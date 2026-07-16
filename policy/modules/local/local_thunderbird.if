@@ -17,7 +17,7 @@ interface(`local_thunderbird_pipewire_pulse_connect',`
 		type thunderbird_t;
 	')
 
-	pipewire_pulse_stream_connect(thunderbird_t, $1_pipewire_t)
+	local_pipewire_pulse_stream_connect(thunderbird_t, $1_pipewire_t)
 ')
 
 ########################################

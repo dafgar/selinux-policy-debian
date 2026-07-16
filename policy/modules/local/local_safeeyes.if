@@ -17,9 +17,9 @@ interface(`local_safeeyes_pipewire_connect',`
 		type safeeyes_t;
 	')
 
-	pipewire_stream_connect(safeeyes_t, $1_pipewire_t)
-	pipewire_rw_tmpfs_files(safeeyes_t)
-	pipewire_use_fds(safeeyes_t, $1_pipewire_t)
+	local_pipewire_stream_connect(safeeyes_t, $1_pipewire_t)
+	local_pipewire_rw_tmpfs_files(safeeyes_t)
+	local_pipewire_use_fds(safeeyes_t, $1_pipewire_t)
 	ps_process_pattern($1_pipewire_t, safeeyes_t)
 ')
 
