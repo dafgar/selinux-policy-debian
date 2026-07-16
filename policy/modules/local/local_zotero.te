@@ -18,9 +18,8 @@ type zotero_tmp_t;
 files_tmp_file(zotero_tmp_t)
 
 manage_dirs_pattern(zotero_t, zotero_home_t, zotero_home_t)
-manage_files_pattern(zotero_t, zotero_home_t, zotero_home_t)
+mmap_manage_files_pattern(zotero_t, zotero_home_t, zotero_home_t)
 manage_lnk_files_pattern(zotero_t, zotero_home_t, zotero_home_t)
-allow zotero_t zotero_home_t:file map;
 allow zotero_t zotero_home_t:dir watch;
 userdom_user_home_dir_filetrans_user_home_content(zotero_t, { dir file lnk_file }, ".zotero")
 
