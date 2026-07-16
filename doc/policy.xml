@@ -71864,33 +71864,35 @@ Local override module with no exported interfaces.
 </module>
 <module name="local_discover_notifier" filename="policy/modules/local/local_discover_notifier.if">
 <summary>
-Local DiscoverNotifier role template.
+Local DiscoverNotifier domain interfaces.
 </summary>
-<template name="discover_notifier_role" lineno="30">
+<interface name="discover_notifier_role" lineno="21">
 <summary>
-Role access for DiscoverNotifier.
+Allow a role to transition into the DiscoverNotifier application
+domain.
 </summary>
-<param name="role_prefix">
+<param name="source_domain">
 <summary>
-The prefix of the user role, for example staff or user.
-</summary>
-</param>
-<param name="user_domain">
-<summary>
-User domain for the role.
-</summary>
-</param>
-<param name="user_exec_domain">
-<summary>
-User exec domain for execute and transition access.
+Domain allowed to execute and transition to DiscoverNotifier.
 </summary>
 </param>
 <param name="role">
 <summary>
-Role allowed access.
+Role allowed access to the DiscoverNotifier domain.
 </summary>
 </param>
-</template>
+</interface>
+<interface name="local_discover_notifier_systemd_inherit" lineno="48">
+<summary>
+Allow a user systemd instance to launch DiscoverNotifier with the usual
+inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_discretegpuhelper" filename="policy/modules/local/local_discretegpuhelper.if">
 <summary>
@@ -72074,33 +72076,45 @@ User domain that should run the hook payload.
 </module>
 <module name="local_gkrellm" filename="policy/modules/local/local_gkrellm.if">
 <summary>
-Local GKrellM role template.
+Local GKrellM domain interfaces.
 </summary>
-<template name="gkrellm_role" lineno="30">
+<interface name="gkrellm_role" lineno="20">
 <summary>
-Role access for GKrellM.
+Allow a role to transition into the GKrellM application domain.
 </summary>
-<param name="role_prefix">
+<param name="source_domain">
 <summary>
-The prefix of the user role, for example staff or user.
-</summary>
-</param>
-<param name="user_domain">
-<summary>
-User domain for the role.
-</summary>
-</param>
-<param name="user_exec_domain">
-<summary>
-User exec domain for execute and transition access.
+Domain allowed to execute and transition to GKrellM.
 </summary>
 </param>
 <param name="role">
 <summary>
-Role allowed access.
+Role allowed access to the GKrellM domain.
 </summary>
 </param>
-</template>
+</interface>
+<interface name="local_gkrellm_stream_connect" lineno="47">
+<summary>
+Allow GKrellM to connect to a peer's Unix stream socket, e.g. for
+Wayland/X11 desktop integration.
+</summary>
+<param name="domain">
+<summary>
+Domain owning the stream socket.
+</summary>
+</param>
+</interface>
+<interface name="local_gkrellm_systemd_inherit" lineno="66">
+<summary>
+Allow a user systemd instance to launch GKrellM with the usual
+inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
 <tunable name="local_gkrellm_use_hddtemp" dftval="false">
 <desc>
 <p>
@@ -72215,34 +72229,34 @@ Local override module with no exported interfaces.
 </module>
 <module name="local_kdeconnect" filename="policy/modules/local/local_kdeconnect.if">
 <summary>
-Local KDE Connect domains and helper interfaces.
+Local KDE Connect domain interfaces.
 </summary>
-<template name="kdeconnect_role" lineno="30">
+<interface name="kdeconnect_role" lineno="20">
 <summary>
-Role access for KDE Connect.
+Allow a role to transition into the KDE Connect application domain.
 </summary>
-<param name="role_prefix">
+<param name="source_domain">
 <summary>
-The prefix of the user role, for example staff or user.
-</summary>
-</param>
-<param name="user_domain">
-<summary>
-User domain for the role.
-</summary>
-</param>
-<param name="user_exec_domain">
-<summary>
-User exec domain for execute and transition access.
+Domain allowed to execute and transition to KDE Connect.
 </summary>
 </param>
 <param name="role">
 <summary>
-Role allowed access.
+Role allowed access to the KDE Connect domain.
 </summary>
 </param>
-</template>
-<interface name="local_kdeconnect_bind_port" lineno="83">
+</interface>
+<interface name="local_kdeconnect_systemd_inherit" lineno="46">
+<summary>
+Allow a user systemd instance to monitor and launch KDE Connect.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+<interface name="local_kdeconnect_bind_port" lineno="67">
 <summary>
 Allow a domain to use KDE Connect listener sockets directly.
 </summary>
@@ -72275,33 +72289,34 @@ Local policy for the KDE SMART helper domain.
 </module>
 <module name="local_keepassxc" filename="policy/modules/local/local_keepassxc.if">
 <summary>
-Local KeepassXC role template.
+Local KeepassXC domain interfaces.
 </summary>
-<template name="keepassxc_role" lineno="30">
+<interface name="keepassxc_role" lineno="20">
 <summary>
-Role access for KeepassXC.
+Allow a role to transition into the KeepassXC application domain.
 </summary>
-<param name="role_prefix">
+<param name="source_domain">
 <summary>
-The prefix of the user role, for example staff or user.
-</summary>
-</param>
-<param name="user_domain">
-<summary>
-User domain for the role.
-</summary>
-</param>
-<param name="user_exec_domain">
-<summary>
-User exec domain for execute and transition access.
+Domain allowed to execute and transition to KeepassXC.
 </summary>
 </param>
 <param name="role">
 <summary>
-Role allowed access.
+Role allowed access to the KeepassXC domain.
 </summary>
 </param>
-</template>
+</interface>
+<interface name="local_keepassxc_systemd_inherit" lineno="47">
+<summary>
+Allow a user systemd instance to launch KeepassXC with the usual
+inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_lowmemorymonitor" filename="policy/modules/local/local_lowmemorymonitor.if">
 <summary>
@@ -72525,37 +72540,38 @@ Domain allowed access.
 </module>
 <module name="local_rsibreak" filename="policy/modules/local/local_rsibreak.if">
 <summary>
-Local RSIBreak role template.
+Local RSIBreak domain interfaces.
 </summary>
-<template name="rsibreak_role" lineno="30">
+<interface name="rsibreak_role" lineno="20">
 <summary>
-Role access for RSIBreak.
+Allow a role to transition into the RSIBreak application domain.
 </summary>
-<param name="role_prefix">
+<param name="source_domain">
 <summary>
-The prefix of the user role, for example staff or user.
-</summary>
-</param>
-<param name="user_domain">
-<summary>
-User domain for the role.
-</summary>
-</param>
-<param name="user_exec_domain">
-<summary>
-User exec domain for execute and transition access.
+Domain allowed to execute and transition to RSIBreak.
 </summary>
 </param>
 <param name="role">
 <summary>
-Role allowed access.
+Role allowed access to the RSIBreak domain.
 </summary>
 </param>
-</template>
+</interface>
+<interface name="local_rsibreak_systemd_inherit" lineno="47">
+<summary>
+Allow a user systemd instance to launch RSIBreak with the usual
+inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_safeeyes" filename="policy/modules/local/local_safeeyes.if">
 <summary>
-Local SafeEyes role template.
+Local SafeEyes domain interfaces.
 </summary>
 <interface name="local_safeeyes_pipewire_connect" lineno="15">
 <summary>
@@ -72567,31 +72583,53 @@ User role prefix that owns the PipeWire server domain.
 </summary>
 </param>
 </interface>
-<template name="safeeyes_role" lineno="50">
+<interface name="safeeyes_role" lineno="41">
 <summary>
-Role access for SafeEyes.
+Allow a role to transition into the SafeEyes application domain.
 </summary>
-<param name="role_prefix">
+<param name="source_domain">
 <summary>
-The prefix of the user role, for example staff or user.
-</summary>
-</param>
-<param name="user_domain">
-<summary>
-User domain for the role.
-</summary>
-</param>
-<param name="user_exec_domain">
-<summary>
-User exec domain for execute and transition access.
+Domain allowed to execute and transition to SafeEyes.
 </summary>
 </param>
 <param name="role">
 <summary>
-Role allowed access.
+Role allowed access to the SafeEyes domain.
 </summary>
 </param>
-</template>
+</interface>
+<interface name="local_safeeyes_dbus_chat" lineno="69">
+<summary>
+Send and receive D-Bus messages with SafeEyes.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages with SafeEyes.
+</summary>
+</param>
+</interface>
+<interface name="local_safeeyes_systemd_inherit" lineno="89">
+<summary>
+Allow a user systemd instance to launch SafeEyes with the usual
+inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+<interface name="local_safeeyes_gvfs_dbus_chat" lineno="109">
+<summary>
+Allow SafeEyes to query gvfs for mountable locations, for a given role
+prefix.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the gvfs domain.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_secadm" filename="policy/modules/local/local_secadm.if">
 <summary>
@@ -72915,33 +72953,35 @@ Role allowed access.
 </module>
 <module name="local_xdg_document_portal" filename="policy/modules/local/local_xdg_document_portal.if">
 <summary>
-Local XDG document portal role template.
+Local XDG document portal domain interfaces.
 </summary>
-<template name="xdg_document_portal_role" lineno="30">
+<interface name="xdg_document_portal_role" lineno="21">
 <summary>
-Role access for the XDG document portal.
+Allow a role to transition into the XDG document portal application
+domain.
 </summary>
-<param name="role_prefix">
+<param name="source_domain">
 <summary>
-The prefix of the user role, for example staff or user.
-</summary>
-</param>
-<param name="user_domain">
-<summary>
-User domain for the role.
-</summary>
-</param>
-<param name="user_exec_domain">
-<summary>
-User exec domain for execute and transition access.
+Domain allowed to execute and transition to the XDG document portal.
 </summary>
 </param>
 <param name="role">
 <summary>
-Role allowed access.
+Role allowed access to the XDG document portal domain.
 </summary>
 </param>
-</template>
+</interface>
+<interface name="local_xdg_document_portal_systemd_inherit" lineno="48">
+<summary>
+Allow a user systemd instance to launch the XDG document portal with the
+usual inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_zfs" filename="policy/modules/local/local_zfs.if">
 <summary>

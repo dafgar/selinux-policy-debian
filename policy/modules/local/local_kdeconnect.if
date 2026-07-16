@@ -1,72 +1,56 @@
 ## <summary>
-##	Local KDE Connect domains and helper interfaces.
+##	Local KDE Connect domain interfaces.
 ## </summary>
 
 ########################################
 ## <summary>
-##	Role access for KDE Connect.
+##	Allow a role to transition into the KDE Connect application domain.
 ## </summary>
-## <param name="role_prefix">
+## <param name="source_domain">
 ##	<summary>
-##	The prefix of the user role, for example staff or user.
-##	</summary>
-## </param>
-## <param name="user_domain">
-##	<summary>
-##	User domain for the role.
-##	</summary>
-## </param>
-## <param name="user_exec_domain">
-##	<summary>
-##	User exec domain for execute and transition access.
+##	Domain allowed to execute and transition to KDE Connect.
 ##	</summary>
 ## </param>
 ## <param name="role">
 ##	<summary>
-##	Role allowed access.
+##	Role allowed access to the KDE Connect domain.
 ##	</summary>
 ## </param>
 #
-template(`kdeconnect_role',`
+interface(`kdeconnect_role',`
 	gen_require(`
-		role $4;
-		attribute $3;
-		type kdeconnect_exec_t, kdeconnect_port_t, port_t;
+		type kdeconnect_t, kdeconnect_exec_t;
+		role $2;
 	')
 
-	type $1_kdeconnect_t;
-	userdom_user_application_domain($1_kdeconnect_t, kdeconnect_exec_t)
-	role $4 types $1_kdeconnect_t;
+	role $2 types kdeconnect_t;
+	domtrans_pattern($1, kdeconnect_exec_t, kdeconnect_t)
 
-	domtrans_pattern($3, kdeconnect_exec_t, $1_kdeconnect_t)
+	allow $1 kdeconnect_t:process { ptrace signal_perms };
+	allow $1 kdeconnect_t:fd use;
+	ps_process_pattern($1, kdeconnect_t)
 
-	allow $3 $1_kdeconnect_t:process { ptrace signal_perms };
-	allow $3 $1_kdeconnect_t:fd use;
-	ps_process_pattern($3, $1_kdeconnect_t)
+	allow kdeconnect_t $1:process sigchld;
+')
 
-	allow $1_kdeconnect_t $3:process sigchld;
-	tunable_policy(`local_kdeconnect_use_bluetooth',`
-		allow $1_kdeconnect_t self:bluetooth_socket { bind create getattr listen setopt };
-	',`
-		dontaudit $1_kdeconnect_t self:bluetooth_socket { bind create getattr listen setopt };
-	')
-	tunable_policy(`local_kdeconnect_use_network',`
-		allow $1_kdeconnect_t self:tcp_socket node_bind;
-		allow $1_kdeconnect_t self:udp_socket node_bind;
-		allow $1_kdeconnect_t kdeconnect_port_t:tcp_socket name_bind;
-		allow $1_kdeconnect_t kdeconnect_port_t:udp_socket name_bind;
-		corenet_udp_bind_generic_port($1_kdeconnect_t)
-	',`
-		dontaudit $1_kdeconnect_t self:tcp_socket node_bind;
-		dontaudit $1_kdeconnect_t self:udp_socket node_bind;
-		dontaudit $1_kdeconnect_t kdeconnect_port_t:tcp_socket name_bind;
-		dontaudit $1_kdeconnect_t kdeconnect_port_t:udp_socket name_bind;
-		dontaudit $1_kdeconnect_t port_t:udp_socket name_bind;
+########################################
+## <summary>
+##	Allow a user systemd instance to monitor and launch KDE Connect.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_kdeconnect_systemd_inherit',`
+	gen_require(`
+		type kdeconnect_t;
 	')
 
 	optional_policy(`
-		systemd_user_app_status($1, $1_kdeconnect_t)
-		allow $1_systemd_t $1_kdeconnect_t:process2 nnp_transition;
+		systemd_user_app_status($1, kdeconnect_t)
+		allow $1_systemd_t kdeconnect_t:process2 nnp_transition;
 	')
 ')
 

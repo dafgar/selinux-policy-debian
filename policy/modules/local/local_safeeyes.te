@@ -1,10 +1,76 @@
 policy_module(local_safeeyes)
 
+attribute_role safeeyes_roles;
+
+type safeeyes_t;
 type safeeyes_exec_t;
-application_executable_file(safeeyes_exec_t)
+userdom_user_application_domain(safeeyes_t, safeeyes_exec_t)
+role safeeyes_roles types safeeyes_t;
 
 type safeeyes_xdg_config_t;
 xdg_config_content(safeeyes_xdg_config_t)
 
 type safeeyes_tmpfs_t;
 userdom_user_tmpfs_file(safeeyes_tmpfs_t)
+
+manage_dirs_pattern(safeeyes_t, safeeyes_xdg_config_t, safeeyes_xdg_config_t)
+manage_files_pattern(safeeyes_t, safeeyes_xdg_config_t, safeeyes_xdg_config_t)
+manage_lnk_files_pattern(safeeyes_t, safeeyes_xdg_config_t, safeeyes_xdg_config_t)
+xdg_config_filetrans(safeeyes_t, safeeyes_xdg_config_t, dir, "safeeyes")
+
+manage_files_pattern(safeeyes_t, safeeyes_tmpfs_t, safeeyes_tmpfs_t)
+allow safeeyes_t safeeyes_tmpfs_t:file map;
+fs_tmpfs_filetrans(safeeyes_t, safeeyes_tmpfs_t, file)
+
+gen_require(`
+	type bin_t;
+	type cert_t;
+	type gnome_xdg_config_t;
+	type proc_t;
+	type security_t;
+	type selinux_config_t;
+	type syslogd_runtime_t;
+	type sysctl_vm_t;
+	type sysctl_vm_overcommit_t;
+	type tmpfs_t;
+	type user_tmp_t;
+	type wm_tmpfs_t;
+	type xkb_var_lib_t;
+')
+
+auth_use_nsswitch(safeeyes_t)
+dbus_all_session_bus_client(safeeyes_t)
+dbus_write_session_runtime_socket(safeeyes_t)
+systemd_dbus_chat_logind(safeeyes_t)
+allow safeeyes_t bin_t:dir { getattr open read search };
+allow safeeyes_t bin_t:file { execute getattr map open read };
+allow safeeyes_t bin_t:lnk_file { getattr read };
+allow safeeyes_t self:unix_dgram_socket { create write };
+allow safeeyes_t user_tmp_t:dir { getattr search };
+allow safeeyes_t user_tmp_t:file { map open read write };
+allow safeeyes_t gnome_xdg_config_t:dir search;
+allow safeeyes_t gnome_xdg_config_t:file { getattr map open read };
+allow safeeyes_t user_tmp_t:sock_file write;
+allow safeeyes_t self:process { setrlimit setsched signal };
+allow safeeyes_t self:tcp_socket listen;
+allow safeeyes_t proc_t:file { getattr open read };
+allow safeeyes_t proc_t:dir read;
+allow safeeyes_t security_t:filesystem getattr;
+allow safeeyes_t selinux_config_t:dir search;
+allow safeeyes_t sysctl_vm_t:dir search;
+allow safeeyes_t sysctl_vm_overcommit_t:file { open read };
+files_read_usr_files(safeeyes_t)
+files_map_usr_files(safeeyes_t)
+miscfiles_read_localization(safeeyes_t)
+allow safeeyes_t xkb_var_lib_t:dir { getattr read search };
+allow safeeyes_t xkb_var_lib_t:file { getattr map open read };
+allow safeeyes_t wm_tmpfs_t:file { map read write };
+xdg_search_config_dirs(safeeyes_t)
+xdg_search_data_dirs(safeeyes_t)
+userdom_search_user_runtime(safeeyes_t)
+corenet_tcp_bind_generic_node(safeeyes_t)
+corenet_tcp_bind_generic_port(safeeyes_t)
+
+dontaudit safeeyes_t cert_t:dir search;
+dontaudit safeeyes_t syslogd_runtime_t:dir search;
+dontaudit safeeyes_t tmpfs_t:file getattr;

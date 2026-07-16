@@ -1,7 +1,15 @@
 policy_module(local_kdeconnect)
 
+gen_require(`
+	type port_t;
+')
+
+attribute_role kdeconnect_roles;
+
+type kdeconnect_t;
 type kdeconnect_exec_t;
-application_executable_file(kdeconnect_exec_t)
+userdom_user_application_domain(kdeconnect_t, kdeconnect_exec_t)
+role kdeconnect_roles types kdeconnect_t;
 
 type kdeconnect_port_t;
 corenet_port(kdeconnect_port_t)
@@ -20,6 +28,25 @@ gen_tunable(local_kdeconnect_use_bluetooth, true)
 ## </p>
 ## </desc>
 gen_tunable(local_kdeconnect_use_network, true)
+
+tunable_policy(`local_kdeconnect_use_bluetooth',`
+	allow kdeconnect_t self:bluetooth_socket { bind create getattr listen setopt };
+',`
+	dontaudit kdeconnect_t self:bluetooth_socket { bind create getattr listen setopt };
+')
+tunable_policy(`local_kdeconnect_use_network',`
+	allow kdeconnect_t self:tcp_socket node_bind;
+	allow kdeconnect_t self:udp_socket node_bind;
+	allow kdeconnect_t kdeconnect_port_t:tcp_socket name_bind;
+	allow kdeconnect_t kdeconnect_port_t:udp_socket name_bind;
+	corenet_udp_bind_generic_port(kdeconnect_t)
+',`
+	dontaudit kdeconnect_t self:tcp_socket node_bind;
+	dontaudit kdeconnect_t self:udp_socket node_bind;
+	dontaudit kdeconnect_t kdeconnect_port_t:tcp_socket name_bind;
+	dontaudit kdeconnect_t kdeconnect_port_t:udp_socket name_bind;
+	dontaudit kdeconnect_t port_t:udp_socket name_bind;
+')
 
 # Local KDE Connect support is modeled as a dedicated user service domain with
 # a separate listener port type. Keep the numeric port mapping under sysadm

@@ -1,60 +1,54 @@
 ## <summary>
-## Local XDG document portal role template.
+##	Local XDG document portal domain interfaces.
 ## </summary>
 
 ########################################
 ## <summary>
-##	Role access for the XDG document portal.
+##	Allow a role to transition into the XDG document portal application
+##	domain.
 ## </summary>
-## <param name="role_prefix">
+## <param name="source_domain">
 ##	<summary>
-##	The prefix of the user role, for example staff or user.
-##	</summary>
-## </param>
-## <param name="user_domain">
-##	<summary>
-##	User domain for the role.
-##	</summary>
-## </param>
-## <param name="user_exec_domain">
-##	<summary>
-##	User exec domain for execute and transition access.
+##	Domain allowed to execute and transition to the XDG document portal.
 ##	</summary>
 ## </param>
 ## <param name="role">
 ##	<summary>
-##	Role allowed access.
+##	Role allowed access to the XDG document portal domain.
 ##	</summary>
 ## </param>
 #
-template(`xdg_document_portal_role',`
+interface(`xdg_document_portal_role',`
 	gen_require(`
-		role $4;
-		attribute $3;
-		type xdg_document_portal_exec_t;
+		type xdg_document_portal_t, xdg_document_portal_exec_t;
+		role $2;
 	')
 
-	type $1_xdg_document_portal_t;
-	userdom_user_application_domain($1_xdg_document_portal_t, xdg_document_portal_exec_t)
-	role $4 types $1_xdg_document_portal_t;
+	role $2 types xdg_document_portal_t;
+	domtrans_pattern($1, xdg_document_portal_exec_t, xdg_document_portal_t)
 
-	domtrans_pattern($3, xdg_document_portal_exec_t, $1_xdg_document_portal_t)
+	allow $1 xdg_document_portal_t:process { ptrace signal_perms };
+	allow $1 xdg_document_portal_t:fd use;
+	ps_process_pattern($1, xdg_document_portal_t)
 
-	allow $3 $1_xdg_document_portal_t:process { ptrace signal_perms };
-	allow $3 $1_xdg_document_portal_t:fd use;
-	ps_process_pattern($3, $1_xdg_document_portal_t)
+	allow xdg_document_portal_t $1:process sigchld;
+')
 
-	allow $1_xdg_document_portal_t $3:process sigchld;
+########################################
+## <summary>
+## Allow a user systemd instance to launch the XDG document portal with the
+## usual inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_xdg_document_portal_systemd_inherit',`
+	gen_require(`
+		type xdg_document_portal_t;
+	')
 
-	auth_use_nsswitch($1_xdg_document_portal_t)
-	dbus_all_session_bus_client($1_xdg_document_portal_t)
-	dbus_write_session_runtime_socket($1_xdg_document_portal_t)
-	systemd_dbus_chat_logind($1_xdg_document_portal_t)
-	files_read_usr_files($1_xdg_document_portal_t)
-	files_map_usr_files($1_xdg_document_portal_t)
-	miscfiles_read_localization($1_xdg_document_portal_t)
-	xdg_search_config_dirs($1_xdg_document_portal_t)
-	xdg_search_data_dirs($1_xdg_document_portal_t)
-	userdom_search_user_runtime($1_xdg_document_portal_t)
-	local_systemd_inherit_user_service($1, $1_xdg_document_portal_t)
+	local_systemd_inherit_user_service($1, xdg_document_portal_t)
 ')

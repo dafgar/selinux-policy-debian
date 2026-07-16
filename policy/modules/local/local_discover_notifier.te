@@ -1,4 +1,20 @@
 policy_module(local_discover_notifier)
 
+attribute_role discover_notifier_roles;
+
+type discover_notifier_t;
 type discover_notifier_exec_t;
-application_executable_file(discover_notifier_exec_t)
+userdom_user_application_domain(discover_notifier_t, discover_notifier_exec_t)
+role discover_notifier_roles types discover_notifier_t;
+
+auth_use_nsswitch(discover_notifier_t)
+dbus_all_session_bus_client(discover_notifier_t)
+dbus_write_session_runtime_socket(discover_notifier_t)
+networkmanager_dbus_chat(discover_notifier_t)
+systemd_dbus_chat_logind(discover_notifier_t)
+files_read_usr_files(discover_notifier_t)
+files_map_usr_files(discover_notifier_t)
+miscfiles_read_localization(discover_notifier_t)
+xdg_search_config_dirs(discover_notifier_t)
+xdg_search_data_dirs(discover_notifier_t)
+userdom_search_user_runtime(discover_notifier_t)

@@ -1,5 +1,5 @@
 ## <summary>
-## Local SafeEyes role template.
+##	Local SafeEyes domain interfaces.
 ## </summary>
 
 ########################################
@@ -14,114 +14,102 @@
 #
 interface(`local_safeeyes_pipewire_connect',`
 	gen_require(`
-		type $1_safeeyes_t;
+		type safeeyes_t;
 	')
 
-	pipewire_stream_connect($1_safeeyes_t, $1_pipewire_t)
-	pipewire_rw_tmpfs_files($1_safeeyes_t)
-	pipewire_use_fds($1_safeeyes_t, $1_pipewire_t)
-	ps_process_pattern($1_pipewire_t, $1_safeeyes_t)
+	pipewire_stream_connect(safeeyes_t, $1_pipewire_t)
+	pipewire_rw_tmpfs_files(safeeyes_t)
+	pipewire_use_fds(safeeyes_t, $1_pipewire_t)
+	ps_process_pattern($1_pipewire_t, safeeyes_t)
 ')
 
+########################################
 ## <summary>
-##	Role access for SafeEyes.
+##	Allow a role to transition into the SafeEyes application domain.
 ## </summary>
-## <param name="role_prefix">
+## <param name="source_domain">
 ##	<summary>
-##	The prefix of the user role, for example staff or user.
-##	</summary>
-## </param>
-## <param name="user_domain">
-##	<summary>
-##	User domain for the role.
-##	</summary>
-## </param>
-## <param name="user_exec_domain">
-##	<summary>
-##	User exec domain for execute and transition access.
+##	Domain allowed to execute and transition to SafeEyes.
 ##	</summary>
 ## </param>
 ## <param name="role">
 ##	<summary>
-##	Role allowed access.
+##	Role allowed access to the SafeEyes domain.
 ##	</summary>
 ## </param>
 #
-template(`safeeyes_role',`
+interface(`safeeyes_role',`
 	gen_require(`
-		role $4;
-		attribute $3;
-		type safeeyes_exec_t;
-		type safeeyes_xdg_config_t;
-		type safeeyes_tmpfs_t;
-		type cert_t;
-		type gnome_xdg_config_t;
-		type syslogd_runtime_t;
-		type user_tmp_t;
-		type xkb_var_lib_t;
+		type safeeyes_t, safeeyes_exec_t;
+		role $2;
 	')
 
-	type $1_safeeyes_t;
-	userdom_user_application_domain($1_safeeyes_t, safeeyes_exec_t)
-	role $4 types $1_safeeyes_t;
+	role $2 types safeeyes_t;
+	domtrans_pattern($1, safeeyes_exec_t, safeeyes_t)
 
-	domtrans_pattern($3, safeeyes_exec_t, $1_safeeyes_t)
+	allow $1 safeeyes_t:process { ptrace signal_perms };
+	allow $1 safeeyes_t:fd use;
+	ps_process_pattern($1, safeeyes_t)
+	dontaudit $1 safeeyes_t:process getsched;
 
-	allow $3 $1_safeeyes_t:process { ptrace signal_perms };
-	allow $3 $1_safeeyes_t:fd use;
-	allow $3 $1_safeeyes_t:dbus send_msg;
-	ps_process_pattern($3, $1_safeeyes_t)
-	dontaudit $3 $1_safeeyes_t:process getsched;
+	allow safeeyes_t $1:process sigchld;
+	allow safeeyes_t $1:unix_stream_socket connectto;
+')
 
-	allow $1_safeeyes_t $3:process sigchld;
-	allow $1_safeeyes_t $3:dbus send_msg;
+########################################
+## <summary>
+##	Send and receive D-Bus messages with SafeEyes.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to exchange D-Bus messages with SafeEyes.
+##	</summary>
+## </param>
+#
+interface(`local_safeeyes_dbus_chat',`
+	gen_require(`
+		type safeeyes_t;
+	')
 
-	auth_use_nsswitch($1_safeeyes_t)
-	dbus_all_session_bus_client($1_safeeyes_t)
-	dbus_write_session_runtime_socket($1_safeeyes_t)
-	systemd_dbus_chat_logind($1_safeeyes_t)
-	allow $1_safeeyes_t $1_systemd_t:unix_stream_socket { getattr ioctl };
-	allow $1_safeeyes_t bin_t:dir { getattr open read search };
-	allow $1_safeeyes_t bin_t:file { execute getattr map open read };
-	allow $1_safeeyes_t bin_t:lnk_file { getattr read };
-	allow $1_safeeyes_t self:unix_dgram_socket { create write };
-	allow $1_safeeyes_t user_tmp_t:dir { getattr search };
-	allow $1_safeeyes_t user_tmp_t:file { map open read write };
-	allow $1_safeeyes_t gnome_xdg_config_t:dir search;
-	allow $1_safeeyes_t gnome_xdg_config_t:file { getattr map open read };
-	allow $1_safeeyes_t user_tmp_t:sock_file write;
-	allow $1_safeeyes_t $3:unix_stream_socket connectto;
-	allow $1_safeeyes_t self:process { setrlimit setsched signal };
-	allow $1_safeeyes_t self:tcp_socket listen;
-	allow $1_safeeyes_t proc_t:file { getattr open read };
-	allow $1_safeeyes_t proc_t:dir read;
-	allow $1_safeeyes_t security_t:filesystem getattr;
-	allow $1_safeeyes_t selinux_config_t:dir search;
-	allow $1_safeeyes_t sysctl_vm_t:dir search;
-	allow $1_safeeyes_t sysctl_vm_overcommit_t:file { open read };
-	manage_dirs_pattern($1_safeeyes_t, safeeyes_xdg_config_t, safeeyes_xdg_config_t)
-	manage_files_pattern($1_safeeyes_t, safeeyes_xdg_config_t, safeeyes_xdg_config_t)
-	manage_lnk_files_pattern($1_safeeyes_t, safeeyes_xdg_config_t, safeeyes_xdg_config_t)
-	xdg_config_filetrans($1_safeeyes_t, safeeyes_xdg_config_t, dir, "safeeyes")
-	manage_files_pattern($1_safeeyes_t, safeeyes_tmpfs_t, safeeyes_tmpfs_t)
-	allow $1_safeeyes_t safeeyes_tmpfs_t:file map;
-	fs_tmpfs_filetrans($1_safeeyes_t, safeeyes_tmpfs_t, file)
-	files_read_usr_files($1_safeeyes_t)
-	files_map_usr_files($1_safeeyes_t)
-	miscfiles_read_localization($1_safeeyes_t)
-	allow $1_safeeyes_t xkb_var_lib_t:dir { getattr read search };
-	allow $1_safeeyes_t xkb_var_lib_t:file { getattr map open read };
-	allow $1_safeeyes_t wm_tmpfs_t:file { map read write };
-	xdg_search_config_dirs($1_safeeyes_t)
-	xdg_search_data_dirs($1_safeeyes_t)
-	userdom_search_user_runtime($1_safeeyes_t)
-	local_systemd_inherit_user_service($1, $1_safeeyes_t)
-	corenet_tcp_bind_generic_node($1_safeeyes_t)
-	corenet_tcp_bind_generic_port($1_safeeyes_t)
-	allow $1_safeeyes_t $1_gvfsd_t:dbus send_msg;
-	allow $1_gvfsd_t $1_safeeyes_t:dbus send_msg;
+	allow $1 safeeyes_t:dbus send_msg;
+	allow safeeyes_t $1:dbus send_msg;
+')
 
-	dontaudit $1_safeeyes_t cert_t:dir search;
-	dontaudit $1_safeeyes_t syslogd_runtime_t:dir search;
-	dontaudit $1_safeeyes_t tmpfs_t:file getattr;
+########################################
+## <summary>
+##	Allow a user systemd instance to launch SafeEyes with the usual
+##	inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_safeeyes_systemd_inherit',`
+	gen_require(`
+		type safeeyes_t;
+	')
+
+	local_systemd_inherit_user_service($1, safeeyes_t)
+	allow safeeyes_t $1_systemd_t:unix_stream_socket { getattr ioctl };
+')
+
+########################################
+## <summary>
+##	Allow SafeEyes to query gvfs for mountable locations, for a given role
+##	prefix.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the gvfs domain.
+##	</summary>
+## </param>
+#
+interface(`local_safeeyes_gvfs_dbus_chat',`
+	gen_require(`
+		type safeeyes_t;
+	')
+
+	local_gvfs_dbus_chat($1, safeeyes_t)
 ')

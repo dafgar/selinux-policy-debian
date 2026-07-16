@@ -1,4 +1,19 @@
 policy_module(local_xdg_document_portal)
 
+attribute_role xdg_document_portal_roles;
+
+type xdg_document_portal_t;
 type xdg_document_portal_exec_t;
-application_executable_file(xdg_document_portal_exec_t)
+userdom_user_application_domain(xdg_document_portal_t, xdg_document_portal_exec_t)
+role xdg_document_portal_roles types xdg_document_portal_t;
+
+auth_use_nsswitch(xdg_document_portal_t)
+dbus_all_session_bus_client(xdg_document_portal_t)
+dbus_write_session_runtime_socket(xdg_document_portal_t)
+systemd_dbus_chat_logind(xdg_document_portal_t)
+files_read_usr_files(xdg_document_portal_t)
+files_map_usr_files(xdg_document_portal_t)
+miscfiles_read_localization(xdg_document_portal_t)
+xdg_search_config_dirs(xdg_document_portal_t)
+xdg_search_data_dirs(xdg_document_portal_t)
+userdom_search_user_runtime(xdg_document_portal_t)

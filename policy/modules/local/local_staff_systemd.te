@@ -42,6 +42,34 @@ local_thunderbird_systemd_inherit(staff)
 # instance during launch.
 local_powerdevil_systemd_inherit(staff)
 
+# KDE Connect is monitored and launched by the user systemd instance like
+# other user-session services.
+local_kdeconnect_systemd_inherit(staff)
+
+# SafeEyes inherits the usual process attributes from the user systemd
+# instance during launch, and inspects that same parent-owned socket.
+local_safeeyes_systemd_inherit(staff)
+
+# RSIBreak inherits the usual process attributes from the user systemd
+# instance during launch.
+local_rsibreak_systemd_inherit(staff)
+
+# KeepassXC inherits the usual process attributes from the user systemd
+# instance during launch.
+local_keepassxc_systemd_inherit(staff)
+
+# GKrellM inherits the usual process attributes from the user systemd
+# instance during launch, and inspects that same parent-owned socket.
+local_gkrellm_systemd_inherit(staff)
+
+# DiscoverNotifier inherits the usual process attributes from the user
+# systemd instance during launch.
+local_discover_notifier_systemd_inherit(staff)
+
+# The XDG document portal inherits the usual process attributes from the
+# user systemd instance during launch.
+local_xdg_document_portal_systemd_inherit(staff)
+
 # systemd --user performs generic filesystem probing on inherited fds during
 # session startup. Keep pidfs filesystem getattr noise hidden until there is a
 # concrete need to model it more specifically.

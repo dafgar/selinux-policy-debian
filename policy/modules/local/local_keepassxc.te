@@ -1,4 +1,19 @@
 policy_module(local_keepassxc)
 
+attribute_role keepassxc_roles;
+
+type keepassxc_t;
 type keepassxc_exec_t;
-application_executable_file(keepassxc_exec_t)
+userdom_user_application_domain(keepassxc_t, keepassxc_exec_t)
+role keepassxc_roles types keepassxc_t;
+
+auth_use_nsswitch(keepassxc_t)
+dbus_all_session_bus_client(keepassxc_t)
+dbus_write_session_runtime_socket(keepassxc_t)
+systemd_dbus_chat_logind(keepassxc_t)
+files_read_usr_files(keepassxc_t)
+files_map_usr_files(keepassxc_t)
+miscfiles_read_localization(keepassxc_t)
+xdg_search_config_dirs(keepassxc_t)
+xdg_search_data_dirs(keepassxc_t)
+userdom_search_user_runtime(keepassxc_t)

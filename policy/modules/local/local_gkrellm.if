@@ -1,107 +1,73 @@
 ## <summary>
-## Local GKrellM role template.
+##	Local GKrellM domain interfaces.
 ## </summary>
 
 ########################################
 ## <summary>
-##	Role access for GKrellM.
+##	Allow a role to transition into the GKrellM application domain.
 ## </summary>
-## <param name="role_prefix">
+## <param name="source_domain">
 ##	<summary>
-##	The prefix of the user role, for example staff or user.
-##	</summary>
-## </param>
-## <param name="user_domain">
-##	<summary>
-##	User domain for the role.
-##	</summary>
-## </param>
-## <param name="user_exec_domain">
-##	<summary>
-##	User exec domain for execute and transition access.
+##	Domain allowed to execute and transition to GKrellM.
 ##	</summary>
 ## </param>
 ## <param name="role">
 ##	<summary>
-##	Role allowed access.
+##	Role allowed access to the GKrellM domain.
 ##	</summary>
 ## </param>
 #
-template(`gkrellm_role',`
+interface(`gkrellm_role',`
 	gen_require(`
-		role $4;
-		attribute $3;
-		type gkrellm_exec_t;
-		type gkrellm_home_t;
-		type user_tmp_t;
-		type xdg_config_t;
-		type syslogd_runtime_t;
-		type hddtemp_port_t;
-		type mail_spool_t;
+		type gkrellm_t, gkrellm_exec_t;
+		role $2;
 	')
 
-	type $1_gkrellm_t;
-	userdom_user_application_domain($1_gkrellm_t, gkrellm_exec_t)
-	role $4 types $1_gkrellm_t;
+	role $2 types gkrellm_t;
+	domtrans_pattern($1, gkrellm_exec_t, gkrellm_t)
 
-	domtrans_pattern($3, gkrellm_exec_t, $1_gkrellm_t)
+	allow $1 gkrellm_t:process { ptrace signal_perms };
+	allow $1 gkrellm_t:fd use;
+	ps_process_pattern($1, gkrellm_t)
 
-	allow $3 $1_gkrellm_t:process { ptrace signal_perms };
-	allow $3 $1_gkrellm_t:fd use;
-	ps_process_pattern($3, $1_gkrellm_t)
+	allow gkrellm_t $1:process sigchld;
+')
 
-	allow $1_gkrellm_t $3:process sigchld;
-
-	auth_use_nsswitch($1_gkrellm_t)
-	dbus_all_session_bus_client($1_gkrellm_t)
-	dbus_write_session_runtime_socket($1_gkrellm_t)
-	systemd_dbus_chat_logind($1_gkrellm_t)
-	files_read_usr_files($1_gkrellm_t)
-	files_map_usr_files($1_gkrellm_t)
-	miscfiles_read_localization($1_gkrellm_t)
-	xdg_search_config_dirs($1_gkrellm_t)
-	xdg_search_data_dirs($1_gkrellm_t)
-	userdom_search_user_runtime($1_gkrellm_t)
-	local_systemd_inherit_user_service($1, $1_gkrellm_t)
-	allow $1_gkrellm_t $1_systemd_t:unix_stream_socket { getattr ioctl };
-
-	manage_dirs_pattern($1_gkrellm_t, gkrellm_home_t, gkrellm_home_t)
-	manage_files_pattern($1_gkrellm_t, gkrellm_home_t, gkrellm_home_t)
-	manage_lnk_files_pattern($1_gkrellm_t, gkrellm_home_t, gkrellm_home_t)
-	userdom_user_home_dir_filetrans_user_home_content($1_gkrellm_t, { dir file lnk_file }, ".gkrellm2")
-
-	kernel_read_system_state($1_gkrellm_t)
-	kernel_read_network_state($1_gkrellm_t)
-	kernel_read_kernel_sysctls($1_gkrellm_t)
-	dev_read_sysfs($1_gkrellm_t)
-
-	allow $1_gkrellm_t $2:unix_stream_socket connectto;
-	allow $1_gkrellm_t user_tmp_t:dir { getattr search };
-	allow $1_gkrellm_t user_tmp_t:file { getattr open read };
-	allow $1_gkrellm_t self:unix_dgram_socket { create write };
-
-	allow $1_gkrellm_t self:shm create_shm_perms;
-	allow $1_gkrellm_t self:fifo_file rw_fifo_file_perms;
-
-	miscfiles_read_fonts($1_gkrellm_t)
-	xserver_use_user_fonts($1_gkrellm_t)
-
-	allow $1_gkrellm_t xdg_config_t:file getattr;
-
-	kernel_read_device_sysctls($1_gkrellm_t)
-	allow $1_gkrellm_t syslogd_runtime_t:dir search;
-
-	corecmd_list_bin($1_gkrellm_t)
-
-	tunable_policy(`local_gkrellm_use_hddtemp',`
-		corenet_tcp_connect_hddtemp_port($1_gkrellm_t)
-	',`
-		dontaudit $1_gkrellm_t hddtemp_port_t:tcp_socket name_connect;
+########################################
+## <summary>
+##	Allow GKrellM to connect to a peer's Unix stream socket, e.g. for
+##	Wayland/X11 desktop integration.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain owning the stream socket.
+##	</summary>
+## </param>
+#
+interface(`local_gkrellm_stream_connect',`
+	gen_require(`
+		type gkrellm_t;
 	')
 
-	tunable_policy(`local_gkrellm_read_mail_spool',`
-		allow $1_gkrellm_t mail_spool_t:dir search;
-	',`
-		dontaudit $1_gkrellm_t mail_spool_t:dir search;
+	allow gkrellm_t $1:unix_stream_socket connectto;
+')
+
+########################################
+## <summary>
+## Allow a user systemd instance to launch GKrellM with the usual
+## inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_gkrellm_systemd_inherit',`
+	gen_require(`
+		type gkrellm_t;
 	')
+
+	local_systemd_inherit_user_service($1, gkrellm_t)
+	allow gkrellm_t $1_systemd_t:unix_stream_socket { getattr ioctl };
 ')

@@ -1,7 +1,11 @@
 policy_module(local_gkrellm)
 
+attribute_role gkrellm_roles;
+
+type gkrellm_t;
 type gkrellm_exec_t;
-application_executable_file(gkrellm_exec_t)
+userdom_user_application_domain(gkrellm_t, gkrellm_exec_t)
+role gkrellm_roles types gkrellm_t;
 
 type gkrellm_home_t;
 userdom_user_home_content(gkrellm_home_t)
@@ -20,3 +24,61 @@ gen_tunable(local_gkrellm_use_hddtemp, false)
 ## </p>
 ## </desc>
 gen_tunable(local_gkrellm_read_mail_spool, false)
+
+gen_require(`
+	type user_tmp_t;
+	type xdg_config_t;
+	type syslogd_runtime_t;
+	type hddtemp_port_t;
+	type mail_spool_t;
+')
+
+auth_use_nsswitch(gkrellm_t)
+dbus_all_session_bus_client(gkrellm_t)
+dbus_write_session_runtime_socket(gkrellm_t)
+systemd_dbus_chat_logind(gkrellm_t)
+files_read_usr_files(gkrellm_t)
+files_map_usr_files(gkrellm_t)
+miscfiles_read_localization(gkrellm_t)
+xdg_search_config_dirs(gkrellm_t)
+xdg_search_data_dirs(gkrellm_t)
+userdom_search_user_runtime(gkrellm_t)
+
+manage_dirs_pattern(gkrellm_t, gkrellm_home_t, gkrellm_home_t)
+manage_files_pattern(gkrellm_t, gkrellm_home_t, gkrellm_home_t)
+manage_lnk_files_pattern(gkrellm_t, gkrellm_home_t, gkrellm_home_t)
+userdom_user_home_dir_filetrans_user_home_content(gkrellm_t, { dir file lnk_file }, ".gkrellm2")
+
+kernel_read_system_state(gkrellm_t)
+kernel_read_network_state(gkrellm_t)
+kernel_read_kernel_sysctls(gkrellm_t)
+dev_read_sysfs(gkrellm_t)
+
+allow gkrellm_t user_tmp_t:dir { getattr search };
+allow gkrellm_t user_tmp_t:file { getattr open read };
+allow gkrellm_t self:unix_dgram_socket { create write };
+
+allow gkrellm_t self:shm create_shm_perms;
+allow gkrellm_t self:fifo_file rw_fifo_file_perms;
+
+miscfiles_read_fonts(gkrellm_t)
+xserver_use_user_fonts(gkrellm_t)
+
+allow gkrellm_t xdg_config_t:file getattr;
+
+kernel_read_device_sysctls(gkrellm_t)
+allow gkrellm_t syslogd_runtime_t:dir search;
+
+corecmd_list_bin(gkrellm_t)
+
+tunable_policy(`local_gkrellm_use_hddtemp',`
+	corenet_tcp_connect_hddtemp_port(gkrellm_t)
+',`
+	dontaudit gkrellm_t hddtemp_port_t:tcp_socket name_connect;
+')
+
+tunable_policy(`local_gkrellm_read_mail_spool',`
+	allow gkrellm_t mail_spool_t:dir search;
+',`
+	dontaudit gkrellm_t mail_spool_t:dir search;
+')

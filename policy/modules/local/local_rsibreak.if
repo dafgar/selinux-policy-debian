@@ -1,65 +1,53 @@
 ## <summary>
-## Local RSIBreak role template.
+##	Local RSIBreak domain interfaces.
 ## </summary>
 
 ########################################
 ## <summary>
-##	Role access for RSIBreak.
+##	Allow a role to transition into the RSIBreak application domain.
 ## </summary>
-## <param name="role_prefix">
+## <param name="source_domain">
 ##	<summary>
-##	The prefix of the user role, for example staff or user.
-##	</summary>
-## </param>
-## <param name="user_domain">
-##	<summary>
-##	User domain for the role.
-##	</summary>
-## </param>
-## <param name="user_exec_domain">
-##	<summary>
-##	User exec domain for execute and transition access.
+##	Domain allowed to execute and transition to RSIBreak.
 ##	</summary>
 ## </param>
 ## <param name="role">
 ##	<summary>
-##	Role allowed access.
+##	Role allowed access to the RSIBreak domain.
 ##	</summary>
 ## </param>
 #
-template(`rsibreak_role',`
+interface(`rsibreak_role',`
 	gen_require(`
-		role $4;
-		attribute $3;
-		type rsibreak_exec_t;
-		type rsibreak_xdg_config_t;
+		type rsibreak_t, rsibreak_exec_t;
+		role $2;
 	')
 
-	type $1_rsibreak_t;
-	userdom_user_application_domain($1_rsibreak_t, rsibreak_exec_t)
-	role $4 types $1_rsibreak_t;
+	role $2 types rsibreak_t;
+	domtrans_pattern($1, rsibreak_exec_t, rsibreak_t)
 
-	domtrans_pattern($3, rsibreak_exec_t, $1_rsibreak_t)
+	allow $1 rsibreak_t:process { ptrace signal_perms };
+	allow $1 rsibreak_t:fd use;
+	ps_process_pattern($1, rsibreak_t)
 
-	allow $3 $1_rsibreak_t:process { ptrace signal_perms };
-	allow $3 $1_rsibreak_t:fd use;
-	ps_process_pattern($3, $1_rsibreak_t)
+	allow rsibreak_t $1:process sigchld;
+')
 
-	allow $1_rsibreak_t $3:process sigchld;
+########################################
+## <summary>
+## Allow a user systemd instance to launch RSIBreak with the usual
+## inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_rsibreak_systemd_inherit',`
+	gen_require(`
+		type rsibreak_t;
+	')
 
-	auth_use_nsswitch($1_rsibreak_t)
-	dbus_all_session_bus_client($1_rsibreak_t)
-	dbus_write_session_runtime_socket($1_rsibreak_t)
-	systemd_dbus_chat_logind($1_rsibreak_t)
-	files_read_usr_files($1_rsibreak_t)
-	files_map_usr_files($1_rsibreak_t)
-	miscfiles_read_localization($1_rsibreak_t)
-	xdg_search_config_dirs($1_rsibreak_t)
-	xdg_search_data_dirs($1_rsibreak_t)
-	userdom_search_user_runtime($1_rsibreak_t)
-	local_systemd_inherit_user_service($1, $1_rsibreak_t)
-
-	manage_files_pattern($1_rsibreak_t, rsibreak_xdg_config_t, rsibreak_xdg_config_t)
-	xdg_config_filetrans($1_rsibreak_t, rsibreak_xdg_config_t, file, "rsibreakrc")
-	xdg_config_filetrans($1_rsibreak_t, rsibreak_xdg_config_t, file, "rsibreak.notifyrc")
+	local_systemd_inherit_user_service($1, rsibreak_t)
 ')
