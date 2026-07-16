@@ -85,6 +85,9 @@ local_clipboard_pipe_write(zotero_t, chromium_t)
 local_clipboard_pipe_write(evince_t, chromium_t)
 local_evince_domtrans(chromium_t)
 
+# Chromium inhibits screen/system idle via PowerDevil while media is playing.
+local_powerdevil_dbus_chat(chromium_t)
+
 # Optional browser/DRM integration probes are not needed for the current
 # Chromium setup.
 dontaudit chromium_t mozilla_exec_t:file getattr;

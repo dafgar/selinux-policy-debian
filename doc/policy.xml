@@ -71750,18 +71750,7 @@ User role prefix that owns the session D-Bus domain.
 </summary>
 </param>
 </interface>
-<interface name="local_chromium_powerdevil_dbus_chat" lineno="55">
-<summary>
-Allow Chromium to inhibit screen/system idle via PowerDevil for a given
-role prefix while media is playing.
-</summary>
-<param name="role_prefix">
-<summary>
-User role prefix that owns the PowerDevil domain.
-</summary>
-</param>
-</interface>
-<interface name="local_chromium_gvfs_dbus_chat" lineno="74">
+<interface name="local_chromium_gvfs_dbus_chat" lineno="55">
 <summary>
 Allow Chromium to query gvfs for mountable locations from its file
 picker, for a given role prefix.
@@ -72479,43 +72468,39 @@ Local override module with no exported interfaces.
 </module>
 <module name="local_powerdevil" filename="policy/modules/local/local_powerdevil.if">
 <summary>
-Local PowerDevil role template.
+Local PowerDevil domain interfaces.
 </summary>
-<template name="powerdevil_role" lineno="30">
+<interface name="powerdevil_role" lineno="20">
 <summary>
-Role access for PowerDevil.
+Allow a role to transition into the PowerDevil application domain.
 </summary>
-<param name="role_prefix">
+<param name="source_domain">
 <summary>
-The prefix of the user role, for example staff or user.
-</summary>
-</param>
-<param name="user_domain">
-<summary>
-User domain for the role.
-</summary>
-</param>
-<param name="user_exec_domain">
-<summary>
-User exec domain for execute and transition access.
+Domain allowed to execute and transition to PowerDevil.
 </summary>
 </param>
 <param name="role">
 <summary>
-Role allowed access.
+Role allowed access to the PowerDevil domain.
 </summary>
 </param>
-</template>
-<interface name="local_powerdevil_dbus_chat" lineno="86">
+</interface>
+<interface name="local_powerdevil_systemd_inherit" lineno="47">
+<summary>
+Allow a user systemd instance to launch PowerDevil with the usual
+inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+<interface name="local_powerdevil_dbus_chat" lineno="66">
 <summary>
 Send and receive D-Bus messages with PowerDevil, e.g. to inhibit
 screen/system idle during media playback.
 </summary>
-<param name="role_prefix">
-<summary>
-The prefix of the user role owning PowerDevil, for example staff.
-</summary>
-</param>
 <param name="domain">
 <summary>
 Domain allowed to exchange D-Bus messages with PowerDevil.

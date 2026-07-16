@@ -1,4 +1,27 @@
 policy_module(local_powerdevil)
 
+attribute_role powerdevil_roles;
+
+type powerdevil_t;
 type powerdevil_exec_t;
-application_executable_file(powerdevil_exec_t)
+userdom_user_application_domain(powerdevil_t, powerdevil_exec_t)
+role powerdevil_roles types powerdevil_t;
+
+# internal Qt/glib thread wakeup pipe
+allow powerdevil_t self:fifo_file { read write };
+# AC/lid/battery hotplug fallback via kernel uevents
+allow powerdevil_t self:netlink_kobject_uevent_socket read;
+
+auth_use_nsswitch(powerdevil_t)
+dbus_all_session_bus_client(powerdevil_t)
+dbus_write_session_runtime_socket(powerdevil_t)
+devicekit_dbus_chat_power(powerdevil_t)
+policykit_dbus_chat(powerdevil_t)
+powerprofiles_dbus_chat(powerdevil_t)
+systemd_dbus_chat_logind(powerdevil_t)
+files_read_usr_files(powerdevil_t)
+files_map_usr_files(powerdevil_t)
+miscfiles_read_localization(powerdevil_t)
+xdg_search_config_dirs(powerdevil_t)
+xdg_search_data_dirs(powerdevil_t)
+userdom_search_user_runtime(powerdevil_t)
