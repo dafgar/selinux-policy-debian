@@ -73012,7 +73012,7 @@ Domain owning the D-Bus service.
 </summary>
 </param>
 </interface>
-<interface name="local_zotero_read_home_content" lineno="104">
+<interface name="zotero_read_home_content" lineno="104">
 <summary>
 Allow a domain to read documents stored under Zotero's home content
 (e.g. a viewer opening a PDF from Zotero's attachment storage).

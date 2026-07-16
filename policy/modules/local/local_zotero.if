@@ -101,7 +101,7 @@ interface(`local_zotero_dbus_chat',`
 ##	</summary>
 ## </param>
 #
-interface(`local_zotero_read_home_content',`
+interface(`zotero_read_home_content',`
 	gen_require(`
 		type zotero_home_t;
 	')
@@ -110,4 +110,5 @@ interface(`local_zotero_read_home_content',`
 	read_files_pattern($1, zotero_home_t, zotero_home_t)
 	read_lnk_files_pattern($1, zotero_home_t, zotero_home_t)
 	allow $1 zotero_home_t:file map;
+	allow $1 zotero_home_t:dir watch;
 ')
