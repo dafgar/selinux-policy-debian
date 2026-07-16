@@ -15,6 +15,16 @@ mmap_manage_files_pattern(keepassxc_t, keepassxc_home_t, keepassxc_home_t)
 manage_lnk_files_pattern(keepassxc_t, keepassxc_home_t, keepassxc_home_t)
 userdom_user_home_dir_filetrans_user_home_content(keepassxc_t, { dir file lnk_file }, ".keepass2")
 
+# Key files are a static secret backed up once outside the vault dir, unlike
+# the .kdbx database which changes often and stays encrypted at rest. Keep
+# them off local_keepassxc_read_home_content so staff_t (or anything else
+# with generic vault-dir read access) can't read them back out.
+type keepassxc_key_t;
+userdom_user_home_content(keepassxc_key_t)
+
+mmap_manage_files_pattern(keepassxc_t, keepassxc_home_t, keepassxc_key_t)
+manage_lnk_files_pattern(keepassxc_t, keepassxc_home_t, keepassxc_key_t)
+
 auth_use_nsswitch(keepassxc_t)
 dbus_all_session_bus_client(keepassxc_t)
 dbus_write_session_runtime_socket(keepassxc_t)
