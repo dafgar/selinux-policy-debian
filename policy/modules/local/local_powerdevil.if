@@ -46,6 +46,11 @@ template(`powerdevil_role',`
 
 	allow $1_powerdevil_t $3:process sigchld;
 
+	# internal Qt/glib thread wakeup pipe
+	allow $1_powerdevil_t self:fifo_file { read write };
+	# AC/lid/battery hotplug fallback via kernel uevents
+	allow $1_powerdevil_t self:netlink_kobject_uevent_socket read;
+
 	auth_use_nsswitch($1_powerdevil_t)
 	dbus_all_session_bus_client($1_powerdevil_t)
 	dbus_write_session_runtime_socket($1_powerdevil_t)

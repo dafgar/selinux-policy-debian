@@ -72506,7 +72506,7 @@ Role allowed access.
 </summary>
 </param>
 </template>
-<interface name="local_powerdevil_dbus_chat" lineno="81">
+<interface name="local_powerdevil_dbus_chat" lineno="86">
 <summary>
 Send and receive D-Bus messages with PowerDevil, e.g. to inhibit
 screen/system idle during media playback.
