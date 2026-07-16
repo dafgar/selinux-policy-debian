@@ -7,6 +7,14 @@ type keepassxc_exec_t;
 userdom_user_application_domain(keepassxc_t, keepassxc_exec_t)
 role keepassxc_roles types keepassxc_t;
 
+type keepassxc_home_t;
+userdom_user_home_content(keepassxc_home_t)
+
+manage_dirs_pattern(keepassxc_t, keepassxc_home_t, keepassxc_home_t)
+mmap_manage_files_pattern(keepassxc_t, keepassxc_home_t, keepassxc_home_t)
+manage_lnk_files_pattern(keepassxc_t, keepassxc_home_t, keepassxc_home_t)
+userdom_user_home_dir_filetrans_user_home_content(keepassxc_t, { dir file lnk_file }, ".keepass2")
+
 auth_use_nsswitch(keepassxc_t)
 dbus_all_session_bus_client(keepassxc_t)
 dbus_write_session_runtime_socket(keepassxc_t)
