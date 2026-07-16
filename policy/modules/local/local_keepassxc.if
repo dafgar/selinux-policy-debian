@@ -51,3 +51,26 @@ interface(`local_keepassxc_systemd_inherit',`
 
 	local_systemd_inherit_user_service($1, keepassxc_t)
 ')
+
+########################################
+## <summary>
+##	Allow a domain to read documents stored under KeepassXC's home content
+##	(e.g. the interactive user browsing the vault directory directly).
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed read access.
+##	</summary>
+## </param>
+#
+interface(`local_keepassxc_read_home_content',`
+	gen_require(`
+		type keepassxc_home_t;
+	')
+
+	list_dirs_pattern($1, keepassxc_home_t, keepassxc_home_t)
+	read_files_pattern($1, keepassxc_home_t, keepassxc_home_t)
+	read_lnk_files_pattern($1, keepassxc_home_t, keepassxc_home_t)
+	allow $1 keepassxc_home_t:file map;
+	allow $1 keepassxc_home_t:dir watch;
+')
