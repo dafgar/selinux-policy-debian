@@ -37,6 +37,9 @@ manage_lnk_files_pattern(keepassxc_t, keepassxc_xdg_cache_t, keepassxc_xdg_cache
 xdg_cache_filetrans(keepassxc_t, keepassxc_xdg_cache_t, dir, "keepassxc")
 
 gen_require(`
+	type debugfs_t;
+	type src_t;
+	type staff_systemd_t;
 	type tmp_t;
 	type tmpfs_t;
 	type urandom_device_t;
@@ -107,3 +110,11 @@ allow keepassxc_t tmpfs_t:file open;
 allow keepassxc_t tmpfs_t:file { getattr read map write };
 
 dontaudit keepassxc_t urandom_device_t:chr_file write;
+
+# Benign noise: isatty()-style probe on an fd inherited from the launching
+# systemd --user instance (TCGETS ioctl, harmless ENOTTY either way), a
+# stray debugfs USB probe alongside the sysfs/udev enumeration above, and an
+# unidentified src_t dir search.
+dontaudit keepassxc_t staff_systemd_t:unix_stream_socket { getattr ioctl };
+dontaudit keepassxc_t debugfs_t:dir search;
+dontaudit keepassxc_t src_t:dir search;
