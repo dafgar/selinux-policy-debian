@@ -72828,6 +72828,11 @@ Role allowed access to the Spectacle domain.
 </param>
 </interface>
 </module>
+<module name="local_ssh" filename="policy/modules/local/local_ssh.if">
+<summary>
+Local ssh_t policy adjustments for GUI SSH_ASKPASS integration.
+</summary>
+</module>
 <module name="local_staff" filename="policy/modules/local/local_staff.if">
 <summary>
 Local override module with no exported interfaces.

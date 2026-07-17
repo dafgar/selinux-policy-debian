@@ -1,0 +1,40 @@
+policy_module(local_ssh)
+
+gen_require(`
+	type ssh_t;
+	type staff_t;
+	type user_tmp_t;
+')
+
+# KDE's SSH_ASKPASS integration (ssh-askpass, kdialog) runs directly in the
+# ssh_t domain -- ssh execs it in place, there is no domain transition -- to
+# prompt for a key passphrase or host confirmation via a Qt dialog. These
+# rules cover that GUI helper's usual desktop-integration needs, not ssh
+# itself.
+
+# Theme/config lookups on startup, same as any Qt/KDE application.
+xdg_search_config_dirs(ssh_t)
+xdg_search_data_dirs(ssh_t)
+
+# Session D-Bus (notifications, KWallet, theming).
+dbus_all_session_bus_client(ssh_t)
+dbus_write_session_runtime_socket(ssh_t)
+
+# Rendering the dialog window.
+dev_rw_dri(ssh_t)
+dev_read_sysfs(ssh_t)
+
+# Wayland display sockets like wayland-0 are currently labeled user_tmp_t on
+# this system (see local_chromium.te). The askpass dialog needs write access
+# to connect to the compositor socket.
+allow ssh_t user_tmp_t:sock_file write;
+
+# Ptys allocated by the terminal (e.g. konsole) are labeled generic
+# devpts_t rather than user_devpts_t on this system, so ssh's usual
+# userdom_use_user_terminals() grant (user_devpts_t only) doesn't cover them.
+term_use_generic_ptys(ssh_t)
+
+# Xwayland runs merged into staff_t (rootless Xwayland, no separate
+# xserver_t transition) and reads/writes the MIT-SHM segment the askpass
+# dialog creates to render itself.
+allow staff_t ssh_t:shm rw_shm_perms;
