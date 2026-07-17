@@ -24,6 +24,9 @@ keepassxc_role(staff_application_exec_domain, staff_r)
 gkrellm_role(staff_application_exec_domain, staff_r)
 discover_notifier_role(staff_application_exec_domain, staff_r)
 xdg_document_portal_role(staff_application_exec_domain, staff_r)
+# Transition into the base-policy ping domain instead of granting icmp_socket
+# use directly on staff_t.
+netutils_run_ping(staff_t, staff_r)
 local_evince_x11_connect(staff_t)
 local_evince_dbus_chat(staff_t)
 local_evince_gvfs_dbus_chat(staff)
