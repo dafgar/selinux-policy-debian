@@ -47,6 +47,8 @@ dbus_all_session_bus_client(keepassxc_t)
 dbus_connect_system_bus(keepassxc_t)
 dbus_system_bus_client(keepassxc_t)
 dbus_write_session_runtime_socket(keepassxc_t)
+# StatusNotifierItem tray icon registration on the session bus.
+dbus_connect_spec_session_bus(staff, keepassxc_t)
 systemd_dbus_chat_logind(keepassxc_t)
 files_read_usr_files(keepassxc_t)
 files_map_usr_files(keepassxc_t)

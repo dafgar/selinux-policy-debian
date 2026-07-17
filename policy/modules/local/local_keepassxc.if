@@ -93,3 +93,24 @@ interface(`local_keepassxc_stream_connect',`
 
 	allow keepassxc_t $1:unix_stream_socket connectto;
 ')
+
+########################################
+## <summary>
+##	Allow KeepassXC to exchange D-Bus messages with a desktop-owned domain
+##	(e.g. xdg-desktop-portal's Settings interface for theme detection).
+## </summary>
+## <param name="peer_domain">
+##	<summary>
+##	Domain to exchange messages with.
+##	</summary>
+## </param>
+#
+interface(`local_keepassxc_dbus_chat',`
+	gen_require(`
+		type keepassxc_t;
+		class dbus send_msg;
+	')
+
+	allow keepassxc_t $1:dbus send_msg;
+	allow $1 keepassxc_t:dbus send_msg;
+')
