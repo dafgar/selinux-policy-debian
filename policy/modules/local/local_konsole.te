@@ -3,6 +3,7 @@ policy_module(local_konsole)
 gen_require(`
 	type user_devpts_t;
 	type system_dbusd_t;
+	type sysadm_t;
 ')
 
 attribute_role konsole_roles;
@@ -36,3 +37,17 @@ dbus_system_bus_client(konsole_t)
 # lookups; it needs to use that fd regardless of which bus API calls the
 # client actually makes.
 allow system_dbusd_t konsole_t:fd use;
+
+# sudo/sesh (Debian's sudo session helper) elevate staff_r -> sysadm_r from
+# a Konsole shell the same way they already can from a plain staff_t shell
+# (sysadm_role_change(staff_r, staff_t) in roles/staff.te already covers the
+# role change itself; these are the matching type-level grants konsole_t
+# doesn't get for free the way userdom_base_user_template gives staff_t).
+# Scoped narrowly to sysadm_t directly rather than the
+# sysadm_application_exec_domain attribute, which would also pull in every
+# unrelated sysadm-role app-domain transition in roles/sysadm.te.
+allow konsole_t sysadm_t:process { transition noatsecure siginh rlimitinh signal };
+allow sysadm_t konsole_t:fd use;
+allow konsole_t sysadm_t:key create;
+allow konsole_t self:process setkeycreate;
+corecmd_exec_shell(konsole_t)
