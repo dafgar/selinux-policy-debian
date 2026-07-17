@@ -1,0 +1,34 @@
+## <summary>
+##	Local KIO worker domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the KIO worker application domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to the KIO worker domain.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the KIO worker domain.
+##	</summary>
+## </param>
+#
+interface(`kioworker_role',`
+	gen_require(`
+		type kioworker_t, kioworker_exec_t;
+		role $2;
+	')
+
+	role $2 types kioworker_t;
+	domtrans_pattern($1, kioworker_exec_t, kioworker_t)
+
+	allow $1 kioworker_t:process { ptrace signal_perms };
+	allow $1 kioworker_t:fd use;
+	ps_process_pattern($1, kioworker_t)
+
+	allow kioworker_t $1:process sigchld;
+')

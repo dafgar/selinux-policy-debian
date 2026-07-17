@@ -24,6 +24,7 @@ keepassxc_role(staff_application_exec_domain, staff_r)
 gkrellm_role(staff_application_exec_domain, staff_r)
 discover_notifier_role(staff_application_exec_domain, staff_r)
 xdg_document_portal_role(staff_application_exec_domain, staff_r)
+kioworker_role(staff_application_exec_domain, staff_r)
 # Transition into the base-policy ping domain instead of granting icmp_socket
 # use directly on staff_t.
 netutils_run_ping(staff_t, staff_r)

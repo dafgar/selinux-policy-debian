@@ -72367,6 +72367,26 @@ Domain to exchange messages with.
 </param>
 </interface>
 </module>
+<module name="local_kioworker" filename="policy/modules/local/local_kioworker.if">
+<summary>
+Local KIO worker domain interfaces.
+</summary>
+<interface name="kioworker_role" lineno="20">
+<summary>
+Allow a role to transition into the KIO worker application domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to the KIO worker domain.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the KIO worker domain.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_lowmemorymonitor" filename="policy/modules/local/local_lowmemorymonitor.if">
 <summary>
 Local override module with no exported interfaces.

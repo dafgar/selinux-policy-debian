@@ -1,0 +1,8 @@
+policy_module(local_kioworker)
+
+attribute_role kioworker_roles;
+
+type kioworker_t;
+type kioworker_exec_t;
+userdom_user_application_domain(kioworker_t, kioworker_exec_t)
+role kioworker_roles types kioworker_t;
