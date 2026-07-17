@@ -40,6 +40,7 @@ gen_require(`
 	type tmp_t;
 	type tmpfs_t;
 	type urandom_device_t;
+	type usb_device_t;
 ')
 
 auth_use_nsswitch(keepassxc_t)
@@ -75,10 +76,12 @@ userdom_write_user_tmp_sockets(keepassxc_t)
 fs_getattr_all_fs(keepassxc_t)
 
 # YubiKey/hardware-key HID-direct polling: USB device enumeration via sysfs
-# and udev, plus udev hotplug event monitoring.
+# and udev, plus udev hotplug event monitoring, plus the actual raw HID
+# device I/O for touch/challenge-response.
 dev_read_sysfs(keepassxc_t)
 udev_read_runtime_files(keepassxc_t)
 allow keepassxc_t self:netlink_kobject_uevent_socket { create bind read getattr getopt setopt };
+allow keepassxc_t usb_device_t:chr_file { getattr ioctl open read write };
 
 # signull backs the SingleApplication/QLockFile stale-lock check: on startup
 # it reads the PID recorded in the lock file and probes kill(pid, 0) to see
