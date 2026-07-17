@@ -1,0 +1,35 @@
+## <summary>
+##	Local QtWebEngine renderer/sandbox process domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the QtWebEngine process domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to the QtWebEngine
+##	process domain.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the QtWebEngine process domain.
+##	</summary>
+## </param>
+#
+interface(`qtwebengine_role',`
+	gen_require(`
+		type qtwebengine_t, qtwebengine_exec_t;
+		role $2;
+	')
+
+	role $2 types qtwebengine_t;
+	domtrans_pattern($1, qtwebengine_exec_t, qtwebengine_t)
+
+	allow $1 qtwebengine_t:process { ptrace signal_perms };
+	allow $1 qtwebengine_t:fd use;
+	ps_process_pattern($1, qtwebengine_t)
+
+	allow qtwebengine_t $1:process sigchld;
+')

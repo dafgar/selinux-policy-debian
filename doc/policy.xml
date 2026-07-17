@@ -72628,6 +72628,27 @@ Domain allowed access.
 </param>
 </interface>
 </module>
+<module name="local_qtwebengine" filename="policy/modules/local/local_qtwebengine.if">
+<summary>
+Local QtWebEngine renderer/sandbox process domain interfaces.
+</summary>
+<interface name="qtwebengine_role" lineno="21">
+<summary>
+Allow a role to transition into the QtWebEngine process domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to the QtWebEngine
+process domain.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the QtWebEngine process domain.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_rsibreak" filename="policy/modules/local/local_rsibreak.if">
 <summary>
 Local RSIBreak domain interfaces.
