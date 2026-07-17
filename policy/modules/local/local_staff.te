@@ -2,6 +2,7 @@ policy_module(local_staff)
 
 gen_require(`
 	type nsfs_t;
+	type keepassxc_t;
 	type mozilla_t;
 	type staff_dbusd_t;
 	type staff_git_t;
@@ -87,4 +88,5 @@ local_zotero_stream_connect(staff_t)
 local_zotero_read_home_content(staff_t)
 local_keepassxc_read_home_content(staff_t)
 local_keepassxc_stream_connect(staff_t)
+local_clipboard_pipe_write(keepassxc_t, staff_t)
 local_gkrellm_stream_connect(staff_t)

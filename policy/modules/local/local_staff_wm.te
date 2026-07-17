@@ -5,6 +5,7 @@ gen_require(`
 	type chromium_tmpfs_t;
 	type evolution_alarm_t;
 	type evolution_alarm_tmpfs_t;
+	type keepassxc_t;
 	type mozilla_t;
 	type staff_pipewire_t;
 	type staff_wm_t;
@@ -20,6 +21,7 @@ local_clipboard_pipe_write(chromium_t, staff_wm_t)
 local_clipboard_pipe_write(mozilla_t, staff_wm_t)
 local_clipboard_pipe_write(thunderbird_t, staff_wm_t)
 local_clipboard_pipe_write(zotero_t, staff_wm_t)
+local_clipboard_pipe_write(keepassxc_t, staff_wm_t)
 
 allow staff_wm_t evolution_alarm_t:fd use;
 allow staff_wm_t evolution_alarm_tmpfs_t:file { getattr map read write };
