@@ -72767,6 +72767,26 @@ User role prefix that owns the gvfs domain.
 Local secadm role bindings.
 </summary>
 </module>
+<module name="local_spectacle" filename="policy/modules/local/local_spectacle.if">
+<summary>
+Local Spectacle screenshot tool domain interfaces.
+</summary>
+<interface name="spectacle_role" lineno="20">
+<summary>
+Allow a role to transition into the Spectacle application domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to Spectacle.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the Spectacle domain.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_staff" filename="policy/modules/local/local_staff.if">
 <summary>
 Local override module with no exported interfaces.

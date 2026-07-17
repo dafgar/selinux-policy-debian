@@ -1,0 +1,34 @@
+## <summary>
+##	Local Spectacle screenshot tool domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the Spectacle application domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to Spectacle.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the Spectacle domain.
+##	</summary>
+## </param>
+#
+interface(`spectacle_role',`
+	gen_require(`
+		type spectacle_t, spectacle_exec_t;
+		role $2;
+	')
+
+	role $2 types spectacle_t;
+	domtrans_pattern($1, spectacle_exec_t, spectacle_t)
+
+	allow $1 spectacle_t:process { ptrace signal_perms };
+	allow $1 spectacle_t:fd use;
+	ps_process_pattern($1, spectacle_t)
+
+	allow spectacle_t $1:process sigchld;
+')
