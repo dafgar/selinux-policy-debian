@@ -72328,6 +72328,17 @@ Domain allowed read access.
 </summary>
 </param>
 </interface>
+<interface name="local_keepassxc_stream_connect" lineno="89">
+<summary>
+Allow KeepassXC to connect to a desktop-owned stream socket
+(e.g. the Wayland session socket owned by staff_t).
+</summary>
+<param name="peer_domain">
+<summary>
+Domain owning the peer socket.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_lowmemorymonitor" filename="policy/modules/local/local_lowmemorymonitor.if">
 <summary>

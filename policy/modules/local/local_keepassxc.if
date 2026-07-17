@@ -74,3 +74,22 @@ interface(`local_keepassxc_read_home_content',`
 	allow $1 keepassxc_home_t:file map;
 	allow $1 keepassxc_home_t:dir watch;
 ')
+
+########################################
+## <summary>
+##	Allow KeepassXC to connect to a desktop-owned stream socket
+##	(e.g. the Wayland session socket owned by staff_t).
+## </summary>
+## <param name="peer_domain">
+##	<summary>
+##	Domain owning the peer socket.
+##	</summary>
+## </param>
+#
+interface(`local_keepassxc_stream_connect',`
+	gen_require(`
+		type keepassxc_t;
+	')
+
+	allow keepassxc_t $1:unix_stream_socket connectto;
+')
