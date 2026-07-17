@@ -29,11 +29,6 @@ dev_read_sysfs(ssh_t)
 # to connect to the compositor socket.
 allow ssh_t user_tmp_t:sock_file write;
 
-# Ptys allocated by the terminal (e.g. konsole) are labeled generic
-# devpts_t rather than user_devpts_t on this system, so ssh's usual
-# userdom_use_user_terminals() grant (user_devpts_t only) doesn't cover them.
-term_use_generic_ptys(ssh_t)
-
 # Xwayland runs merged into staff_t (rootless Xwayland, no separate
 # xserver_t transition) and reads/writes the MIT-SHM segment the askpass
 # dialog creates to render itself.

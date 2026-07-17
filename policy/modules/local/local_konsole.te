@@ -1,5 +1,9 @@
 policy_module(local_konsole)
 
+gen_require(`
+	type user_devpts_t;
+')
+
 attribute_role konsole_roles;
 
 type konsole_t;
@@ -12,3 +16,11 @@ role konsole_roles types konsole_t;
 # transition into the other per-app role domains, or opening a terminal
 # would silently break launching anything else from inside it.
 userdom_application_exec_domain(konsole_t, staff)
+
+# Konsole itself allocates the pty for each terminal session. staff_t gets a
+# user_devpts_t transition via userdom_base_user_template, but konsole_t (a
+# plain userdom_user_application_domain) doesn't -- so without this, every
+# pty Konsole opens defaults to plain devpts_t, and anything launched inside
+# it (ssh_t, staff_git_t, sysadm elevation, ...) only has terminal grants
+# scoped to user_devpts_t.
+term_create_pty(konsole_t, user_devpts_t)
