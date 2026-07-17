@@ -23,3 +23,24 @@ interface(`local_clipboard_pipe_write',`
 	allow $2 $1:fd use;
 	allow $2 $1:fifo_file write_inherited_fifo_file_perms;
 ')
+
+########################################
+## <summary>
+##	Allow two domains to write into each other's inherited Wayland
+##	clipboard transfer pipe (bidirectional pasting between peers).
+## </summary>
+## <param name="domain_a">
+##	<summary>
+##	First domain.
+##	</summary>
+## </param>
+## <param name="domain_b">
+##	<summary>
+##	Second domain.
+##	</summary>
+## </param>
+#
+interface(`local_clipboard_pipe_write_mutual',`
+	local_clipboard_pipe_write($1, $2)
+	local_clipboard_pipe_write($2, $1)
+')

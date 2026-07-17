@@ -71783,6 +71783,22 @@ Domain writing clipboard data into the owner's inherited pipe.
 </summary>
 </param>
 </interface>
+<interface name="local_clipboard_pipe_write_mutual" lineno="43">
+<summary>
+Allow two domains to write into each other's inherited Wayland
+clipboard transfer pipe (bidirectional pasting between peers).
+</summary>
+<param name="domain_a">
+<summary>
+First domain.
+</summary>
+</param>
+<param name="domain_b">
+<summary>
+Second domain.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_code" filename="policy/modules/local/local_code.if">
 <summary>
