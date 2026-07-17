@@ -72428,6 +72428,26 @@ Role allowed access to the KIO worker domain.
 </param>
 </interface>
 </module>
+<module name="local_konsole" filename="policy/modules/local/local_konsole.if">
+<summary>
+Local Konsole terminal emulator domain interfaces.
+</summary>
+<interface name="konsole_role" lineno="20">
+<summary>
+Allow a role to transition into the Konsole application domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to Konsole.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the Konsole domain.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_kscreenlocker" filename="policy/modules/local/local_kscreenlocker.if">
 <summary>
 Local KScreenLocker greeter domain interfaces.

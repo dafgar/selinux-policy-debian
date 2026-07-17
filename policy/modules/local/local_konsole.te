@@ -1,0 +1,14 @@
+policy_module(local_konsole)
+
+attribute_role konsole_roles;
+
+type konsole_t;
+type konsole_exec_t;
+userdom_user_application_domain(konsole_t, konsole_exec_t)
+role konsole_roles types konsole_t;
+
+# konsole is a pass-through: the shell and anything launched from it (git,
+# sudo, editors, other GUI apps) need the same ability staff_t has to
+# transition into the other per-app role domains, or opening a terminal
+# would silently break launching anything else from inside it.
+userdom_application_exec_domain(konsole_t, staff)

@@ -30,6 +30,7 @@ qtwebengine_role(staff_application_exec_domain, staff_r)
 dolphin_role(staff_application_exec_domain, staff_r)
 spectacle_role(staff_application_exec_domain, staff_r)
 gstpluginscanner_role(staff_application_exec_domain, staff_r)
+konsole_role(staff_application_exec_domain, staff_r)
 # Transition into the base-policy ping domain instead of granting icmp_socket
 # use directly on staff_t.
 netutils_run_ping(staff_t, staff_r)
