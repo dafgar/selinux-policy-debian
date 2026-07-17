@@ -2,6 +2,7 @@ policy_module(local_staff_wm)
 
 gen_require(`
 	type chromium_tmpfs_t;
+	type evince_tmpfs_t;
 	type evolution_alarm_t;
 	type evolution_alarm_tmpfs_t;
 	type staff_pipewire_t;
@@ -15,6 +16,7 @@ local_thunderbird_wm_dontaudit_tmpfs_use(staff_wm_t)
 
 allow staff_wm_t evolution_alarm_t:fd use;
 allow staff_wm_t evolution_alarm_tmpfs_t:file { getattr map read write };
+allow staff_wm_t evince_tmpfs_t:file { getattr map read write };
 allow staff_wm_t chromium_tmpfs_t:file map;
 
 # kwin_wayland updates per-user desktop integration artifacts under ~/.local/share.
