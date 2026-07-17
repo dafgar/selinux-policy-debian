@@ -4,6 +4,7 @@ gen_require(`
 	type user_devpts_t;
 	type system_dbusd_t;
 	type sysadm_t;
+	type setfiles_t;
 ')
 
 attribute_role konsole_roles;
@@ -51,3 +52,9 @@ allow sysadm_t konsole_t:fd use;
 allow konsole_t sysadm_t:key create;
 allow konsole_t self:process setkeycreate;
 corecmd_exec_shell(konsole_t)
+
+# setfiles run from that elevated sysadm_r shell (e.g. `sudo setfiles ...`)
+# domain-transitions sysadm_t -> setfiles_t via seutil_run_setfiles, one hop
+# past the sysadm_t grant above, so it still holds the inherited Konsole pty
+# fd and needs its own use grant.
+allow setfiles_t konsole_t:fd use;
