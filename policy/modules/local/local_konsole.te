@@ -2,6 +2,7 @@ policy_module(local_konsole)
 
 gen_require(`
 	type user_devpts_t;
+	type system_dbusd_t;
 ')
 
 attribute_role konsole_roles;
@@ -24,3 +25,14 @@ userdom_application_exec_domain(konsole_t, staff)
 # it (ssh_t, staff_git_t, sysadm elevation, ...) only has terminal grants
 # scoped to user_devpts_t.
 term_create_pty(konsole_t, user_devpts_t)
+
+# sudo (still running as konsole_t at this point, before its own domain
+# transition) talks to the system bus during PAM session setup -- the
+# Hello handshake and its underlying stream_connect_pattern all need the
+# usual system-bus-client grants.
+dbus_system_bus_client(konsole_t)
+
+# dbus-daemon tracks connected clients via pidfd for peer-credential
+# lookups; it needs to use that fd regardless of which bus API calls the
+# client actually makes.
+allow system_dbusd_t konsole_t:fd use;
