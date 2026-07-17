@@ -72387,6 +72387,27 @@ Role allowed access to the KIO worker domain.
 </param>
 </interface>
 </module>
+<module name="local_kscreenlocker" filename="policy/modules/local/local_kscreenlocker.if">
+<summary>
+Local KScreenLocker greeter domain interfaces.
+</summary>
+<interface name="kscreenlocker_role" lineno="21">
+<summary>
+Allow a role to transition into the KScreenLocker greeter domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to the KScreenLocker
+greeter domain.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the KScreenLocker greeter domain.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_lowmemorymonitor" filename="policy/modules/local/local_lowmemorymonitor.if">
 <summary>
 Local override module with no exported interfaces.

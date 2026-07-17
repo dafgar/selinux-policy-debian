@@ -1,0 +1,35 @@
+## <summary>
+##	Local KScreenLocker greeter domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the KScreenLocker greeter domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to the KScreenLocker
+##	greeter domain.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the KScreenLocker greeter domain.
+##	</summary>
+## </param>
+#
+interface(`kscreenlocker_role',`
+	gen_require(`
+		type kscreenlocker_t, kscreenlocker_exec_t;
+		role $2;
+	')
+
+	role $2 types kscreenlocker_t;
+	domtrans_pattern($1, kscreenlocker_exec_t, kscreenlocker_t)
+
+	allow $1 kscreenlocker_t:process { ptrace signal_perms };
+	allow $1 kscreenlocker_t:fd use;
+	ps_process_pattern($1, kscreenlocker_t)
+
+	allow kscreenlocker_t $1:process sigchld;
+')
