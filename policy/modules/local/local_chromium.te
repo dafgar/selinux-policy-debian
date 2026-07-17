@@ -6,12 +6,9 @@ gen_require(`
 	type chromium_xdg_config_t;
 	type debugfs_t;
 	type devlog_t;
-	type evince_t;
 	type gnome_xdg_config_t;
-	type keepassxc_t;
 	type locale_t;
 	type mozilla_exec_t;
-	type mozilla_t;
 	type pcscd_runtime_t;
 	type pcscd_t;
 	type pulseaudio_tmp_t;
@@ -24,12 +21,10 @@ gen_require(`
 	type syslogd_t;
 	type syslogd_runtime_t;
 	type sysfs_t;
-	type thunderbird_t;
 	type user_tmp_t;
 	type v4l_device_t;
 	type xkb_var_lib_t;
 	type xdg_cache_t;
-	type zotero_t;
 	class dbus send_msg;
 ')
 
@@ -78,13 +73,6 @@ allow chromium_t v4l_device_t:chr_file { getattr ioctl map open read write };
 # process via /dev/udmabuf.
 dev_rw_dma_dev(chromium_t)
 
-# Wayland clipboard transfers can pass an inherited pipe fd from peer desktop
-# applications to Chromium when pasting between confined domains.
-local_clipboard_pipe_write(mozilla_t, chromium_t)
-local_clipboard_pipe_write(thunderbird_t, chromium_t)
-local_clipboard_pipe_write(zotero_t, chromium_t)
-local_clipboard_pipe_write(evince_t, chromium_t)
-local_clipboard_pipe_write(keepassxc_t, chromium_t)
 local_evince_domtrans(chromium_t)
 
 # Chromium inhibits screen/system idle via PowerDevil while media is playing.

@@ -2,9 +2,6 @@ policy_module(local_mozilla)
 
 gen_require(`
 	type alsa_var_lib_t;
-	type chromium_t;
-	type evince_t;
-	type keepassxc_t;
 	type mozilla_t;
 	type mozilla_tmpfs_t;
 	type pipewire_runtime_t;
@@ -50,11 +47,6 @@ dev_rw_dma_dev(mozilla_t)
 # (~/.cache/radv_builtin_shaders) under the generic XDG cache label.
 allow mozilla_t xdg_cache_t:file { create getattr map open read write };
 
-# Wayland clipboard transfers can pass an inherited pipe fd from Chromium to
-# Firefox when pasting between browser domains.
-local_clipboard_pipe_write(chromium_t, mozilla_t)
-local_clipboard_pipe_write(evince_t, mozilla_t)
-local_clipboard_pipe_write(keepassxc_t, mozilla_t)
 local_evince_domtrans(mozilla_t)
 
 # Firefox uses same-domain ptrace within its own process tree for sandboxing

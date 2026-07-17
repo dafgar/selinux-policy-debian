@@ -1,1 +1,48 @@
 policy_module(local_clipboard)
+
+gen_require(`
+	type chromium_t;
+	type evince_t;
+	type keepassxc_t;
+	type mozilla_t;
+	type staff_t;
+	type staff_wm_t;
+	type thunderbird_t;
+	type zotero_t;
+')
+
+# Wayland clipboard transfers can pass an inherited pipe fd between confined
+# desktop application domains when pasting across apps. Centralized here
+# since each pair is granted from the writer's perspective and otherwise
+# ends up duplicated across both domains' own modules.
+
+# chromium_t writes into other domains' inherited clipboard pipes.
+local_clipboard_pipe_write(mozilla_t, chromium_t)
+local_clipboard_pipe_write(thunderbird_t, chromium_t)
+local_clipboard_pipe_write(zotero_t, chromium_t)
+local_clipboard_pipe_write(evince_t, chromium_t)
+local_clipboard_pipe_write(keepassxc_t, chromium_t)
+
+# mozilla_t writes into other domains' inherited clipboard pipes.
+local_clipboard_pipe_write(chromium_t, mozilla_t)
+local_clipboard_pipe_write(evince_t, mozilla_t)
+local_clipboard_pipe_write(keepassxc_t, mozilla_t)
+
+# thunderbird_t writes into other domains' inherited clipboard pipes.
+local_clipboard_pipe_write(chromium_t, thunderbird_t)
+local_clipboard_pipe_write(evince_t, thunderbird_t)
+
+# zotero_t writes into other domains' inherited clipboard pipes.
+local_clipboard_pipe_write(chromium_t, zotero_t)
+
+# staff_t (the interactive user session) writes into other domains'
+# inherited clipboard pipes.
+local_clipboard_pipe_write(keepassxc_t, staff_t)
+
+# staff_wm_t (kwin_wayland) writes into other domains' inherited clipboard
+# pipes.
+local_clipboard_pipe_write(chromium_t, staff_wm_t)
+local_clipboard_pipe_write(mozilla_t, staff_wm_t)
+local_clipboard_pipe_write(thunderbird_t, staff_wm_t)
+local_clipboard_pipe_write(zotero_t, staff_wm_t)
+local_clipboard_pipe_write(keepassxc_t, staff_wm_t)
