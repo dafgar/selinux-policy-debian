@@ -77,6 +77,9 @@ fs_getattr_all_fs(keepassxc_t)
 # whether that process is still alive.
 allow keepassxc_t self:process { execmem getsched setsched setrlimit signull };
 allow keepassxc_t self:fifo_file { getattr read write };
+# A second launch attempt connects to an already-running instance's
+# SingleApplication IPC socket to hand off instead of opening a duplicate.
+allow keepassxc_t self:unix_stream_socket connectto;
 
 # Qt SingleApplication guard: a per-user lock file, a local IPC socket, and a
 # transient staging dir under /tmp with variable names. Keep the generic
