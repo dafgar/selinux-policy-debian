@@ -2,3 +2,4 @@
 
 HOME_DIR/\.keepass2(/.*)?	gen_context(system_u:object_r:keepassxc_home_t,s0)
 HOME_DIR/\.keepass2(/.*)?\.key	gen_context(system_u:object_r:keepassxc_key_t,s0)
+HOME_DIR/\.cache/keepassxc(/.*)?	gen_context(system_u:object_r:keepassxc_xdg_cache_t,s0)
