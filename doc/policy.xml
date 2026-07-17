@@ -73245,7 +73245,18 @@ Domain owning the D-Bus service.
 </summary>
 </param>
 </interface>
-<interface name="local_zotero_read_home_content" lineno="104">
+<interface name="local_zotero_publish_bus_name" lineno="104">
+<summary>
+Allow Zotero to publish its single-instance remote-control D-Bus
+service (org.mozilla.zotero.*) on the per-role session bus.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session D-Bus domain.
+</summary>
+</param>
+</interface>
+<interface name="local_zotero_read_home_content" lineno="125">
 <summary>
 Allow a domain to read documents stored under Zotero's home content
 (e.g. a viewer opening a PDF from Zotero's attachment storage).

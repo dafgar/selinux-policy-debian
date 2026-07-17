@@ -17,6 +17,12 @@ xdg_cache_content(zotero_xdg_cache_t)
 type zotero_tmp_t;
 files_tmp_file(zotero_tmp_t)
 
+# Zotero's built-in Mozilla-style updater stages updates in place under its
+# own install tree (e.g. ~/.local/opt/zotero), including a .parentlock file,
+# separate from the /tmp/MozillaUpdateLock-* lock handled below.
+type zotero_install_t;
+userdom_user_home_content(zotero_install_t)
+
 manage_dirs_pattern(zotero_t, zotero_home_t, zotero_home_t)
 mmap_manage_files_pattern(zotero_t, zotero_home_t, zotero_home_t)
 manage_lnk_files_pattern(zotero_t, zotero_home_t, zotero_home_t)
@@ -33,10 +39,16 @@ manage_files_pattern(zotero_t, zotero_tmp_t, zotero_tmp_t)
 manage_lnk_files_pattern(zotero_t, zotero_tmp_t, zotero_tmp_t)
 files_tmp_filetrans(zotero_t, zotero_tmp_t, { dir file }, "zotero")
 
+manage_dirs_pattern(zotero_t, zotero_install_t, zotero_install_t)
+manage_files_pattern(zotero_t, zotero_install_t, zotero_install_t)
+manage_lnk_files_pattern(zotero_t, zotero_install_t, zotero_install_t)
+
 gen_require(`
 	type etc_t;
 	type mozilla_exec_t;
 	type pcscd_runtime_t;
+	type pulseaudio_tmp_t;
+	type pulseaudio_xdg_config_t;
 	type random_device_t;
 	type root_t;
 	type systemd_machined_runtime_t;
@@ -140,3 +152,17 @@ dontaudit zotero_t mozilla_exec_t:file execute;
 dontaudit zotero_t pcscd_runtime_t:dir search;
 dontaudit zotero_t tpm2_pkcs11_home_t:dir search;
 dontaudit zotero_t thunderbird_exec_t:file execute;
+
+# Zotero's updater shells out to bash to finish applying an update (matches
+# the .parentlock/install-dir writes above -- classic Mozilla-style updater
+# behavior).
+corecmd_exec_shell(zotero_t)
+
+# Same PulseAudio client access already granted to chromium_t.
+allow zotero_t pulseaudio_tmp_t:dir read;
+allow zotero_t pulseaudio_xdg_config_t:dir search;
+allow zotero_t pulseaudio_xdg_config_t:file { lock open read };
+# Unlike the read above, deleting PulseAudio's own runtime dir isn't normal
+# client behavior -- chromium_t doesn't need this either. Mute until there's
+# a reason to think it's more than a harmless failed cleanup attempt.
+dontaudit zotero_t pulseaudio_tmp_t:dir rmdir;

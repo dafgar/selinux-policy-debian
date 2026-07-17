@@ -92,6 +92,27 @@ interface(`local_zotero_dbus_chat',`
 
 ########################################
 ## <summary>
+##	Allow Zotero to publish its single-instance remote-control D-Bus
+##	service (org.mozilla.zotero.*) on the per-role session bus.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session D-Bus domain.
+##	</summary>
+## </param>
+#
+interface(`local_zotero_publish_bus_name',`
+	gen_require(`
+		type zotero_t;
+		type $1_dbusd_t;
+		class dbus acquire_svc;
+	')
+
+	allow zotero_t $1_dbusd_t:dbus acquire_svc;
+')
+
+########################################
+## <summary>
 ##	Allow a domain to read documents stored under Zotero's home content
 ##	(e.g. a viewer opening a PDF from Zotero's attachment storage).
 ## </summary>
