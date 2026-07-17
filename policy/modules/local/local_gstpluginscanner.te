@@ -1,0 +1,8 @@
+policy_module(local_gstpluginscanner)
+
+attribute_role gstpluginscanner_roles;
+
+type gstpluginscanner_t;
+type gstpluginscanner_exec_t;
+userdom_user_application_domain(gstpluginscanner_t, gstpluginscanner_exec_t)
+role gstpluginscanner_roles types gstpluginscanner_t;

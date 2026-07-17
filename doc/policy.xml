@@ -72208,6 +72208,27 @@ User domain receiving the graphical prompt requests.
 </param>
 </interface>
 </module>
+<module name="local_gstpluginscanner" filename="policy/modules/local/local_gstpluginscanner.if">
+<summary>
+Local GStreamer plugin scanner domain interfaces.
+</summary>
+<interface name="gstpluginscanner_role" lineno="21">
+<summary>
+Allow a role to transition into the GStreamer plugin scanner domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to the GStreamer plugin
+scanner domain.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the GStreamer plugin scanner domain.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_gvfs" filename="policy/modules/local/local_gvfs.if">
 <summary>
 Local GVFS domains and helper interfaces.
