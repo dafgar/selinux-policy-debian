@@ -72447,6 +72447,17 @@ Role allowed access to the Konsole domain.
 </summary>
 </param>
 </interface>
+<interface name="local_konsole_systemd_dbus_chat" lineno="47">
+<summary>
+Allow Konsole (and anything launched from it, e.g. systemctl --user)
+to chat over D-Bus with the per-role systemd --user manager.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the systemd --user manager domain.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_kscreenlocker" filename="policy/modules/local/local_kscreenlocker.if">
 <summary>

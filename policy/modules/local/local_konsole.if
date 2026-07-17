@@ -32,3 +32,22 @@ interface(`konsole_role',`
 
 	allow konsole_t $1:process sigchld;
 ')
+
+########################################
+## <summary>
+##	Allow Konsole (and anything launched from it, e.g. systemctl --user)
+##	to chat over D-Bus with the per-role systemd --user manager.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the systemd --user manager domain.
+##	</summary>
+## </param>
+#
+interface(`local_konsole_systemd_dbus_chat',`
+	gen_require(`
+		type konsole_t;
+	')
+
+	systemd_user_manager_dbus_chat($1, konsole_t)
+')
