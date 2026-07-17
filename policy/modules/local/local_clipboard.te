@@ -20,15 +20,13 @@ gen_require(`
 local_clipboard_pipe_write_mutual(chromium_t, mozilla_t)
 local_clipboard_pipe_write_mutual(chromium_t, thunderbird_t)
 local_clipboard_pipe_write_mutual(chromium_t, zotero_t)
+local_clipboard_pipe_write_mutual(evince_t, chromium_t)
+local_clipboard_pipe_write_mutual(evince_t, mozilla_t)
+local_clipboard_pipe_write_mutual(evince_t, thunderbird_t)
+local_clipboard_pipe_write_mutual(keepassxc_t, chromium_t)
+local_clipboard_pipe_write_mutual(keepassxc_t, mozilla_t)
 
-# evince_t and keepassxc_t are always the pipe owner here: peer domains
-# write into their inherited pipe, but they never appear as the writer
-# into someone else's pipe.
-local_clipboard_pipe_write(evince_t, chromium_t)
-local_clipboard_pipe_write(evince_t, mozilla_t)
-local_clipboard_pipe_write(evince_t, thunderbird_t)
-local_clipboard_pipe_write(keepassxc_t, chromium_t)
-local_clipboard_pipe_write(keepassxc_t, mozilla_t)
+# staff_t (the interactive user session) writes into keepassxc_t's pipe.
 local_clipboard_pipe_write(keepassxc_t, staff_t)
 
 # staff_wm_t (kwin_wayland) writes into other domains' inherited clipboard
