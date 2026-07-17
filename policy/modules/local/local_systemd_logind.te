@@ -1,11 +1,20 @@
 policy_module(local_systemd_logind)
 
 gen_require(`
+	attribute domain;
 	type initrc_t;
 	type systemd_logind_t;
 	type tmpfs_t;
 	type usbguard_tmpfs_t;
 ')
+
+# logind tracks cgroup/session membership for every process in a user
+# session (idle detection, loginctl, inhibit accounting, ...) by reading
+# /proc/<pid>/cgroup and holding a pidfd on each tracked process. This is
+# routine for any interactive session domain, not specific to one app, so
+# grant it generically instead of patching per local app module.
+domain_read_all_domains_state(systemd_logind_t)
+allow systemd_logind_t domain:fd use;
 
 # systemd-logind sometimes retains visibility of inherited initrc_t stream
 # sockets during service activation.  Mute only socket metadata probes here.
