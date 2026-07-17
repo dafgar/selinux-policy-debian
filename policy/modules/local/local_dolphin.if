@@ -1,0 +1,34 @@
+## <summary>
+##	Local Dolphin file manager domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the Dolphin application domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to Dolphin.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the Dolphin domain.
+##	</summary>
+## </param>
+#
+interface(`dolphin_role',`
+	gen_require(`
+		type dolphin_t, dolphin_exec_t;
+		role $2;
+	')
+
+	role $2 types dolphin_t;
+	domtrans_pattern($1, dolphin_exec_t, dolphin_t)
+
+	allow $1 dolphin_t:process { ptrace signal_perms };
+	allow $1 dolphin_t:fd use;
+	ps_process_pattern($1, dolphin_t)
+
+	allow dolphin_t $1:process sigchld;
+')

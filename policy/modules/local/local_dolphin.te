@@ -1,0 +1,8 @@
+policy_module(local_dolphin)
+
+attribute_role dolphin_roles;
+
+type dolphin_t;
+type dolphin_exec_t;
+userdom_user_application_domain(dolphin_t, dolphin_exec_t)
+role dolphin_roles types dolphin_t;
