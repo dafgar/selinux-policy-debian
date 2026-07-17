@@ -1,1 +1,1 @@
-/usr/lib/x86_64-linux-gnu/libexec/kioworker		--	gen_context(system_u:object_r:kioworker_exec_t,s0)
+/usr/lib/x86_64-linux-gnu/libexec/kf6/kioworker		--	gen_context(system_u:object_r:kioworker_exec_t,s0)
