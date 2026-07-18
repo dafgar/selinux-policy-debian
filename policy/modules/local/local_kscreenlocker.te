@@ -6,3 +6,8 @@ type kscreenlocker_t;
 type kscreenlocker_exec_t;
 userdom_user_application_domain(kscreenlocker_t, kscreenlocker_exec_t)
 role kscreenlocker_roles types kscreenlocker_t;
+
+dbus_system_bus_client(kscreenlocker_t)
+
+# kscreenlocker queries UPower (battery status, etc.) for the lock screen.
+devicekit_dbus_chat_power(kscreenlocker_t)
