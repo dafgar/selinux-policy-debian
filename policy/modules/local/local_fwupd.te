@@ -18,4 +18,9 @@ manage_dirs_pattern(fwupd_t, fwupd_tmp_t, fwupd_tmp_t)
 manage_files_pattern(fwupd_t, fwupd_tmp_t, fwupd_tmp_t)
 files_tmp_filetrans(fwupd_t, fwupd_tmp_t, file)
 
+# Generic netlink socket for hardware plugin device queries (e.g. nl80211
+# for Wi-Fi/Bluetooth firmware version), alongside the netlink_route_socket
+# and netlink_kobject_uevent_socket already granted in the base module.
+allow fwupd_t self:netlink_generic_socket create_socket_perms;
+
 local_fwupd_dbus_chat(staff_t)
