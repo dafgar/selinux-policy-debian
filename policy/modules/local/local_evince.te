@@ -90,6 +90,11 @@ xdg_search_data_dirs(evince_t)
 xdg_manage_data(evince_t)
 xdg_manage_downloads(evince_t)
 
+# Evince's thumbnailer thread ("pool-1") writes document thumbnails into the
+# shared XDG thumbnail cache (~/.cache/thumbnails), not its own
+# ~/.cache/evince subdirectory, so it needs the generic xdg_cache_t type.
+xdg_manage_cache(evince_t)
+
 # GTK/GSettings config (e.g. ~/.config/dconf, ~/.config/gtk-3.0) is labeled
 # gnome_xdg_config_t, a distinct type from the generic xdg_config_t above.
 gnome_mmap_read_xdg_config_files(evince_t)
@@ -107,6 +112,7 @@ allow evince_t self:unix_dgram_socket create_socket_perms;
 allow evince_t self:fifo_file rw_fifo_file_perms;
 
 gen_require(`
+	type bin_t;
 	type etc_t;
 	type evolution_exec_t;
 	type root_t;
@@ -146,4 +152,10 @@ dontaudit evince_t { var_lib_t var_t }:dir read;
 # journal-stream socket). Evince keeps working normally when these are
 # denied - not a channel it depends on.
 dontaudit evince_t zotero_t:unix_stream_socket { read write };
-dontaudit evince_t staff_systemd_t:unix_stream_socket { read append };
+dontaudit evince_t staff_systemd_t:unix_stream_socket { read append write };
+
+# Clicking a mailto: link inside a PDF tries to exec kmail directly; kmail
+# has no dedicated exec type in this policy so the target is generic bin_t,
+# and granting that would let evince execute any generic binary on the
+# system for a rarely-used feature. Confinement wins over mailto handling.
+dontaudit evince_t bin_t:file execute;
