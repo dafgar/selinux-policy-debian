@@ -54,6 +54,25 @@ interface(`local_gkrellm_stream_connect',`
 
 ########################################
 ## <summary>
+##	Allow a domain to read/write GKrellM's MIT-SHM segment, e.g. the
+##	compositor rendering GKrellM's window.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_gkrellm_shm',`
+	gen_require(`
+		type gkrellm_t;
+	')
+
+	allow $1 gkrellm_t:shm rw_shm_perms;
+')
+
+########################################
+## <summary>
 ## Allow a user systemd instance to launch GKrellM with the usual
 ## inherited-exec process bits.
 ## </summary>
