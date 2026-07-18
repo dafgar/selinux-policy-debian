@@ -27,8 +27,6 @@ gen_tunable(local_gkrellm_read_mail_spool, false)
 
 gen_require(`
 	type user_tmp_t;
-	type xdg_config_t;
-	type syslogd_runtime_t;
 	type hddtemp_port_t;
 	type mail_spool_t;
 ')
@@ -42,7 +40,13 @@ files_map_usr_files(gkrellm_t)
 miscfiles_read_localization(gkrellm_t)
 xdg_search_config_dirs(gkrellm_t)
 xdg_search_data_dirs(gkrellm_t)
+xdg_read_config_files(gkrellm_t)
 userdom_search_user_runtime(gkrellm_t)
+userdom_list_user_home_content(gkrellm_t)
+
+fs_getattr_all_fs(gkrellm_t)
+files_search_locks(gkrellm_t)
+logging_send_syslog_msg(gkrellm_t)
 
 manage_dirs_pattern(gkrellm_t, gkrellm_home_t, gkrellm_home_t)
 manage_files_pattern(gkrellm_t, gkrellm_home_t, gkrellm_home_t)
@@ -64,10 +68,7 @@ allow gkrellm_t self:fifo_file rw_fifo_file_perms;
 miscfiles_read_fonts(gkrellm_t)
 xserver_use_user_fonts(gkrellm_t)
 
-allow gkrellm_t xdg_config_t:file getattr;
-
 kernel_read_device_sysctls(gkrellm_t)
-allow gkrellm_t syslogd_runtime_t:dir search;
 
 corecmd_list_bin(gkrellm_t)
 
