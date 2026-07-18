@@ -1,0 +1,73 @@
+## <summary>
+##	Local Xwayland (rootless X11-compatibility server) domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a domain to launch and own the Xwayland domain, e.g. kwin_wayland
+##	spawning its embedded rootless Xwayland instance.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to Xwayland.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the Xwayland domain.
+##	</summary>
+## </param>
+#
+interface(`local_xwayland_role',`
+	gen_require(`
+		type staff_xwayland_t, xwayland_exec_t;
+		role $2;
+	')
+
+	role $2 types staff_xwayland_t;
+	domtrans_pattern($1, xwayland_exec_t, staff_xwayland_t)
+
+	allow $1 staff_xwayland_t:process { ptrace signal_perms };
+	allow $1 staff_xwayland_t:fd use;
+	ps_process_pattern($1, staff_xwayland_t)
+
+	allow staff_xwayland_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Allow Xwayland to connect to a peer's Wayland compositor socket, e.g.
+##	kwin_wayland's own socket (Xwayland is itself a Wayland client of the
+##	real compositor as well as the X11 server for legacy X11 clients).
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain owning the compositor socket.
+##	</summary>
+## </param>
+#
+interface(`local_xwayland_wayland_connect',`
+	gen_require(`
+		type staff_xwayland_t;
+	')
+
+	allow staff_xwayland_t $1:unix_stream_socket connectto;
+')
+
+########################################
+## <summary>
+##	Allow a domain to read/write Xwayland's MIT-SHM segment.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_xwayland_shm',`
+	gen_require(`
+		type staff_xwayland_t;
+	')
+
+	allow $1 staff_xwayland_t:shm rw_shm_perms;
+')

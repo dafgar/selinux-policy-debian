@@ -1,0 +1,30 @@
+policy_module(local_xwayland)
+
+type staff_xwayland_t;
+type xwayland_exec_t;
+userdom_user_application_domain(staff_xwayland_t, xwayland_exec_t)
+
+# Xwayland's own rendered output is handed to kwin_wayland as a normal
+# Wayland client buffer (Xwayland is simultaneously the X11 server for
+# legacy X11 clients and, from kwin_wayland's point of view, just another
+# Wayland client) - same memfd-backed tmpfs pattern as evince_tmpfs_t.
+type staff_xwayland_tmpfs_t;
+userdom_user_tmpfs_file(staff_xwayland_tmpfs_t)
+
+manage_files_pattern(staff_xwayland_t, staff_xwayland_tmpfs_t, staff_xwayland_tmpfs_t)
+allow staff_xwayland_t staff_xwayland_tmpfs_t:file map;
+fs_tmpfs_filetrans(staff_xwayland_t, staff_xwayland_tmpfs_t, file)
+
+allow staff_xwayland_t self:fifo_file rw_fifo_file_perms;
+allow staff_xwayland_t self:process { getsched signal };
+allow staff_xwayland_t self:unix_dgram_socket create_socket_perms;
+
+# glamor (GPU-accelerated rendering backend) needs DRI + shader cache access,
+# same as evince_t/staff_wm_t.
+dev_rw_dri(staff_xwayland_t)
+xserver_rw_mesa_shader_cache(staff_xwayland_t)
+
+# Connecting to kwin_wayland's Wayland socket file itself (the socket lives
+# under user_tmp_t on this system, same as every other Wayland client).
+userdom_write_user_tmp_sockets(staff_xwayland_t)
+userdom_search_user_runtime(staff_xwayland_t)

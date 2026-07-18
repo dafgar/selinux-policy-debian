@@ -1,3 +1,21 @@
 ## <summary>
 ##	Local ssh_t policy adjustments for GUI SSH_ASKPASS integration.
 ## </summary>
+
+########################################
+## <summary>
+##	Allow a domain to read/write the ssh-askpass dialog's MIT-SHM segment.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_ssh_shm',`
+	gen_require(`
+		type ssh_t;
+	')
+
+	allow $1 ssh_t:shm rw_shm_perms;
+')

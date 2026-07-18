@@ -2,7 +2,6 @@ policy_module(local_ssh)
 
 gen_require(`
 	type ssh_t;
-	type staff_t;
 	type user_tmp_t;
 ')
 
@@ -28,8 +27,3 @@ dev_read_sysfs(ssh_t)
 # this system (see local_chromium.te). The askpass dialog needs write access
 # to connect to the compositor socket.
 allow ssh_t user_tmp_t:sock_file write;
-
-# Xwayland runs merged into staff_t (rootless Xwayland, no separate
-# xserver_t transition) and reads/writes the MIT-SHM segment the askpass
-# dialog creates to render itself.
-allow staff_t ssh_t:shm rw_shm_perms;

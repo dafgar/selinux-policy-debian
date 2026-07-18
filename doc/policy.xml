@@ -72140,7 +72140,18 @@ Domain owning the stream socket.
 </summary>
 </param>
 </interface>
-<interface name="local_gkrellm_systemd_inherit" lineno="66">
+<interface name="local_gkrellm_shm" lineno="66">
+<summary>
+Allow a domain to read/write GKrellM's MIT-SHM segment, e.g. the
+compositor rendering GKrellM's window.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="local_gkrellm_systemd_inherit" lineno="85">
 <summary>
 Allow a user systemd instance to launch GKrellM with the usual
 inherited-exec process bits.
@@ -72843,6 +72854,16 @@ Role allowed access to the Spectacle domain.
 <summary>
 Local ssh_t policy adjustments for GUI SSH_ASKPASS integration.
 </summary>
+<interface name="local_ssh_shm" lineno="15">
+<summary>
+Allow a domain to read/write the ssh-askpass dialog's MIT-SHM segment.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_staff" filename="policy/modules/local/local_staff.if">
 <summary>
@@ -73187,6 +73208,49 @@ usual inherited-exec process bits.
 <param name="role_prefix">
 <summary>
 User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+</module>
+<module name="local_xwayland" filename="policy/modules/local/local_xwayland.if">
+<summary>
+Local Xwayland (rootless X11-compatibility server) domain interfaces.
+</summary>
+<interface name="local_xwayland_role" lineno="21">
+<summary>
+Allow a domain to launch and own the Xwayland domain, e.g. kwin_wayland
+spawning its embedded rootless Xwayland instance.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to Xwayland.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the Xwayland domain.
+</summary>
+</param>
+</interface>
+<interface name="local_xwayland_wayland_connect" lineno="49">
+<summary>
+Allow Xwayland to connect to a peer's Wayland compositor socket, e.g.
+kwin_wayland's own socket (Xwayland is itself a Wayland client of the
+real compositor as well as the X11 server for legacy X11 clients).
+</summary>
+<param name="domain">
+<summary>
+Domain owning the compositor socket.
+</summary>
+</param>
+</interface>
+<interface name="local_xwayland_shm" lineno="67">
+<summary>
+Allow a domain to read/write Xwayland's MIT-SHM segment.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
 </summary>
 </param>
 </interface>
