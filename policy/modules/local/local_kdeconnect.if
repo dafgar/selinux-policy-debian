@@ -35,6 +35,28 @@ interface(`kdeconnect_role',`
 
 ########################################
 ## <summary>
+##	Allow a user session D-Bus daemon to directly activate KDE Connect via
+##	its D-Bus service file (Exec=kdeconnectd, no SystemdService), executing
+##	and transitioning it into the KDE Connect domain.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session D-Bus daemon domain.
+##	</summary>
+## </param>
+#
+interface(`local_kdeconnect_dbus_activation',`
+	gen_require(`
+		type kdeconnect_t, kdeconnect_exec_t;
+		type $1_dbusd_t;
+	')
+
+	domtrans_pattern($1_dbusd_t, kdeconnect_exec_t, kdeconnect_t)
+	ps_process_pattern($1_dbusd_t, kdeconnect_t)
+')
+
+########################################
+## <summary>
 ##	Allow a user systemd instance to monitor and launch KDE Connect.
 ## </summary>
 ## <param name="role_prefix">

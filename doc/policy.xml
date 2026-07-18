@@ -72314,7 +72314,19 @@ Role allowed access to the KDE Connect domain.
 </summary>
 </param>
 </interface>
-<interface name="local_kdeconnect_systemd_inherit" lineno="46">
+<interface name="local_kdeconnect_dbus_activation" lineno="48">
+<summary>
+Allow a user session D-Bus daemon to directly activate KDE Connect via
+its D-Bus service file (Exec=kdeconnectd, no SystemdService), executing
+and transitioning it into the KDE Connect domain.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session D-Bus daemon domain.
+</summary>
+</param>
+</interface>
+<interface name="local_kdeconnect_systemd_inherit" lineno="68">
 <summary>
 Allow a user systemd instance to monitor and launch KDE Connect.
 </summary>
@@ -72324,7 +72336,7 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_kdeconnect_bind_port" lineno="67">
+<interface name="local_kdeconnect_bind_port" lineno="89">
 <summary>
 Allow a domain to use KDE Connect listener sockets directly.
 </summary>
