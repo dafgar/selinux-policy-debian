@@ -34,6 +34,10 @@ term_create_pty(konsole_t, user_devpts_t)
 # usual system-bus-client grants.
 dbus_system_bus_client(konsole_t)
 
+# Opening a new terminal session registers it with logind
+# (CreateSessionWithPIDFD) over the system bus.
+systemd_dbus_chat_logind(konsole_t)
+
 # dbus-daemon tracks connected clients via pidfd for peer-credential
 # lookups; it needs to use that fd regardless of which bus API calls the
 # client actually makes.

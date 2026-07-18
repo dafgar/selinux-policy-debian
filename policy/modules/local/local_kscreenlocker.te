@@ -11,3 +11,6 @@ dbus_system_bus_client(kscreenlocker_t)
 
 # kscreenlocker queries UPower (battery status, etc.) for the lock screen.
 devicekit_dbus_chat_power(kscreenlocker_t)
+
+# The lock screen's power-menu overlay queries logind (CanPowerOff, etc.).
+systemd_dbus_chat_logind(kscreenlocker_t)
