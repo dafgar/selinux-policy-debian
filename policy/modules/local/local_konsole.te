@@ -62,3 +62,7 @@ corecmd_exec_shell(konsole_t)
 # past the sysadm_t grant above, so it still holds the inherited Konsole pty
 # fd and needs its own use grant.
 allow setfiles_t konsole_t:fd use;
+
+# systemd-tty-ask-password-agent, run from that elevated sysadm_r shell, also
+# inherits the Konsole pty fd (same one-hop situation as setfiles_t above).
+systemd_use_passwd_agent_fds(konsole_t)
