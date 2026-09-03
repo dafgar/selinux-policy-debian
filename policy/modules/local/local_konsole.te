@@ -2,9 +2,7 @@ policy_module(local_konsole)
 
 gen_require(`
 	type user_devpts_t;
-	type system_dbusd_t;
 	type sysadm_t;
-	type setfiles_t;
 ')
 
 attribute_role konsole_roles;
@@ -19,6 +17,14 @@ role konsole_roles types konsole_t;
 # transition into the other per-app role domains, or opening a terminal
 # would silently break launching anything else from inside it.
 userdom_application_exec_domain(konsole_t, staff)
+
+# Konsole is an interactive terminal emulator, the same role staff_t and
+# sysadm_t already play (userdom_restricted_user_template calls this for
+# both). Marking konsole_t's fds as privfd lets any domain that already
+# calls domain_use_interactive_fds() -- system_dbusd_t, setfiles_t,
+# checkpolicy_t, newrole_t, run_init_t, ... -- inherit them without a
+# bespoke allow rule per caller.
+domain_interactive_fd(konsole_t)
 
 # Konsole itself allocates the pty for each terminal session. staff_t gets a
 # user_devpts_t transition via userdom_base_user_template, but konsole_t (a
@@ -38,11 +44,6 @@ dbus_system_bus_client(konsole_t)
 # (CreateSessionWithPIDFD) over the system bus.
 systemd_dbus_chat_logind(konsole_t)
 
-# dbus-daemon tracks connected clients via pidfd for peer-credential
-# lookups; it needs to use that fd regardless of which bus API calls the
-# client actually makes.
-allow system_dbusd_t konsole_t:fd use;
-
 # sudo/sesh (Debian's sudo session helper) elevate staff_r -> sysadm_r from
 # a Konsole shell the same way they already can from a plain staff_t shell
 # (sysadm_role_change(staff_r, staff_t) in roles/staff.te already covers the
@@ -57,12 +58,7 @@ allow konsole_t sysadm_t:key create;
 allow konsole_t self:process setkeycreate;
 corecmd_exec_shell(konsole_t)
 
-# setfiles run from that elevated sysadm_r shell (e.g. `sudo setfiles ...`)
-# domain-transitions sysadm_t -> setfiles_t via seutil_run_setfiles, one hop
-# past the sysadm_t grant above, so it still holds the inherited Konsole pty
-# fd and needs its own use grant.
-allow setfiles_t konsole_t:fd use;
-
 # systemd-tty-ask-password-agent, run from that elevated sysadm_r shell, also
-# inherits the Konsole pty fd (same one-hop situation as setfiles_t above).
+# inherits the Konsole pty fd (same one-hop situation as the sysadm_t grant
+# above -- this one's a hardcoded allow in the interface, not privfd-based).
 systemd_use_passwd_agent_fds(konsole_t)
