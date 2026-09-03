@@ -40,8 +40,9 @@ allow chromium_t security_t:filesystem getattr;
 allow chromium_t selinux_config_t:dir search;
 allow chromium_t proc_t:file read;
 dev_getattr_sysfs(chromium_t)
-allow chromium_t sysfs_t:file read;
-allow chromium_t sysfs_t:lnk_file read;
+allow chromium_t sysfs_t:dir read;
+allow chromium_t sysfs_t:file { open getattr read };
+allow chromium_t sysfs_t:lnk_file { getattr read };
 allow chromium_t xkb_var_lib_t:dir { getattr read search };
 allow chromium_t xkb_var_lib_t:file { getattr map open read };
 
