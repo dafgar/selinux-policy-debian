@@ -4,33 +4,94 @@
 
 ########################################
 ## <summary>
-##	Allow a role to transition into the Konsole application domain.
+##	Role access for a role Konsole terminal emulator domain.
 ## </summary>
-## <param name="source_domain">
+## <param name="role_prefix">
 ##	<summary>
-##	Domain allowed to execute and transition to Konsole.
+##	The prefix of the user role, for example staff or user.
+##	</summary>
+## </param>
+## <param name="user_domain">
+##	<summary>
+##	User domain for the role.
+##	</summary>
+## </param>
+## <param name="user_exec_domain">
+##	<summary>
+##	User exec domain for execute and transition access.
 ##	</summary>
 ## </param>
 ## <param name="role">
 ##	<summary>
-##	Role allowed access to the Konsole domain.
+##	Role allowed access.
 ##	</summary>
 ## </param>
 #
-interface(`konsole_role',`
+template(`konsole_role',`
 	gen_require(`
-		type konsole_t, konsole_exec_t;
-		role $2;
+		role $4;
+		attribute $3;
+		type konsole_exec_t;
+		type user_devpts_t;
+		type $2;
 	')
 
-	role $2 types konsole_t;
-	domtrans_pattern($1, konsole_exec_t, konsole_t)
+	type $1_konsole_t;
+	userdom_user_application_domain($1_konsole_t, konsole_exec_t)
+	role $4 types $1_konsole_t;
 
-	allow $1 konsole_t:process { ptrace signal_perms };
-	allow $1 konsole_t:fd use;
-	ps_process_pattern($1, konsole_t)
+	domtrans_pattern($3, konsole_exec_t, $1_konsole_t)
 
-	allow konsole_t $1:process sigchld;
+	allow $3 $1_konsole_t:process { ptrace signal_perms };
+	allow $3 $1_konsole_t:fd use;
+	ps_process_pattern($3, $1_konsole_t)
+
+	allow $1_konsole_t $3:process sigchld;
+
+	# konsole is a pass-through: the shell and anything launched from it
+	# (git, sudo, editors, other GUI apps) need the same ability $2 has to
+	# transition into the other per-app role domains, or opening a terminal
+	# would silently break launching anything else from inside it.
+	userdom_application_exec_domain($1_konsole_t, $1)
+
+	# Konsole is an interactive terminal emulator, the same role $2 and
+	# sysadm_t already play (userdom_restricted_user_template calls this for
+	# both). Marking $1_konsole_t as privfd lets any domain that already
+	# calls domain_use_interactive_fds() -- system_dbusd_t, setfiles_t,
+	# checkpolicy_t, newrole_t, run_init_t, ... -- inherit its fds without
+	# a bespoke allow rule per caller.
+	domain_interactive_fd($1_konsole_t)
+
+	# Konsole itself allocates the pty for each terminal session. $2 gets a
+	# user_devpts_t transition via userdom_base_user_template, but
+	# $1_konsole_t (a plain userdom_user_application_domain) does not -- so
+	# without this, every pty Konsole opens defaults to plain devpts_t, and
+	# anything launched inside it only has terminal grants scoped to
+	# user_devpts_t.
+	term_create_pty($1_konsole_t, user_devpts_t)
+
+	# Konsole itself needs the system-bus-client Hello handshake and its
+	# underlying stream_connect_pattern before it can chat with logind below.
+	dbus_system_bus_client($1_konsole_t)
+
+	# Opening a new terminal session registers it with logind
+	# (CreateSessionWithPIDFD) over the system bus.
+	systemd_dbus_chat_logind($1_konsole_t)
+
+	# Only /usr/bin/konsole itself should carry $1_konsole_t. The
+	# interactive shell it forks per session/tab transitions back to $2
+	# immediately on exec, so everything launched from that shell runs as a
+	# normal $2 process (using the app-domain-transition rules $2 already
+	# has) instead of inheriting the Konsole pty/fd/dbus/logind grants
+	# above.
+	corecmd_shell_domtrans($1_konsole_t, $2)
+
+	# systemd-tty-ask-password-agent, run from that elevated sysadm_r shell,
+	# still inherits the original Konsole pty fd (fd-use checks the domain
+	# that opened the fd, i.e. $1_konsole_t, regardless of how many further
+	# transitions the process has been through since). This is a hardcoded
+	# allow in the interface, not privfd-based.
+	systemd_use_passwd_agent_fds($1_konsole_t)
 ')
 
 ########################################
@@ -40,14 +101,15 @@ interface(`konsole_role',`
 ## </summary>
 ## <param name="role_prefix">
 ##	<summary>
-##	User role prefix that owns the systemd --user manager domain.
+##	User role prefix that owns both the systemd --user manager domain and
+##	the Konsole domain.
 ##	</summary>
 ## </param>
 #
 interface(`local_konsole_systemd_dbus_chat',`
 	gen_require(`
-		type konsole_t;
+		type $1_konsole_t;
 	')
 
-	systemd_user_manager_dbus_chat($1, konsole_t)
+	systemd_user_manager_dbus_chat($1, $1_konsole_t)
 ')
