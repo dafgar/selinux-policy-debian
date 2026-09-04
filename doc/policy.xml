@@ -73129,6 +73129,11 @@ Domain allowed access.
 </param>
 </interface>
 </module>
+<module name="local_udev" filename="policy/modules/local/local_udev.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
+</module>
 <module name="local_usbguard" filename="policy/modules/local/local_usbguard.if">
 <summary>
 Local USBGuard noise suppressions.
