@@ -3,6 +3,7 @@ policy_module(local_fsadm)
 gen_require(`
 	type fsadm_t;
 	type dmidecode_exec_t;
+	type udev_runtime_t;
 ')
 
 # Disk-prep helper scripts run under fsadm_t (e.g. via parted/partprobe) probe
@@ -14,9 +15,14 @@ can_exec(fsadm_t, dmidecode_exec_t)
 # partprobe queries kernel SysV IPC info on startup; standard util-linux probe.
 kernel_get_sysvipc_info(fsadm_t)
 
-# udevadm settle opens a netlink socket to the kernel's SELinux subsystem.
-allow fsadm_t self:netlink_selinux_socket create;
+# udevadm settle opens and binds a netlink socket to the kernel's SELinux
+# subsystem.
+allow fsadm_t self:netlink_selinux_socket create_socket_perms;
 
 # udevadm settle/trigger consults file_contexts substitution rules for
 # device relabeling during coldplug.
 seutil_read_file_contexts(fsadm_t)
+
+# udevadm settle writes to udevd's control socket to talk to the running
+# daemon.
+write_sock_files_pattern(fsadm_t, udev_runtime_t, udev_runtime_t)
