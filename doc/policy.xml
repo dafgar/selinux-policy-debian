@@ -72755,6 +72755,37 @@ Role allowed access.
 </param>
 </template>
 </module>
+<module name="local_plasmashell" filename="policy/modules/local/local_plasmashell.if">
+<summary>
+Local Plasma shell (plasmashell) domain interfaces.
+</summary>
+<interface name="plasmashell_role" lineno="20">
+<summary>
+Allow a role to transition into the plasmashell application domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to plasmashell.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the plasmashell domain.
+</summary>
+</param>
+</interface>
+<interface name="local_plasmashell_systemd_inherit" lineno="47">
+<summary>
+Allow a user systemd instance to launch plasmashell with the usual
+inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_plymouth" filename="policy/modules/local/local_plymouth.if">
 <summary>
 Local override module with no exported interfaces.
