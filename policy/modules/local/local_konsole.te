@@ -2,7 +2,7 @@ policy_module(local_konsole)
 
 gen_require(`
 	type user_devpts_t;
-	type sysadm_t;
+	type staff_t;
 ')
 
 attribute_role konsole_roles;
@@ -34,31 +34,24 @@ domain_interactive_fd(konsole_t)
 # scoped to user_devpts_t.
 term_create_pty(konsole_t, user_devpts_t)
 
-# sudo (still running as konsole_t at this point, before its own domain
-# transition) talks to the system bus during PAM session setup -- the
-# Hello handshake and its underlying stream_connect_pattern all need the
-# usual system-bus-client grants.
+# Konsole itself needs the system-bus-client Hello handshake and its
+# underlying stream_connect_pattern before it can chat with logind below.
 dbus_system_bus_client(konsole_t)
 
 # Opening a new terminal session registers it with logind
 # (CreateSessionWithPIDFD) over the system bus.
 systemd_dbus_chat_logind(konsole_t)
 
-# sudo/sesh (Debian's sudo session helper) elevate staff_r -> sysadm_r from
-# a Konsole shell the same way they already can from a plain staff_t shell
-# (sysadm_role_change(staff_r, staff_t) in roles/staff.te already covers the
-# role change itself; these are the matching type-level grants konsole_t
-# doesn't get for free the way userdom_base_user_template gives staff_t).
-# Scoped narrowly to sysadm_t directly rather than the
-# sysadm_application_exec_domain attribute, which would also pull in every
-# unrelated sysadm-role app-domain transition in roles/sysadm.te.
-allow konsole_t sysadm_t:process { transition noatsecure siginh rlimitinh signal };
-allow sysadm_t konsole_t:fd use;
-allow konsole_t sysadm_t:key create;
-allow konsole_t self:process setkeycreate;
-corecmd_exec_shell(konsole_t)
+# Only /usr/bin/konsole itself should carry konsole_t. The interactive shell
+# it forks per session/tab transitions back to staff_t immediately on exec,
+# so everything launched from that shell runs as a normal staff_t process
+# (using staff_t's own app-domain-transition rules) instead of inheriting
+# Konsole's pty/fd/dbus/logind/sysadm-elevation grants above.
+corecmd_shell_domtrans(konsole_t, staff_t)
 
-# systemd-tty-ask-password-agent, run from that elevated sysadm_r shell, also
-# inherits the Konsole pty fd (same one-hop situation as the sysadm_t grant
-# above -- this one's a hardcoded allow in the interface, not privfd-based).
+# systemd-tty-ask-password-agent, run from that elevated sysadm_r shell,
+# still inherits the original Konsole pty fd (fd-use checks the domain
+# that opened the fd, i.e. konsole_t, regardless of how many further
+# transitions the process has been through since). This one's a hardcoded
+# allow in the interface, not privfd-based.
 systemd_use_passwd_agent_fds(konsole_t)
