@@ -1,6 +1,7 @@
 policy_module(local_xwayland)
 
 gen_require(`
+	type user_tmp_t;
 	type wm_tmpfs_t;
 ')
 
@@ -38,6 +39,14 @@ miscfiles_read_fonts(staff_xwayland_t)
 # under user_tmp_t on this system, same as every other Wayland client).
 userdom_write_user_tmp_sockets(staff_xwayland_t)
 userdom_search_user_runtime(staff_xwayland_t)
+
+# Per-session MIT-MAGIC-COOKIE xauth file (e.g. xauth_yTHdkw under
+# /run/user/<uid>), generated with a random suffix by the session launcher
+# that execs Xwayland. Cannot get a dedicated type via type_transition since
+# the name varies per session; keep this to the exact op observed rather
+# than a broader grant on the shared user_tmp_t type (same tradeoff as the
+# keepassxc lock file in local_keepassxc.te).
+allow staff_xwayland_t user_tmp_t:file getattr;
 
 # KWin's DMA-buf feedback table memfd, e.g. kwin-dmabuf-feedback-table,
 # shared for GPU buffer negotiation - same wm_tmpfs_t pattern as rsibreak_t
