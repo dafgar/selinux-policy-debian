@@ -25,10 +25,17 @@ interface(`qtwebengine_role',`
 	')
 
 	role $2 types qtwebengine_t;
-	domtrans_pattern($1, qtwebengine_exec_t, qtwebengine_t)
+	# QtWebEngine embedders (khelpcenter, systemsettings, mnemosyne, ...)
+	# launch it with no_new_privs set, which requires the nnp_transition
+	# permission in addition to the ordinary exec transition.
+	nnp_domtrans_pattern($1, qtwebengine_exec_t, qtwebengine_t)
 
-	allow $1 qtwebengine_t:process { ptrace signal_perms };
+	allow $1 qtwebengine_t:process { ptrace signal_perms setsched };
 	allow $1 qtwebengine_t:fd use;
+	# Embedder manages the renderer's oom_score_adj, and the two share a
+	# socketpair for the GPU/IPC channel.
+	allow $1 qtwebengine_t:file write;
+	allow $1 qtwebengine_t:unix_stream_socket { read write };
 	ps_process_pattern($1, qtwebengine_t)
 
 	allow qtwebengine_t $1:process sigchld;
