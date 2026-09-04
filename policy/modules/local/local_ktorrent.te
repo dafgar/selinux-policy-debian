@@ -1,0 +1,23 @@
+policy_module(local_ktorrent)
+
+attribute_role ktorrent_roles;
+
+type ktorrent_t;
+type ktorrent_exec_t;
+userdom_user_application_domain(ktorrent_t, ktorrent_exec_t)
+role ktorrent_roles types ktorrent_t;
+can_exec(ktorrent_t, ktorrent_exec_t)
+
+gen_require(`
+	type mount_runtime_t;
+')
+
+# BitTorrent peer-listening socket (default port 6881, unreserved range).
+corenet_tcp_bind_generic_node(ktorrent_t)
+corenet_tcp_bind_all_unreserved_ports(ktorrent_t)
+
+# Solid/KIO device monitoring, so completed downloads can be moved onto
+# newly mounted removable media.
+allow ktorrent_t mount_runtime_t:dir watch;
+
+allow ktorrent_t self:process execmem;

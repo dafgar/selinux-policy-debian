@@ -1,0 +1,34 @@
+## <summary>
+##	Local ktorrent domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the ktorrent application domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to ktorrent.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the ktorrent domain.
+##	</summary>
+## </param>
+#
+interface(`ktorrent_role',`
+	gen_require(`
+		type ktorrent_t, ktorrent_exec_t;
+		role $2;
+	')
+
+	role $2 types ktorrent_t;
+	domtrans_pattern($1, ktorrent_exec_t, ktorrent_t)
+
+	allow $1 ktorrent_t:fd use;
+	allow $1 ktorrent_t:process { ptrace signal_perms };
+	ps_process_pattern($1, ktorrent_t)
+
+	allow ktorrent_t $1:process sigchld;
+')

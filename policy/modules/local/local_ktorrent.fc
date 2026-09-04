@@ -1,0 +1,1 @@
+/usr/bin/ktorrent		--	gen_context(system_u:object_r:ktorrent_exec_t,s0)
