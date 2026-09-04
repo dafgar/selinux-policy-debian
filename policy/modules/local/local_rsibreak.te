@@ -16,9 +16,11 @@ userdom_user_tmpfs_file(rsibreak_tmpfs_t)
 gen_require(`
 	type user_home_t;
 	type staff_systemd_t;
+	type wm_tmpfs_t;
 ')
 
 auth_use_nsswitch(rsibreak_t)
+corecmd_getattr_bin_files(rsibreak_t)
 corecmd_search_bin(rsibreak_t)
 dbus_all_session_bus_client(rsibreak_t)
 dbus_write_session_runtime_socket(rsibreak_t)
@@ -27,11 +29,13 @@ systemd_dbus_chat_logind(rsibreak_t)
 files_read_usr_files(rsibreak_t)
 files_map_usr_files(rsibreak_t)
 fs_getattr_all_fs(rsibreak_t)
+kernel_read_kernel_sysctls(rsibreak_t)
 kernel_read_system_state(rsibreak_t)
 miscfiles_read_fonts(rsibreak_t)
 miscfiles_read_localization(rsibreak_t)
 xdg_search_config_dirs(rsibreak_t)
 xdg_search_data_dirs(rsibreak_t)
+xserver_read_xkb_libs(rsibreak_t)
 xserver_use_user_fonts(rsibreak_t)
 userdom_search_user_runtime(rsibreak_t)
 local_kde_read_config_files(rsibreak_t)
@@ -39,11 +43,16 @@ local_kde_read_config_files(rsibreak_t)
 allow rsibreak_t self:process signal;
 allow rsibreak_t self:fifo_file rw_fifo_file_perms;
 
+# kwin shared keyboard-layout memfd, same grant local_konsole.te/
+# local_safeeyes.te already have for the identical Wayland client buffer.
+allow rsibreak_t wm_tmpfs_t:file { map read write };
+
 userdom_write_user_tmp_sockets(rsibreak_t)
 
-# Fontconfig probes the legacy ~/.fontconfig path (pre-XDG-spec override
-# dir); same cosmetic-only probe local_konsole.if/local_staff.te dontaudit.
-dontaudit rsibreak_t user_home_t:dir search;
+# Fontconfig probes the legacy ~/.fontconfig path, and KDE4 also probes the
+# legacy ~/.kde dir (pre-XDG-spec paths); same cosmetic-only probes
+# local_konsole.if/local_staff.te already dontaudit.
+dontaudit rsibreak_t user_home_t:dir { search getattr };
 
 # isatty()-style probe on an fd inherited from the launching systemd --user
 # instance (TCGETS ioctl, harmless ENOTTY either way); same signature
