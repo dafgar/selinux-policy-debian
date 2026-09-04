@@ -25,6 +25,8 @@ corecmd_getattr_bin_files(rsibreak_t)
 corecmd_search_bin(rsibreak_t)
 dbus_all_session_bus_client(rsibreak_t)
 dbus_write_session_runtime_socket(rsibreak_t)
+dev_read_sysfs(rsibreak_t)
+dev_rw_dma_dev(rsibreak_t)
 dev_rw_dri(rsibreak_t)
 systemd_dbus_chat_logind(rsibreak_t)
 files_read_usr_files(rsibreak_t)
@@ -41,7 +43,7 @@ xserver_use_user_fonts(rsibreak_t)
 userdom_search_user_runtime(rsibreak_t)
 local_kde_read_config_files(rsibreak_t)
 
-allow rsibreak_t self:process signal;
+allow rsibreak_t self:process { getsched signal };
 allow rsibreak_t self:fifo_file rw_fifo_file_perms;
 
 # kwin shared keyboard-layout memfd, same grant local_konsole.te/
