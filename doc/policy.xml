@@ -72480,7 +72480,7 @@ Role allowed access.
 </summary>
 </param>
 </template>
-<interface name="local_konsole_systemd_dbus_chat" lineno="260">
+<interface name="local_konsole_systemd_dbus_chat" lineno="264">
 <summary>
 Allow Konsole (and anything launched from it, e.g. systemctl --user)
 to chat over D-Bus with the per-role systemd --user manager.
@@ -72492,7 +72492,7 @@ the Konsole domain.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_systemd_inherit" lineno="280">
+<interface name="local_konsole_systemd_inherit" lineno="284">
 <summary>
 Allow Konsole to inherit a stream socket fd from the user systemd
 instance during launch, like other user-session applications.
