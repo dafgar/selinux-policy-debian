@@ -35,6 +35,26 @@ interface(`rsibreak_role',`
 
 ########################################
 ## <summary>
+##	Allow bidirectional D-Bus method call/reply between a domain and
+##	RSIBreak.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to exchange D-Bus messages with RSIBreak.
+##	</summary>
+## </param>
+#
+interface(`local_rsibreak_dbus_chat',`
+	gen_require(`
+		type rsibreak_t;
+	')
+
+	allow $1 rsibreak_t:dbus send_msg;
+	allow rsibreak_t $1:dbus send_msg;
+')
+
+########################################
+## <summary>
 ## Allow a user systemd instance to launch RSIBreak with the usual
 ## inherited-exec process bits.
 ## </summary>
