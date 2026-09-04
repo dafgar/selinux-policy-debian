@@ -55,6 +55,25 @@ interface(`local_rsibreak_dbus_chat',`
 
 ########################################
 ## <summary>
+##	Allow RSIBreak to connect directly to an X11 socket owned by another
+##	domain (e.g. staff_t, the compositor/Xwayland on this desktop).
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain owning the X11 socket.
+##	</summary>
+## </param>
+#
+interface(`local_rsibreak_x11_connect',`
+	gen_require(`
+		type rsibreak_t;
+	')
+
+	allow rsibreak_t $1:unix_stream_socket connectto;
+')
+
+########################################
+## <summary>
 ## Allow a user systemd instance to launch RSIBreak with the usual
 ## inherited-exec process bits.
 ## </summary>

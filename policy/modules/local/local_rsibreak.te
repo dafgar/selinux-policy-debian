@@ -15,6 +15,7 @@ userdom_user_tmpfs_file(rsibreak_tmpfs_t)
 
 gen_require(`
 	type user_home_t;
+	type staff_systemd_t;
 ')
 
 auth_use_nsswitch(rsibreak_t)
@@ -38,9 +39,16 @@ local_kde_read_config_files(rsibreak_t)
 allow rsibreak_t self:process signal;
 allow rsibreak_t self:fifo_file rw_fifo_file_perms;
 
+userdom_write_user_tmp_sockets(rsibreak_t)
+
 # Fontconfig probes the legacy ~/.fontconfig path (pre-XDG-spec override
 # dir); same cosmetic-only probe local_konsole.if/local_staff.te dontaudit.
 dontaudit rsibreak_t user_home_t:dir search;
+
+# isatty()-style probe on an fd inherited from the launching systemd --user
+# instance (TCGETS ioctl, harmless ENOTTY either way); same signature
+# local_keepassxc.te/local_devicekit_power.te already dontaudit.
+dontaudit rsibreak_t staff_systemd_t:unix_stream_socket { getattr ioctl };
 
 manage_files_pattern(rsibreak_t, rsibreak_xdg_config_t, rsibreak_xdg_config_t)
 xdg_config_filetrans(rsibreak_t, rsibreak_xdg_config_t, file, "rsibreakrc")

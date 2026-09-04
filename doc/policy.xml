@@ -72833,7 +72833,18 @@ Domain allowed to exchange D-Bus messages with RSIBreak.
 </summary>
 </param>
 </interface>
-<interface name="local_rsibreak_systemd_inherit" lineno="67">
+<interface name="local_rsibreak_x11_connect" lineno="67">
+<summary>
+Allow RSIBreak to connect directly to an X11 socket owned by another
+domain (e.g. staff_t, the compositor/Xwayland on this desktop).
+</summary>
+<param name="domain">
+<summary>
+Domain owning the X11 socket.
+</summary>
+</param>
+</interface>
+<interface name="local_rsibreak_systemd_inherit" lineno="86">
 <summary>
 Allow a user systemd instance to launch RSIBreak with the usual
 inherited-exec process bits.
