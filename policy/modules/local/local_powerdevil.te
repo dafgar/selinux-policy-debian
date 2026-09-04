@@ -26,3 +26,12 @@ miscfiles_read_localization(powerdevil_t)
 xdg_search_config_dirs(powerdevil_t)
 xdg_search_data_dirs(powerdevil_t)
 userdom_search_user_runtime(powerdevil_t)
+
+# DDC/CI external-monitor brightness control (watch_displays thread) probing
+# DRM connectors' i2c buses and the i2c device nodes themselves
+dev_read_sysfs(powerdevil_t)
+term_getattr_unallocated_ttys(powerdevil_t)
+logging_send_syslog_msg(powerdevil_t)
+xdg_read_cache_files(powerdevil_t)
+xdg_read_config_files(powerdevil_t)
+mount_list_runtime(powerdevil_t)
