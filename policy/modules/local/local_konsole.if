@@ -34,6 +34,9 @@ template(`konsole_role',`
 		type konsole_exec_t;
 		type user_devpts_t;
 		type xdg_data_t;
+		type user_home_t;
+		type ssh_home_t;
+		type bin_t;
 		type $2;
 		type $1_dbusd_t;
 		type $1_sudo_t;
@@ -110,9 +113,13 @@ template(`konsole_role',`
 	# (CreateSessionWithPIDFD) over the system bus.
 	systemd_dbus_chat_logind($1_konsole_t)
 
-	# Font rendering, locale, and generic /etc content -- needed just to draw
-	# the Konsole UI. Same set local_evince.te/local_zotero.te grant.
+	# Font rendering, locale, and generic /etc and /usr content -- needed just
+	# to draw the Konsole UI (icon-theme.cache, kf5-settings/kdeglobals
+	# fallback, qt translations live under usr_t). Same set
+	# local_evince.te/local_zotero.te/local_discover_notifier.te grant.
 	files_read_etc_files($1_konsole_t)
+	files_read_usr_files($1_konsole_t)
+	files_map_usr_files($1_konsole_t)
 	miscfiles_read_fonts($1_konsole_t)
 	miscfiles_read_localization($1_konsole_t)
 	xserver_use_user_fonts($1_konsole_t)
@@ -122,6 +129,14 @@ template(`konsole_role',`
 	xserver_rw_mesa_shader_cache($1_konsole_t)
 	dev_rw_dri($1_konsole_t)
 	dev_read_sysfs($1_konsole_t)
+
+	# glib g_get_boot_id() / machine-id fallback, and Qt/KCrash checking
+	# /proc/sys/kernel/core_pattern.
+	kernel_read_kernel_sysctls($1_konsole_t)
+
+	# Konsole (like most Qt/KIO apps) statfs()es mounted filesystems, e.g. to
+	# decide whether a path supports trash/reflink or to show free space.
+	fs_getattr_all_fs($1_konsole_t)
 
 	# Konsole reads KDE/XDG config (kdeglobals, notifyrc) and manages its own
 	# bookmarks.xml / konsolestaterc.lock under xdg_data_t, rewriting the
@@ -144,6 +159,25 @@ template(`konsole_role',`
 	dontaudit $1_konsole_t $1_sudo_t:dir search;
 	dontaudit $1_konsole_t $1_sudo_t:file { getattr open read };
 	dontaudit $1_konsole_t $1_sudo_t:lnk_file read;
+
+	# Fontconfig probes the legacy ~/.fontconfig path (pre-XDG-spec override
+	# dir), which is plain user_home_t like any other uncategorized home
+	# content. Same call local_staff.te already makes for the equivalent
+	# probing $2 itself does against ssh_home_t below: understood, noisy,
+	# harmless to lose -- not core Konsole functionality.
+	dontaudit $1_konsole_t user_home_t:dir search;
+	dontaudit $1_konsole_t user_home_t:file read;
+
+	# Konsole watches ~/.ssh/config for its SSH-manager sidebar (a
+	# convenience feature, not core SSH use) -- same feature local_staff.te
+	# already dontaudits for $2 itself.
+	dontaudit $1_konsole_t ssh_home_t:dir search;
+	dontaudit $1_konsole_t ssh_home_t:file { getattr open read watch };
+
+	# KCrash startup self-check exec probe. Losing this just means a crash
+	# falls back to no dialog instead of drkonqi; not worth widening
+	# $1_konsole_t with an unconfined exec.
+	dontaudit $1_konsole_t bin_t:file execute;
 
 	# Only /usr/bin/konsole itself should carry $1_konsole_t. The
 	# interactive shell it forks per session/tab transitions back to $2
@@ -199,4 +233,5 @@ interface(`local_konsole_systemd_inherit',`
 	')
 
 	local_systemd_inherit_user_service($1, $1_konsole_t)
+	allow $1_konsole_t $1_systemd_t:unix_stream_socket { getattr ioctl };
 ')
