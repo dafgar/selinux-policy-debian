@@ -1,0 +1,31 @@
+policy_module(local_mnemosyne)
+
+attribute_role mnemosyne_roles;
+
+type mnemosyne_t;
+type mnemosyne_exec_t;
+userdom_user_application_domain(mnemosyne_t, mnemosyne_exec_t)
+role mnemosyne_roles types mnemosyne_t;
+
+# Mnemosyne (a Python/PyQt flashcard app) embeds a QtWebEngine view for
+# card rendering, sandboxed via a user namespace; the sandboxed renderer
+# itself transitions into qtwebengine_t, wired from local_staff.te via
+# qtwebengine_role(mnemosyne_t, staff_r). Same pattern as khelpcenter and
+# systemsettings.
+local_qtwebengine_embed(mnemosyne_t)
+
+files_read_usr_files(mnemosyne_t)
+files_map_usr_files(mnemosyne_t)
+miscfiles_read_localization(mnemosyne_t)
+miscfiles_read_fonts(mnemosyne_t)
+xdg_search_config_dirs(mnemosyne_t)
+xdg_read_config_files(mnemosyne_t)
+xdg_search_data_dirs(mnemosyne_t)
+xdg_manage_data(mnemosyne_t)
+dbus_all_session_bus_client(mnemosyne_t)
+dbus_write_session_runtime_socket(mnemosyne_t)
+systemd_dbus_chat_logind(mnemosyne_t)
+userdom_search_user_home_dirs(mnemosyne_t)
+userdom_search_user_runtime(mnemosyne_t)
+xserver_use_user_fonts(mnemosyne_t)
+xserver_rw_mesa_shader_cache(mnemosyne_t)

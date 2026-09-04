@@ -2,6 +2,7 @@ policy_module(local_staff)
 
 gen_require(`
 	type khelpcenter_t;
+	type mnemosyne_t;
 	type nsfs_t;
 	type mozilla_t;
 	type staff_dbusd_t;
@@ -42,6 +43,8 @@ khelpcenter_role(staff_application_exec_domain, staff_r)
 qtwebengine_role(khelpcenter_t, staff_r)
 systemsettings_role(staff_application_exec_domain, staff_r)
 qtwebengine_role(systemsettings_t, staff_r)
+mnemosyne_role(staff_application_exec_domain, staff_r)
+qtwebengine_role(mnemosyne_t, staff_r)
 dolphin_role(staff_application_exec_domain, staff_r)
 spectacle_role(staff_application_exec_domain, staff_r)
 gstpluginscanner_role(staff_application_exec_domain, staff_r)

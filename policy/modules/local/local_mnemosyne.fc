@@ -1,0 +1,7 @@
+# The AVC log shows exe="/usr/bin/python3.13" with comm="mnemosyne", which
+# is what /proc/pid/exe resolves to for a shebang script re-exec through the
+# interpreter -- the invoked file (and the source of comm) is the launcher
+# script below, not the shared python3.13 binary itself. Path unverified:
+# the mnemosyne package is not installed on this build host, so this is the
+# conventional Debian packaging location, not a confirmed one.
+/usr/bin/mnemosyne		--	gen_context(system_u:object_r:mnemosyne_exec_t,s0)
