@@ -2,6 +2,7 @@ policy_module(local_udev)
 
 gen_require(`
 	type udevadm_t;
+	type udev_t;
 ')
 
 # udevadm settle opens and binds a netlink socket to the kernel's SELinux
@@ -11,3 +12,7 @@ allow udevadm_t self:netlink_selinux_socket create_socket_perms;
 # udevadm settle opens newly-created block devices directly to probe/wait
 # for them during coldplug.
 storage_raw_rw_fixed_disk(udevadm_t)
+
+# udev seat/ACL rules (e.g. 73-seat-late.rules) query logind for the active
+# session list over dbus when assigning device ACLs on hotplug.
+systemd_dbus_chat_logind(udev_t)
