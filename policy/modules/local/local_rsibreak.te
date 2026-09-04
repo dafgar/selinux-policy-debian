@@ -39,11 +39,12 @@ miscfiles_read_localization(rsibreak_t)
 xdg_search_config_dirs(rsibreak_t)
 xdg_search_data_dirs(rsibreak_t)
 xserver_read_xkb_libs(rsibreak_t)
+xserver_rw_mesa_shader_cache(rsibreak_t)
 xserver_use_user_fonts(rsibreak_t)
 userdom_search_user_runtime(rsibreak_t)
 local_kde_read_config_files(rsibreak_t)
 
-allow rsibreak_t self:process { getsched signal };
+allow rsibreak_t self:process { getsched setsched signal };
 allow rsibreak_t self:fifo_file rw_fifo_file_perms;
 
 # kwin shared keyboard-layout memfd, same grant local_konsole.te/
