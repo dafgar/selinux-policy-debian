@@ -21,9 +21,8 @@ userdom_search_user_runtime(discover_notifier_t)
 kernel_read_kernel_sysctls(discover_notifier_t)
 
 # reads ~/.config/kdeglobals, ~/.config/kdedefaults/kdeglobals for Qt/KDE
-# theming; xdg_config_t is generic, so this is shared with every other
-# xdg_config_t reader. If KDE config ever gets its own type, narrow this.
-xdg_read_config_files(discover_notifier_t)
+# theming.
+local_kde_read_config_files(discover_notifier_t)
 
 # Discover's Flatpak update check: reads the user + system ostree repo
 # metadata (~/.local/share/flatpak/repo, /var/lib/flatpak/repo/config) and
