@@ -1,5 +1,9 @@
 policy_module(local_xwayland)
 
+gen_require(`
+	type wm_tmpfs_t;
+')
+
 type staff_xwayland_t;
 type xwayland_exec_t;
 userdom_user_application_domain(staff_xwayland_t, xwayland_exec_t)
@@ -28,3 +32,8 @@ xserver_rw_mesa_shader_cache(staff_xwayland_t)
 # under user_tmp_t on this system, same as every other Wayland client).
 userdom_write_user_tmp_sockets(staff_xwayland_t)
 userdom_search_user_runtime(staff_xwayland_t)
+
+# KWin's DMA-buf feedback table memfd, e.g. kwin-dmabuf-feedback-table,
+# shared for GPU buffer negotiation - same wm_tmpfs_t pattern as rsibreak_t
+# and safeeyes_t.
+allow staff_xwayland_t wm_tmpfs_t:file { map read write };
