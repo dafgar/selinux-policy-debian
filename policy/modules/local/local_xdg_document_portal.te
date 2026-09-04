@@ -17,3 +17,9 @@ miscfiles_read_localization(xdg_document_portal_t)
 xdg_search_config_dirs(xdg_document_portal_t)
 xdg_search_data_dirs(xdg_document_portal_t)
 userdom_search_user_runtime(xdg_document_portal_t)
+
+gen_require(`
+	type fuse_device_t;
+')
+
+allow xdg_document_portal_t fuse_device_t:chr_file read;
