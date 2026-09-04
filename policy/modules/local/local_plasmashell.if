@@ -1,0 +1,53 @@
+## <summary>
+##	Local Plasma shell (plasmashell) domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the plasmashell application domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to plasmashell.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the plasmashell domain.
+##	</summary>
+## </param>
+#
+interface(`plasmashell_role',`
+	gen_require(`
+		type plasmashell_t, plasmashell_exec_t;
+		role $2;
+	')
+
+	role $2 types plasmashell_t;
+	domtrans_pattern($1, plasmashell_exec_t, plasmashell_t)
+
+	allow $1 plasmashell_t:fd use;
+	allow $1 plasmashell_t:process { ptrace signal_perms };
+	ps_process_pattern($1, plasmashell_t)
+
+	allow plasmashell_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Allow a user systemd instance to launch plasmashell with the usual
+##	inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_plasmashell_systemd_inherit',`
+	gen_require(`
+		type plasmashell_t;
+	')
+
+	local_systemd_inherit_user_service($1, plasmashell_t)
+')

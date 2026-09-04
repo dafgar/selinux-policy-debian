@@ -1,0 +1,75 @@
+policy_module(local_plasmashell)
+
+attribute_role plasmashell_roles;
+
+type plasmashell_t;
+type plasmashell_exec_t;
+userdom_user_application_domain(plasmashell_t, plasmashell_exec_t)
+role plasmashell_roles types plasmashell_t;
+can_exec(plasmashell_t, plasmashell_exec_t)
+
+gen_require(`
+	type chromium_t;
+	type chromium_tmp_t;
+	type mozilla_t;
+	type xdg_config_t;
+')
+
+# Plasma's task-manager/system-monitor applets enumerate every running user
+# process for CPU%/state, so this genuinely needs the "all domains"
+# process-introspection trio rather than a per-peer allow.
+domain_read_all_domains_state(plasmashell_t)
+domain_getattr_all_domains(plasmashell_t)
+domain_getsched_all_domains(plasmashell_t)
+
+# Wayland drag-and-drop: dragging a link/image out of Chromium or Firefox
+# onto the desktop/panel hands Plasma the source's dnd buffer fd and (for
+# Chromium) a preview pixmap staged under chromium_tmp_t, read by the
+# QQuickPixmapReader thread.
+allow plasmashell_t chromium_t:fd use;
+allow plasmashell_t mozilla_t:fifo_file write;
+read_files_pattern(plasmashell_t, chromium_tmp_t, chromium_tmp_t)
+
+allow plasmashell_t xdg_config_t:file watch;
+
+kernel_read_system_state(plasmashell_t)
+miscfiles_read_localization(plasmashell_t)
+miscfiles_read_fonts(plasmashell_t)
+files_read_etc_files(plasmashell_t)
+files_read_usr_files(plasmashell_t)
+files_map_usr_files(plasmashell_t)
+fs_getattr_all_fs(plasmashell_t)
+dev_read_sysfs(plasmashell_t)
+dev_read_urand(plasmashell_t)
+dev_rw_dri(plasmashell_t)
+dbus_all_session_bus_client(plasmashell_t)
+dbus_connect_system_bus(plasmashell_t)
+dbus_system_bus_client(plasmashell_t)
+dbus_write_session_runtime_socket(plasmashell_t)
+systemd_dbus_chat_logind(plasmashell_t)
+logging_search_logs(plasmashell_t)
+userdom_search_user_home_dirs(plasmashell_t)
+userdom_search_user_home_content(plasmashell_t)
+userdom_search_user_runtime(plasmashell_t)
+userdom_manage_user_tmp_files(plasmashell_t)
+userdom_map_user_tmp_files(plasmashell_t)
+xdg_read_config_files(plasmashell_t)
+xdg_search_config_dirs(plasmashell_t)
+xdg_search_data_dirs(plasmashell_t)
+xdg_read_data_files(plasmashell_t)
+xdg_manage_data(plasmashell_t)
+gnome_mmap_read_xdg_config_files(plasmashell_t)
+gnome_watch_xdg_config_dirs(plasmashell_t)
+local_kde_read_config_files(plasmashell_t)
+xserver_stream_connect(plasmashell_t)
+xserver_read_xkb_libs(plasmashell_t)
+xserver_use_user_fonts(plasmashell_t)
+xserver_rw_mesa_shader_cache(plasmashell_t)
+wm_map_tmpfs_files(plasmashell_t)
+wm_rw_tmpfs_files(plasmashell_t)
+
+allow plasmashell_t self:process { execmem getsched setsched signal };
+allow plasmashell_t self:fifo_file { getattr read write };
+allow plasmashell_t self:unix_dgram_socket create_socket_perms;
+allow plasmashell_t self:unix_stream_socket { connectto create_socket_perms };
+allow plasmashell_t self:netlink_route_socket { create_socket_perms nlmsg_read };
