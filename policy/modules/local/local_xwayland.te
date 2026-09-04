@@ -20,13 +20,13 @@ allow staff_xwayland_t staff_xwayland_tmpfs_t:file map;
 fs_tmpfs_filetrans(staff_xwayland_t, staff_xwayland_tmpfs_t, file)
 
 allow staff_xwayland_t self:fifo_file rw_fifo_file_perms;
-allow staff_xwayland_t self:process { getsched signal };
+allow staff_xwayland_t self:process { getsched setsched signal };
 allow staff_xwayland_t self:unix_dgram_socket create_socket_perms;
 
 # glamor (GPU-accelerated rendering backend) needs DRI + shader cache access,
 # same as evince_t/staff_wm_t.
 dev_rw_dri(staff_xwayland_t)
-xserver_rw_mesa_shader_cache(staff_xwayland_t)
+xserver_manage_mesa_shader_cache(staff_xwayland_t)
 
 # GPU/DRM device enumeration via sysfs (e.g. reading a PCI device's uevent).
 dev_read_sysfs(staff_xwayland_t)
