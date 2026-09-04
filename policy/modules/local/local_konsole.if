@@ -37,6 +37,7 @@ template(`konsole_role',`
 		type user_home_t;
 		type ssh_home_t;
 		type bin_t;
+		type wm_tmpfs_t;
 		type $2;
 		type $1_dbusd_t;
 		type $1_sudo_t;
@@ -135,6 +136,12 @@ template(`konsole_role',`
 	files_read_etc_files($1_konsole_t)
 	files_read_usr_files($1_konsole_t)
 	files_map_usr_files($1_konsole_t)
+
+	# Existence checks (QStandardPaths::findExecutable-style stat, not exec)
+	# before offering kdialog prompts, the keditbookmarks bookmark manager,
+	# or drkonqi crash reporting.
+	corecmd_getattr_bin_files($1_konsole_t)
+
 	miscfiles_read_fonts($1_konsole_t)
 	miscfiles_read_localization($1_konsole_t)
 	xserver_use_user_fonts($1_konsole_t)
@@ -144,6 +151,11 @@ template(`konsole_role',`
 	xserver_rw_mesa_shader_cache($1_konsole_t)
 	dev_rw_dri($1_konsole_t)
 	dev_read_sysfs($1_konsole_t)
+	allow $1_konsole_t self:process execmem;
+
+	# kwin shared keyboard-layout memfd, same grant local_safeeyes.te
+	# already has for the identical Wayland client buffer.
+	allow $1_konsole_t wm_tmpfs_t:file { map read write };
 
 	# glib g_get_boot_id() / machine-id fallback, and Qt/KCrash checking
 	# /proc/sys/kernel/core_pattern.
@@ -153,14 +165,21 @@ template(`konsole_role',`
 	# decide whether a path supports trash/reflink or to show free space.
 	fs_getattr_all_fs($1_konsole_t)
 
-	# Konsole reads KDE/XDG config (kdeglobals, notifyrc) and manages its own
+	# Konsole reads KDE/XDG config (kdeglobals, notifyrc) and also writes its
+	# own settings (konsolerc, konsolesshconfig, and shared KDE files it
+	# updates like kcminputrc/kwinrc) on every startup/change, plus manages
 	# bookmarks.xml / konsolestaterc.lock under xdg_data_t, rewriting the
 	# latter atomically (create+rename+unlink) on every session-state save.
-	# xdg_data_t is generic and shared with every other app saved state;
-	# consider a dedicated konsole_xdg_data_t if this needs tightening later.
-	xdg_read_config_files($1_konsole_t)
+	# Both xdg_config_t and xdg_data_t are generic and shared with every
+	# other app saved state; consider dedicated types if this needs
+	# tightening later.
+	xdg_manage_config($1_konsole_t)
 	xdg_manage_data($1_konsole_t)
 	allow $1_konsole_t xdg_data_t:file watch;
+
+	# Bookmark manager / SSH-sidebar browsing of the home directory itself,
+	# not just searching into it.
+	userdom_list_user_home_dirs($1_konsole_t)
 
 	# Cosmetic only: KDE Konsole reads /proc/<pid>/{status,cmdline,...} of the
 	# foreground process in each pty (including through sudo) to show it in
