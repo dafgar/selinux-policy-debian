@@ -66,6 +66,10 @@ local_gkrellm_systemd_inherit(staff)
 # systemd instance during launch.
 local_discover_notifier_systemd_inherit(staff)
 
+# Konsole inherits a stream socket fd from the user systemd instance during
+# launch.
+local_konsole_systemd_inherit(staff)
+
 # The XDG document portal inherits the usual process attributes from the
 # user systemd instance during launch.
 local_xdg_document_portal_systemd_inherit(staff)

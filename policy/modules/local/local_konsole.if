@@ -33,7 +33,10 @@ template(`konsole_role',`
 		attribute $3;
 		type konsole_exec_t;
 		type user_devpts_t;
+		type xdg_data_t;
 		type $2;
+		type $1_dbusd_t;
+		type $1_sudo_t;
 	')
 
 	type $1_konsole_t;
@@ -70,13 +73,77 @@ template(`konsole_role',`
 	# user_devpts_t.
 	term_create_pty($1_konsole_t, user_devpts_t)
 
+	# term_create_pty only wires up the type_transition that labels a newly
+	# opened pty user_devpts_t; it does not grant rw access to the resulting
+	# device. Same set userdom_base_user_template grants $2 for its own ptys
+	# (userdomain.if), minus the ioctl noise it dontaudits too.
+	allow $1_konsole_t user_devpts_t:chr_file { rw_chr_file_perms setattr };
+	dontaudit $1_konsole_t user_devpts_t:chr_file ioctl;
+
+	# Konsole runs the utempter helper to register/unregister each pty in
+	# utmp/wtmp. $2 gets this via userdom_manage_home_role -> auth_run_utempter,
+	# but $1_konsole_t (a plain userdom_user_application_domain) does not.
+	auth_run_utempter($1_konsole_t, $4)
+
 	# Konsole itself needs the system-bus-client Hello handshake and its
 	# underlying stream_connect_pattern before it can chat with logind below.
 	dbus_system_bus_client($1_konsole_t)
 
+	# Konsole talks to the KDE session bus directly (notifications, single-
+	# instance activation), not just the system bus above.
+	dbus_write_session_runtime_socket($1_konsole_t)
+
+	# Raw stream-connect to the per-role session bus daemon socket. The base
+	# dbus_role_template only grants this connectto to $2 (staff_t) itself,
+	# not to the wider $3 attribute, so every role-templated app that talks
+	# to the session bus needs its own grant -- same reasoning as the
+	# X11/Wayland connectto below.
+	allow $1_konsole_t $1_dbusd_t:unix_stream_socket connectto;
+
+	# Konsole is an X11/Wayland client; the display socket is owned by $2
+	# (the compositor/Xwayland runs as the user domain on this desktop, not a
+	# dedicated xserver_t). See local_evince_x11_connect for the same pattern
+	# on a domain that only gets $3 (the attribute) instead of $2 directly.
+	allow $1_konsole_t $2:unix_stream_socket connectto;
+
 	# Opening a new terminal session registers it with logind
 	# (CreateSessionWithPIDFD) over the system bus.
 	systemd_dbus_chat_logind($1_konsole_t)
+
+	# Font rendering, locale, and generic /etc content -- needed just to draw
+	# the Konsole UI. Same set local_evince.te/local_zotero.te grant.
+	files_read_etc_files($1_konsole_t)
+	miscfiles_read_fonts($1_konsole_t)
+	miscfiles_read_localization($1_konsole_t)
+	xserver_use_user_fonts($1_konsole_t)
+	xserver_read_xkb_libs($1_konsole_t)
+
+	# GPU-accelerated rendering backend, same as other Qt/GL desktop apps.
+	xserver_rw_mesa_shader_cache($1_konsole_t)
+	dev_rw_dri($1_konsole_t)
+	dev_read_sysfs($1_konsole_t)
+
+	# Konsole reads KDE/XDG config (kdeglobals, notifyrc) and manages its own
+	# bookmarks.xml / konsolestaterc.lock under xdg_data_t, rewriting the
+	# latter atomically (create+rename+unlink) on every session-state save.
+	# xdg_data_t is generic and shared with every other app saved state;
+	# consider a dedicated konsole_xdg_data_t if this needs tightening later.
+	xdg_read_config_files($1_konsole_t)
+	xdg_manage_data($1_konsole_t)
+	allow $1_konsole_t xdg_data_t:file watch;
+
+	# Cosmetic only: KDE Konsole reads /proc/<pid>/{status,cmdline,...} of the
+	# foreground process in each pty (including through sudo) to show it in
+	# the tab title. Denying this just falls back to the profile/shell name --
+	# no functional break -- so dontaudit rather than widen $1_konsole_t
+	# visibility into $2 (and especially the elevated $1_sudo_t) for a
+	# title-bar nicety. Revisit as allow if the feature turns out to matter.
+	dontaudit $1_konsole_t $2:dir search;
+	dontaudit $1_konsole_t $2:file { getattr open read };
+	dontaudit $1_konsole_t $2:lnk_file read;
+	dontaudit $1_konsole_t $1_sudo_t:dir search;
+	dontaudit $1_konsole_t $1_sudo_t:file { getattr open read };
+	dontaudit $1_konsole_t $1_sudo_t:lnk_file read;
 
 	# Only /usr/bin/konsole itself should carry $1_konsole_t. The
 	# interactive shell it forks per session/tab transitions back to $2
@@ -112,4 +179,24 @@ interface(`local_konsole_systemd_dbus_chat',`
 	')
 
 	systemd_user_manager_dbus_chat($1, $1_konsole_t)
+')
+
+########################################
+## <summary>
+##	Allow Konsole to inherit a stream socket fd from the user systemd
+##	instance during launch, like other user-session applications.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns both the systemd --user manager domain and
+##	the Konsole domain.
+##	</summary>
+## </param>
+#
+interface(`local_konsole_systemd_inherit',`
+	gen_require(`
+		type $1_konsole_t;
+	')
+
+	local_systemd_inherit_user_service($1, $1_konsole_t)
 ')
