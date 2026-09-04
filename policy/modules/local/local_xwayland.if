@@ -71,3 +71,44 @@ interface(`local_xwayland_shm',`
 
 	allow $1 staff_xwayland_t:shm rw_shm_perms;
 ')
+
+########################################
+## <summary>
+##	Allow Xwayland to use the WM protocol socketpair fd handed to it at
+##	exec time, e.g. kwin_wayland creating the socketpair before forking
+##	and execing its embedded rootless Xwayland instance.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain owning the socketpair, e.g. kwin_wayland.
+##	</summary>
+## </param>
+#
+interface(`local_xwayland_wm_protocol_socket',`
+	gen_require(`
+		type staff_xwayland_t;
+	')
+
+	allow staff_xwayland_t $1:unix_stream_socket { read write };
+')
+
+########################################
+## <summary>
+##	Allow Xwayland to accept and service connections on a listening X11
+##	socket that was created and bound by a peer domain, e.g. a plasma
+##	session launcher script, and handed to Xwayland as an inherited fd
+##	(the -listenfd/-displayfd style launch pattern).
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain owning the listening socket.
+##	</summary>
+## </param>
+#
+interface(`local_xwayland_listen_socket',`
+	gen_require(`
+		type staff_xwayland_t;
+	')
+
+	allow staff_xwayland_t $1:unix_stream_socket { accept getopt shutdown read write };
+')
