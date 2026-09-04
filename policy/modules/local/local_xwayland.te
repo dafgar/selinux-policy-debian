@@ -31,6 +31,9 @@ xserver_rw_mesa_shader_cache(staff_xwayland_t)
 # GPU/DRM device enumeration via sysfs (e.g. reading a PCI device's uevent).
 dev_read_sysfs(staff_xwayland_t)
 
+# X11 bitmap fonts (e.g. under /usr/share/fonts/X11).
+miscfiles_read_fonts(staff_xwayland_t)
+
 # Connecting to kwin_wayland's Wayland socket file itself (the socket lives
 # under user_tmp_t on this system, same as every other Wayland client).
 userdom_write_user_tmp_sockets(staff_xwayland_t)
