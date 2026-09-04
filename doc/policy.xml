@@ -73372,11 +73372,16 @@ User role prefix that owns the user systemd domain.
 <summary>
 Local Xwayland (rootless X11-compatibility server) domain interfaces.
 </summary>
-<interface name="local_xwayland_role" lineno="21">
+<template name="xwayland_role" lineno="26">
 <summary>
-Allow a domain to launch and own the Xwayland domain, e.g. kwin_wayland
-spawning its embedded rootless Xwayland instance.
+Allow a domain to launch and own its own Xwayland domain, e.g.
+kwin_wayland spawning its embedded rootless Xwayland instance.
 </summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role, for example staff or user.
+</summary>
+</param>
 <param name="source_domain">
 <summary>
 Domain allowed to execute and transition to Xwayland.
@@ -73387,48 +73392,68 @@ Domain allowed to execute and transition to Xwayland.
 Role allowed access to the Xwayland domain.
 </summary>
 </param>
-</interface>
-<interface name="local_xwayland_wayland_connect" lineno="49">
+</template>
+<interface name="local_xwayland_wayland_connect" lineno="123">
 <summary>
 Allow Xwayland to connect to a peer's Wayland compositor socket, e.g.
 kwin_wayland's own socket (Xwayland is itself a Wayland client of the
 real compositor as well as the X11 server for legacy X11 clients).
 </summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role owning the Xwayland domain.
+</summary>
+</param>
 <param name="domain">
 <summary>
 Domain owning the compositor socket.
 </summary>
 </param>
 </interface>
-<interface name="local_xwayland_shm" lineno="67">
+<interface name="local_xwayland_shm" lineno="146">
 <summary>
 Allow a domain to read/write Xwayland's MIT-SHM segment.
 </summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role owning the Xwayland domain.
+</summary>
+</param>
 <param name="domain">
 <summary>
 Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="local_xwayland_wm_protocol_socket" lineno="87">
+<interface name="local_xwayland_wm_protocol_socket" lineno="171">
 <summary>
 Allow Xwayland to use the WM protocol socketpair fd handed to it at
 exec time, e.g. kwin_wayland creating the socketpair before forking
 and execing its embedded rootless Xwayland instance.
 </summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role owning the Xwayland domain.
+</summary>
+</param>
 <param name="domain">
 <summary>
 Domain owning the socketpair, e.g. kwin_wayland.
 </summary>
 </param>
 </interface>
-<interface name="local_xwayland_listen_socket" lineno="108">
+<interface name="local_xwayland_listen_socket" lineno="197">
 <summary>
 Allow Xwayland to accept and service connections on a listening X11
 socket that was created and bound by a peer domain, e.g. a plasma
 session launcher script, and handed to Xwayland as an inherited fd
 (the -listenfd/-displayfd style launch pattern).
 </summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role owning the Xwayland domain.
+</summary>
+</param>
 <param name="domain">
 <summary>
 Domain owning the listening socket.
