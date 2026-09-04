@@ -271,6 +271,32 @@ interface(`local_konsole_systemd_dbus_chat',`
 
 ########################################
 ## <summary>
+##	Allow Konsole to exchange D-Bus messages with a desktop-owned domain
+##	(e.g. xdg-desktop-portal's Settings interface for theme detection).
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Konsole domain.
+##	</summary>
+## </param>
+## <param name="peer_domain">
+##	<summary>
+##	Domain to exchange messages with.
+##	</summary>
+## </param>
+#
+interface(`local_konsole_dbus_chat',`
+	gen_require(`
+		type $1_konsole_t;
+		class dbus send_msg;
+	')
+
+	allow $1_konsole_t $2:dbus send_msg;
+	allow $2 $1_konsole_t:dbus send_msg;
+')
+
+########################################
+## <summary>
 ##	Allow Konsole to inherit a stream socket fd from the user systemd
 ##	instance during launch, like other user-session applications.
 ## </summary>

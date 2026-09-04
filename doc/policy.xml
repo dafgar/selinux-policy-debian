@@ -72512,7 +72512,23 @@ the Konsole domain.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_systemd_inherit" lineno="284">
+<interface name="local_konsole_dbus_chat" lineno="288">
+<summary>
+Allow Konsole to exchange D-Bus messages with a desktop-owned domain
+(e.g. xdg-desktop-portal's Settings interface for theme detection).
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Konsole domain.
+</summary>
+</param>
+<param name="peer_domain">
+<summary>
+Domain to exchange messages with.
+</summary>
+</param>
+</interface>
+<interface name="local_konsole_systemd_inherit" lineno="310">
 <summary>
 Allow Konsole to inherit a stream socket fd from the user systemd
 instance during launch, like other user-session applications.
