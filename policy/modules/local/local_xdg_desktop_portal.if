@@ -1,0 +1,54 @@
+## <summary>
+##	Local main XDG desktop portal daemon domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the XDG desktop portal application
+##	domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to the XDG desktop portal.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the XDG desktop portal domain.
+##	</summary>
+## </param>
+#
+interface(`xdg_desktop_portal_role',`
+	gen_require(`
+		type xdg_desktop_portal_t, xdg_desktop_portal_exec_t;
+		role $2;
+	')
+
+	role $2 types xdg_desktop_portal_t;
+	domtrans_pattern($1, xdg_desktop_portal_exec_t, xdg_desktop_portal_t)
+
+	allow $1 xdg_desktop_portal_t:process { ptrace signal_perms };
+	allow $1 xdg_desktop_portal_t:fd use;
+	ps_process_pattern($1, xdg_desktop_portal_t)
+
+	allow xdg_desktop_portal_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Allow a user systemd instance to launch the XDG desktop portal with
+##	the usual inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_xdg_desktop_portal_systemd_inherit',`
+	gen_require(`
+		type xdg_desktop_portal_t;
+	')
+
+	local_systemd_inherit_user_service($1, xdg_desktop_portal_t)
+')

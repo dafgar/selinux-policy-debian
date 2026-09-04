@@ -1,0 +1,29 @@
+policy_module(local_xdg_desktop_portal)
+
+attribute_role xdg_desktop_portal_roles;
+
+type xdg_desktop_portal_t;
+type xdg_desktop_portal_exec_t;
+userdom_user_application_domain(xdg_desktop_portal_t, xdg_desktop_portal_exec_t)
+role xdg_desktop_portal_roles types xdg_desktop_portal_t;
+
+gen_require(`
+	type chromium_t;
+')
+
+# The portal GDBus worker thread (comm truncates to "gdbus") is handed a
+# pipe fd by Chromium for portal requests (e.g. screenshot/screencast,
+# file-transfer) issued through the org.freedesktop.portal.* session-bus
+# API.
+allow xdg_desktop_portal_t chromium_t:fd use;
+
+auth_use_nsswitch(xdg_desktop_portal_t)
+dbus_all_session_bus_client(xdg_desktop_portal_t)
+dbus_write_session_runtime_socket(xdg_desktop_portal_t)
+systemd_dbus_chat_logind(xdg_desktop_portal_t)
+files_read_usr_files(xdg_desktop_portal_t)
+files_map_usr_files(xdg_desktop_portal_t)
+miscfiles_read_localization(xdg_desktop_portal_t)
+xdg_search_config_dirs(xdg_desktop_portal_t)
+xdg_search_data_dirs(xdg_desktop_portal_t)
+userdom_search_user_runtime(xdg_desktop_portal_t)

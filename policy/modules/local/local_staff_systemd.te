@@ -74,6 +74,10 @@ local_konsole_systemd_inherit(staff)
 # user systemd instance during launch.
 local_xdg_document_portal_systemd_inherit(staff)
 
+# The main XDG desktop portal daemon inherits the usual process attributes
+# from the user systemd instance during launch.
+local_xdg_desktop_portal_systemd_inherit(staff)
+
 # systemd --user performs generic filesystem probing on inherited fds during
 # session startup. Keep pidfs filesystem getattr noise hidden until there is a
 # concrete need to model it more specifically.
