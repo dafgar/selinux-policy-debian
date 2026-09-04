@@ -1,0 +1,4 @@
+/usr/bin/gimp-3\.0		--	gen_context(system_u:object_r:gimp_exec_t,s0)
+
+HOME_DIR/\.config/GIMP(/.*)?		gen_context(system_u:object_r:gimp_config_t,s0)
+HOME_DIR/\.cache/GIMP(/.*)?		gen_context(system_u:object_r:gimp_cache_t,s0)

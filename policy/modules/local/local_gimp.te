@@ -1,0 +1,88 @@
+policy_module(local_gimp)
+
+attribute_role gimp_roles;
+
+type gimp_t;
+type gimp_exec_t;
+userdom_user_application_domain(gimp_t, gimp_exec_t)
+role gimp_roles types gimp_t;
+can_exec(gimp_t, gimp_exec_t)
+
+# GIMP own dotfile tree (~/.config/GIMP/<ver>: config, brushes, scripts,
+# script-fu/python-fu plug-ins).
+type gimp_config_t;
+xdg_config_content(gimp_config_t)
+
+# Thumbnail/cache data GIMP keeps under ~/.cache/GIMP.
+type gimp_cache_t;
+xdg_cache_content(gimp_cache_t)
+
+# GIMP own swap files (default temp folder falls back to /tmp unless the
+# user points it elsewhere in Preferences).
+type gimp_tmp_t;
+files_tmp_file(gimp_tmp_t)
+
+manage_dirs_pattern(gimp_t, gimp_config_t, gimp_config_t)
+manage_files_pattern(gimp_t, gimp_config_t, gimp_config_t)
+manage_lnk_files_pattern(gimp_t, gimp_config_t, gimp_config_t)
+allow gimp_t gimp_config_t:dir watch;
+xdg_config_filetrans(gimp_t, gimp_config_t, dir, "GIMP")
+
+manage_dirs_pattern(gimp_t, gimp_cache_t, gimp_cache_t)
+manage_files_pattern(gimp_t, gimp_cache_t, gimp_cache_t)
+manage_lnk_files_pattern(gimp_t, gimp_cache_t, gimp_cache_t)
+xdg_cache_filetrans(gimp_t, gimp_cache_t, dir, "GIMP")
+
+manage_dirs_pattern(gimp_t, gimp_tmp_t, gimp_tmp_t)
+manage_files_pattern(gimp_t, gimp_tmp_t, gimp_tmp_t)
+files_tmp_filetrans(gimp_t, gimp_tmp_t, { dir file })
+
+gen_require(`
+	type xdg_config_t;
+')
+
+miscfiles_read_localization(gimp_t)
+miscfiles_read_fonts(gimp_t)
+kernel_read_system_state(gimp_t)
+files_read_etc_files(gimp_t)
+files_read_usr_files(gimp_t)
+files_map_usr_files(gimp_t)
+corecmd_exec_bin(gimp_t)
+corecmd_search_bin(gimp_t)
+dbus_all_session_bus_client(gimp_t)
+dbus_connect_system_bus(gimp_t)
+dbus_system_bus_client(gimp_t)
+dbus_write_session_runtime_socket(gimp_t)
+dev_read_sysfs(gimp_t)
+dev_read_urand(gimp_t)
+dev_rw_dri(gimp_t)
+fs_getattr_all_fs(gimp_t)
+logging_search_logs(gimp_t)
+systemd_dbus_chat_logind(gimp_t)
+userdom_search_user_home_dirs(gimp_t)
+userdom_search_user_home_content(gimp_t)
+userdom_search_user_runtime(gimp_t)
+userdom_manage_user_tmp_files(gimp_t)
+userdom_map_user_tmp_files(gimp_t)
+xdg_read_config_files(gimp_t)
+xdg_search_config_dirs(gimp_t)
+xdg_search_data_dirs(gimp_t)
+xdg_read_data_files(gimp_t)
+gnome_mmap_read_xdg_config_files(gimp_t)
+gnome_watch_xdg_config_dirs(gimp_t)
+xserver_stream_connect(gimp_t)
+xserver_read_xkb_libs(gimp_t)
+xserver_use_user_fonts(gimp_t)
+xserver_rw_mesa_shader_cache(gimp_t)
+wm_map_tmpfs_files(gimp_t)
+wm_rw_tmpfs_files(gimp_t)
+
+allow gimp_t xdg_config_t:dir { read watch };
+
+# Confirmed via /tmp/avc.log (pid-correlated to exe=/usr/bin/gimp-3.0):
+# execmem for script-fu/python-fu JIT.
+allow gimp_t self:process { execmem getsched setsched signal };
+allow gimp_t self:fifo_file { getattr read write };
+allow gimp_t self:unix_dgram_socket create_socket_perms;
+allow gimp_t self:unix_stream_socket { connectto create_socket_perms };
+allow gimp_t self:netlink_route_socket { create_socket_perms nlmsg_read };
