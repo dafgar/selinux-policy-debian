@@ -72029,6 +72029,11 @@ The prefix of the user role, for example staff or user.
 </param>
 </interface>
 </module>
+<module name="local_fsadm" filename="policy/modules/local/local_fsadm.if">
+<summary>
+Local override module with no exported interfaces.
+</summary>
+</module>
 <module name="local_fwupd" filename="policy/modules/local/local_fwupd.if">
 <summary>
 Local fwupd policy adjustments.
