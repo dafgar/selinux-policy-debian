@@ -69,6 +69,7 @@ dontaudit rsibreak_t bin_t:file execute;
 manage_files_pattern(rsibreak_t, rsibreak_xdg_config_t, rsibreak_xdg_config_t)
 xdg_config_filetrans(rsibreak_t, rsibreak_xdg_config_t, file, "rsibreakrc")
 xdg_config_filetrans(rsibreak_t, rsibreak_xdg_config_t, file, "rsibreak.notifyrc")
+xdg_config_filetrans(rsibreak_t, rsibreak_xdg_config_t, file, "rsibreak.kmessagebox")
 
 manage_files_pattern(rsibreak_t, rsibreak_tmpfs_t, rsibreak_tmpfs_t)
 allow rsibreak_t rsibreak_tmpfs_t:file map;
