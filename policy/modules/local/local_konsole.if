@@ -47,6 +47,14 @@ template(`konsole_role',`
 	userdom_user_application_domain($1_konsole_t, konsole_exec_t)
 	role $4 types $1_konsole_t;
 
+	# Native Wayland clients hand buffer/cursor pixel data to the compositor
+	# through an anonymous memfd; memfd objects inherit their label from
+	# tmpfs transitions, not from *.fc, so give Konsole its own tmpfs type
+	# instead of generic tmpfs_t. Same pattern as evince_tmpfs_t in
+	# local_evince.te.
+	type $1_konsole_tmpfs_t;
+	userdom_user_tmpfs_file($1_konsole_tmpfs_t)
+
 	domtrans_pattern($3, konsole_exec_t, $1_konsole_t)
 
 	allow $3 $1_konsole_t:process { ptrace signal_perms };
@@ -84,9 +92,10 @@ template(`konsole_role',`
 	allow $1_konsole_t user_devpts_t:chr_file { rw_chr_file_perms setattr };
 	dontaudit $1_konsole_t user_devpts_t:chr_file ioctl;
 
-	# Qt/glib thread-pool sched_getparam() on its own threads, same noise
-	# dontaudited for local_discover_notifier_t.
-	dontaudit $1_konsole_t self:process getsched;
+	# Qt render-thread priority tuning. local_evince.te/local_zotero.te/
+	# local_keepassxc.te all allow this pair (not dontaudit) for the same
+	# Qt/GL desktop-app behavior.
+	allow $1_konsole_t self:process { getsched setsched };
 
 	# Konsole runs the utempter helper to register/unregister each pty in
 	# utmp/wtmp. $2 gets this via userdom_manage_home_role -> auth_run_utempter,
@@ -156,6 +165,13 @@ template(`konsole_role',`
 	# kwin shared keyboard-layout memfd, same grant local_safeeyes.te
 	# already has for the identical Wayland client buffer.
 	allow $1_konsole_t wm_tmpfs_t:file { map read write };
+
+	# Konsole own memfd (wl_shm pool backing for buffers it submits to the
+	# compositor), auto-labeled via the transition below rather than
+	# generic tmpfs_t.
+	manage_files_pattern($1_konsole_t, $1_konsole_tmpfs_t, $1_konsole_tmpfs_t)
+	allow $1_konsole_t $1_konsole_tmpfs_t:file map;
+	fs_tmpfs_filetrans($1_konsole_t, $1_konsole_tmpfs_t, file)
 
 	# glib g_get_boot_id() / machine-id fallback, and Qt/KCrash checking
 	# /proc/sys/kernel/core_pattern.
