@@ -15,6 +15,31 @@ systemd_dbus_chat_logind(discover_notifier_t)
 files_read_usr_files(discover_notifier_t)
 files_map_usr_files(discover_notifier_t)
 miscfiles_read_localization(discover_notifier_t)
-xdg_search_config_dirs(discover_notifier_t)
-xdg_search_data_dirs(discover_notifier_t)
 userdom_search_user_runtime(discover_notifier_t)
+
+# glib g_get_boot_id() / machine-id fallback
+kernel_read_kernel_sysctls(discover_notifier_t)
+
+# reads ~/.config/kdeglobals, ~/.config/kdedefaults/kdeglobals for Qt/KDE
+# theming; xdg_config_t is generic, so this is shared with every other
+# xdg_config_t reader. If KDE config ever gets its own type, narrow this.
+xdg_read_config_files(discover_notifier_t)
+
+# Discover's Flatpak update check: reads the user + system ostree repo
+# metadata (~/.local/share/flatpak/repo, /var/lib/flatpak/repo/config) and
+# the local flatpak summary cache (~/.cache/flatpak/system-cache). The write
+# on xdg_data_t:dir is libostree taking a lock under repo/objects while
+# refreshing the summary. All generic types shared with unrelated xdg
+# data/cache readers; consider a dedicated flatpak_repo_t if this grows.
+xdg_read_data_files(discover_notifier_t)
+
+gen_require(`
+	type xdg_data_t;
+')
+allow discover_notifier_t xdg_data_t:dir write;
+xdg_read_cache_files(discover_notifier_t)
+files_read_var_lib_files(discover_notifier_t)
+fs_getattr_all_fs(discover_notifier_t)
+
+# glib thread pool sched_getparam() on its own threads
+dontaudit discover_notifier_t self:process getsched;
