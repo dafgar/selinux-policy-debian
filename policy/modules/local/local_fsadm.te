@@ -18,3 +18,7 @@ kernel_get_sysvipc_info(fsadm_t)
 # udevadm settle opens and binds a netlink socket to the kernel's SELinux
 # subsystem; not granted to udevadm_t by base policy.
 allow udevadm_t self:netlink_selinux_socket create_socket_perms;
+
+# udevadm settle opens newly-created block devices directly to probe/wait
+# for them during coldplug.
+storage_raw_rw_fixed_disk(udevadm_t)
