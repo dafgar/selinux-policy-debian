@@ -1,6 +1,7 @@
 policy_module(local_staff)
 
 gen_require(`
+	type khelpcenter_t;
 	type nsfs_t;
 	type mozilla_t;
 	type staff_dbusd_t;
@@ -36,6 +37,8 @@ xdg_desktop_portal_role(staff_application_exec_domain, staff_r)
 kioworker_role(staff_application_exec_domain, staff_r)
 kscreenlocker_role(staff_application_exec_domain, staff_r)
 qtwebengine_role(staff_application_exec_domain, staff_r)
+khelpcenter_role(staff_application_exec_domain, staff_r)
+qtwebengine_role(khelpcenter_t, staff_r)
 dolphin_role(staff_application_exec_domain, staff_r)
 spectacle_role(staff_application_exec_domain, staff_r)
 gstpluginscanner_role(staff_application_exec_domain, staff_r)

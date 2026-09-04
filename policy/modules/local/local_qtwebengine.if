@@ -33,3 +33,29 @@ interface(`qtwebengine_role',`
 
 	allow qtwebengine_t $1:process sigchld;
 ')
+
+########################################
+## <summary>
+##	Allow a domain to embed a sandboxed QtWebEngine renderer the way
+##	Chromium-derived browser processes do: create its own unprivileged
+##	user namespace, then exec the renderer with PR_SET_NO_NEW_PRIVS set
+##	(which routes the SELinux transition through process2:nnp_transition
+##	instead of the plain domtrans_pattern exec check), then talk to it
+##	over a pre-created socketpair and tune its OOM score.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain embedding the QtWebEngine renderer.
+##	</summary>
+## </param>
+#
+# The qtwebengine_t-side grants (nnp_transition, setsched, the GPU/IPC
+# socketpair, oom_score_adj write) come from the embedder's own
+# qtwebengine_role() call in local_staff.te, not from here -- this interface
+# only covers the sandbox setup the embedder does to itself before exec'ing
+# the renderer.
+interface(`local_qtwebengine_embed',`
+	allow $1 self:process { execmem signal };
+	allow $1 self:cap_userns sys_admin;
+	allow $1 self:user_namespace create;
+')

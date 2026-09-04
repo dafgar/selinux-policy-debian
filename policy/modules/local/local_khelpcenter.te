@@ -1,0 +1,32 @@
+policy_module(local_khelpcenter)
+
+attribute_role khelpcenter_roles;
+
+type khelpcenter_t;
+type khelpcenter_exec_t;
+userdom_user_application_domain(khelpcenter_t, khelpcenter_exec_t)
+role khelpcenter_roles types khelpcenter_t;
+
+# Embeds a QtWebEngine view (help browser) sandboxed via a user namespace;
+# the sandboxed renderer itself transitions into qtwebengine_t, wired from
+# local_staff.te via qtwebengine_role(khelpcenter_t, staff_r).
+local_qtwebengine_embed(khelpcenter_t)
+
+# The in-process GPU thread shares DMA buffers with the display for
+# accelerated rendering of the embedded help browser.
+dev_rw_dma_dev(khelpcenter_t)
+
+files_read_usr_files(khelpcenter_t)
+files_map_usr_files(khelpcenter_t)
+miscfiles_read_localization(khelpcenter_t)
+miscfiles_read_fonts(khelpcenter_t)
+xdg_search_config_dirs(khelpcenter_t)
+xdg_read_config_files(khelpcenter_t)
+xdg_search_data_dirs(khelpcenter_t)
+xdg_read_data_files(khelpcenter_t)
+dbus_all_session_bus_client(khelpcenter_t)
+dbus_write_session_runtime_socket(khelpcenter_t)
+systemd_dbus_chat_logind(khelpcenter_t)
+userdom_search_user_runtime(khelpcenter_t)
+xserver_use_user_fonts(khelpcenter_t)
+xserver_rw_mesa_shader_cache(khelpcenter_t)
