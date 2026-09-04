@@ -20,6 +20,25 @@ interface(`local_mplayer_x11_connect',`
 
 #######################################
 ## <summary>
+##	Allow a domain to read/write MPlayer's MIT-SHM segment, e.g. the X
+##	server attaching to a shared-memory image passed via XShmAttach.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_mplayer_shm',`
+	gen_require(`
+		type mplayer_t;
+	')
+
+	allow $1 mplayer_t:shm rw_shm_perms;
+')
+
+#######################################
+## <summary>
 ##	Allow MPlayer to connect to the user PulseAudio-compatible PipeWire socket.
 ## </summary>
 ## <param name="role_prefix">
