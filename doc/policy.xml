@@ -72470,6 +72470,18 @@ Role allowed access to the KIO worker domain.
 </summary>
 </param>
 </interface>
+<interface name="local_kioworker_read_proc_state" lineno="48">
+<summary>
+Allow a domain to read the process state (/proc/pid) of KIO worker
+processes, e.g. Xwayland reading a connecting client's cmdline for
+client identification.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_konsole" filename="policy/modules/local/local_konsole.if">
 <summary>
@@ -72627,6 +72639,18 @@ Allow MPlayer to connect to the user PulseAudio-compatible PipeWire socket.
 <param name="role_prefix">
 <summary>
 User role prefix that owns the PipeWire server domain.
+</summary>
+</param>
+</interface>
+<interface name="local_mplayer_read_proc_state" lineno="70">
+<summary>
+Allow a domain to read the process state (/proc/pid) of MPlayer, e.g.
+Xwayland reading a connecting client's cmdline for client
+identification.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
 </summary>
 </param>
 </interface>
@@ -72984,6 +73008,18 @@ Domain allowed access.
 <summary>
 Local override module with no exported interfaces.
 </summary>
+<interface name="local_staff_read_proc_state" lineno="17">
+<summary>
+Allow a domain to read the process state (/proc/pid) of staff_t, e.g.
+Xwayland reading the cmdline of a connecting X11 client for
+_NET_WM_PID-style client identification.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_staff_systemd" filename="policy/modules/local/local_staff_systemd.if">
 <summary>
