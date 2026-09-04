@@ -2,14 +2,14 @@ policy_module(local_fsadm)
 
 gen_require(`
 	type fsadm_t;
-	type udev_exec_t;
 	type dmidecode_exec_t;
 ')
 
 # Disk-prep helper scripts run under fsadm_t (e.g. via parted/partprobe) probe
-# for optional tools with a plain existence check before invoking them.
-allow fsadm_t udev_exec_t:file getattr;
-allow fsadm_t dmidecode_exec_t:file getattr;
+# for optional tools with a plain existence check, then execute them in place
+# (no domain transition).
+udev_exec_udevadm(fsadm_t)
+allow fsadm_t dmidecode_exec_t:file { getattr execute };
 
 # partprobe queries kernel SysV IPC info on startup; standard util-linux probe.
 kernel_get_sysvipc_info(fsadm_t)
