@@ -17,8 +17,8 @@ local_mozilla_wm_tmpfs_map(staff_wm_t)
 local_thunderbird_wm_dontaudit_tmpfs_use(staff_wm_t)
 
 # kwin_wayland spawns its own embedded rootless Xwayland instance.
-local_xwayland_role(staff_wm_t, staff_r)
-local_xwayland_wayland_connect(staff_wm_t)
+xwayland_role(staff, staff_wm_t, staff_r)
+local_xwayland_wayland_connect(staff, staff_wm_t)
 
 allow staff_wm_t evolution_alarm_t:fd use;
 allow staff_wm_t evolution_alarm_tmpfs_t:file { getattr map read write };

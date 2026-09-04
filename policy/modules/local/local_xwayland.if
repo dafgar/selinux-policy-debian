@@ -4,9 +4,14 @@
 
 ########################################
 ## <summary>
-##	Allow a domain to launch and own the Xwayland domain, e.g. kwin_wayland
-##	spawning its embedded rootless Xwayland instance.
+##	Allow a domain to launch and own its own Xwayland domain, e.g.
+##	kwin_wayland spawning its embedded rootless Xwayland instance.
 ## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	The prefix of the user role, for example staff or user.
+##	</summary>
+## </param>
 ## <param name="source_domain">
 ##	<summary>
 ##	Domain allowed to execute and transition to Xwayland.
@@ -18,20 +23,84 @@
 ##	</summary>
 ## </param>
 #
-interface(`local_xwayland_role',`
+template(`xwayland_role',`
 	gen_require(`
-		type staff_xwayland_t, xwayland_exec_t;
-		role $2;
+		type xwayland_exec_t;
+		type java_t;
+		type sysadm_t;
+		type user_tmp_t;
+		type wm_tmpfs_t;
+		role $3;
 	')
 
-	role $2 types staff_xwayland_t;
-	domtrans_pattern($1, xwayland_exec_t, staff_xwayland_t)
+	type $1_xwayland_t;
+	userdom_user_application_domain($1_xwayland_t, xwayland_exec_t)
 
-	allow $1 staff_xwayland_t:process { ptrace signal_perms };
-	allow $1 staff_xwayland_t:fd use;
-	ps_process_pattern($1, staff_xwayland_t)
+	# Xwaylands own rendered output is handed to kwin_wayland as a normal
+	# Wayland client buffer (Xwayland is simultaneously the X11 server for
+	# legacy X11 clients and, from kwin_waylands point of view, just another
+	# Wayland client) - same memfd-backed tmpfs pattern as evince_tmpfs_t.
+	type $1_xwayland_tmpfs_t;
+	userdom_user_tmpfs_file($1_xwayland_tmpfs_t)
 
-	allow staff_xwayland_t $1:process sigchld;
+	manage_files_pattern($1_xwayland_t, $1_xwayland_tmpfs_t, $1_xwayland_tmpfs_t)
+	allow $1_xwayland_t $1_xwayland_tmpfs_t:file map;
+	fs_tmpfs_filetrans($1_xwayland_t, $1_xwayland_tmpfs_t, file)
+
+	allow $1_xwayland_t self:fifo_file rw_fifo_file_perms;
+	allow $1_xwayland_t self:process { getsched setsched signal };
+	allow $1_xwayland_t self:unix_dgram_socket create_socket_perms;
+
+	# glamor (GPU-accelerated rendering backend) needs DRI + shader cache
+	# access, same as evince_t/staff_wm_t.
+	dev_rw_dri($1_xwayland_t)
+	xserver_manage_mesa_shader_cache($1_xwayland_t)
+
+	# GPU/DRM device enumeration via sysfs (e.g. reading a PCI devices uevent).
+	dev_read_sysfs($1_xwayland_t)
+
+	# X11 bitmap fonts (e.g. under /usr/share/fonts/X11).
+	miscfiles_read_fonts($1_xwayland_t)
+
+	# Connecting to the compositors Wayland socket file itself (the socket
+	# lives under user_tmp_t on this system, same as every other Wayland
+	# client).
+	userdom_write_user_tmp_sockets($1_xwayland_t)
+	userdom_search_user_runtime($1_xwayland_t)
+
+	# Per-session MIT-MAGIC-COOKIE xauth file (e.g. xauth_yTHdkw under
+	# /run/user/<uid>), generated with a random suffix by the session launcher
+	# that execs Xwayland. Cannot get a dedicated type via type_transition
+	# since the name varies per session; keep this to the exact op observed
+	# rather than a broader grant on the shared user_tmp_t type (same
+	# tradeoff as the keepassxc lock file in local_keepassxc.te).
+	allow $1_xwayland_t user_tmp_t:file getattr;
+
+	# KWins DMA-buf feedback table memfd, e.g. kwin-dmabuf-feedback-table,
+	# shared for GPU buffer negotiation - same wm_tmpfs_t pattern as
+	# rsibreak_t and safeeyes_t.
+	allow $1_xwayland_t wm_tmpfs_t:file { map read write };
+
+	# Reading /proc/<pid>/cmdline of a connecting X11 client for
+	# _NET_WM_PID-style client identification. java_t has no local wrapper
+	# module, so grant it directly here; staff_t/kioworker_t/mplayer_t go
+	# through their own local_*_read_proc_state interfaces from local_staff.te.
+	# sysadm_t is dontaudit-only - Xwayland does not need to identify a stray
+	# sysadm client, and sysadm stays deliberately separate from staff (CODEX.md).
+	allow $1_xwayland_t java_t:dir list_dir_perms;
+	read_files_pattern($1_xwayland_t, java_t, java_t)
+	read_lnk_files_pattern($1_xwayland_t, java_t, java_t)
+	dontaudit $1_xwayland_t sysadm_t:dir list_dir_perms;
+	dontaudit $1_xwayland_t sysadm_t:file { getattr open read };
+
+	role $3 types $1_xwayland_t;
+	domtrans_pattern($2, xwayland_exec_t, $1_xwayland_t)
+
+	allow $2 $1_xwayland_t:process { ptrace signal_perms };
+	allow $2 $1_xwayland_t:fd use;
+	ps_process_pattern($2, $1_xwayland_t)
+
+	allow $1_xwayland_t $2:process sigchld;
 ')
 
 ########################################
@@ -40,6 +109,11 @@ interface(`local_xwayland_role',`
 ##	kwin_wayland's own socket (Xwayland is itself a Wayland client of the
 ##	real compositor as well as the X11 server for legacy X11 clients).
 ## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	The prefix of the user role owning the Xwayland domain.
+##	</summary>
+## </param>
 ## <param name="domain">
 ##	<summary>
 ##	Domain owning the compositor socket.
@@ -48,16 +122,21 @@ interface(`local_xwayland_role',`
 #
 interface(`local_xwayland_wayland_connect',`
 	gen_require(`
-		type staff_xwayland_t;
+		type $1_xwayland_t;
 	')
 
-	allow staff_xwayland_t $1:unix_stream_socket connectto;
+	allow $1_xwayland_t $2:unix_stream_socket connectto;
 ')
 
 ########################################
 ## <summary>
 ##	Allow a domain to read/write Xwayland's MIT-SHM segment.
 ## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	The prefix of the user role owning the Xwayland domain.
+##	</summary>
+## </param>
 ## <param name="domain">
 ##	<summary>
 ##	Domain allowed access.
@@ -66,10 +145,10 @@ interface(`local_xwayland_wayland_connect',`
 #
 interface(`local_xwayland_shm',`
 	gen_require(`
-		type staff_xwayland_t;
+		type $1_xwayland_t;
 	')
 
-	allow $1 staff_xwayland_t:shm rw_shm_perms;
+	allow $2 $1_xwayland_t:shm rw_shm_perms;
 ')
 
 ########################################
@@ -78,6 +157,11 @@ interface(`local_xwayland_shm',`
 ##	exec time, e.g. kwin_wayland creating the socketpair before forking
 ##	and execing its embedded rootless Xwayland instance.
 ## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	The prefix of the user role owning the Xwayland domain.
+##	</summary>
+## </param>
 ## <param name="domain">
 ##	<summary>
 ##	Domain owning the socketpair, e.g. kwin_wayland.
@@ -86,10 +170,10 @@ interface(`local_xwayland_shm',`
 #
 interface(`local_xwayland_wm_protocol_socket',`
 	gen_require(`
-		type staff_xwayland_t;
+		type $1_xwayland_t;
 	')
 
-	allow staff_xwayland_t $1:unix_stream_socket { read write };
+	allow $1_xwayland_t $2:unix_stream_socket { read write };
 ')
 
 ########################################
@@ -99,6 +183,11 @@ interface(`local_xwayland_wm_protocol_socket',`
 ##	session launcher script, and handed to Xwayland as an inherited fd
 ##	(the -listenfd/-displayfd style launch pattern).
 ## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	The prefix of the user role owning the Xwayland domain.
+##	</summary>
+## </param>
 ## <param name="domain">
 ##	<summary>
 ##	Domain owning the listening socket.
@@ -107,8 +196,8 @@ interface(`local_xwayland_wm_protocol_socket',`
 #
 interface(`local_xwayland_listen_socket',`
 	gen_require(`
-		type staff_xwayland_t;
+		type $1_xwayland_t;
 	')
 
-	allow staff_xwayland_t $1:unix_stream_socket { accept getopt shutdown read write };
+	allow $1_xwayland_t $2:unix_stream_socket { accept getopt shutdown read write };
 ')
