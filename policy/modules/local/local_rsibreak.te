@@ -10,6 +10,9 @@ role rsibreak_roles types rsibreak_t;
 type rsibreak_xdg_config_t;
 xdg_config_content(rsibreak_xdg_config_t)
 
+type rsibreak_tmpfs_t;
+userdom_user_tmpfs_file(rsibreak_tmpfs_t)
+
 auth_use_nsswitch(rsibreak_t)
 dbus_all_session_bus_client(rsibreak_t)
 dbus_write_session_runtime_socket(rsibreak_t)
@@ -24,3 +27,7 @@ userdom_search_user_runtime(rsibreak_t)
 manage_files_pattern(rsibreak_t, rsibreak_xdg_config_t, rsibreak_xdg_config_t)
 xdg_config_filetrans(rsibreak_t, rsibreak_xdg_config_t, file, "rsibreakrc")
 xdg_config_filetrans(rsibreak_t, rsibreak_xdg_config_t, file, "rsibreak.notifyrc")
+
+manage_files_pattern(rsibreak_t, rsibreak_tmpfs_t, rsibreak_tmpfs_t)
+allow rsibreak_t rsibreak_tmpfs_t:file map;
+fs_tmpfs_filetrans(rsibreak_t, rsibreak_tmpfs_t, file)

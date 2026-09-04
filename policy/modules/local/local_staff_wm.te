@@ -5,6 +5,7 @@ gen_require(`
 	type evince_tmpfs_t;
 	type evolution_alarm_t;
 	type evolution_alarm_tmpfs_t;
+	type rsibreak_tmpfs_t;
 	type staff_pipewire_t;
 	type staff_wm_t;
 	type staff_xwayland_tmpfs_t;
@@ -24,6 +25,7 @@ allow staff_wm_t evolution_alarm_tmpfs_t:file { getattr map read write };
 allow staff_wm_t evince_tmpfs_t:file { getattr map read write };
 allow staff_wm_t chromium_tmpfs_t:file map;
 allow staff_wm_t staff_xwayland_tmpfs_t:file { getattr map read write };
+allow staff_wm_t rsibreak_tmpfs_t:file { getattr map read write };
 
 # kwin_wayland updates per-user desktop integration artifacts under ~/.local/share.
 xdg_manage_data(staff_wm_t)
