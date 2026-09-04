@@ -11,6 +11,7 @@ gen_require(`
 	type staff_wm_t;
 	type staff_xwayland_t;
 	type systemd_user_tmpfs_t;
+	type systemsettings_t;
 	type ssh_home_t;
 	type tmp_t;
 ')
@@ -39,6 +40,8 @@ kscreenlocker_role(staff_application_exec_domain, staff_r)
 qtwebengine_role(staff_application_exec_domain, staff_r)
 khelpcenter_role(staff_application_exec_domain, staff_r)
 qtwebengine_role(khelpcenter_t, staff_r)
+systemsettings_role(staff_application_exec_domain, staff_r)
+qtwebengine_role(systemsettings_t, staff_r)
 dolphin_role(staff_application_exec_domain, staff_r)
 spectacle_role(staff_application_exec_domain, staff_r)
 gstpluginscanner_role(staff_application_exec_domain, staff_r)

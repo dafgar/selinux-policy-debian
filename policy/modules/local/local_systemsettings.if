@@ -1,0 +1,35 @@
+## <summary>
+##	Local KDE System Settings domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the systemsettings application
+##	domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to systemsettings.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the systemsettings domain.
+##	</summary>
+## </param>
+#
+interface(`systemsettings_role',`
+	gen_require(`
+		type systemsettings_t, systemsettings_exec_t;
+		role $2;
+	')
+
+	role $2 types systemsettings_t;
+	domtrans_pattern($1, systemsettings_exec_t, systemsettings_t)
+
+	allow $1 systemsettings_t:fd use;
+	allow $1 systemsettings_t:process { ptrace signal_perms };
+	ps_process_pattern($1, systemsettings_t)
+
+	allow systemsettings_t $1:process sigchld;
+')
