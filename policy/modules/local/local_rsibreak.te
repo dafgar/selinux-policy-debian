@@ -14,6 +14,7 @@ type rsibreak_tmpfs_t;
 userdom_user_tmpfs_file(rsibreak_tmpfs_t)
 
 gen_require(`
+	type bin_t;
 	type user_home_t;
 	type staff_systemd_t;
 	type wm_tmpfs_t;
@@ -58,6 +59,12 @@ dontaudit rsibreak_t user_home_t:dir { search getattr };
 # instance (TCGETS ioctl, harmless ENOTTY either way); same signature
 # local_keepassxc.te/local_devicekit_power.te already dontaudit.
 dontaudit rsibreak_t staff_systemd_t:unix_stream_socket { getattr ioctl };
+
+# KCrash startup self-check exec probe after RSIBreak itself crashes. Losing
+# this just means the crash falls back to no dialog instead of drkonqi; not
+# worth widening rsibreak_t with an unconfined exec. Same call
+# local_konsole.if already makes for the identical KCrash fallback.
+dontaudit rsibreak_t bin_t:file execute;
 
 manage_files_pattern(rsibreak_t, rsibreak_xdg_config_t, rsibreak_xdg_config_t)
 xdg_config_filetrans(rsibreak_t, rsibreak_xdg_config_t, file, "rsibreakrc")

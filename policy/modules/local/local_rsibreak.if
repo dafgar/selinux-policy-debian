@@ -55,6 +55,27 @@ interface(`local_rsibreak_dbus_chat',`
 
 ########################################
 ## <summary>
+##	Allow RSIBreak to publish its D-Bus service (org.kde.rsibreak) on the
+##	per-role session bus.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session D-Bus domain.
+##	</summary>
+## </param>
+#
+interface(`local_rsibreak_publish_bus_name',`
+	gen_require(`
+		type rsibreak_t;
+		type $1_dbusd_t;
+		class dbus acquire_svc;
+	')
+
+	allow rsibreak_t $1_dbusd_t:dbus acquire_svc;
+')
+
+########################################
+## <summary>
 ##	Allow RSIBreak to connect directly to an X11 socket owned by another
 ##	domain (e.g. staff_t, the compositor/Xwayland on this desktop).
 ## </summary>

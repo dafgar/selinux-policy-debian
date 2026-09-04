@@ -72833,7 +72833,18 @@ Domain allowed to exchange D-Bus messages with RSIBreak.
 </summary>
 </param>
 </interface>
-<interface name="local_rsibreak_x11_connect" lineno="67">
+<interface name="local_rsibreak_publish_bus_name" lineno="67">
+<summary>
+Allow RSIBreak to publish its D-Bus service (org.kde.rsibreak) on the
+per-role session bus.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session D-Bus domain.
+</summary>
+</param>
+</interface>
+<interface name="local_rsibreak_x11_connect" lineno="88">
 <summary>
 Allow RSIBreak to connect directly to an X11 socket owned by another
 domain (e.g. staff_t, the compositor/Xwayland on this desktop).
@@ -72844,7 +72855,7 @@ Domain owning the X11 socket.
 </summary>
 </param>
 </interface>
-<interface name="local_rsibreak_systemd_inherit" lineno="86">
+<interface name="local_rsibreak_systemd_inherit" lineno="107">
 <summary>
 Allow a user systemd instance to launch RSIBreak with the usual
 inherited-exec process bits.
