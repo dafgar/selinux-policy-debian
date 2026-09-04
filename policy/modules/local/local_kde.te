@@ -1,0 +1,9 @@
+policy_module(local_kde)
+
+# Shared KDE-wide desktop config, e.g. ~/.config/kdeglobals,
+# ~/.config/kdedefaults/kdeglobals - read by nearly every KDE/Qt app for
+# theming, not owned by any single app. Base policy has no dedicated type
+# for this (unlike gnome_xdg_config_t for ~/.config/dconf, ~/.config/gtk-*),
+# so it previously fell back to generic xdg_config_t.
+type kde_xdg_config_t;
+xdg_config_content(kde_xdg_config_t)

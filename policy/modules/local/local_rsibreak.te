@@ -23,6 +23,7 @@ miscfiles_read_localization(rsibreak_t)
 xdg_search_config_dirs(rsibreak_t)
 xdg_search_data_dirs(rsibreak_t)
 userdom_search_user_runtime(rsibreak_t)
+local_kde_read_config_files(rsibreak_t)
 
 manage_files_pattern(rsibreak_t, rsibreak_xdg_config_t, rsibreak_xdg_config_t)
 xdg_config_filetrans(rsibreak_t, rsibreak_xdg_config_t, file, "rsibreakrc")

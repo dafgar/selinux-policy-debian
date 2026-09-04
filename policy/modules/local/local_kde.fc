@@ -1,0 +1,2 @@
+HOME_DIR/\.config/kdeglobals			gen_context(system_u:object_r:kde_xdg_config_t,s0)
+HOME_DIR/\.config/kdedefaults(/.*)?		gen_context(system_u:object_r:kde_xdg_config_t,s0)
