@@ -63,6 +63,10 @@ template(`konsole_role',`
 
 	allow $1_konsole_t $3:process sigchld;
 
+	# Konsole signals the shell it spawned directly (e.g. closing a tab or
+	# terminating a running command), not just any $3-attributed domain.
+	allow $1_konsole_t $2:process signal;
+
 	# konsole is a pass-through: the shell and anything launched from it
 	# (git, sudo, editors, other GUI apps) need the same ability $2 has to
 	# transition into the other per-app role domains, or opening a terminal
