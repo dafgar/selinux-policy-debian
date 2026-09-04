@@ -72455,29 +72455,40 @@ Role allowed access to the KIO worker domain.
 <summary>
 Local Konsole terminal emulator domain interfaces.
 </summary>
-<interface name="konsole_role" lineno="20">
+<template name="konsole_role" lineno="30">
 <summary>
-Allow a role to transition into the Konsole application domain.
+Role access for a role Konsole terminal emulator domain.
 </summary>
-<param name="source_domain">
+<param name="role_prefix">
 <summary>
-Domain allowed to execute and transition to Konsole.
+The prefix of the user role, for example staff or user.
+</summary>
+</param>
+<param name="user_domain">
+<summary>
+User domain for the role.
+</summary>
+</param>
+<param name="user_exec_domain">
+<summary>
+User exec domain for execute and transition access.
 </summary>
 </param>
 <param name="role">
 <summary>
-Role allowed access to the Konsole domain.
+Role allowed access.
 </summary>
 </param>
-</interface>
-<interface name="local_konsole_systemd_dbus_chat" lineno="47">
+</template>
+<interface name="local_konsole_systemd_dbus_chat" lineno="109">
 <summary>
 Allow Konsole (and anything launched from it, e.g. systemctl --user)
 to chat over D-Bus with the per-role systemd --user manager.
 </summary>
 <param name="role_prefix">
 <summary>
-User role prefix that owns the systemd --user manager domain.
+User role prefix that owns both the systemd --user manager domain and
+the Konsole domain.
 </summary>
 </param>
 </interface>
