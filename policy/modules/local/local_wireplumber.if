@@ -34,13 +34,14 @@ template(`wireplumber_role',`
 		class dbus { acquire_svc send_msg };
 		type $1_dbusd_t;
 		type $1_pipewire_t;
-		type wireplumber_exec_t, wireplumber_state_t;
+		type wireplumber_exec_t, wireplumber_state_t, wireplumber_conf_t;
 		type alsa_var_lib_t;
 		type security_t, selinux_config_t;
 		type dma_device_t;
 		type sysfs_t;
 		type tmpfs_t, xdm_tmpfs_t;
 		type pipewire_runtime_t, user_runtime_t;
+		type debugfs_t;
 	')
 
 	type $1_wireplumber_t;
@@ -115,6 +116,14 @@ template(`wireplumber_role',`
 
 	manage_dirs_pattern($1_wireplumber_t, wireplumber_state_t, wireplumber_state_t)
 	manage_files_pattern($1_wireplumber_t, wireplumber_state_t, wireplumber_state_t)
+
+	list_dirs_pattern($1_wireplumber_t, wireplumber_conf_t, wireplumber_conf_t)
+	read_files_pattern($1_wireplumber_t, wireplumber_conf_t, wireplumber_conf_t)
+	allow $1_wireplumber_t wireplumber_conf_t:file map;
+
+	# Optional debugfs probing (e.g. ALSA/DRM debug nodes) is not required for
+	# normal media/session function.
+	dontaudit $1_wireplumber_t debugfs_t:dir search;
 
 	optional_policy(`
 		systemd_user_app_status($1, $1_wireplumber_t)

@@ -6,5 +6,8 @@ application_executable_file(wireplumber_exec_t)
 type wireplumber_state_t;
 userdom_user_home_content(wireplumber_state_t)
 
+type wireplumber_conf_t;
+xdg_config_content(wireplumber_conf_t)
+
 # WirePlumber is part of the user media/session stack but needs its own domain
 # and dedicated state label instead of reusing the older pulseaudio types.
