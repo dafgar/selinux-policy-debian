@@ -24,5 +24,6 @@ interface(`local_systemd_inherit_user_service',`
 	')
 
 	allow $1_systemd_t $2:process { noatsecure rlimitinh siginh };
+	allow $2 $1_systemd_t:fd use;
 	allow $2 $1_systemd_t:unix_stream_socket { read write };
 ')
