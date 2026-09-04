@@ -32,3 +32,25 @@ interface(`kioworker_role',`
 
 	allow kioworker_t $1:process sigchld;
 ')
+
+########################################
+## <summary>
+##	Allow a domain to read the process state (/proc/pid) of KIO worker
+##	processes, e.g. Xwayland reading a connecting client's cmdline for
+##	client identification.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_kioworker_read_proc_state',`
+	gen_require(`
+		type kioworker_t;
+	')
+
+	allow $1 kioworker_t:dir list_dir_perms;
+	read_files_pattern($1, kioworker_t, kioworker_t)
+	read_lnk_files_pattern($1, kioworker_t, kioworker_t)
+')

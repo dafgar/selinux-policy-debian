@@ -1,6 +1,8 @@
 policy_module(local_xwayland)
 
 gen_require(`
+	type java_t;
+	type sysadm_t;
 	type user_tmp_t;
 	type wm_tmpfs_t;
 ')
@@ -52,3 +54,15 @@ allow staff_xwayland_t user_tmp_t:file getattr;
 # shared for GPU buffer negotiation - same wm_tmpfs_t pattern as rsibreak_t
 # and safeeyes_t.
 allow staff_xwayland_t wm_tmpfs_t:file { map read write };
+
+# Reading /proc/<pid>/cmdline of a connecting X11 client for
+# _NET_WM_PID-style client identification. java_t has no local wrapper
+# module, so grant it directly here; staff_t/kioworker_t/mplayer_t go
+# through their own local_*_read_proc_state interfaces from local_staff.te.
+# sysadm_t is dontaudit-only - Xwayland does not need to identify a stray
+# sysadm client, and sysadm stays deliberately separate from staff (CODEX.md).
+allow staff_xwayland_t java_t:dir list_dir_perms;
+read_files_pattern(staff_xwayland_t, java_t, java_t)
+read_lnk_files_pattern(staff_xwayland_t, java_t, java_t)
+dontaudit staff_xwayland_t sysadm_t:dir list_dir_perms;
+dontaudit staff_xwayland_t sysadm_t:file { getattr open read };

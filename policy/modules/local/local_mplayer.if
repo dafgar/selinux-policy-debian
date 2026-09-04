@@ -54,3 +54,25 @@ interface(`local_mplayer_pipewire_pulse_connect',`
 
 	local_pipewire_pulse_stream_connect(mplayer_t, $1_pipewire_t)
 ')
+
+#######################################
+## <summary>
+##	Allow a domain to read the process state (/proc/pid) of MPlayer, e.g.
+##	Xwayland reading a connecting client's cmdline for client
+##	identification.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_mplayer_read_proc_state',`
+	gen_require(`
+		type mplayer_t;
+	')
+
+	allow $1 mplayer_t:dir list_dir_perms;
+	read_files_pattern($1, mplayer_t, mplayer_t)
+	read_lnk_files_pattern($1, mplayer_t, mplayer_t)
+')

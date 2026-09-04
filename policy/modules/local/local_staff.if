@@ -1,3 +1,25 @@
 ## <summary>
 ##	Local override module with no exported interfaces.
 ## </summary>
+
+########################################
+## <summary>
+##	Allow a domain to read the process state (/proc/pid) of staff_t, e.g.
+##	Xwayland reading the cmdline of a connecting X11 client for
+##	_NET_WM_PID-style client identification.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_staff_read_proc_state',`
+	gen_require(`
+		type staff_t;
+	')
+
+	allow $1 staff_t:dir list_dir_perms;
+	read_files_pattern($1, staff_t, staff_t)
+	read_lnk_files_pattern($1, staff_t, staff_t)
+')
