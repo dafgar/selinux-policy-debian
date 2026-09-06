@@ -58,6 +58,24 @@ interface(`safeeyes_role',`
 
 ########################################
 ## <summary>
+##	Wire up all of a role extra SafeEyes grants beyond the base role
+##	template: PipeWire connect, D-Bus chat, and gvfs dbus_chat.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the PipeWire/D-Bus/gvfs session
+##	resources.
+##	</summary>
+## </param>
+#
+interface(`local_safeeyes_role',`
+	local_safeeyes_pipewire_connect($1)
+	local_safeeyes_dbus_chat($1_t)
+	local_safeeyes_gvfs_dbus_chat($1)
+')
+
+########################################
+## <summary>
 ##	Send and receive D-Bus messages with SafeEyes.
 ## </summary>
 ## <param name="domain">
