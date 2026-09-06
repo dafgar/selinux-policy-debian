@@ -5,6 +5,7 @@ gen_require(`
 	type etc_t;
 	type fusefs_t;
 	type mplayer_exec_t;
+	type plasmashell_t;
 	type random_device_t;
 	type systemd_logind_t;
 	type sysctl_fs_t;
@@ -76,6 +77,12 @@ ntp_dbus_chat(thunderbird_t)
 systemd_dbus_chat_logind(thunderbird_t)
 
 local_evince_domtrans(thunderbird_t)
+
+# Wayland clipboard: when the user highlights text in Thunderbird (primary
+# selection) or copies normally, Thunderbird is handed the write end of a pipe
+# plasmashell created and needs to use that fd/write into it, e.g. for the
+# plasmashell clipboard-history manager.
+local_plasmashell_use_fifo(thunderbird_t)
 
 allow thunderbird_t self:cap_userns { sys_admin sys_chroot sys_ptrace };
 allow thunderbird_t self:process { ptrace setcap setrlimit };

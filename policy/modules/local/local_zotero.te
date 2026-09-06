@@ -47,6 +47,7 @@ gen_require(`
 	type etc_t;
 	type mozilla_exec_t;
 	type pcscd_runtime_t;
+	type plasmashell_t;
 	type pulseaudio_tmp_t;
 	type random_device_t;
 	type root_t;
@@ -119,6 +120,11 @@ dev_rw_dri(zotero_t)
 wm_map_tmpfs_files(zotero_t)
 wm_rw_tmpfs_files(zotero_t)
 local_evince_domtrans(zotero_t)
+# Wayland clipboard: when the user highlights text in Zotero (primary
+# selection) or copies normally, Zotero is handed the write end of a pipe
+# plasmashell created and needs to use that fd/write into it, e.g. for the
+# plasmashell clipboard-history manager.
+local_plasmashell_use_fifo(zotero_t)
 # Keep the direct session-bus runtime sockfile write; system-bus runtime access
 # is covered via dbus_system_bus_client(zotero_t).
 allow zotero_t system_dbusd_runtime_t:sock_file write;

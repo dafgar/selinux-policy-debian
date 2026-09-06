@@ -84,6 +84,12 @@ userdom_write_user_tmp_sockets(evince_t)
 local_zotero_read_home_content(evince_t)
 local_thunderbird_read_tmp_content(evince_t)
 
+# Wayland clipboard: when the user highlights text in Evince (primary
+# selection) or copies normally, Evince is handed the write end of a pipe
+# plasmashell created and needs to use that fd/write into it, e.g. for the
+# plasmashell clipboard-history manager.
+local_plasmashell_use_fifo(evince_t)
+
 xdg_read_config_files(evince_t)
 xdg_search_config_dirs(evince_t)
 xdg_search_data_dirs(evince_t)
@@ -115,6 +121,7 @@ gen_require(`
 	type bin_t;
 	type etc_t;
 	type evolution_exec_t;
+	type plasmashell_t;
 	type root_t;
 	type selinux_config_t;
 	type staff_systemd_t;

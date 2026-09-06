@@ -11,6 +11,7 @@ gen_require(`
 	type mozilla_exec_t;
 	type pcscd_runtime_t;
 	type pcscd_t;
+	type plasmashell_t;
 	type pulseaudio_tmp_t;
 	type pipewire_runtime_t;
 	type proc_t;
@@ -74,6 +75,12 @@ allow chromium_t v4l_device_t:chr_file { getattr ioctl map open read write };
 dev_rw_dma_dev(chromium_t)
 
 local_evince_domtrans(chromium_t)
+
+# Wayland clipboard: when the user highlights text in Chromium (primary
+# selection) or copies normally, Chromium is handed the write end of a pipe
+# plasmashell created and needs to use that fd/write into it, e.g. for the
+# plasmashell clipboard-history manager.
+local_plasmashell_use_fifo(chromium_t)
 
 # Chromium inhibits screen/system idle via PowerDevil while media is playing.
 local_powerdevil_dbus_chat(chromium_t)

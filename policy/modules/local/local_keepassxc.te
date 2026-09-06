@@ -38,6 +38,7 @@ xdg_cache_filetrans(keepassxc_t, keepassxc_xdg_cache_t, dir, "keepassxc")
 
 gen_require(`
 	type debugfs_t;
+	type plasmashell_t;
 	type src_t;
 	type staff_systemd_t;
 	type tmp_t;
@@ -77,6 +78,11 @@ wm_map_tmpfs_files(keepassxc_t)
 wm_rw_tmpfs_files(keepassxc_t)
 pcscd_stream_connect(keepassxc_t)
 userdom_write_user_tmp_sockets(keepassxc_t)
+
+# Wayland clipboard: when the user copies a password/entry from KeePassXC,
+# it's handed the write end of a pipe plasmashell created and needs to use
+# that fd/write into it, e.g. for the plasmashell clipboard-history manager.
+local_plasmashell_use_fifo(keepassxc_t)
 fs_getattr_all_fs(keepassxc_t)
 
 # YubiKey/hardware-key HID-direct polling: USB device enumeration via sysfs

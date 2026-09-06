@@ -5,6 +5,7 @@ gen_require(`
 	type mozilla_t;
 	type mozilla_tmpfs_t;
 	type pipewire_runtime_t;
+	type plasmashell_t;
 	type systemd_user_runtime_t;
 	type user_runtime_t;
 	type var_lib_t;
@@ -48,6 +49,12 @@ dev_rw_dma_dev(mozilla_t)
 allow mozilla_t xdg_cache_t:file { create getattr map open read write };
 
 local_evince_domtrans(mozilla_t)
+
+# Wayland clipboard: when the user highlights text in Firefox (primary
+# selection) or copies normally, Firefox is handed the write end of a pipe
+# plasmashell created and needs to use that fd/write into it, e.g. for the
+# plasmashell clipboard-history manager.
+local_plasmashell_use_fifo(mozilla_t)
 
 # Firefox uses same-domain ptrace within its own process tree for sandboxing
 # and crash/process management.

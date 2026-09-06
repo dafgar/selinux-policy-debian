@@ -29,12 +29,6 @@ allow plasmashell_t chromium_t:fd use;
 allow plasmashell_t mozilla_t:fifo_file write;
 read_files_pattern(plasmashell_t, chromium_tmp_t, chromium_tmp_t)
 
-# Wayland clipboard, the reverse direction: when the user highlights text in
-# Chromium (primary selection) or copies normally, Chromium is handed the
-# write end of a pipe plasmashell created and needs to use that fd/write
-# into it, e.g. for the plasmashell clipboard-history manager.
-local_plasmashell_use_fifo(chromium_t)
-
 
 # Plasma writes its own config directly (plasmashellrc, plasma-*-appletsrc)
 # and KConfig's atomic-save lockfile dance happens straight in ~/.config
