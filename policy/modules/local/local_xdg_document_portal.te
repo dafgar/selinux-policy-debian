@@ -18,6 +18,14 @@ xdg_search_config_dirs(xdg_document_portal_t)
 xdg_search_data_dirs(xdg_document_portal_t)
 userdom_search_user_runtime(xdg_document_portal_t)
 
+# Reads /proc/filesystems (glib GIO checking available filesystem types
+# during FUSE mount setup).
+kernel_read_system_state(xdg_document_portal_t)
+
+# statfs() on the root filesystem, e.g. to check space/mount options before
+# exposing document-portal FUSE mounts.
+fs_getattr_all_fs(xdg_document_portal_t)
+
 gen_require(`
 	type fuse_device_t;
 ')
