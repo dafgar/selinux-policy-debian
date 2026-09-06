@@ -35,6 +35,28 @@ interface(`rsibreak_role',`
 
 ########################################
 ## <summary>
+##	Wire up all of a role access to/from RSIBreak beyond the base role
+##	template: D-Bus chat, bus name publish, X11 connect, Wayland
+##	compositor connect, and the role Xwayland domain reading process
+##	state.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the D-Bus/X11/Wayland/Xwayland session
+##	resources.
+##	</summary>
+## </param>
+#
+interface(`local_rsibreak_role',`
+	local_rsibreak_dbus_chat($1_t)
+	local_rsibreak_publish_bus_name($1)
+	local_rsibreak_x11_connect($1_t)
+	local_rsibreak_wayland_connect($1)
+	local_rsibreak_read_proc_state($1_xwayland_t)
+')
+
+########################################
+## <summary>
 ##	Allow bidirectional D-Bus method call/reply between a domain and
 ##	RSIBreak.
 ## </summary>
