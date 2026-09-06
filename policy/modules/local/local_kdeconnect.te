@@ -17,6 +17,10 @@ corenet_port(kdeconnect_port_t)
 # kdeconnectd reads shared KDE theming/locale config (kdeglobals).
 local_kde_read_config_files(kdeconnect_t)
 
+# kdeconnectd queries NetworkManager to check whether the phone and desktop
+# are on the same network.
+networkmanager_dbus_chat(kdeconnect_t)
+
 ## <desc>
 ## <p>
 ## Allow KDE Connect to use its Bluetooth transport backend.
@@ -34,6 +38,7 @@ gen_tunable(local_kdeconnect_use_network, true)
 
 tunable_policy(`local_kdeconnect_use_bluetooth',`
 	allow kdeconnect_t self:bluetooth_socket { bind create getattr listen setopt };
+	bluetooth_dbus_chat(kdeconnect_t)
 ',`
 	dontaudit kdeconnect_t self:bluetooth_socket { bind create getattr listen setopt };
 ')
