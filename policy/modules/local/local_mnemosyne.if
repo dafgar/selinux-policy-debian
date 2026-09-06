@@ -35,6 +35,26 @@ interface(`mnemosyne_role',`
 
 ########################################
 ## <summary>
+##	Send and receive D-Bus messages with Mnemosyne, e.g. querying the a11y
+##	bus's Properties on behalf of its embedded QtWebEngine view.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to exchange D-Bus messages with Mnemosyne.
+##	</summary>
+## </param>
+#
+interface(`local_mnemosyne_dbus_chat',`
+	gen_require(`
+		type mnemosyne_t;
+	')
+
+	allow $1 mnemosyne_t:dbus send_msg;
+	allow mnemosyne_t $1:dbus send_msg;
+')
+
+########################################
+## <summary>
 ##	Allow Mnemosyne to connect to a role's session Wayland compositor
 ##	socket.
 ## </summary>

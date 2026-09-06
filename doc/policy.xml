@@ -72798,7 +72798,18 @@ Role allowed access to the mnemosyne domain.
 </summary>
 </param>
 </interface>
-<interface name="local_mnemosyne_wayland_connect" lineno="47">
+<interface name="local_mnemosyne_dbus_chat" lineno="47">
+<summary>
+Send and receive D-Bus messages with Mnemosyne, e.g. querying the a11y
+bus's Properties on behalf of its embedded QtWebEngine view.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages with Mnemosyne.
+</summary>
+</param>
+</interface>
+<interface name="local_mnemosyne_wayland_connect" lineno="67">
 <summary>
 Allow Mnemosyne to connect to a role's session Wayland compositor
 socket.
