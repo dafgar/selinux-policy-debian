@@ -39,10 +39,7 @@ local_plasmashell_role(staff)
 powerdevil_role(staff_application_exec_domain, staff_r)
 local_powerdevil_role(staff)
 kdeconnect_role(staff_application_exec_domain, staff_r)
-local_kdeconnect_dbus_activation(staff)
-# kdeconnectd is a Wayland client of the session compositor socket, e.g. for
-# tray/notification integration.
-local_kdeconnect_wayland_connect(staff)
+local_kdeconnect_role(staff)
 safeeyes_role(staff_application_exec_domain, staff_r)
 rsibreak_role(staff_application_exec_domain, staff_r)
 local_rsibreak_role(staff)

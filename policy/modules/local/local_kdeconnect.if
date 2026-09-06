@@ -35,6 +35,24 @@ interface(`kdeconnect_role',`
 
 ########################################
 ## <summary>
+##	Wire up all of a role extra KDE Connect grants beyond the base role
+##	template: D-Bus activation and Wayland compositor connect.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the D-Bus/Wayland session resources.
+##	</summary>
+## </param>
+#
+interface(`local_kdeconnect_role',`
+	local_kdeconnect_dbus_activation($1)
+	# kdeconnectd is a Wayland client of the session compositor socket,
+	# e.g. for tray/notification integration.
+	local_kdeconnect_wayland_connect($1)
+')
+
+########################################
+## <summary>
 ##	Allow a user session D-Bus daemon to directly activate KDE Connect via
 ##	its D-Bus service file (Exec=kdeconnectd, no SystemdService), executing
 ##	and transitioning it into the KDE Connect domain.
