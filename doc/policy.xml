@@ -72061,6 +72061,29 @@ The prefix of the user role, for example staff or user.
 </summary>
 </param>
 </interface>
+<interface name="local_evolution_alarm_wayland_connect" lineno="64">
+<summary>
+Allow Evolution alarm helpers to connect to a role's session Wayland
+compositor socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session's Wayland socket.
+</summary>
+</param>
+</interface>
+<interface name="local_evolution_alarm_read_proc_state" lineno="84">
+<summary>
+Allow a domain to read Evolution alarm's process state (/proc/pid),
+e.g. Xwayland reading the cmdline of a connecting X11 client for
+_NET_WM_PID-style client identification.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_fsadm" filename="policy/modules/local/local_fsadm.if">
 <summary>
