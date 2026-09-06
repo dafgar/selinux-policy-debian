@@ -44,6 +44,7 @@ manage_files_pattern(zotero_t, zotero_install_t, zotero_install_t)
 manage_lnk_files_pattern(zotero_t, zotero_install_t, zotero_install_t)
 
 gen_require(`
+	type dolphin_exec_t;
 	type etc_t;
 	type mozilla_exec_t;
 	type pcscd_runtime_t;
@@ -154,6 +155,7 @@ dontaudit zotero_t { etc_t root_t usr_t xdg_data_t }:dir watch;
 dontaudit zotero_t { var_t var_lib_t }:dir read;
 dontaudit zotero_t user_home_t:file read;
 dontaudit zotero_t mozilla_exec_t:file execute;
+dontaudit zotero_t dolphin_exec_t:file execute;
 dontaudit zotero_t pcscd_runtime_t:dir search;
 dontaudit zotero_t tpm2_pkcs11_home_t:dir search;
 dontaudit zotero_t thunderbird_exec_t:file execute;
