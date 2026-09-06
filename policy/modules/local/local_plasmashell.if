@@ -35,6 +35,54 @@ interface(`plasmashell_role',`
 
 ########################################
 ## <summary>
+##	Allow plasmashell to connect to the PulseAudio-compatible PipeWire
+##	socket for a given role prefix.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the PipeWire server domain.
+##	</summary>
+## </param>
+#
+interface(`local_plasmashell_pipewire_pulse_connect',`
+	gen_require(`
+		type plasmashell_t;
+	')
+
+	local_pipewire_pulse_stream_connect(plasmashell_t, $1_pipewire_t)
+	ps_process_pattern($1_pipewire_t, plasmashell_t)
+')
+
+########################################
+## <summary>
+##	Wire up all of a role access to/from plasmashell: Wayland compositor
+##	connect, PipeWire Pulse connect, D-Bus chat, gvfs dbus_chat, and
+##	systemd inherited-exec launch.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Wayland/PipeWire/D-Bus/gvfs/systemd
+##	session resources.
+##	</summary>
+## </param>
+#
+interface(`local_plasmashell_role',`
+	# plasmashell is itself a Wayland client of the session compositor
+	# socket and a PulseAudio/pipewire client (volume applet, etc);
+	# pipewire-pulse in turn introspects the plasmashell /proc/<pid> like it
+	# does for other audio-client app domains.
+	local_plasmashell_wayland_connect($1)
+	local_plasmashell_pipewire_pulse_connect($1)
+	# Plasma broadcasts session-wide signals (KActivities resource scoring,
+	# KDirNotify file-added notifications) that the role main domain
+	# receives as a generic session bus client.
+	local_plasmashell_dbus_chat($1_t)
+	local_plasmashell_gvfs_dbus_chat($1)
+	local_plasmashell_systemd_inherit($1)
+')
+
+########################################
+## <summary>
 ##	Allow a user systemd instance to launch plasmashell with the usual
 ##	inherited-exec process bits.
 ## </summary>

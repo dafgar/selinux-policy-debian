@@ -35,18 +35,7 @@ zotero_role(staff_application_exec_domain, staff_r)
 evince_role(staff_application_exec_domain, staff_r)
 plasmashell_role(staff_application_exec_domain, staff_r)
 
-# plasmashell is itself a Wayland client of the session's compositor socket
-# and a PulseAudio/pipewire client (volume applet, etc); pipewire-pulse in
-# turn introspects plasmashell's /proc/<pid> like it does for other
-# audio-client app domains.
-local_plasmashell_wayland_connect(staff)
-local_pipewire_pulse_stream_connect(plasmashell_t, staff_pipewire_t)
-ps_process_pattern(staff_pipewire_t, plasmashell_t)
-# Plasma broadcasts session-wide signals (KActivities resource scoring,
-# KDirNotify file-added notifications) that staff_t receives as a generic
-# session bus client.
-local_plasmashell_dbus_chat(staff_t)
-local_plasmashell_gvfs_dbus_chat(staff)
+local_plasmashell_role(staff)
 powerdevil_role(staff_application_exec_domain, staff_r)
 local_powerdevil_role(staff)
 kdeconnect_role(staff_application_exec_domain, staff_r)
@@ -156,7 +145,6 @@ local_ssh_shm(staff_xwayland_t)
 local_xwayland_wm_protocol_socket(staff, staff_wm_t)
 local_xwayland_listen_socket(staff, staff_t)
 local_systemd_inherit_user_service(staff, staff_xwayland_t)
-local_plasmashell_systemd_inherit(staff)
 local_staff_read_proc_state(staff_xwayland_t)
 local_kioworker_read_proc_state(staff_xwayland_t)
 local_discover_notifier_read_proc_state(staff_xwayland_t)
