@@ -51,4 +51,5 @@ interface(`local_discover_notifier_systemd_inherit',`
 	')
 
 	local_systemd_inherit_user_service($1, discover_notifier_t)
+	allow discover_notifier_t $1_systemd_t:unix_stream_socket { getattr ioctl };
 ')

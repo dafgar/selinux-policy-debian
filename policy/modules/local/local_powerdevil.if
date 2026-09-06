@@ -50,6 +50,7 @@ interface(`local_powerdevil_systemd_inherit',`
 	')
 
 	local_systemd_inherit_user_service($1, powerdevil_t)
+	allow powerdevil_t $1_systemd_t:unix_stream_socket { getattr ioctl };
 ')
 
 ########################################
