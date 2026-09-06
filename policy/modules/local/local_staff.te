@@ -79,9 +79,7 @@ local_konsole_role(staff)
 # Transition into the base-policy ping domain instead of granting icmp_socket
 # use directly on staff_t.
 netutils_run_ping(staff_t, staff_r)
-local_evince_x11_connect(staff_t)
-local_evince_dbus_chat(staff_t)
-local_evince_gvfs_dbus_chat(staff)
+local_evince_role(staff)
 
 # User-session helpers such as systemctl --user may stat namespace file handles
 # during generic runtime probing. Keep this limited to harmless metadata lookup.

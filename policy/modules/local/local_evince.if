@@ -63,6 +63,24 @@ interface(`local_evince_domtrans',`
 
 ########################################
 ## <summary>
+##	Wire up all of a role extra Evince grants beyond the base role
+##	template: X11/Wayland connect, D-Bus chat, and gvfs dbus_chat.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the X11/Wayland/D-Bus/gvfs session
+##	resources.
+##	</summary>
+## </param>
+#
+interface(`local_evince_role',`
+	local_evince_x11_connect($1_t)
+	local_evince_dbus_chat($1_t)
+	local_evince_gvfs_dbus_chat($1)
+')
+
+########################################
+## <summary>
 ##	Allow Evince to connect to the user X11/Wayland socket peer domain.
 ## </summary>
 ## <param name="xserver_domain">
