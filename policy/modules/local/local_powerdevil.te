@@ -7,6 +7,11 @@ type powerdevil_exec_t;
 userdom_user_application_domain(powerdevil_t, powerdevil_exec_t)
 role powerdevil_roles types powerdevil_t;
 
+gen_require(`
+	type user_tmp_t;
+	type user_home_t;
+')
+
 # internal Qt/glib thread wakeup pipe
 allow powerdevil_t self:fifo_file { read write };
 # AC/lid/battery hotplug fallback via kernel uevents
@@ -47,3 +52,20 @@ logging_send_syslog_msg(powerdevil_t)
 xdg_read_cache_files(powerdevil_t)
 local_kde_read_config_files(powerdevil_t)
 mount_list_runtime(powerdevil_t)
+
+# Low-disk-space notifier: statfs() on every mounted filesystem.
+fs_getattr_all_fs(powerdevil_t)
+
+# Fontconfig probes the legacy ~/.fontconfig path (pre-XDG-spec override
+# dir), which is plain user_home_t like any other uncategorized home
+# content. Same call local_rsibreak.te/local_konsole.if already make for
+# the identical probe: cosmetic-only, harmless to lose.
+dontaudit powerdevil_t user_home_t:dir search;
+
+# Per-session MIT-MAGIC-COOKIE xauth file (e.g. xauth_gmOtgU under
+# /run/user/<uid>): Qt's XCB backend reads it while probing the X11
+# platform. Only read is exercised (open/getattr already satisfied via an
+# inherited fd), so keep this to the exact op observed rather than a
+# broader grant on the shared user_tmp_t type (same tradeoff as the
+# Xwayland xauth getattr in local_xwayland.if).
+allow powerdevil_t user_tmp_t:file read;

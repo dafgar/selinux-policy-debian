@@ -90,3 +90,44 @@ interface(`local_powerdevil_x11_connect',`
 
 	local_$1_x11_connect(powerdevil_t)
 ')
+
+########################################
+## <summary>
+##	Allow PowerDevil to connect to a role's session Wayland compositor
+##	socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session's Wayland socket.
+##	</summary>
+## </param>
+#
+interface(`local_powerdevil_wayland_connect',`
+	gen_require(`
+		type powerdevil_t;
+	')
+
+	local_$1_wayland_connect(powerdevil_t)
+')
+
+########################################
+## <summary>
+##	Allow a domain to read PowerDevil's process state (/proc/pid), e.g.
+##	Xwayland reading the cmdline of a connecting X11 client for
+##	_NET_WM_PID-style client identification.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_powerdevil_read_proc_state',`
+	gen_require(`
+		type powerdevil_t;
+	')
+
+	allow $1 powerdevil_t:dir list_dir_perms;
+	read_files_pattern($1, powerdevil_t, powerdevil_t)
+	read_lnk_files_pattern($1, powerdevil_t, powerdevil_t)
+')

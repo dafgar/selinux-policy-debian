@@ -45,8 +45,11 @@ local_pipewire_pulse_stream_connect(plasmashell_t, staff_pipewire_t)
 ps_process_pattern(staff_pipewire_t, plasmashell_t)
 powerdevil_role(staff_application_exec_domain, staff_r)
 local_powerdevil_dbus_chat(staff_t)
-# org_kde_powerdevil is an X11 client (via Xwayland) of the session X11 socket.
+# org_kde_powerdevil is an X11 client (via Xwayland) of the session X11
+# socket, and also probes the Wayland compositor socket directly (Qt QPA
+# platform detection).
 local_powerdevil_x11_connect(staff)
+local_powerdevil_wayland_connect(staff)
 kdeconnect_role(staff_application_exec_domain, staff_r)
 local_kdeconnect_dbus_activation(staff)
 # kdeconnectd is a Wayland client of the session compositor socket, e.g. for
@@ -174,3 +177,4 @@ local_systemd_inherit_user_service(staff, staff_xwayland_t)
 local_plasmashell_systemd_inherit(staff)
 local_staff_read_proc_state(staff_xwayland_t)
 local_kioworker_read_proc_state(staff_xwayland_t)
+local_powerdevil_read_proc_state(staff_xwayland_t)
