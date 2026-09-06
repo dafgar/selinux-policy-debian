@@ -63,8 +63,11 @@ local_rsibreak_publish_bus_name(staff)
 keepassxc_role(staff_application_exec_domain, staff_r)
 gkrellm_role(staff_application_exec_domain, staff_r)
 discover_notifier_role(staff_application_exec_domain, staff_r)
-# DiscoverNotifier is an X11 client (via Xwayland) of the session X11 socket.
+# DiscoverNotifier is an X11 client (via Xwayland) of the session X11
+# socket, and also probes the Wayland compositor socket directly (Qt QPA
+# platform detection).
 local_discover_notifier_x11_connect(staff)
+local_discover_notifier_wayland_connect(staff)
 xdg_document_portal_role(staff_application_exec_domain, staff_r)
 local_xdg_document_portal_dbus_chat(staff_t)
 local_xdg_document_portal_publish_bus_name(staff)
@@ -178,3 +181,4 @@ local_plasmashell_systemd_inherit(staff)
 local_staff_read_proc_state(staff_xwayland_t)
 local_kioworker_read_proc_state(staff_xwayland_t)
 local_powerdevil_read_proc_state(staff_xwayland_t)
+local_discover_notifier_read_proc_state(staff_xwayland_t)

@@ -40,11 +40,28 @@ xdg_read_data_files(discover_notifier_t)
 
 gen_require(`
 	type xdg_data_t;
+	type user_tmp_t;
+	type user_home_t;
 ')
 allow discover_notifier_t xdg_data_t:dir write;
 xdg_read_cache_files(discover_notifier_t)
 files_read_var_lib_files(discover_notifier_t)
 fs_getattr_all_fs(discover_notifier_t)
+
+# Searching the top-level ~/.config dir itself to reach subdirs it already
+# reads (kdeglobals, flatpak config).
+xdg_search_config_dirs(discover_notifier_t)
+
+# Fontconfig probes the legacy ~/.fontconfig path (pre-XDG-spec override
+# dir), which is plain user_home_t like any other uncategorized home
+# content. Same call local_powerdevil.te/local_rsibreak.te/local_konsole.if
+# already make for the identical probe: cosmetic-only, harmless to lose.
+dontaudit discover_notifier_t user_home_t:dir search;
+
+# Per-session MIT-MAGIC-COOKIE xauth file (e.g. xauth_gmOtgU under
+# /run/user/<uid>): Qt's XCB backend reads it while probing the X11
+# platform. Same exact-op tradeoff as local_powerdevil.te.
+allow discover_notifier_t user_tmp_t:file read;
 
 # glib thread pool sched_getparam() on its own threads
 dontaudit discover_notifier_t self:process getsched;
