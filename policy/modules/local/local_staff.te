@@ -5,7 +5,6 @@ gen_require(`
 	type khelpcenter_t;
 	type mnemosyne_t;
 	type nsfs_t;
-	type mozilla_t;
 	type plasmashell_t;
 	type staff_dbusd_t;
 	type staff_git_t;
@@ -131,9 +130,6 @@ local_gpg_prompter_dbus_chat(staff_t)
 # session. Keep this limited to read/write on systemd_user_tmpfs_t files.
 allow staff_t systemd_user_tmpfs_t:file rw_file_perms;
 
-# Plasma shell querying Firefox scheduler metadata is desktop integration noise.
-dontaudit staff_t mozilla_t:process getsched;
-
 local_git_search_user_paths(staff)
 local_git_use_urandom(staff)
 local_git_config_lockfile_trans(staff)
@@ -164,22 +160,11 @@ local_chromium_gvfs_dbus_chat(staff)
 local_mplayer_x11_connect(staff_xwayland_t)
 local_mplayer_shm(staff_xwayland_t)
 local_mplayer_read_proc_state(staff_xwayland_t)
-local_mozilla_shm(staff_xwayland_t)
-local_mozilla_read_proc_state(staff_xwayland_t)
-local_thunderbird_shm(staff_xwayland_t)
-local_thunderbird_read_proc_state(staff_xwayland_t)
-local_mozilla_pipewire_pulse_connect(staff)
-local_mozilla_gvfs_dbus_chat(staff)
-local_mozilla_wayland_connect(staff)
+local_mozilla_role(staff)
 local_safeeyes_pipewire_connect(staff)
 local_safeeyes_dbus_chat(staff_t)
 local_safeeyes_gvfs_dbus_chat(staff)
-local_thunderbird_gvfs_dbus_chat(staff)
-local_thunderbird_wayland_connect(staff)
-local_thunderbird_pipewire_pulse_connect(staff)
-local_thunderbird_pipewire_process_lookup(staff)
-local_thunderbird_publish_bus_name(staff)
-local_thunderbird_dbus_chat(staff_t)
+local_thunderbird_role(staff)
 local_zotero_dbus_chat(staff_t)
 # Uncertain whether Zotero's Gecko renderer runs X11-via-Xwayland or native
 # Wayland - no dedicated tmpfs type consumed by staff_wm_t (unlike

@@ -60,6 +60,32 @@ interface(`local_thunderbird_wayland_connect',`
 
 ########################################
 ## <summary>
+##	Wire up all of a role's access to/from Thunderbird: PipeWire Pulse
+##	connect, gvfs dbus_chat, Wayland compositor connect, PipeWire /proc
+##	lookup, session bus name publish, the role's Xwayland domain reading
+##	Thunderbird's MIT-SHM segment and process state, and the role's main
+##	domain D-Bus chat with Thunderbird.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the PipeWire/gvfs/Wayland/Xwayland/D-Bus
+##	session resources.
+##	</summary>
+## </param>
+#
+interface(`local_thunderbird_role',`
+	local_thunderbird_pipewire_pulse_connect($1)
+	local_thunderbird_gvfs_dbus_chat($1)
+	local_thunderbird_wayland_connect($1)
+	local_thunderbird_pipewire_process_lookup($1)
+	local_thunderbird_publish_bus_name($1)
+	local_thunderbird_shm($1_xwayland_t)
+	local_thunderbird_read_proc_state($1_xwayland_t)
+	local_thunderbird_dbus_chat($1_t)
+')
+
+########################################
+## <summary>
 ##	Allow a domain to read/write Thunderbird's MIT-SHM segment, e.g. the X
 ##	server attaching to a shared-memory image passed via XShmAttach.
 ## </summary>
