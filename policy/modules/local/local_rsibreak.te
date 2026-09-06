@@ -16,6 +16,7 @@ userdom_user_tmpfs_file(rsibreak_tmpfs_t)
 gen_require(`
 	type bin_t;
 	type user_home_t;
+	type user_tmp_t;
 	type staff_systemd_t;
 	type wm_tmpfs_t;
 ')
@@ -57,6 +58,11 @@ allow rsibreak_t self:fifo_file rw_fifo_file_perms;
 allow rsibreak_t wm_tmpfs_t:file { map read write };
 
 userdom_write_user_tmp_sockets(rsibreak_t)
+
+# Per-session MIT-MAGIC-COOKIE xauth file (e.g. xauth_gmOtgU under
+# /run/user/<uid>): Qt's XCB backend reads it while probing the X11
+# platform. Same exact-op tradeoff as local_powerdevil.te.
+allow rsibreak_t user_tmp_t:file read;
 
 # Fontconfig probes the legacy ~/.fontconfig path, and KDE4 also probes the
 # legacy ~/.kde dir (pre-XDG-spec paths); same cosmetic-only probes
