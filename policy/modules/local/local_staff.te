@@ -158,16 +158,7 @@ local_safeeyes_pipewire_connect(staff)
 local_safeeyes_dbus_chat(staff_t)
 local_safeeyes_gvfs_dbus_chat(staff)
 local_thunderbird_role(staff)
-local_zotero_dbus_chat(staff_t)
-# Uncertain whether Zotero's Gecko renderer runs X11-via-Xwayland or native
-# Wayland - no dedicated tmpfs type consumed by staff_wm_t (unlike
-# evince/evolution_alarm/chromium) and no MIT-SHM grant either way to tell.
-# Granting both peers for now; narrow down to one from a fresh AVC log once
-# it's actually exercised (see project_xwayland_split_todo memory).
-local_zotero_stream_connect(staff_t)
-local_zotero_stream_connect(staff_wm_t)
-local_zotero_read_home_content(staff_t)
-local_zotero_publish_bus_name(staff)
+local_zotero_role(staff)
 local_keepassxc_role(staff)
 local_gkrellm_stream_connect(staff_xwayland_t)
 local_gkrellm_x11_connect(staff)

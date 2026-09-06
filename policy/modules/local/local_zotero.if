@@ -54,6 +54,33 @@ interface(`local_zotero_systemd_socket_inherit',`
 
 ########################################
 ## <summary>
+##	Wire up all of a role access to/from Zotero beyond the base role
+##	template: D-Bus chat, stream connect, home content read, and bus
+##	name publish.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Wayland/Xwayland/D-Bus session
+##	resources.
+##	</summary>
+## </param>
+#
+interface(`local_zotero_role',`
+	local_zotero_dbus_chat($1_t)
+	# Uncertain whether the Zotero Gecko renderer runs X11-via-Xwayland or
+	# native Wayland - no dedicated tmpfs type consumed by $1_wm_t (unlike
+	# evince/evolution_alarm/chromium) and no MIT-SHM grant either way to
+	# tell. Granting both peers for now; narrow down to one from a fresh
+	# AVC log once it is actually exercised (see project_xwayland_split_todo
+	# memory).
+	local_zotero_stream_connect($1_t)
+	local_zotero_stream_connect($1_wm_t)
+	local_zotero_read_home_content($1_t)
+	local_zotero_publish_bus_name($1)
+')
+
+########################################
+## <summary>
 ##	Allow Zotero to connect to a desktop-owned stream socket.
 ## </summary>
 ## <param name="peer_domain">
