@@ -42,7 +42,7 @@ interface(`local_staff_wayland_connect',`
 	')
 
 	allow $1 staff_t:unix_stream_socket connectto;
-	allow $1 staff_wayland_socket_t:sock_file write;
+	allow $1 staff_wayland_socket_t:sock_file { getattr write };
 ')
 
 ########################################

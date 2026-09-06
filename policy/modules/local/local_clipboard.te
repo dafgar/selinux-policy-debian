@@ -4,6 +4,7 @@ gen_require(`
 	type chromium_t;
 	type evince_t;
 	type keepassxc_t;
+	type mnemosyne_t;
 	type mozilla_t;
 	type staff_konsole_t;
 	type staff_t;
@@ -26,6 +27,9 @@ local_clipboard_pipe_write_mutual(evince_t, mozilla_t)
 local_clipboard_pipe_write_mutual(evince_t, thunderbird_t)
 local_clipboard_pipe_write_mutual(keepassxc_t, chromium_t)
 local_clipboard_pipe_write_mutual(keepassxc_t, mozilla_t)
+local_clipboard_pipe_write_mutual(mnemosyne_t, mozilla_t)
+local_clipboard_pipe_write_mutual(chromium_t, mnemosyne_t)
+local_clipboard_pipe_write_mutual(evince_t, mnemosyne_t)
 
 # Konsole pastes to/from these same browser/office peers.
 local_clipboard_pipe_write_mutual(chromium_t, staff_konsole_t)
