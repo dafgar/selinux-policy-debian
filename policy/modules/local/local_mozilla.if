@@ -59,6 +59,35 @@ interface(`local_mozilla_wayland_connect',`
 
 ########################################
 ## <summary>
+##	Wire up all of a role's access to/from Firefox: PipeWire Pulse
+##	connect, gvfs dbus_chat, Wayland compositor connect, the role's
+##	Xwayland domain reading Firefox's MIT-SHM segment and process state,
+##	and desktop-integration noise dontaudits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the PipeWire/gvfs/Wayland/Xwayland session
+##	resources.
+##	</summary>
+## </param>
+#
+interface(`local_mozilla_role',`
+	gen_require(`
+		type mozilla_t;
+	')
+
+	local_mozilla_pipewire_pulse_connect($1)
+	local_mozilla_gvfs_dbus_chat($1)
+	local_mozilla_wayland_connect($1)
+	local_mozilla_shm($1_xwayland_t)
+	local_mozilla_read_proc_state($1_xwayland_t)
+
+	# Plasma shell querying Firefox scheduler metadata is desktop integration noise.
+	dontaudit $1_t mozilla_t:process getsched;
+')
+
+########################################
+## <summary>
 ##	Allow a window-manager domain to map Firefox tmpfs buffers.
 ## </summary>
 ## <param name="wm_domain">
