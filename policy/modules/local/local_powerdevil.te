@@ -39,6 +39,8 @@ dev_read_sysfs(powerdevil_t)
 term_getattr_unallocated_ttys(powerdevil_t)
 # /proc/filesystems (glib GIO checking available filesystem types).
 kernel_read_system_state(powerdevil_t)
+# glib g_get_boot_id() / machine-id fallback, same as discover_notifier_t.
+kernel_read_kernel_sysctls(powerdevil_t)
 # /sbin -> /usr/sbin merged-usr symlink readlink.
 corecmd_search_bin(powerdevil_t)
 logging_send_syslog_msg(powerdevil_t)
