@@ -22,6 +22,25 @@ interface(`local_mozilla_pipewire_pulse_connect',`
 
 ########################################
 ## <summary>
+##	Allow Firefox to query gvfs for mountable locations from its file
+##	picker, for a given role prefix.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the gvfs domain.
+##	</summary>
+## </param>
+#
+interface(`local_mozilla_gvfs_dbus_chat',`
+	gen_require(`
+		type mozilla_t;
+	')
+
+	local_gvfs_dbus_chat($1, mozilla_t)
+')
+
+########################################
+## <summary>
 ##	Allow a window-manager domain to map Firefox tmpfs buffers.
 ## </summary>
 ## <param name="wm_domain">

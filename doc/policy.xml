@@ -72835,7 +72835,18 @@ User role prefix that owns the PipeWire server domain.
 </summary>
 </param>
 </interface>
-<interface name="local_mozilla_wm_tmpfs_map" lineno="33">
+<interface name="local_mozilla_gvfs_dbus_chat" lineno="34">
+<summary>
+Allow Firefox to query gvfs for mountable locations from its file
+picker, for a given role prefix.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the gvfs domain.
+</summary>
+</param>
+</interface>
+<interface name="local_mozilla_wm_tmpfs_map" lineno="52">
 <summary>
 Allow a window-manager domain to map Firefox tmpfs buffers.
 </summary>
@@ -73044,7 +73055,19 @@ Domain allowed to exchange D-Bus messages with PlasmaShell.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_use_fifo" lineno="88">
+<interface name="local_plasmashell_gvfs_dbus_chat" lineno="89">
+<summary>
+Allow Plasma to query gvfs for mountable locations (e.g. Dolphin's
+"Network" places, or the storage notifier applet), for a given role
+prefix.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the gvfs domain.
+</summary>
+</param>
+</interface>
+<interface name="local_plasmashell_use_fifo" lineno="108">
 <summary>
 Allow a domain to read/write plasmashell's fifo pipes, e.g. kwin_wayland
 signaling plasmashell over an anonymous pipe.
@@ -73055,7 +73078,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_wayland_connect" lineno="111">
+<interface name="local_plasmashell_wayland_connect" lineno="131">
 <summary>
 Allow plasmashell to connect to a role's session Wayland compositor
 socket.
