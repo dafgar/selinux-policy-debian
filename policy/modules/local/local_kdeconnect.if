@@ -110,3 +110,22 @@ interface(`local_kdeconnect_bind_port',`
 		dontaudit $1 port_t:udp_socket name_bind;
 	')
 ')
+
+########################################
+## <summary>
+##	Allow KDE Connect to connect to a role's session Wayland compositor
+##	socket, e.g. for tray/notification integration.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session's Wayland socket.
+##	</summary>
+## </param>
+#
+interface(`local_kdeconnect_wayland_connect',`
+	gen_require(`
+		type kdeconnect_t;
+	')
+
+	local_$1_wayland_connect(kdeconnect_t)
+')

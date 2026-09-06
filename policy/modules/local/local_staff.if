@@ -23,3 +23,44 @@ interface(`local_staff_read_proc_state',`
 	read_files_pattern($1, staff_t, staff_t)
 	read_lnk_files_pattern($1, staff_t, staff_t)
 ')
+
+########################################
+## <summary>
+##	Allow a domain to connect to staff_t's Wayland compositor socket, e.g.
+##	an application domain acting as a Wayland client of the session
+##	compositor.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_staff_wayland_connect',`
+	gen_require(`
+		type staff_t, staff_wayland_socket_t;
+	')
+
+	allow $1 staff_t:unix_stream_socket connectto;
+	allow $1 staff_wayland_socket_t:sock_file write;
+')
+
+########################################
+## <summary>
+##	Allow a domain to connect to staff_t's X11 socket, e.g. an application
+##	domain acting as an X11 client via Xwayland or a native X11 server.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_staff_x11_connect',`
+	gen_require(`
+		type staff_t, staff_x11_socket_t;
+	')
+
+	allow $1 staff_t:unix_stream_socket connectto;
+	allow $1 staff_x11_socket_t:sock_file write;
+')

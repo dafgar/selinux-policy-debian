@@ -1,6 +1,7 @@
 policy_module(local_staff)
 
 gen_require(`
+	type gkrellm_t;
 	type khelpcenter_t;
 	type mnemosyne_t;
 	type nsfs_t;
@@ -17,7 +18,17 @@ gen_require(`
 	type systemsettings_t;
 	type ssh_home_t;
 	type tmp_t;
+	type xdm_tmp_t;
 ')
+
+type staff_wayland_socket_t;
+userdom_user_tmp_file(staff_wayland_socket_t)
+userdom_user_runtime_content(staff_wayland_socket_t)
+userdom_user_runtime_filetrans(staff_t, staff_wayland_socket_t, sock_file, "wayland-0")
+
+type staff_x11_socket_t;
+userdom_user_tmp_file(staff_x11_socket_t)
+filetrans_pattern(staff_t, xdm_tmp_t, staff_x11_socket_t, sock_file, "X0")
 
 pipewire_role(staff, staff_t, staff_application_exec_domain, staff_r)
 wireplumber_role(staff, staff_t, staff_application_exec_domain, staff_r)
@@ -29,13 +40,18 @@ plasmashell_role(staff_application_exec_domain, staff_r)
 # and a PulseAudio/pipewire client (volume applet, etc); pipewire-pulse in
 # turn introspects plasmashell's /proc/<pid> like it does for other
 # audio-client app domains.
-local_plasmashell_wayland_connect(staff_t)
+local_plasmashell_wayland_connect(staff)
 local_pipewire_pulse_stream_connect(plasmashell_t, staff_pipewire_t)
 ps_process_pattern(staff_pipewire_t, plasmashell_t)
 powerdevil_role(staff_application_exec_domain, staff_r)
 local_powerdevil_dbus_chat(staff_t)
+# org_kde_powerdevil is an X11 client (via Xwayland) of the session X11 socket.
+local_powerdevil_x11_connect(staff)
 kdeconnect_role(staff_application_exec_domain, staff_r)
 local_kdeconnect_dbus_activation(staff)
+# kdeconnectd is a Wayland client of the session compositor socket, e.g. for
+# tray/notification integration.
+local_kdeconnect_wayland_connect(staff)
 safeeyes_role(staff_application_exec_domain, staff_r)
 rsibreak_role(staff_application_exec_domain, staff_r)
 local_rsibreak_dbus_chat(staff_t)
@@ -44,6 +60,8 @@ local_rsibreak_publish_bus_name(staff)
 keepassxc_role(staff_application_exec_domain, staff_r)
 gkrellm_role(staff_application_exec_domain, staff_r)
 discover_notifier_role(staff_application_exec_domain, staff_r)
+# DiscoverNotifier is an X11 client (via Xwayland) of the session X11 socket.
+local_discover_notifier_x11_connect(staff)
 xdg_document_portal_role(staff_application_exec_domain, staff_r)
 xdg_desktop_portal_role(staff_application_exec_domain, staff_r)
 kioworker_role(staff_application_exec_domain, staff_r)
@@ -55,6 +73,8 @@ systemsettings_role(staff_application_exec_domain, staff_r)
 qtwebengine_role(systemsettings_t, staff_r)
 mnemosyne_role(staff_application_exec_domain, staff_r)
 qtwebengine_role(mnemosyne_t, staff_r)
+# Mnemosyne is a Wayland client of the session compositor socket.
+local_mnemosyne_wayland_connect(staff)
 dolphin_role(staff_application_exec_domain, staff_r)
 spectacle_role(staff_application_exec_domain, staff_r)
 gstpluginscanner_role(staff_application_exec_domain, staff_r)
@@ -140,6 +160,7 @@ local_keepassxc_read_home_content(staff_t)
 local_keepassxc_stream_connect(staff_t)
 local_keepassxc_dbus_chat(staff_t)
 local_gkrellm_stream_connect(staff_xwayland_t)
+local_gkrellm_x11_connect(staff)
 local_gkrellm_shm(staff_xwayland_t)
 local_ssh_shm(staff_xwayland_t)
 local_xwayland_wm_protocol_socket(staff, staff_wm_t)

@@ -74,11 +74,12 @@ interface(`local_plasmashell_use_fifo',`
 
 ########################################
 ## <summary>
-##	Allow plasmashell to connect to a peer's Wayland compositor socket.
+##	Allow plasmashell to connect to a role's session Wayland compositor
+##	socket.
 ## </summary>
-## <param name="domain">
+## <param name="role_prefix">
 ##	<summary>
-##	Domain owning the compositor socket.
+##	User role prefix that owns the session's Wayland socket.
 ##	</summary>
 ## </param>
 #
@@ -87,5 +88,6 @@ interface(`local_plasmashell_wayland_connect',`
 		type plasmashell_t;
 	')
 
-	allow plasmashell_t $1:unix_stream_socket connectto;
+	local_$1_wayland_connect(plasmashell_t)
 ')
+

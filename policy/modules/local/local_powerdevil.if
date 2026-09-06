@@ -72,3 +72,21 @@ interface(`local_powerdevil_dbus_chat',`
 	allow $1 powerdevil_t:dbus send_msg;
 	allow powerdevil_t $1:dbus send_msg;
 ')
+
+########################################
+## <summary>
+##	Allow PowerDevil to connect to a role's session X11 socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session's X11 socket.
+##	</summary>
+## </param>
+#
+interface(`local_powerdevil_x11_connect',`
+	gen_require(`
+		type powerdevil_t;
+	')
+
+	local_$1_x11_connect(powerdevil_t)
+')

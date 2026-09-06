@@ -90,3 +90,22 @@ interface(`local_gkrellm_systemd_inherit',`
 	local_systemd_inherit_user_service($1, gkrellm_t)
 	allow gkrellm_t $1_systemd_t:unix_stream_socket { getattr ioctl };
 ')
+
+########################################
+## <summary>
+##	Allow GKrellM to connect to a role's session X11 socket, e.g. for its
+##	legacy Xlib rendering path.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session's X11 socket.
+##	</summary>
+## </param>
+#
+interface(`local_gkrellm_x11_connect',`
+	gen_require(`
+		type gkrellm_t;
+	')
+
+	local_$1_x11_connect(gkrellm_t)
+')

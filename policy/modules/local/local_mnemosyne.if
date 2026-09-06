@@ -32,3 +32,22 @@ interface(`mnemosyne_role',`
 
 	allow mnemosyne_t $1:process sigchld;
 ')
+
+########################################
+## <summary>
+##	Allow Mnemosyne to connect to a role's session Wayland compositor
+##	socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session's Wayland socket.
+##	</summary>
+## </param>
+#
+interface(`local_mnemosyne_wayland_connect',`
+	gen_require(`
+		type mnemosyne_t;
+	')
+
+	local_$1_wayland_connect(mnemosyne_t)
+')

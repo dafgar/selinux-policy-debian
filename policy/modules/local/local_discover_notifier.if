@@ -53,3 +53,21 @@ interface(`local_discover_notifier_systemd_inherit',`
 	local_systemd_inherit_user_service($1, discover_notifier_t)
 	allow discover_notifier_t $1_systemd_t:unix_stream_socket { getattr ioctl };
 ')
+
+########################################
+## <summary>
+##	Allow DiscoverNotifier to connect to a role's session X11 socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session's X11 socket.
+##	</summary>
+## </param>
+#
+interface(`local_discover_notifier_x11_connect',`
+	gen_require(`
+		type discover_notifier_t;
+	')
+
+	local_$1_x11_connect(discover_notifier_t)
+')
