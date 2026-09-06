@@ -1,7 +1,6 @@
 policy_module(local_staff)
 
 gen_require(`
-	type gkrellm_t;
 	type khelpcenter_t;
 	type mnemosyne_t;
 	type nsfs_t;
@@ -152,9 +151,7 @@ local_safeeyes_gvfs_dbus_chat(staff)
 local_thunderbird_role(staff)
 local_zotero_role(staff)
 local_keepassxc_role(staff)
-local_gkrellm_stream_connect(staff_xwayland_t)
-local_gkrellm_x11_connect(staff)
-local_gkrellm_shm(staff_xwayland_t)
+local_gkrellm_role(staff)
 local_ssh_shm(staff_xwayland_t)
 local_xwayland_wm_protocol_socket(staff, staff_wm_t)
 local_xwayland_listen_socket(staff, staff_t)
@@ -163,4 +160,3 @@ local_plasmashell_systemd_inherit(staff)
 local_staff_read_proc_state(staff_xwayland_t)
 local_kioworker_read_proc_state(staff_xwayland_t)
 local_discover_notifier_read_proc_state(staff_xwayland_t)
-local_gkrellm_read_proc_state(staff_xwayland_t)

@@ -35,8 +35,27 @@ interface(`gkrellm_role',`
 
 ########################################
 ## <summary>
-##	Allow GKrellM to connect to a peer's Unix stream socket, e.g. for
-##	Wayland/X11 desktop integration.
+##	Wire up all of a role access to/from GKrellM beyond the base role
+##	template: the role Xwayland domain stream-connecting, reading
+##	MIT-SHM, and reading process state, plus the role main domain X11
+##	connect.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the X11/Xwayland session resources.
+##	</summary>
+## </param>
+#
+interface(`local_gkrellm_role',`
+	local_gkrellm_stream_connect($1_xwayland_t)
+	local_gkrellm_x11_connect($1)
+	local_gkrellm_shm($1_xwayland_t)
+	local_gkrellm_read_proc_state($1_xwayland_t)
+')
+
+########################################
+## <summary>
+##	Allow GKrellM to connect to a domain owned stream socket.
 ## </summary>
 ## <param name="domain">
 ##	<summary>
