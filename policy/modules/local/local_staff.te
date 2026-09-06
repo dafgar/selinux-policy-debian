@@ -29,50 +29,117 @@ type staff_x11_socket_t;
 userdom_user_tmp_file(staff_x11_socket_t)
 filetrans_pattern(staff_t, xdm_tmp_t, staff_x11_socket_t, sock_file, "X0")
 
-pipewire_role(staff, staff_t, staff_application_exec_domain, staff_r)
-wireplumber_role(staff, staff_t, staff_application_exec_domain, staff_r)
-zotero_role(staff_application_exec_domain, staff_r)
-evince_role(staff_application_exec_domain, staff_r)
-plasmashell_role(staff_application_exec_domain, staff_r)
+local_chromium_role(staff)
 
-local_plasmashell_role(staff)
-powerdevil_role(staff_application_exec_domain, staff_r)
-local_powerdevil_role(staff)
-kdeconnect_role(staff_application_exec_domain, staff_r)
-local_kdeconnect_role(staff)
-safeeyes_role(staff_application_exec_domain, staff_r)
-rsibreak_role(staff_application_exec_domain, staff_r)
-local_rsibreak_role(staff)
-keepassxc_role(staff_application_exec_domain, staff_r)
-gkrellm_role(staff_application_exec_domain, staff_r)
+local_code_role(staff, staff_t)
+local_code_git_client(staff)
+
 discover_notifier_role(staff_application_exec_domain, staff_r)
 local_discover_notifier_role(staff)
-xdg_document_portal_role(staff_application_exec_domain, staff_r)
-local_xdg_document_portal_role(staff)
-xdg_desktop_portal_role(staff_application_exec_domain, staff_r)
-local_xdg_desktop_portal_role(staff)
-kioworker_role(staff_application_exec_domain, staff_r)
-kscreenlocker_role(staff_application_exec_domain, staff_r)
-qtwebengine_role(staff_application_exec_domain, staff_r)
-qtwebengine_role(plasmashell_t, staff_r)
+
+dolphin_role(staff_application_exec_domain, staff_r)
+
+evince_role(staff_application_exec_domain, staff_r)
+local_evince_role(staff)
+
+local_evolution_alarm_role(staff)
+
+# flatpak --print-updated-env exchanges a systemd-created memfd in the user
+# session. Keep this limited to read/write on systemd_user_tmpfs_t files.
+allow staff_t systemd_user_tmpfs_t:file rw_file_perms;
+
+gimp_role(staff_application_exec_domain, staff_r)
+
+local_git_search_user_paths(staff)
+local_git_use_urandom(staff)
+local_git_config_lockfile_trans(staff)
+local_git_shell_hooks(staff, staff_t)
+local_git_dontaudit_pager_history(staff)
+
+gkrellm_role(staff_application_exec_domain, staff_r)
+local_gkrellm_role(staff)
+
+local_gpg_prompter_dbus_chat(staff_t)
+
+gstpluginscanner_role(staff_application_exec_domain, staff_r)
+
+gvfs_role(staff, staff_t, staff_application_exec_domain, staff_r)
+
+kdeconnect_role(staff_application_exec_domain, staff_r)
+local_kdeconnect_role(staff)
+
+keepassxc_role(staff_application_exec_domain, staff_r)
+local_keepassxc_role(staff)
+
 khelpcenter_role(staff_application_exec_domain, staff_r)
 qtwebengine_role(khelpcenter_t, staff_r)
-systemsettings_role(staff_application_exec_domain, staff_r)
-qtwebengine_role(systemsettings_t, staff_r)
+
+kioworker_role(staff_application_exec_domain, staff_r)
+local_kioworker_read_proc_state(staff_xwayland_t)
+
+konsole_role(staff, staff_t, staff_application_exec_domain, staff_r)
+local_konsole_role(staff)
+
+kscreenlocker_role(staff_application_exec_domain, staff_r)
+
+ktorrent_role(staff_application_exec_domain, staff_r)
+
+low_mem_mon_dbus_chat(staff_t)
+
 mnemosyne_role(staff_application_exec_domain, staff_r)
 qtwebengine_role(mnemosyne_t, staff_r)
 local_mnemosyne_role(staff)
-dolphin_role(staff_application_exec_domain, staff_r)
-spectacle_role(staff_application_exec_domain, staff_r)
-gstpluginscanner_role(staff_application_exec_domain, staff_r)
-ktorrent_role(staff_application_exec_domain, staff_r)
-gimp_role(staff_application_exec_domain, staff_r)
-konsole_role(staff, staff_t, staff_application_exec_domain, staff_r)
-local_konsole_role(staff)
+
+local_mozilla_role(staff)
+
+local_mplayer_role(staff)
+
 # Transition into the base-policy ping domain instead of granting icmp_socket
 # use directly on staff_t.
 netutils_run_ping(staff_t, staff_r)
-local_evince_role(staff)
+
+pipewire_role(staff, staff_t, staff_application_exec_domain, staff_r)
+
+plasmashell_role(staff_application_exec_domain, staff_r)
+local_plasmashell_role(staff)
+qtwebengine_role(plasmashell_t, staff_r)
+
+powerdevil_role(staff_application_exec_domain, staff_r)
+local_powerdevil_role(staff)
+
+local_powerprofiles_dbus_chat(staff_t)
+
+qtwebengine_role(staff_application_exec_domain, staff_r)
+
+rsibreak_role(staff_application_exec_domain, staff_r)
+local_rsibreak_role(staff)
+
+safeeyes_role(staff_application_exec_domain, staff_r)
+local_safeeyes_role(staff)
+
+spectacle_role(staff_application_exec_domain, staff_r)
+
+local_ssh_shm(staff_xwayland_t)
+
+systemsettings_role(staff_application_exec_domain, staff_r)
+qtwebengine_role(systemsettings_t, staff_r)
+
+local_thunderbird_role(staff)
+
+wireplumber_role(staff, staff_t, staff_application_exec_domain, staff_r)
+
+xdg_desktop_portal_role(staff_application_exec_domain, staff_r)
+local_xdg_desktop_portal_role(staff)
+
+xdg_document_portal_role(staff_application_exec_domain, staff_r)
+local_xdg_document_portal_role(staff)
+
+local_xwayland_wm_protocol_socket(staff, staff_wm_t)
+local_xwayland_listen_socket(staff, staff_t)
+local_systemd_inherit_user_service(staff, staff_xwayland_t)
+
+zotero_role(staff_application_exec_domain, staff_r)
+local_zotero_role(staff)
 
 # User-session helpers such as systemctl --user may stat namespace file handles
 # during generic runtime probing. Keep this limited to harmless metadata lookup.
@@ -86,22 +153,6 @@ dontaudit staff_t tmp_t:dir watch;
 dontaudit staff_t ssh_home_t:file watch;
 
 local_dbus_read_user_activation_services(staff_dbusd_t)
-low_mem_mon_dbus_chat(staff_t)
-local_powerprofiles_dbus_chat(staff_t)
-local_gpg_prompter_dbus_chat(staff_t)
-
-# flatpak --print-updated-env exchanges a systemd-created memfd in the user
-# session. Keep this limited to read/write on systemd_user_tmpfs_t files.
-allow staff_t systemd_user_tmpfs_t:file rw_file_perms;
-
-local_git_search_user_paths(staff)
-local_git_use_urandom(staff)
-local_git_config_lockfile_trans(staff)
-local_git_shell_hooks(staff, staff_t)
-local_git_dontaudit_pager_history(staff)
-gvfs_role(staff, staff_t, staff_application_exec_domain, staff_r)
-local_code_role(staff, staff_t)
-local_code_git_client(staff)
 
 # The systemd tty password agent may inherit the invoking sudo session tty fd.
 systemd_use_passwd_agent_fds(staff_sudo_t)
@@ -114,18 +165,5 @@ allow staff_sudo_t user_devpts_t:chr_file lock;
 # graphical display can fail. Keep this limited to fd use.
 local_systemd_logind_use_inherited_sudo_fds(staff)
 local_sudo_dontaudit_runtime_probes(staff)
-local_evolution_alarm_role(staff)
-local_mplayer_role(staff)
-local_chromium_role(staff)
-local_mozilla_role(staff)
-local_safeeyes_role(staff)
-local_thunderbird_role(staff)
-local_zotero_role(staff)
-local_keepassxc_role(staff)
-local_gkrellm_role(staff)
-local_ssh_shm(staff_xwayland_t)
-local_xwayland_wm_protocol_socket(staff, staff_wm_t)
-local_xwayland_listen_socket(staff, staff_t)
-local_systemd_inherit_user_service(staff, staff_xwayland_t)
+
 local_staff_read_proc_state(staff_xwayland_t)
-local_kioworker_read_proc_state(staff_xwayland_t)
