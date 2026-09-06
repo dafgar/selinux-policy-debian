@@ -68,6 +68,7 @@ interface(`local_plasmashell_systemd_inherit',`
 interface(`local_plasmashell_dbus_chat',`
 	gen_require(`
 		type plasmashell_t;
+		class dbus send_msg;
 	')
 
 	allow $1 plasmashell_t:dbus send_msg;

@@ -47,6 +47,7 @@ interface(`mnemosyne_role',`
 interface(`local_mnemosyne_dbus_chat',`
 	gen_require(`
 		type mnemosyne_t;
+		class dbus send_msg;
 	')
 
 	allow $1 mnemosyne_t:dbus send_msg;

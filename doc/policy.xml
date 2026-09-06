@@ -72809,7 +72809,7 @@ Domain allowed to exchange D-Bus messages with Mnemosyne.
 </summary>
 </param>
 </interface>
-<interface name="local_mnemosyne_wayland_connect" lineno="67">
+<interface name="local_mnemosyne_wayland_connect" lineno="68">
 <summary>
 Allow Mnemosyne to connect to a role's session Wayland compositor
 socket.
@@ -73055,7 +73055,7 @@ Domain allowed to exchange D-Bus messages with PlasmaShell.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_gvfs_dbus_chat" lineno="89">
+<interface name="local_plasmashell_gvfs_dbus_chat" lineno="90">
 <summary>
 Allow Plasma to query gvfs for mountable locations (e.g. Dolphin's
 "Network" places, or the storage notifier applet), for a given role
@@ -73067,7 +73067,7 @@ User role prefix that owns the gvfs domain.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_use_fifo" lineno="108">
+<interface name="local_plasmashell_use_fifo" lineno="109">
 <summary>
 Allow a domain to read/write plasmashell's fifo pipes, e.g. kwin_wayland
 signaling plasmashell over an anonymous pipe.
@@ -73078,7 +73078,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_wayland_connect" lineno="131">
+<interface name="local_plasmashell_wayland_connect" lineno="132">
 <summary>
 Allow plasmashell to connect to a role's session Wayland compositor
 socket.

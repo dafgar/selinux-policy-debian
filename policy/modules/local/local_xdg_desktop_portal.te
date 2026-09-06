@@ -9,6 +9,7 @@ role xdg_desktop_portal_roles types xdg_desktop_portal_t;
 
 gen_require(`
 	type chromium_t;
+	type xdg_document_portal_t;
 ')
 
 # The portal GDBus worker thread (comm truncates to "gdbus") is handed a
@@ -16,6 +17,12 @@ gen_require(`
 # file-transfer) issued through the org.freedesktop.portal.* session-bus
 # API.
 allow xdg_desktop_portal_t chromium_t:fd use;
+
+# The main portal daemon queries the document portal's D-Bus properties
+# (org.freedesktop.DBus.Properties.GetAll) when brokering file-related portal
+# requests.
+allow xdg_desktop_portal_t xdg_document_portal_t:dbus send_msg;
+allow xdg_document_portal_t xdg_desktop_portal_t:dbus send_msg;
 
 auth_use_nsswitch(xdg_desktop_portal_t)
 dbus_all_session_bus_client(xdg_desktop_portal_t)

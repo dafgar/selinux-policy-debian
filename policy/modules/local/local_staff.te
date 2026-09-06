@@ -19,7 +19,6 @@ gen_require(`
 	type ssh_home_t;
 	type tmp_t;
 	type user_devpts_t;
-	type xdg_document_portal_t;
 	type xdm_tmp_t;
 ')
 
@@ -82,10 +81,6 @@ local_xdg_document_portal_publish_bus_name(staff)
 xdg_desktop_portal_role(staff_application_exec_domain, staff_r)
 local_xdg_desktop_portal_dbus_chat(staff_t)
 local_xdg_desktop_portal_publish_bus_name(staff)
-# The main portal daemon queries the document portal's D-Bus properties
-# (org.freedesktop.DBus.Properties.GetAll) when brokering file-related portal
-# requests.
-local_xdg_desktop_portal_dbus_chat(xdg_document_portal_t)
 kioworker_role(staff_application_exec_domain, staff_r)
 kscreenlocker_role(staff_application_exec_domain, staff_r)
 qtwebengine_role(staff_application_exec_domain, staff_r)
