@@ -14,6 +14,9 @@ role kdeconnect_roles types kdeconnect_t;
 type kdeconnect_port_t;
 corenet_port(kdeconnect_port_t)
 
+# kdeconnectd reads shared KDE theming/locale config (kdeglobals).
+local_kde_read_config_files(kdeconnect_t)
+
 ## <desc>
 ## <p>
 ## Allow KDE Connect to use its Bluetooth transport backend.

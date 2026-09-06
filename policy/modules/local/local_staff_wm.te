@@ -32,3 +32,9 @@ allow staff_wm_t rsibreak_tmpfs_t:file { getattr map read write };
 
 # kwin_wayland updates per-user desktop integration artifacts under ~/.local/share.
 xdg_manage_data(staff_wm_t)
+
+# kwin_wayland reads shared KDE theming config (kdeglobals, kdedefaults/*)
+# and also writes kdeglobals back itself (e.g. persisting the active color
+# scheme), unlike every other reader of this config.
+local_kde_read_config_files(staff_wm_t)
+local_kde_write_config_files(staff_wm_t)

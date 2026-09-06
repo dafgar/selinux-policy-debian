@@ -51,6 +51,7 @@ allow chromium_t xkb_var_lib_t:file { getattr map open read };
 # under this same label.
 allow chromium_t gnome_xdg_config_t:dir { read search };
 allow chromium_t gnome_xdg_config_t:file { getattr map open read };
+local_kde_read_config_files(chromium_t)
 allow chromium_t xdg_cache_t:file { create getattr map open read write };
 allow chromium_t syslogd_runtime_t:dir search;
 allow chromium_t devlog_t:sock_file write;

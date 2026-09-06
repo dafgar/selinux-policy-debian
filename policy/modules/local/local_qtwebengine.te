@@ -6,3 +6,7 @@ type qtwebengine_t;
 type qtwebengine_exec_t;
 userdom_user_application_domain(qtwebengine_t, qtwebengine_exec_t)
 role qtwebengine_roles types qtwebengine_t;
+
+# QtWebEngine's embedding Qt/KDE host apps (mnemosyne, khelpcenter,
+# systemsettings) pass down the shared KDE theming/locale config read.
+local_kde_read_config_files(qtwebengine_t)

@@ -185,9 +185,9 @@ template(`konsole_role',`
 	# decide whether a path supports trash/reflink or to show free space.
 	fs_getattr_all_fs($1_konsole_t)
 
-	# Konsole reads KDE/XDG config (kdeglobals, notifyrc) and also writes its
-	# own settings (konsolerc, konsolesshconfig, and shared KDE files it
-	# updates like kcminputrc/kwinrc) on every startup/change, plus manages
+	# Konsole reads KDE/XDG config (notifyrc) and also writes its own
+	# settings (konsolerc, konsolesshconfig, and shared KDE files it updates
+	# like kcminputrc/kwinrc) on every startup/change, plus manages
 	# bookmarks.xml / konsolestaterc.lock under xdg_data_t, rewriting the
 	# latter atomically (create+rename+unlink) on every session-state save.
 	# Both xdg_config_t and xdg_data_t are generic and shared with every
@@ -196,6 +196,10 @@ template(`konsole_role',`
 	xdg_manage_config($1_konsole_t)
 	xdg_manage_data($1_konsole_t)
 	allow $1_konsole_t xdg_data_t:file watch;
+
+	# kdeglobals itself now lives under the dedicated kde_xdg_config_t type,
+	# not generic xdg_config_t (see local_kde.if).
+	local_kde_read_config_files($1_konsole_t)
 
 	# Bookmark manager / SSH-sidebar browsing of the home directory itself,
 	# not just searching into it.
