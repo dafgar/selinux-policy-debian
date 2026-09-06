@@ -28,9 +28,11 @@ gen_require(`
 	class dbus send_msg;
 ')
 
-# Wayland display sockets like wayland-0 are currently labeled user_tmp_t on
-# this system. Chromium needs write access to connect to the compositor socket.
 local_userdomain_dontaudit_generic_home_when_disabled(`chromium_read_generic_user_content', chromium_t)
+
+# Some other generic-tmp socket write, unrelated to the compositor socket
+# (wayland-0 is staff_wayland_socket_t per the display-socket split; see
+# local_chromium_wayland_connect below for that).
 allow chromium_t user_tmp_t:sock_file write;
 allow chromium_t pipewire_runtime_t:sock_file write;
 
