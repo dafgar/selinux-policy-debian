@@ -71,6 +71,24 @@ interface(`local_evolution_alarm_wayland_connect',`
 
 ########################################
 ## <summary>
+## Wire up all of a role's access to/from Evolution alarm helpers:
+## desktop-session integration, Wayland compositor connect, and the
+## role's Xwayland domain reading process state.
+## </summary>
+## <param name="role_prefix">
+## <summary>
+## The prefix of the user role, for example staff or user.
+## </summary>
+## </param>
+#
+interface(`local_evolution_alarm_role',`
+	local_evolution_alarm_desktop($1_t)
+	local_evolution_alarm_wayland_connect($1)
+	local_evolution_alarm_read_proc_state($1_xwayland_t)
+')
+
+########################################
+## <summary>
 ##	Allow a domain to read Evolution alarm's process state (/proc/pid),
 ##	e.g. Xwayland reading the cmdline of a connecting X11 client for
 ##	_NET_WM_PID-style client identification.
