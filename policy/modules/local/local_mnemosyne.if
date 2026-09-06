@@ -35,6 +35,23 @@ interface(`mnemosyne_role',`
 
 ########################################
 ## <summary>
+##	Wire up all of a role extra Mnemosyne grants beyond the base role
+##	template: Wayland compositor connect and D-Bus chat.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Wayland/D-Bus session resources.
+##	</summary>
+## </param>
+#
+interface(`local_mnemosyne_role',`
+	# Mnemosyne is a Wayland client of the session compositor socket.
+	local_mnemosyne_wayland_connect($1)
+	local_mnemosyne_dbus_chat($1_t)
+')
+
+########################################
+## <summary>
 ##	Send and receive D-Bus messages with Mnemosyne, e.g. querying the a11y
 ##	bus's Properties on behalf of its embedded QtWebEngine view.
 ## </summary>
