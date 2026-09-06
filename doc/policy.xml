@@ -72231,6 +72231,18 @@ User role prefix that owns the session's X11 socket.
 </summary>
 </param>
 </interface>
+<interface name="local_gkrellm_read_proc_state" lineno="125">
+<summary>
+Allow a domain to read GKrellM's process state (/proc/pid), e.g.
+Xwayland reading the cmdline of a connecting X11 client for
+_NET_WM_PID-style client identification.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
 <tunable name="local_gkrellm_use_hddtemp" dftval="false">
 <desc>
 <p>
