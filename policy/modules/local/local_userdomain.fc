@@ -1,1 +1,1 @@
-
+HOME_DIR/\.local/opt(/.*)?	gen_context(system_u:object_r:usr_t,s0)
