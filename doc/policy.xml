@@ -71729,7 +71729,20 @@ Local policy for the KDE charge-threshold helper domain.
 <summary>
 Local Chromium policy adjustments.
 </summary>
-<interface name="local_chromium_pipewire_pulse_connect" lineno="16">
+<interface name="local_chromium_role" lineno="18">
+<summary>
+Wire up all of a role's access to/from Chromium: PipeWire Pulse
+connect, Wayland compositor connect, MPRIS publish, and gvfs
+dbus_chat.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the PipeWire/Wayland/gvfs session
+resources.
+</summary>
+</param>
+</interface>
+<interface name="local_chromium_pipewire_pulse_connect" lineno="36">
 <summary>
 Allow Chromium to connect to the PulseAudio-compatible PipeWire socket for
 a given role prefix.
@@ -71740,7 +71753,7 @@ User role prefix that owns the PipeWire server domain.
 </summary>
 </param>
 </interface>
-<interface name="local_chromium_wayland_connect" lineno="34">
+<interface name="local_chromium_wayland_connect" lineno="54">
 <summary>
 Allow Chromium to connect to a role's session Wayland compositor socket.
 </summary>
@@ -71750,7 +71763,7 @@ User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_chromium_mpris_publish" lineno="52">
+<interface name="local_chromium_mpris_publish" lineno="72">
 <summary>
 Allow Chromium to publish its MPRIS service on the per-role session bus.
 </summary>
@@ -71760,7 +71773,7 @@ User role prefix that owns the session D-Bus domain.
 </summary>
 </param>
 </interface>
-<interface name="local_chromium_gvfs_dbus_chat" lineno="73">
+<interface name="local_chromium_gvfs_dbus_chat" lineno="93">
 <summary>
 Allow Chromium to query gvfs for mountable locations from its file
 picker, for a given role prefix.
@@ -71919,7 +71932,20 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_discover_notifier_x11_connect" lineno="67">
+<interface name="local_discover_notifier_role" lineno="70">
+<summary>
+Wire up all of a role extra DiscoverNotifier grants beyond the base
+role template: X11 connect, Wayland compositor connect, and the role
+Xwayland domain reading process state.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the X11/Wayland/Xwayland session
+resources.
+</summary>
+</param>
+</interface>
+<interface name="local_discover_notifier_x11_connect" lineno="89">
 <summary>
 Allow DiscoverNotifier to connect to a role's session X11 socket.
 </summary>
@@ -71929,7 +71955,7 @@ User role prefix that owns the session's X11 socket.
 </summary>
 </param>
 </interface>
-<interface name="local_discover_notifier_wayland_connect" lineno="86">
+<interface name="local_discover_notifier_wayland_connect" lineno="108">
 <summary>
 Allow DiscoverNotifier to connect to a role's session Wayland
 compositor socket.
@@ -71940,7 +71966,7 @@ User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_discover_notifier_read_proc_state" lineno="106">
+<interface name="local_discover_notifier_read_proc_state" lineno="128">
 <summary>
 Allow a domain to read DiscoverNotifier's process state (/proc/pid),
 e.g. Xwayland reading the cmdline of a connecting X11 client for
@@ -72014,7 +72040,19 @@ Domain allowed to execute and transition to Evince.
 </summary>
 </param>
 </interface>
-<interface name="local_evince_x11_connect" lineno="74">
+<interface name="local_evince_role" lineno="76">
+<summary>
+Wire up all of a role extra Evince grants beyond the base role
+template: X11/Wayland connect, D-Bus chat, and gvfs dbus_chat.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the X11/Wayland/D-Bus/gvfs session
+resources.
+</summary>
+</param>
+</interface>
+<interface name="local_evince_x11_connect" lineno="92">
 <summary>
 Allow Evince to connect to the user X11/Wayland socket peer domain.
 </summary>
@@ -72024,7 +72062,7 @@ Domain owning the X11/Wayland socket peer.
 </summary>
 </param>
 </interface>
-<interface name="local_evince_dbus_chat" lineno="92">
+<interface name="local_evince_dbus_chat" lineno="110">
 <summary>
 Allow Evince to chat with a desktop-owned D-Bus service.
 </summary>
@@ -72034,7 +72072,7 @@ Domain owning the D-Bus service.
 </summary>
 </param>
 </interface>
-<interface name="local_evince_gvfs_dbus_chat" lineno="112">
+<interface name="local_evince_gvfs_dbus_chat" lineno="130">
 <summary>
 Allow Evince to query gvfs for mountable locations, for a given role
 prefix.
@@ -72082,7 +72120,19 @@ User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_evolution_alarm_read_proc_state" lineno="84">
+<interface name="local_evolution_alarm_role" lineno="84">
+<summary>
+Wire up all of a role's access to/from Evolution alarm helpers:
+desktop-session integration, Wayland compositor connect, and the
+role's Xwayland domain reading process state.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role, for example staff or user.
+</summary>
+</param>
+</interface>
+<interface name="local_evolution_alarm_read_proc_state" lineno="102">
 <summary>
 Allow a domain to read Evolution alarm's process state (/proc/pid),
 e.g. Xwayland reading the cmdline of a connecting X11 client for
@@ -72220,10 +72270,22 @@ Role allowed access to the GKrellM domain.
 </summary>
 </param>
 </interface>
-<interface name="local_gkrellm_stream_connect" lineno="47">
+<interface name="local_gkrellm_role" lineno="49">
 <summary>
-Allow GKrellM to connect to a peer's Unix stream socket, e.g. for
-Wayland/X11 desktop integration.
+Wire up all of a role access to/from GKrellM beyond the base role
+template: the role Xwayland domain stream-connecting, reading
+MIT-SHM, and reading process state, plus the role main domain X11
+connect.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the X11/Xwayland session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_gkrellm_stream_connect" lineno="66">
+<summary>
+Allow GKrellM to connect to a domain owned stream socket.
 </summary>
 <param name="domain">
 <summary>
@@ -72231,7 +72293,7 @@ Domain owning the stream socket.
 </summary>
 </param>
 </interface>
-<interface name="local_gkrellm_shm" lineno="66">
+<interface name="local_gkrellm_shm" lineno="85">
 <summary>
 Allow a domain to read/write GKrellM's MIT-SHM segment, e.g. the
 compositor rendering GKrellM's window.
@@ -72242,7 +72304,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="local_gkrellm_systemd_inherit" lineno="85">
+<interface name="local_gkrellm_systemd_inherit" lineno="104">
 <summary>
 Allow a user systemd instance to launch GKrellM with the usual
 inherited-exec process bits.
@@ -72253,7 +72315,7 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_gkrellm_x11_connect" lineno="105">
+<interface name="local_gkrellm_x11_connect" lineno="124">
 <summary>
 Allow GKrellM to connect to a role's session X11 socket, e.g. for its
 legacy Xlib rendering path.
@@ -72264,7 +72326,7 @@ User role prefix that owns the session's X11 socket.
 </summary>
 </param>
 </interface>
-<interface name="local_gkrellm_read_proc_state" lineno="125">
+<interface name="local_gkrellm_read_proc_state" lineno="144">
 <summary>
 Allow a domain to read GKrellM's process state (/proc/pid), e.g.
 Xwayland reading the cmdline of a connecting X11 client for
@@ -72435,6 +72497,18 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
+<interface name="local_kde_watch_config_dirs" lineno="61">
+<summary>
+Watch the shared KDE desktop config directory (kdedefaults) for
+changes, e.g. a non-KDE app noticing a dark/light theme switch,
+without granting write access.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_kdeconnect" filename="policy/modules/local/local_kdeconnect.if">
 <summary>
@@ -72455,7 +72529,18 @@ Role allowed access to the KDE Connect domain.
 </summary>
 </param>
 </interface>
-<interface name="local_kdeconnect_dbus_activation" lineno="48">
+<interface name="local_kdeconnect_role" lineno="47">
+<summary>
+Wire up all of a role extra KDE Connect grants beyond the base role
+template: D-Bus activation and Wayland compositor connect.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the D-Bus/Wayland session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_kdeconnect_dbus_activation" lineno="66">
 <summary>
 Allow a user session D-Bus daemon to directly activate KDE Connect via
 its D-Bus service file (Exec=kdeconnectd, no SystemdService), executing
@@ -72467,7 +72552,7 @@ User role prefix that owns the session D-Bus daemon domain.
 </summary>
 </param>
 </interface>
-<interface name="local_kdeconnect_systemd_inherit" lineno="68">
+<interface name="local_kdeconnect_systemd_inherit" lineno="86">
 <summary>
 Allow a user systemd instance to monitor and launch KDE Connect.
 </summary>
@@ -72477,7 +72562,7 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_kdeconnect_bind_port" lineno="89">
+<interface name="local_kdeconnect_bind_port" lineno="107">
 <summary>
 Allow a domain to use KDE Connect listener sockets directly.
 </summary>
@@ -72487,7 +72572,7 @@ Domain allowed to bind KDE Connect sockets.
 </summary>
 </param>
 </interface>
-<interface name="local_kdeconnect_wayland_connect" lineno="125">
+<interface name="local_kdeconnect_wayland_connect" lineno="143">
 <summary>
 Allow KDE Connect to connect to a role's session Wayland compositor
 socket, e.g. for tray/notification integration.
@@ -72549,7 +72634,20 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_keepassxc_read_home_content" lineno="66">
+<interface name="local_keepassxc_role" lineno="68">
+<summary>
+Wire up all of a role's access to/from KeepassXC beyond the base
+role template: home content read, stream connect, Wayland compositor
+connect, D-Bus chat, and the role's Xwayland domain reading process
+state.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Wayland/Xwayland session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_keepassxc_read_home_content" lineno="87">
 <summary>
 Allow a domain to read documents stored under KeepassXC's home content
 (e.g. the interactive user browsing the vault directory directly).
@@ -72560,7 +72658,7 @@ Domain allowed read access.
 </summary>
 </param>
 </interface>
-<interface name="local_keepassxc_stream_connect" lineno="89">
+<interface name="local_keepassxc_stream_connect" lineno="110">
 <summary>
 Allow KeepassXC to connect to a desktop-owned stream socket
 (e.g. the Wayland session socket owned by staff_t).
@@ -72571,7 +72669,7 @@ Domain owning the peer socket.
 </summary>
 </param>
 </interface>
-<interface name="local_keepassxc_wayland_connect" lineno="108">
+<interface name="local_keepassxc_wayland_connect" lineno="129">
 <summary>
 Allow KeepassXC to connect to a role's session Wayland compositor
 socket.
@@ -72582,7 +72680,7 @@ User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_keepassxc_read_proc_state" lineno="128">
+<interface name="local_keepassxc_read_proc_state" lineno="149">
 <summary>
 Allow a domain to read KeepassXC's process state (/proc/pid), e.g.
 Xwayland reading the cmdline of a connecting X11 client for
@@ -72594,7 +72692,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="local_keepassxc_dbus_chat" lineno="149">
+<interface name="local_keepassxc_dbus_chat" lineno="170">
 <summary>
 Allow KeepassXC to exchange D-Bus messages with a desktop-owned domain
 (e.g. xdg-desktop-portal's Settings interface for theme detection).
@@ -72687,7 +72785,20 @@ Role allowed access.
 </summary>
 </param>
 </template>
-<interface name="local_konsole_systemd_dbus_chat" lineno="289">
+<interface name="local_konsole_role" lineno="290">
+<summary>
+Wire up all of a role extra Konsole grants beyond the base role
+template: systemd --user manager D-Bus chat, D-Bus chat with the role
+main domain and with xdg-desktop-portal, and bus name publish.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns both the Konsole domain and the
+systemd/D-Bus session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_konsole_systemd_dbus_chat" lineno="313">
 <summary>
 Allow Konsole (and anything launched from it, e.g. systemctl --user)
 to chat over D-Bus with the per-role systemd --user manager.
@@ -72699,7 +72810,7 @@ the Konsole domain.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_publish_bus_name" lineno="312">
+<interface name="local_konsole_publish_bus_name" lineno="336">
 <summary>
 Allow Konsole to publish its per-instance D-Bus service name
 (org.kde.konsole-PID) on the role's session bus.
@@ -72711,7 +72822,7 @@ Konsole domain.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_dbus_chat" lineno="338">
+<interface name="local_konsole_dbus_chat" lineno="362">
 <summary>
 Allow Konsole to exchange D-Bus messages with a desktop-owned domain
 (e.g. xdg-desktop-portal's Settings interface for theme detection).
@@ -72727,7 +72838,7 @@ Domain to exchange messages with.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_systemd_inherit" lineno="360">
+<interface name="local_konsole_systemd_inherit" lineno="384">
 <summary>
 Allow Konsole to inherit a stream socket fd from the user systemd
 instance during launch, like other user-session applications.
@@ -72810,7 +72921,18 @@ Role allowed access to the mnemosyne domain.
 </summary>
 </param>
 </interface>
-<interface name="local_mnemosyne_dbus_chat" lineno="47">
+<interface name="local_mnemosyne_role" lineno="47">
+<summary>
+Wire up all of a role extra Mnemosyne grants beyond the base role
+template: Wayland compositor connect and D-Bus chat.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Wayland/D-Bus session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_mnemosyne_dbus_chat" lineno="64">
 <summary>
 Send and receive D-Bus messages with Mnemosyne, e.g. querying the a11y
 bus's Properties on behalf of its embedded QtWebEngine view.
@@ -72821,7 +72943,7 @@ Domain allowed to exchange D-Bus messages with Mnemosyne.
 </summary>
 </param>
 </interface>
-<interface name="local_mnemosyne_wayland_connect" lineno="68">
+<interface name="local_mnemosyne_wayland_connect" lineno="85">
 <summary>
 Allow Mnemosyne to connect to a role's session Wayland compositor
 socket.
@@ -72868,7 +72990,21 @@ User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_mozilla_wm_tmpfs_map" lineno="70">
+<interface name="local_mozilla_role" lineno="74">
+<summary>
+Wire up all of a role's access to/from Firefox: PipeWire Pulse
+connect, gvfs dbus_chat, Wayland compositor connect, the role's
+Xwayland domain reading Firefox's MIT-SHM segment and process state,
+and desktop-integration noise dontaudits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the PipeWire/gvfs/Wayland/Xwayland session
+resources.
+</summary>
+</param>
+</interface>
+<interface name="local_mozilla_wm_tmpfs_map" lineno="99">
 <summary>
 Allow a window-manager domain to map Firefox tmpfs buffers.
 </summary>
@@ -72878,7 +73014,7 @@ Window-manager domain mapping the buffers.
 </summary>
 </param>
 </interface>
-<interface name="local_mozilla_shm" lineno="90">
+<interface name="local_mozilla_shm" lineno="119">
 <summary>
 Allow a domain to read/write Firefox's MIT-SHM segment, e.g. the X
 server attaching to a shared-memory image passed via XShmAttach.
@@ -72889,7 +73025,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="local_mozilla_read_proc_state" lineno="110">
+<interface name="local_mozilla_read_proc_state" lineno="139">
 <summary>
 Allow a domain to read the process state (/proc/pid) of Firefox, e.g.
 Xwayland reading a connecting client's cmdline for client
@@ -72904,7 +73040,19 @@ Domain allowed access.
 </module>
 <module name="local_mplayer" filename="policy/modules/local/local_mplayer.if">
 <summary>Local policy for MPlayer session integration.</summary>
-<interface name="local_mplayer_x11_connect" lineno="13">
+<interface name="local_mplayer_role" lineno="15">
+<summary>
+Wire up all of a role's access to/from MPlayer: PipeWire Pulse
+connect, and the role's Xwayland domain connecting to X11, reading
+MIT-SHM, and reading process state.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the PipeWire/Xwayland session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_mplayer_x11_connect" lineno="32">
 <summary>
 Allow MPlayer to connect to the user X11 socket peer domain.
 </summary>
@@ -72914,7 +73062,7 @@ Domain owning the X11 socket peer.
 </summary>
 </param>
 </interface>
-<interface name="local_mplayer_shm" lineno="32">
+<interface name="local_mplayer_shm" lineno="51">
 <summary>
 Allow a domain to read/write MPlayer's MIT-SHM segment, e.g. the X
 server attaching to a shared-memory image passed via XShmAttach.
@@ -72925,7 +73073,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="local_mplayer_pipewire_pulse_connect" lineno="50">
+<interface name="local_mplayer_pipewire_pulse_connect" lineno="69">
 <summary>
 Allow MPlayer to connect to the user PulseAudio-compatible PipeWire socket.
 </summary>
@@ -72935,7 +73083,7 @@ User role prefix that owns the PipeWire server domain.
 </summary>
 </param>
 </interface>
-<interface name="local_mplayer_read_proc_state" lineno="70">
+<interface name="local_mplayer_read_proc_state" lineno="89">
 <summary>
 Allow a domain to read the process state (/proc/pid) of MPlayer, e.g.
 Xwayland reading a connecting client's cmdline for client
@@ -73077,7 +73225,31 @@ Role allowed access to the plasmashell domain.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_systemd_inherit" lineno="47">
+<interface name="local_plasmashell_pipewire_pulse_connect" lineno="47">
+<summary>
+Allow plasmashell to connect to the PulseAudio-compatible PipeWire
+socket for a given role prefix.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the PipeWire server domain.
+</summary>
+</param>
+</interface>
+<interface name="local_plasmashell_role" lineno="69">
+<summary>
+Wire up all of a role access to/from plasmashell: Wayland compositor
+connect, PipeWire Pulse connect, D-Bus chat, gvfs dbus_chat, and
+systemd inherited-exec launch.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Wayland/PipeWire/D-Bus/gvfs/systemd
+session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_plasmashell_systemd_inherit" lineno="95">
 <summary>
 Allow a user systemd instance to launch plasmashell with the usual
 inherited-exec process bits.
@@ -73088,7 +73260,7 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_dbus_chat" lineno="68">
+<interface name="local_plasmashell_dbus_chat" lineno="116">
 <summary>
 Send and receive D-Bus messages with PlasmaShell, e.g. a
 StatusNotifierItem tray icon or the Notifications/PlasmaShell dashboard
@@ -73100,7 +73272,7 @@ Domain allowed to exchange D-Bus messages with PlasmaShell.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_gvfs_dbus_chat" lineno="90">
+<interface name="local_plasmashell_gvfs_dbus_chat" lineno="138">
 <summary>
 Allow Plasma to query gvfs for mountable locations (e.g. Dolphin's
 "Network" places, or the storage notifier applet), for a given role
@@ -73112,7 +73284,7 @@ User role prefix that owns the gvfs domain.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_use_fifo" lineno="109">
+<interface name="local_plasmashell_use_fifo" lineno="157">
 <summary>
 Allow a domain to read/write plasmashell's fifo pipes, e.g. kwin_wayland
 signaling plasmashell over an anonymous pipe.
@@ -73123,7 +73295,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_wayland_connect" lineno="132">
+<interface name="local_plasmashell_wayland_connect" lineno="180">
 <summary>
 Allow plasmashell to connect to a role's session Wayland compositor
 socket.
@@ -73170,7 +73342,20 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_powerdevil_dbus_chat" lineno="67">
+<interface name="local_powerdevil_role" lineno="69">
+<summary>
+Wire up all of a role access to/from PowerDevil beyond the base role
+template: D-Bus chat, X11 connect, Wayland compositor connect, and
+the role Xwayland domain reading process state.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the D-Bus/X11/Wayland/Xwayland session
+resources.
+</summary>
+</param>
+</interface>
+<interface name="local_powerdevil_dbus_chat" lineno="90">
 <summary>
 Send and receive D-Bus messages with PowerDevil, e.g. to inhibit
 screen/system idle during media playback.
@@ -73181,7 +73366,7 @@ Domain allowed to exchange D-Bus messages with PowerDevil.
 </summary>
 </param>
 </interface>
-<interface name="local_powerdevil_x11_connect" lineno="86">
+<interface name="local_powerdevil_x11_connect" lineno="109">
 <summary>
 Allow PowerDevil to connect to a role's session X11 socket.
 </summary>
@@ -73191,7 +73376,7 @@ User role prefix that owns the session's X11 socket.
 </summary>
 </param>
 </interface>
-<interface name="local_powerdevil_wayland_connect" lineno="105">
+<interface name="local_powerdevil_wayland_connect" lineno="128">
 <summary>
 Allow PowerDevil to connect to a role's session Wayland compositor
 socket.
@@ -73202,7 +73387,7 @@ User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_powerdevil_read_proc_state" lineno="125">
+<interface name="local_powerdevil_read_proc_state" lineno="148">
 <summary>
 Allow a domain to read PowerDevil's process state (/proc/pid), e.g.
 Xwayland reading the cmdline of a connecting X11 client for
@@ -73285,7 +73470,21 @@ Role allowed access to the RSIBreak domain.
 </summary>
 </param>
 </interface>
-<interface name="local_rsibreak_dbus_chat" lineno="47">
+<interface name="local_rsibreak_role" lineno="50">
+<summary>
+Wire up all of a role access to/from RSIBreak beyond the base role
+template: D-Bus chat, bus name publish, X11 connect, Wayland
+compositor connect, and the role Xwayland domain reading process
+state.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the D-Bus/X11/Wayland/Xwayland session
+resources.
+</summary>
+</param>
+</interface>
+<interface name="local_rsibreak_dbus_chat" lineno="69">
 <summary>
 Allow bidirectional D-Bus method call/reply between a domain and
 RSIBreak.
@@ -73296,7 +73495,7 @@ Domain allowed to exchange D-Bus messages with RSIBreak.
 </summary>
 </param>
 </interface>
-<interface name="local_rsibreak_publish_bus_name" lineno="67">
+<interface name="local_rsibreak_publish_bus_name" lineno="89">
 <summary>
 Allow RSIBreak to publish its D-Bus service (org.kde.rsibreak) on the
 per-role session bus.
@@ -73307,7 +73506,7 @@ User role prefix that owns the session D-Bus domain.
 </summary>
 </param>
 </interface>
-<interface name="local_rsibreak_x11_connect" lineno="88">
+<interface name="local_rsibreak_x11_connect" lineno="110">
 <summary>
 Allow RSIBreak to connect directly to an X11 socket owned by another
 domain (e.g. staff_t, the compositor/Xwayland on this desktop).
@@ -73318,7 +73517,7 @@ Domain owning the X11 socket.
 </summary>
 </param>
 </interface>
-<interface name="local_rsibreak_wayland_connect" lineno="107">
+<interface name="local_rsibreak_wayland_connect" lineno="129">
 <summary>
 Allow RSIBreak to connect to a role's session Wayland compositor
 socket.
@@ -73329,7 +73528,7 @@ User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_rsibreak_read_proc_state" lineno="127">
+<interface name="local_rsibreak_read_proc_state" lineno="149">
 <summary>
 Allow a domain to read RSIBreak's process state (/proc/pid), e.g.
 Xwayland reading the cmdline of a connecting X11 client for
@@ -73341,7 +73540,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="local_rsibreak_systemd_inherit" lineno="148">
+<interface name="local_rsibreak_systemd_inherit" lineno="170">
 <summary>
 Allow a user systemd instance to launch RSIBreak with the usual
 inherited-exec process bits.
@@ -73382,7 +73581,19 @@ Role allowed access to the SafeEyes domain.
 </summary>
 </param>
 </interface>
-<interface name="local_safeeyes_dbus_chat" lineno="69">
+<interface name="local_safeeyes_role" lineno="71">
+<summary>
+Wire up all of a role extra SafeEyes grants beyond the base role
+template: PipeWire connect, D-Bus chat, and gvfs dbus_chat.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the PipeWire/D-Bus/gvfs session
+resources.
+</summary>
+</param>
+</interface>
+<interface name="local_safeeyes_dbus_chat" lineno="87">
 <summary>
 Send and receive D-Bus messages with SafeEyes.
 </summary>
@@ -73392,7 +73603,7 @@ Domain allowed to exchange D-Bus messages with SafeEyes.
 </summary>
 </param>
 </interface>
-<interface name="local_safeeyes_systemd_inherit" lineno="89">
+<interface name="local_safeeyes_systemd_inherit" lineno="107">
 <summary>
 Allow a user systemd instance to launch SafeEyes with the usual
 inherited-exec process bits.
@@ -73403,7 +73614,7 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_safeeyes_gvfs_dbus_chat" lineno="109">
+<interface name="local_safeeyes_gvfs_dbus_chat" lineno="127">
 <summary>
 Allow SafeEyes to query gvfs for mountable locations, for a given role
 prefix.
@@ -73668,7 +73879,22 @@ User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_shm" lineno="72">
+<interface name="local_thunderbird_role" lineno="76">
+<summary>
+Wire up all of a role's access to/from Thunderbird: PipeWire Pulse
+connect, gvfs dbus_chat, Wayland compositor connect, PipeWire /proc
+lookup, session bus name publish, the role's Xwayland domain reading
+Thunderbird's MIT-SHM segment and process state, and the role's main
+domain D-Bus chat with Thunderbird.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the PipeWire/gvfs/Wayland/Xwayland/D-Bus
+session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_thunderbird_shm" lineno="98">
 <summary>
 Allow a domain to read/write Thunderbird's MIT-SHM segment, e.g. the X
 server attaching to a shared-memory image passed via XShmAttach.
@@ -73679,7 +73905,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_read_proc_state" lineno="92">
+<interface name="local_thunderbird_read_proc_state" lineno="118">
 <summary>
 Allow a domain to read the process state (/proc/pid) of Thunderbird,
 e.g. Xwayland reading a connecting client's cmdline for client
@@ -73691,7 +73917,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_pipewire_process_lookup" lineno="112">
+<interface name="local_thunderbird_pipewire_process_lookup" lineno="138">
 <summary>
 Allow a PipeWire domain to inspect Thunderbird through /proc.
 </summary>
@@ -73701,7 +73927,7 @@ User role prefix that owns the PipeWire domain.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_systemd_inherit" lineno="131">
+<interface name="local_thunderbird_systemd_inherit" lineno="157">
 <summary>
 Allow a user systemd instance to launch Thunderbird with the usual
 inherited-exec process bits.
@@ -73712,7 +73938,7 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_publish_bus_name" lineno="149">
+<interface name="local_thunderbird_publish_bus_name" lineno="175">
 <summary>
 Allow Thunderbird to publish its session bus name.
 </summary>
@@ -73722,7 +73948,7 @@ User role prefix that owns the session D-Bus daemon.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_dbus_chat" lineno="168">
+<interface name="local_thunderbird_dbus_chat" lineno="194">
 <summary>
 Allow Thunderbird to chat with a peer desktop service over D-Bus.
 </summary>
@@ -73732,7 +73958,7 @@ Desktop service domain, such as staff_t.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_wm_dontaudit_tmpfs_use" lineno="187">
+<interface name="local_thunderbird_wm_dontaudit_tmpfs_use" lineno="213">
 <summary>
 Dontaudit a WM domain using Thunderbird tmpfs buffers and inherited fds.
 </summary>
@@ -73742,7 +73968,7 @@ Window-manager domain using Thunderbird-owned objects.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_read_tmp_content" lineno="210">
+<interface name="local_thunderbird_read_tmp_content" lineno="236">
 <summary>
 Allow a domain to read attachments Thunderbird staged in its per-pid
 temporary directory (e.g. a viewer opening an attachment Thunderbird
@@ -73896,7 +74122,18 @@ Role allowed access to the XDG desktop portal domain.
 </summary>
 </param>
 </interface>
-<interface name="local_xdg_desktop_portal_dbus_chat" lineno="49">
+<interface name="local_xdg_desktop_portal_role" lineno="48">
+<summary>
+Wire up all of a role extra XDG desktop portal grants beyond the
+base role template: D-Bus chat and bus name publish.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the D-Bus session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_xdg_desktop_portal_dbus_chat" lineno="65">
 <summary>
 Allow the XDG desktop portal to exchange D-Bus messages with a
 desktop-owned domain (e.g. the client that invoked it, for property
@@ -73908,7 +74145,7 @@ Domain to exchange messages with.
 </summary>
 </param>
 </interface>
-<interface name="local_xdg_desktop_portal_publish_bus_name" lineno="70">
+<interface name="local_xdg_desktop_portal_publish_bus_name" lineno="86">
 <summary>
 Allow the XDG desktop portal to publish its D-Bus service
 (org.freedesktop.portal.Desktop) on the per-role session bus.
@@ -73919,7 +74156,7 @@ User role prefix that owns the session D-Bus domain.
 </summary>
 </param>
 </interface>
-<interface name="local_xdg_desktop_portal_systemd_inherit" lineno="91">
+<interface name="local_xdg_desktop_portal_systemd_inherit" lineno="107">
 <summary>
 Allow a user systemd instance to launch the XDG desktop portal with
 the usual inherited-exec process bits.
@@ -73951,7 +74188,18 @@ Role allowed access to the XDG document portal domain.
 </summary>
 </param>
 </interface>
-<interface name="local_xdg_document_portal_dbus_chat" lineno="49">
+<interface name="local_xdg_document_portal_role" lineno="48">
+<summary>
+Wire up all of a role extra XDG document portal grants beyond the
+base role template: D-Bus chat and bus name publish.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the D-Bus session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_xdg_document_portal_dbus_chat" lineno="65">
 <summary>
 Allow the XDG document portal to exchange D-Bus messages with a
 desktop-owned domain (e.g. the client that invoked it, for property
@@ -73963,7 +74211,7 @@ Domain to exchange messages with.
 </summary>
 </param>
 </interface>
-<interface name="local_xdg_document_portal_publish_bus_name" lineno="70">
+<interface name="local_xdg_document_portal_publish_bus_name" lineno="86">
 <summary>
 Allow the XDG document portal to publish its D-Bus service
 (org.freedesktop.portal.Documents) on the per-role session bus.
@@ -73974,7 +74222,7 @@ User role prefix that owns the session D-Bus domain.
 </summary>
 </param>
 </interface>
-<interface name="local_xdg_document_portal_systemd_inherit" lineno="91">
+<interface name="local_xdg_document_portal_systemd_inherit" lineno="107">
 <summary>
 Allow a user systemd instance to launch the XDG document portal with the
 usual inherited-exec process bits.
@@ -74113,7 +74361,20 @@ User systemd domain owning the inherited socket and fd.
 </summary>
 </param>
 </interface>
-<interface name="local_zotero_stream_connect" lineno="65">
+<interface name="local_zotero_role" lineno="68">
+<summary>
+Wire up all of a role access to/from Zotero beyond the base role
+template: D-Bus chat, stream connect, home content read, and bus
+name publish.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Wayland/Xwayland/D-Bus session
+resources.
+</summary>
+</param>
+</interface>
+<interface name="local_zotero_stream_connect" lineno="92">
 <summary>
 Allow Zotero to connect to a desktop-owned stream socket.
 </summary>
@@ -74123,7 +74384,7 @@ Domain owning the peer socket.
 </summary>
 </param>
 </interface>
-<interface name="local_zotero_dbus_chat" lineno="83">
+<interface name="local_zotero_dbus_chat" lineno="110">
 <summary>
 Allow Zotero to chat with a desktop-owned D-Bus service.
 </summary>
@@ -74133,7 +74394,7 @@ Domain owning the D-Bus service.
 </summary>
 </param>
 </interface>
-<interface name="local_zotero_publish_bus_name" lineno="104">
+<interface name="local_zotero_publish_bus_name" lineno="131">
 <summary>
 Allow Zotero to publish its single-instance remote-control D-Bus
 service (org.mozilla.zotero.*) on the per-role session bus.
@@ -74144,7 +74405,7 @@ User role prefix that owns the session D-Bus domain.
 </summary>
 </param>
 </interface>
-<interface name="local_zotero_read_home_content" lineno="125">
+<interface name="local_zotero_read_home_content" lineno="152">
 <summary>
 Allow a domain to read documents stored under Zotero's home content
 (e.g. a viewer opening a PDF from Zotero's attachment storage).
