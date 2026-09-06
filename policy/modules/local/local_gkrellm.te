@@ -29,6 +29,7 @@ gen_require(`
 	type user_tmp_t;
 	type hddtemp_port_t;
 	type mail_spool_t;
+	type var_lock_t;
 ')
 
 auth_use_nsswitch(gkrellm_t)
@@ -71,6 +72,11 @@ xserver_use_user_fonts(gkrellm_t)
 kernel_read_device_sysctls(gkrellm_t)
 
 corecmd_list_bin(gkrellm_t)
+
+# GKrellM's classic flock()-on-directory lock convention. Only write is
+# exercised (no add_name -- not creating a file, just locking the dir
+# itself), so keep this to the exact op observed.
+allow gkrellm_t var_lock_t:dir write;
 
 tunable_policy(`local_gkrellm_use_hddtemp',`
 	corenet_tcp_connect_hddtemp_port(gkrellm_t)

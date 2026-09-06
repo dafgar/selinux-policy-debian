@@ -109,3 +109,25 @@ interface(`local_gkrellm_x11_connect',`
 
 	local_$1_x11_connect(gkrellm_t)
 ')
+
+########################################
+## <summary>
+##	Allow a domain to read GKrellM's process state (/proc/pid), e.g.
+##	Xwayland reading the cmdline of a connecting X11 client for
+##	_NET_WM_PID-style client identification.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_gkrellm_read_proc_state',`
+	gen_require(`
+		type gkrellm_t;
+	')
+
+	allow $1 gkrellm_t:dir list_dir_perms;
+	read_files_pattern($1, gkrellm_t, gkrellm_t)
+	read_lnk_files_pattern($1, gkrellm_t, gkrellm_t)
+')
