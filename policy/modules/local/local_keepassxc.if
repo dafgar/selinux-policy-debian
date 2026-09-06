@@ -54,6 +54,27 @@ interface(`local_keepassxc_systemd_inherit',`
 
 ########################################
 ## <summary>
+##	Wire up all of a role's access to/from KeepassXC beyond the base
+##	role template: home content read, stream connect, Wayland compositor
+##	connect, D-Bus chat, and the role's Xwayland domain reading process
+##	state.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Wayland/Xwayland session resources.
+##	</summary>
+## </param>
+#
+interface(`local_keepassxc_role',`
+	local_keepassxc_read_home_content($1_t)
+	local_keepassxc_stream_connect($1_t)
+	local_keepassxc_wayland_connect($1)
+	local_keepassxc_dbus_chat($1_t)
+	local_keepassxc_read_proc_state($1_xwayland_t)
+')
+
+########################################
+## <summary>
 ##	Allow a domain to read documents stored under KeepassXC's home content
 ##	(e.g. the interactive user browsing the vault directory directly).
 ## </summary>
