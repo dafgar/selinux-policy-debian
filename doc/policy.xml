@@ -73613,7 +73613,18 @@ User role prefix that owns the PipeWire server domain.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_pipewire_process_lookup" lineno="33">
+<interface name="local_thunderbird_gvfs_dbus_chat" lineno="34">
+<summary>
+Allow Thunderbird to query gvfs for mountable locations from its
+attachment/file picker, for a given role prefix.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the gvfs domain.
+</summary>
+</param>
+</interface>
+<interface name="local_thunderbird_pipewire_process_lookup" lineno="52">
 <summary>
 Allow a PipeWire domain to inspect Thunderbird through /proc.
 </summary>
@@ -73623,7 +73634,7 @@ User role prefix that owns the PipeWire domain.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_systemd_inherit" lineno="52">
+<interface name="local_thunderbird_systemd_inherit" lineno="71">
 <summary>
 Allow a user systemd instance to launch Thunderbird with the usual
 inherited-exec process bits.
@@ -73634,7 +73645,7 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_publish_bus_name" lineno="70">
+<interface name="local_thunderbird_publish_bus_name" lineno="89">
 <summary>
 Allow Thunderbird to publish its session bus name.
 </summary>
@@ -73644,7 +73655,7 @@ User role prefix that owns the session D-Bus daemon.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_dbus_chat" lineno="89">
+<interface name="local_thunderbird_dbus_chat" lineno="108">
 <summary>
 Allow Thunderbird to chat with a peer desktop service over D-Bus.
 </summary>
@@ -73654,7 +73665,7 @@ Desktop service domain, such as staff_t.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_wm_dontaudit_tmpfs_use" lineno="108">
+<interface name="local_thunderbird_wm_dontaudit_tmpfs_use" lineno="127">
 <summary>
 Dontaudit a WM domain using Thunderbird tmpfs buffers and inherited fds.
 </summary>
@@ -73664,7 +73675,7 @@ Window-manager domain using Thunderbird-owned objects.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_read_tmp_content" lineno="131">
+<interface name="local_thunderbird_read_tmp_content" lineno="150">
 <summary>
 Allow a domain to read attachments Thunderbird staged in its per-pid
 temporary directory (e.g. a viewer opening an attachment Thunderbird

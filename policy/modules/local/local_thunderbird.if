@@ -22,6 +22,25 @@ interface(`local_thunderbird_pipewire_pulse_connect',`
 
 ########################################
 ## <summary>
+##	Allow Thunderbird to query gvfs for mountable locations from its
+##	attachment/file picker, for a given role prefix.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the gvfs domain.
+##	</summary>
+## </param>
+#
+interface(`local_thunderbird_gvfs_dbus_chat',`
+	gen_require(`
+		type thunderbird_t;
+	')
+
+	local_gvfs_dbus_chat($1, thunderbird_t)
+')
+
+########################################
+## <summary>
 ##	Allow a PipeWire domain to inspect Thunderbird through /proc.
 ## </summary>
 ## <param name="role_prefix">
