@@ -8,6 +8,13 @@ userdom_user_application_domain(ktorrent_t, ktorrent_exec_t)
 role ktorrent_roles types ktorrent_t;
 can_exec(ktorrent_t, ktorrent_exec_t)
 
+## <desc>
+## <p>
+## Allow KTorrent to make its stack/heap memory executable.
+## </p>
+## </desc>
+gen_tunable(ktorrent_execmem, false)
+
 gen_require(`
 	type mount_runtime_t;
 ')
@@ -20,4 +27,6 @@ corenet_tcp_bind_all_unreserved_ports(ktorrent_t)
 # newly mounted removable media.
 allow ktorrent_t mount_runtime_t:dir watch;
 
-allow ktorrent_t self:process execmem;
+tunable_policy(`ktorrent_execmem',`
+	allow ktorrent_t self:process execmem;
+')

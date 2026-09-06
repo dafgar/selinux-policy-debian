@@ -12,6 +12,13 @@ can_exec(plasmashell_t, plasmashell_exec_t)
 # QtWebEngine renderer, the same way khelpcenter/systemsettings/mnemosyne do.
 local_qtwebengine_embed(plasmashell_t)
 
+## <desc>
+## <p>
+## Allow Plasma Shell to make its stack/heap memory executable.
+## </p>
+## </desc>
+gen_tunable(plasmashell_execmem, false)
+
 gen_require(`
 	type chromium_t;
 	type chromium_tmp_t;
@@ -98,8 +105,12 @@ xserver_rw_mesa_shader_cache(plasmashell_t)
 wm_map_tmpfs_files(plasmashell_t)
 wm_rw_tmpfs_files(plasmashell_t)
 
-allow plasmashell_t self:process { execmem getsched setsched signal };
+allow plasmashell_t self:process { getsched setsched signal };
 allow plasmashell_t self:fifo_file { getattr read write };
 allow plasmashell_t self:unix_dgram_socket create_socket_perms;
 allow plasmashell_t self:unix_stream_socket { connectto create_socket_perms };
 allow plasmashell_t self:netlink_route_socket { create_socket_perms nlmsg_read };
+
+tunable_policy(`plasmashell_execmem',`
+	allow plasmashell_t self:process execmem;
+')

@@ -36,6 +36,13 @@ manage_files_pattern(keepassxc_t, keepassxc_xdg_cache_t, keepassxc_xdg_cache_t)
 manage_lnk_files_pattern(keepassxc_t, keepassxc_xdg_cache_t, keepassxc_xdg_cache_t)
 xdg_cache_filetrans(keepassxc_t, keepassxc_xdg_cache_t, dir, "keepassxc")
 
+## <desc>
+## <p>
+## Allow KeePassXC to make its stack/heap memory executable.
+## </p>
+## </desc>
+gen_tunable(keepassxc_execmem, false)
+
 gen_require(`
 	type debugfs_t;
 	type plasmashell_t;
@@ -98,8 +105,12 @@ allow keepassxc_t usb_device_t:chr_file { getattr ioctl open read write };
 # signull backs the SingleApplication/QLockFile stale-lock check: on startup
 # it reads the PID recorded in the lock file and probes kill(pid, 0) to see
 # whether that process is still alive.
-allow keepassxc_t self:process { execmem getsched setsched setrlimit signal signull };
+allow keepassxc_t self:process { getsched setsched setrlimit signal signull };
 allow keepassxc_t self:fifo_file { getattr read write };
+
+tunable_policy(`keepassxc_execmem',`
+	allow keepassxc_t self:process execmem;
+')
 # A second launch attempt connects to an already-running instance's
 # SingleApplication IPC socket to hand off instead of opening a duplicate.
 allow keepassxc_t self:unix_stream_socket connectto;

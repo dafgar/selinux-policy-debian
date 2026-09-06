@@ -37,6 +37,14 @@ manage_dirs_pattern(gimp_t, gimp_tmp_t, gimp_tmp_t)
 manage_files_pattern(gimp_t, gimp_tmp_t, gimp_tmp_t)
 files_tmp_filetrans(gimp_t, gimp_tmp_t, { dir file })
 
+## <desc>
+## <p>
+## Allow GIMP to make its stack/heap memory executable, needed for
+## script-fu/python-fu JIT.
+## </p>
+## </desc>
+gen_tunable(gimp_execmem, false)
+
 gen_require(`
 	type xdg_config_t;
 ')
@@ -79,10 +87,14 @@ wm_rw_tmpfs_files(gimp_t)
 
 allow gimp_t xdg_config_t:dir { read watch };
 
-# Confirmed via /tmp/avc.log (pid-correlated to exe=/usr/bin/gimp-3.0):
-# execmem for script-fu/python-fu JIT.
-allow gimp_t self:process { execmem getsched setsched signal };
+allow gimp_t self:process { getsched setsched signal };
 allow gimp_t self:fifo_file { getattr read write };
 allow gimp_t self:unix_dgram_socket create_socket_perms;
 allow gimp_t self:unix_stream_socket { connectto create_socket_perms };
 allow gimp_t self:netlink_route_socket { create_socket_perms nlmsg_read };
+
+# Confirmed via /tmp/avc.log (pid-correlated to exe=/usr/bin/gimp-3.0):
+# execmem for script-fu/python-fu JIT.
+tunable_policy(`gimp_execmem',`
+	allow gimp_t self:process execmem;
+')

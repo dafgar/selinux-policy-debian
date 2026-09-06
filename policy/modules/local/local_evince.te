@@ -23,6 +23,13 @@ files_tmp_file(evince_tmp_t)
 type evince_tmpfs_t;
 userdom_user_tmpfs_file(evince_tmpfs_t)
 
+## <desc>
+## <p>
+## Allow Evince to make its stack/heap memory executable.
+## </p>
+## </desc>
+gen_tunable(evince_execmem, false)
+
 manage_dirs_pattern(evince_t, evince_xdg_config_t, evince_xdg_config_t)
 manage_files_pattern(evince_t, evince_xdg_config_t, evince_xdg_config_t)
 xdg_config_filetrans(evince_t, evince_xdg_config_t, dir, "evince")
@@ -113,9 +120,13 @@ xserver_rw_mesa_shader_cache(evince_t)
 wm_map_tmpfs_files(evince_t)
 wm_rw_tmpfs_files(evince_t)
 
-allow evince_t self:process { execmem getsched signal };
+allow evince_t self:process { getsched signal };
 allow evince_t self:unix_dgram_socket create_socket_perms;
 allow evince_t self:fifo_file rw_fifo_file_perms;
+
+tunable_policy(`evince_execmem',`
+	allow evince_t self:process execmem;
+')
 
 gen_require(`
 	type bin_t;

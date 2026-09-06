@@ -72083,6 +72083,13 @@ User role prefix that owns the gvfs domain.
 </summary>
 </param>
 </interface>
+<tunable name="evince_execmem" dftval="false">
+<desc>
+<p>
+Allow Evince to make its stack/heap memory executable.
+</p>
+</desc>
+</tunable>
 </module>
 <module name="local_evolution" filename="policy/modules/local/local_evolution.if">
 <summary>
@@ -72189,6 +72196,14 @@ Role allowed access to the GIMP domain.
 </summary>
 </param>
 </interface>
+<tunable name="gimp_execmem" dftval="false">
+<desc>
+<p>
+Allow GIMP to make its stack/heap memory executable, needed for
+script-fu/python-fu JIT.
+</p>
+</desc>
+</tunable>
 </module>
 <module name="local_git" filename="policy/modules/local/local_git.if">
 <summary>
@@ -72703,6 +72718,13 @@ Domain to exchange messages with.
 </summary>
 </param>
 </interface>
+<tunable name="keepassxc_execmem" dftval="false">
+<desc>
+<p>
+Allow KeePassXC to make its stack/heap memory executable.
+</p>
+</desc>
+</tunable>
 </module>
 <module name="local_khelpcenter" filename="policy/modules/local/local_khelpcenter.if">
 <summary>
@@ -72891,6 +72913,13 @@ Role allowed access to the ktorrent domain.
 </summary>
 </param>
 </interface>
+<tunable name="ktorrent_execmem" dftval="false">
+<desc>
+<p>
+Allow KTorrent to make its stack/heap memory executable.
+</p>
+</desc>
+</tunable>
 </module>
 <module name="local_lowmemorymonitor" filename="policy/modules/local/local_lowmemorymonitor.if">
 <summary>
@@ -73037,6 +73066,13 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
+<tunable name="mozilla_execmem" dftval="false">
+<desc>
+<p>
+Allow Firefox to make its stack/heap memory executable.
+</p>
+</desc>
+</tunable>
 </module>
 <module name="local_mplayer" filename="policy/modules/local/local_mplayer.if">
 <summary>Local policy for MPlayer session integration.</summary>
@@ -73306,6 +73342,13 @@ User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
+<tunable name="plasmashell_execmem" dftval="false">
+<desc>
+<p>
+Allow Plasma Shell to make its stack/heap memory executable.
+</p>
+</desc>
+</tunable>
 </module>
 <module name="local_plymouth" filename="policy/modules/local/local_plymouth.if">
 <summary>
@@ -74461,6 +74504,13 @@ Xwayland domain handing off the fd.
 </summary>
 </param>
 </interface>
+<tunable name="zotero_execmem" dftval="false">
+<desc>
+<p>
+Allow Zotero to make its stack/heap memory executable.
+</p>
+</desc>
+</tunable>
 </module>
 </layer>
 <layer name="roles">

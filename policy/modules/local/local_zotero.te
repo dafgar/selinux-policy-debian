@@ -33,6 +33,13 @@ manage_files_pattern(zotero_t, zotero_tmp_t, zotero_tmp_t)
 manage_lnk_files_pattern(zotero_t, zotero_tmp_t, zotero_tmp_t)
 files_tmp_filetrans(zotero_t, zotero_tmp_t, { dir file }, "zotero")
 
+## <desc>
+## <p>
+## Allow Zotero to make its stack/heap memory executable.
+## </p>
+## </desc>
+gen_tunable(zotero_execmem, false)
+
 gen_require(`
 	type dolphin_exec_t;
 	type etc_t;
@@ -133,7 +140,7 @@ allow zotero_t tmpfs_t:file { read map write };
 allow zotero_t tmp_t:file { create open read lock unlink };
 allow zotero_t self:fifo_file { getattr read write };
 allow zotero_t self:netlink_route_socket { create_socket_perms nlmsg_read };
-allow zotero_t self:process { execmem getsched setcap setsched signal };
+allow zotero_t self:process { getsched setcap setsched signal };
 allow zotero_t self:unix_dgram_socket create_socket_perms;
 allow zotero_t self:unix_stream_socket connectto;
 allow zotero_t self:cap_userns { sys_admin sys_chroot };
