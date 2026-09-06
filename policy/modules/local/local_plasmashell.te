@@ -8,6 +8,10 @@ userdom_user_application_domain(plasmashell_t, plasmashell_exec_t)
 role plasmashell_roles types plasmashell_t;
 can_exec(plasmashell_t, plasmashell_exec_t)
 
+# Some Plasma widgets (e.g. web-preview/forecast content) embed a sandboxed
+# QtWebEngine renderer, the same way khelpcenter/systemsettings/mnemosyne do.
+local_qtwebengine_embed(plasmashell_t)
+
 gen_require(`
 	type chromium_t;
 	type chromium_tmp_t;
