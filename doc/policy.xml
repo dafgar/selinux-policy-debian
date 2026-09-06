@@ -72526,7 +72526,30 @@ Domain owning the peer socket.
 </summary>
 </param>
 </interface>
-<interface name="local_keepassxc_dbus_chat" lineno="108">
+<interface name="local_keepassxc_wayland_connect" lineno="108">
+<summary>
+Allow KeepassXC to connect to a role's session Wayland compositor
+socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session's Wayland socket.
+</summary>
+</param>
+</interface>
+<interface name="local_keepassxc_read_proc_state" lineno="128">
+<summary>
+Allow a domain to read KeepassXC's process state (/proc/pid), e.g.
+Xwayland reading the cmdline of a connecting X11 client for
+_NET_WM_PID-style client identification.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="local_keepassxc_dbus_chat" lineno="149">
 <summary>
 Allow KeepassXC to exchange D-Bus messages with a desktop-owned domain
 (e.g. xdg-desktop-portal's Settings interface for theme detection).
