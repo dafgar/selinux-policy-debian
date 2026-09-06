@@ -72619,7 +72619,7 @@ Role allowed access.
 </summary>
 </param>
 </template>
-<interface name="local_konsole_systemd_dbus_chat" lineno="281">
+<interface name="local_konsole_systemd_dbus_chat" lineno="289">
 <summary>
 Allow Konsole (and anything launched from it, e.g. systemctl --user)
 to chat over D-Bus with the per-role systemd --user manager.
@@ -72631,7 +72631,7 @@ the Konsole domain.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_dbus_chat" lineno="305">
+<interface name="local_konsole_dbus_chat" lineno="313">
 <summary>
 Allow Konsole to exchange D-Bus messages with a desktop-owned domain
 (e.g. xdg-desktop-portal's Settings interface for theme detection).
@@ -72647,7 +72647,7 @@ Domain to exchange messages with.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_systemd_inherit" lineno="327">
+<interface name="local_konsole_systemd_inherit" lineno="335">
 <summary>
 Allow Konsole to inherit a stream socket fd from the user systemd
 instance during launch, like other user-session applications.
