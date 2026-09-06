@@ -72745,6 +72745,14 @@ Role allowed access to the khelpcenter domain.
 </summary>
 </param>
 </interface>
+<tunable name="khelpcenter_execmem" dftval="false">
+<desc>
+<p>
+Allow KHelpCenter to make its stack/heap memory executable, needed for
+its embedded QtWebEngine sandbox setup.
+</p>
+</desc>
+</tunable>
 </module>
 <module name="local_kioworker" filename="policy/modules/local/local_kioworker.if">
 <summary>
@@ -72983,6 +72991,14 @@ User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
+<tunable name="mnemosyne_execmem" dftval="false">
+<desc>
+<p>
+Allow Mnemosyne to make its stack/heap memory executable, needed for
+its embedded QtWebEngine sandbox setup.
+</p>
+</desc>
+</tunable>
 </module>
 <module name="local_mozilla" filename="policy/modules/local/local_mozilla.if">
 <summary>
@@ -73345,7 +73361,8 @@ User role prefix that owns the session's Wayland socket.
 <tunable name="plasmashell_execmem" dftval="false">
 <desc>
 <p>
-Allow Plasma Shell to make its stack/heap memory executable.
+Allow Plasma Shell to make its stack/heap memory executable, needed for
+its embedded QtWebEngine sandbox setup (widgets like web-preview/forecast).
 </p>
 </desc>
 </tunable>
@@ -73478,7 +73495,7 @@ Role allowed access to the QtWebEngine process domain.
 </summary>
 </param>
 </interface>
-<interface name="local_qtwebengine_embed" lineno="64">
+<interface name="local_qtwebengine_embed" lineno="68">
 <summary>
 Allow a domain to embed a sandboxed QtWebEngine renderer the way
 Chromium-derived browser processes do: create its own unprivileged
@@ -73880,6 +73897,14 @@ Role allowed access to the systemsettings domain.
 </summary>
 </param>
 </interface>
+<tunable name="systemsettings_execmem" dftval="false">
+<desc>
+<p>
+Allow System Settings to make its stack/heap memory executable, needed
+for its embedded QtWebEngine sandbox setup.
+</p>
+</desc>
+</tunable>
 </module>
 <module name="local_test" filename="policy/modules/local/local_test.if">
 <summary>

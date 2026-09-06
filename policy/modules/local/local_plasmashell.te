@@ -14,7 +14,8 @@ local_qtwebengine_embed(plasmashell_t)
 
 ## <desc>
 ## <p>
-## Allow Plasma Shell to make its stack/heap memory executable.
+## Allow Plasma Shell to make its stack/heap memory executable, needed for
+## its embedded QtWebEngine sandbox setup (widgets like web-preview/forecast).
 ## </p>
 ## </desc>
 gen_tunable(plasmashell_execmem, false)

@@ -61,8 +61,12 @@ interface(`qtwebengine_role',`
 # qtwebengine_role() call in local_staff.te, not from here -- this interface
 # only covers the sandbox setup the embedder does to itself before exec'ing
 # the renderer.
+#
+# execmem is NOT granted here: it's needed by some but not all embedders, so
+# each caller gates it behind its own <domain>_execmem boolean instead of it
+# being an unconditional grant to every domain calling this interface.
 interface(`local_qtwebengine_embed',`
-	allow $1 self:process { execmem signal };
+	allow $1 self:process signal;
 	allow $1 self:cap_userns sys_admin;
 	allow $1 self:user_namespace create;
 ')

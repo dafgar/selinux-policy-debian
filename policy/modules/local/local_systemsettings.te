@@ -14,6 +14,18 @@ role systemsettings_roles types systemsettings_t;
 # and mnemosyne.
 local_qtwebengine_embed(systemsettings_t)
 
+## <desc>
+## <p>
+## Allow System Settings to make its stack/heap memory executable, needed
+## for its embedded QtWebEngine sandbox setup.
+## </p>
+## </desc>
+gen_tunable(systemsettings_execmem, false)
+
+tunable_policy(`systemsettings_execmem',`
+	allow systemsettings_t self:process execmem;
+')
+
 files_read_usr_files(systemsettings_t)
 files_map_usr_files(systemsettings_t)
 miscfiles_read_localization(systemsettings_t)

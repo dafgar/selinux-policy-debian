@@ -12,6 +12,18 @@ role khelpcenter_roles types khelpcenter_t;
 # local_staff.te via qtwebengine_role(khelpcenter_t, staff_r).
 local_qtwebengine_embed(khelpcenter_t)
 
+## <desc>
+## <p>
+## Allow KHelpCenter to make its stack/heap memory executable, needed for
+## its embedded QtWebEngine sandbox setup.
+## </p>
+## </desc>
+gen_tunable(khelpcenter_execmem, false)
+
+tunable_policy(`khelpcenter_execmem',`
+	allow khelpcenter_t self:process execmem;
+')
+
 # The in-process GPU thread shares DMA buffers with the display for
 # accelerated rendering of the embedded help browser.
 dev_rw_dma_dev(khelpcenter_t)
