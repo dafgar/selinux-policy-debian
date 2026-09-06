@@ -77,6 +77,7 @@ interface(`local_zotero_role',`
 	local_zotero_stream_connect($1_wm_t)
 	local_zotero_read_home_content($1_t)
 	local_zotero_publish_bus_name($1)
+	local_zotero_read_proc_state($1_xwayland_t)
 ')
 
 ########################################
@@ -159,4 +160,24 @@ interface(`local_zotero_read_home_content',`
 	read_lnk_files_pattern($1, zotero_home_t, zotero_home_t)
 	allow $1 zotero_home_t:file map;
 	allow $1 zotero_home_t:dir watch;
+')
+
+########################################
+## <summary>
+##	Allow a domain to read Zotero's /proc state (e.g. Xwayland looking up
+##	a client's cmdline for window properties).
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed read access.
+##	</summary>
+## </param>
+#
+interface(`local_zotero_read_proc_state',`
+	gen_require(`
+		type zotero_t;
+	')
+
+	allow $1 zotero_t:dir list_dir_perms;
+	read_files_pattern($1, zotero_t, zotero_t)
 ')
