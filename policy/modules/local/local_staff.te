@@ -49,6 +49,7 @@ ps_process_pattern(staff_pipewire_t, plasmashell_t)
 # KDirNotify file-added notifications) that staff_t receives as a generic
 # session bus client.
 local_plasmashell_dbus_chat(staff_t)
+local_plasmashell_gvfs_dbus_chat(staff)
 powerdevil_role(staff_application_exec_domain, staff_r)
 local_powerdevil_dbus_chat(staff_t)
 # org_kde_powerdevil is an X11 client (via Xwayland) of the session X11

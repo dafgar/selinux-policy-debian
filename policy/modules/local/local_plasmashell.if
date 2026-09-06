@@ -76,6 +76,26 @@ interface(`local_plasmashell_dbus_chat',`
 
 ########################################
 ## <summary>
+##	Allow Plasma to query gvfs for mountable locations (e.g. Dolphin's
+##	"Network" places, or the storage notifier applet), for a given role
+##	prefix.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the gvfs domain.
+##	</summary>
+## </param>
+#
+interface(`local_plasmashell_gvfs_dbus_chat',`
+	gen_require(`
+		type plasmashell_t;
+	')
+
+	local_gvfs_dbus_chat($1, plasmashell_t)
+')
+
+########################################
+## <summary>
 ##	Allow a domain to read/write plasmashell's fifo pipes, e.g. kwin_wayland
 ##	signaling plasmashell over an anonymous pipe.
 ## </summary>
