@@ -72702,7 +72702,7 @@ the Konsole domain.
 <interface name="local_konsole_publish_bus_name" lineno="312">
 <summary>
 Allow Konsole to publish its per-instance D-Bus service name
-(org.kde.konsole-<pid>) on the role's session bus.
+(org.kde.konsole-PID) on the role's session bus.
 </summary>
 <param name="role_prefix">
 <summary>

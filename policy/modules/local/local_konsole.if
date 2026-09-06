@@ -300,7 +300,7 @@ interface(`local_konsole_systemd_dbus_chat',`
 ########################################
 ## <summary>
 ##	Allow Konsole to publish its per-instance D-Bus service name
-##	(org.kde.konsole-<pid>) on the role's session bus.
+##	(org.kde.konsole-PID) on the role's session bus.
 ## </summary>
 ## <param name="role_prefix">
 ##	<summary>
