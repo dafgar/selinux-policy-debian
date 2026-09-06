@@ -17,12 +17,6 @@ xdg_cache_content(zotero_xdg_cache_t)
 type zotero_tmp_t;
 files_tmp_file(zotero_tmp_t)
 
-# Zotero's built-in Mozilla-style updater stages updates in place under its
-# own install tree (e.g. ~/.local/opt/zotero), including a .parentlock file,
-# separate from the /tmp/MozillaUpdateLock-* lock handled below.
-type zotero_install_t;
-userdom_user_home_content(zotero_install_t)
-
 manage_dirs_pattern(zotero_t, zotero_home_t, zotero_home_t)
 mmap_manage_files_pattern(zotero_t, zotero_home_t, zotero_home_t)
 manage_lnk_files_pattern(zotero_t, zotero_home_t, zotero_home_t)
@@ -38,10 +32,6 @@ manage_dirs_pattern(zotero_t, zotero_tmp_t, zotero_tmp_t)
 manage_files_pattern(zotero_t, zotero_tmp_t, zotero_tmp_t)
 manage_lnk_files_pattern(zotero_t, zotero_tmp_t, zotero_tmp_t)
 files_tmp_filetrans(zotero_t, zotero_tmp_t, { dir file }, "zotero")
-
-manage_dirs_pattern(zotero_t, zotero_install_t, zotero_install_t)
-manage_files_pattern(zotero_t, zotero_install_t, zotero_install_t)
-manage_lnk_files_pattern(zotero_t, zotero_install_t, zotero_install_t)
 
 gen_require(`
 	type dolphin_exec_t;
@@ -75,6 +65,7 @@ files_read_etc_files(zotero_t)
 files_read_usr_files(zotero_t)
 files_map_usr_files(zotero_t)
 files_exec_usr_files(zotero_t)
+files_list_usr(zotero_t)
 corecmd_exec_bin(zotero_t)
 corecmd_search_bin(zotero_t)
 corenet_tcp_bind_all_unreserved_ports(zotero_t)
@@ -153,6 +144,12 @@ allow zotero_t self:user_namespace create;
 
 dontaudit zotero_t { etc_t root_t usr_t xdg_data_t }:dir watch;
 dontaudit zotero_t { var_t var_lib_t }:dir read;
+# The built-in updater tries to stage updates in place under the install
+# tree (~/.local/opt/zotero, labeled usr_t) -- e.g. writing .parentlock.
+# Self-update-in-place is not something we grant; block it quietly rather
+# than widen write access to usr_t, which is shared by most of /usr.
+dontaudit zotero_t usr_t:dir write;
+dontaudit zotero_t usr_t:file write;
 dontaudit zotero_t user_home_t:file read;
 dontaudit zotero_t mozilla_exec_t:file execute;
 dontaudit zotero_t dolphin_exec_t:file execute;
@@ -160,9 +157,9 @@ dontaudit zotero_t pcscd_runtime_t:dir search;
 dontaudit zotero_t tpm2_pkcs11_home_t:dir search;
 dontaudit zotero_t thunderbird_exec_t:file execute;
 
-# Zotero's updater shells out to bash to finish applying an update (matches
-# the .parentlock/install-dir writes above -- classic Mozilla-style updater
-# behavior).
+# Zotero's updater shells out to bash to finish applying an update -- classic
+# Mozilla-style updater behavior, even though the in-place install-dir writes
+# themselves are dontaudited above.
 corecmd_exec_shell(zotero_t)
 
 # Same PulseAudio client access already granted to chromium_t.

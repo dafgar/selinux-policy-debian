@@ -1,5 +1,5 @@
-HOME_DIR/\.local/opt/zotero(/.*)?	-d	gen_context(system_u:object_r:zotero_install_t,s0)
-HOME_DIR/\.local/opt/zotero(/.*)?	--	gen_context(system_u:object_r:zotero_install_t,s0)
+HOME_DIR/\.local/opt/zotero/zotero		--	gen_context(system_u:object_r:zotero_exec_t,s0)
+HOME_DIR/\.local/opt/zotero/zotero-bin		--	gen_context(system_u:object_r:zotero_exec_t,s0)
 HOME_DIR/\.zotero(/.*)?		gen_context(system_u:object_r:zotero_home_t,s0)
 HOME_DIR/\.cache/zotero(/.*)?	gen_context(system_u:object_r:zotero_xdg_cache_t,s0)
 /tmp/zotero(/.*)?			gen_context(system_u:object_r:zotero_tmp_t,s0)
