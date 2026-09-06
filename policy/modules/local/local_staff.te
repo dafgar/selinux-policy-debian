@@ -18,6 +18,7 @@ gen_require(`
 	type systemsettings_t;
 	type ssh_home_t;
 	type tmp_t;
+	type user_devpts_t;
 	type xdm_tmp_t;
 ')
 
@@ -135,6 +136,9 @@ local_code_git_client(staff)
 
 # The systemd tty password agent may inherit the invoking sudo session tty fd.
 systemd_use_passwd_agent_fds(staff_sudo_t)
+
+# sudo's tty-ticket/password-prompt locking on its own controlling terminal.
+allow staff_sudo_t user_devpts_t:chr_file lock;
 
 # After a TTY login followed by sudo, logind can retain a sudo-owned inherited
 # fd while managing session/seat state; without this, switching back to the
