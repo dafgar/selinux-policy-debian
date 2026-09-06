@@ -121,6 +121,13 @@ template(`konsole_role',`
 	# X11/Wayland connectto below.
 	allow $1_konsole_t $1_dbusd_t:unix_stream_socket connectto;
 
+	# The connectto above only covers the socket object; actually speaking on
+	# it (starting with the Hello handshake every client sends right after
+	# connecting) needs the dbus send_msg class permission in both
+	# directions.
+	allow $1_konsole_t $1_dbusd_t:dbus send_msg;
+	allow $1_dbusd_t $1_konsole_t:dbus send_msg;
+
 	# Konsole is an X11/Wayland client; the display socket is owned by $2
 	# (the compositor/Xwayland runs as the user domain on this desktop, not a
 	# dedicated xserver_t). See local_evince_x11_connect for the same pattern
