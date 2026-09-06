@@ -11,6 +11,9 @@ role powerdevil_roles types powerdevil_t;
 allow powerdevil_t self:fifo_file { read write };
 # AC/lid/battery hotplug fallback via kernel uevents
 allow powerdevil_t self:netlink_kobject_uevent_socket read;
+# Qt render-thread priority tuning and internal thread signaling, same pair
+# other Qt/KDE domains in this repo allow for themselves.
+allow powerdevil_t self:process { getsched signal };
 
 auth_use_nsswitch(powerdevil_t)
 dbus_all_session_bus_client(powerdevil_t)
@@ -24,6 +27,8 @@ systemd_use_logind_fds(powerdevil_t)
 files_read_usr_files(powerdevil_t)
 files_map_usr_files(powerdevil_t)
 miscfiles_read_localization(powerdevil_t)
+miscfiles_read_fonts(powerdevil_t)
+xserver_use_user_fonts(powerdevil_t)
 xdg_search_config_dirs(powerdevil_t)
 xdg_search_data_dirs(powerdevil_t)
 userdom_search_user_runtime(powerdevil_t)

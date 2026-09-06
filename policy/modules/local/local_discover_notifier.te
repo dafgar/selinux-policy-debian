@@ -15,6 +15,8 @@ systemd_dbus_chat_logind(discover_notifier_t)
 files_read_usr_files(discover_notifier_t)
 files_map_usr_files(discover_notifier_t)
 miscfiles_read_localization(discover_notifier_t)
+miscfiles_read_fonts(discover_notifier_t)
+xserver_use_user_fonts(discover_notifier_t)
 userdom_search_user_runtime(discover_notifier_t)
 
 # glib g_get_boot_id() / machine-id fallback
@@ -42,3 +44,5 @@ fs_getattr_all_fs(discover_notifier_t)
 
 # glib thread pool sched_getparam() on its own threads
 dontaudit discover_notifier_t self:process getsched;
+# Internal thread signaling.
+allow discover_notifier_t self:process signal;
