@@ -73635,7 +73635,30 @@ Role allowed access to the XDG desktop portal domain.
 </summary>
 </param>
 </interface>
-<interface name="local_xdg_desktop_portal_systemd_inherit" lineno="48">
+<interface name="local_xdg_desktop_portal_dbus_chat" lineno="49">
+<summary>
+Allow the XDG desktop portal to exchange D-Bus messages with a
+desktop-owned domain (e.g. the client that invoked it, for property
+queries and method returns).
+</summary>
+<param name="peer_domain">
+<summary>
+Domain to exchange messages with.
+</summary>
+</param>
+</interface>
+<interface name="local_xdg_desktop_portal_publish_bus_name" lineno="70">
+<summary>
+Allow the XDG desktop portal to publish its D-Bus service
+(org.freedesktop.portal.Desktop) on the per-role session bus.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session D-Bus domain.
+</summary>
+</param>
+</interface>
+<interface name="local_xdg_desktop_portal_systemd_inherit" lineno="91">
 <summary>
 Allow a user systemd instance to launch the XDG desktop portal with
 the usual inherited-exec process bits.
@@ -73667,7 +73690,30 @@ Role allowed access to the XDG document portal domain.
 </summary>
 </param>
 </interface>
-<interface name="local_xdg_document_portal_systemd_inherit" lineno="48">
+<interface name="local_xdg_document_portal_dbus_chat" lineno="49">
+<summary>
+Allow the XDG document portal to exchange D-Bus messages with a
+desktop-owned domain (e.g. the client that invoked it, for property
+queries and method returns).
+</summary>
+<param name="peer_domain">
+<summary>
+Domain to exchange messages with.
+</summary>
+</param>
+</interface>
+<interface name="local_xdg_document_portal_publish_bus_name" lineno="70">
+<summary>
+Allow the XDG document portal to publish its D-Bus service
+(org.freedesktop.portal.Documents) on the per-role session bus.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session D-Bus domain.
+</summary>
+</param>
+</interface>
+<interface name="local_xdg_document_portal_systemd_inherit" lineno="91">
 <summary>
 Allow a user systemd instance to launch the XDG document portal with the
 usual inherited-exec process bits.
