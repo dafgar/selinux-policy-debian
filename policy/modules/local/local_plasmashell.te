@@ -29,6 +29,12 @@ allow plasmashell_t chromium_t:fd use;
 allow plasmashell_t mozilla_t:fifo_file write;
 read_files_pattern(plasmashell_t, chromium_tmp_t, chromium_tmp_t)
 
+# Chromium queries Plasma's notification daemon capabilities
+# (org.freedesktop.Notifications.GetCapabilities) for HTML5 notification
+# support.
+allow chromium_t plasmashell_t:dbus send_msg;
+allow plasmashell_t chromium_t:dbus send_msg;
+
 
 # Plasma writes its own config directly (plasmashellrc, plasma-*-appletsrc)
 # and KConfig's atomic-save lockfile dance happens straight in ~/.config
