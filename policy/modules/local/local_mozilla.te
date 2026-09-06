@@ -23,6 +23,7 @@ pcscd_stream_connect(mozilla_t)
 # user session: read dconf/GTK settings, XKB data, and its cgroup state.
 gnome_mmap_read_xdg_config_files(mozilla_t)
 gnome_watch_xdg_config_dirs(mozilla_t)
+local_kde_read_config_files(mozilla_t)
 xserver_read_xkb_libs(mozilla_t)
 fs_search_cgroup_dirs(mozilla_t)
 fs_read_cgroup_files(mozilla_t)

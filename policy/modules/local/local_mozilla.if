@@ -41,6 +41,24 @@ interface(`local_mozilla_gvfs_dbus_chat',`
 
 ########################################
 ## <summary>
+##	Allow Firefox to connect to a role's session Wayland compositor socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session's Wayland socket.
+##	</summary>
+## </param>
+#
+interface(`local_mozilla_wayland_connect',`
+	gen_require(`
+		type mozilla_t;
+	')
+
+	local_$1_wayland_connect(mozilla_t)
+')
+
+########################################
+## <summary>
 ##	Allow a window-manager domain to map Firefox tmpfs buffers.
 ## </summary>
 ## <param name="wm_domain">
@@ -56,4 +74,45 @@ interface(`local_mozilla_wm_tmpfs_map',`
 	')
 
 	allow $1 mozilla_tmpfs_t:file map;
+')
+
+########################################
+## <summary>
+##	Allow a domain to read/write Firefox's MIT-SHM segment, e.g. the X
+##	server attaching to a shared-memory image passed via XShmAttach.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_mozilla_shm',`
+	gen_require(`
+		type mozilla_t;
+	')
+
+	allow $1 mozilla_t:shm rw_shm_perms;
+')
+
+########################################
+## <summary>
+##	Allow a domain to read the process state (/proc/pid) of Firefox, e.g.
+##	Xwayland reading a connecting client's cmdline for client
+##	identification.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_mozilla_read_proc_state',`
+	gen_require(`
+		type mozilla_t;
+	')
+
+	allow $1 mozilla_t:dir list_dir_perms;
+	read_files_pattern($1, mozilla_t, mozilla_t)
+	read_lnk_files_pattern($1, mozilla_t, mozilla_t)
 ')
