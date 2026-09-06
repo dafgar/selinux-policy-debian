@@ -36,6 +36,49 @@ interface(`xdg_desktop_portal_role',`
 
 ########################################
 ## <summary>
+##	Allow the XDG desktop portal to exchange D-Bus messages with a
+##	desktop-owned domain (e.g. the client that invoked it, for property
+##	queries and method returns).
+## </summary>
+## <param name="peer_domain">
+##	<summary>
+##	Domain to exchange messages with.
+##	</summary>
+## </param>
+#
+interface(`local_xdg_desktop_portal_dbus_chat',`
+	gen_require(`
+		type xdg_desktop_portal_t;
+		class dbus send_msg;
+	')
+
+	allow xdg_desktop_portal_t $1:dbus send_msg;
+	allow $1 xdg_desktop_portal_t:dbus send_msg;
+')
+
+########################################
+## <summary>
+##	Allow the XDG desktop portal to publish its D-Bus service
+##	(org.freedesktop.portal.Desktop) on the per-role session bus.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session D-Bus domain.
+##	</summary>
+## </param>
+#
+interface(`local_xdg_desktop_portal_publish_bus_name',`
+	gen_require(`
+		type xdg_desktop_portal_t;
+		type $1_dbusd_t;
+		class dbus acquire_svc;
+	')
+
+	allow xdg_desktop_portal_t $1_dbusd_t:dbus acquire_svc;
+')
+
+########################################
+## <summary>
 ##	Allow a user systemd instance to launch the XDG desktop portal with
 ##	the usual inherited-exec process bits.
 ## </summary>
