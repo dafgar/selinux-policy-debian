@@ -21,6 +21,8 @@ userdom_search_user_runtime(discover_notifier_t)
 
 # glib g_get_boot_id() / machine-id fallback
 kernel_read_kernel_sysctls(discover_notifier_t)
+# /proc/stat (glib GIO / Qt process-state probing).
+kernel_read_system_state(discover_notifier_t)
 
 # reads ~/.config/kdeglobals, ~/.config/kdedefaults/kdeglobals for Qt/KDE
 # theming.

@@ -37,6 +37,10 @@ userdom_search_user_runtime(powerdevil_t)
 # DRM connectors' i2c buses and the i2c device nodes themselves
 dev_read_sysfs(powerdevil_t)
 term_getattr_unallocated_ttys(powerdevil_t)
+# /proc/filesystems (glib GIO checking available filesystem types).
+kernel_read_system_state(powerdevil_t)
+# /sbin -> /usr/sbin merged-usr symlink readlink.
+corecmd_search_bin(powerdevil_t)
 logging_send_syslog_msg(powerdevil_t)
 xdg_read_cache_files(powerdevil_t)
 local_kde_read_config_files(powerdevil_t)
