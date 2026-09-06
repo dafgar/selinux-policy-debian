@@ -72699,7 +72699,19 @@ the Konsole domain.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_dbus_chat" lineno="313">
+<interface name="local_konsole_publish_bus_name" lineno="312">
+<summary>
+Allow Konsole to publish its per-instance D-Bus service name
+(org.kde.konsole-<pid>) on the role's session bus.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns both the session D-Bus domain and the
+Konsole domain.
+</summary>
+</param>
+</interface>
+<interface name="local_konsole_dbus_chat" lineno="338">
 <summary>
 Allow Konsole to exchange D-Bus messages with a desktop-owned domain
 (e.g. xdg-desktop-portal's Settings interface for theme detection).
@@ -72715,7 +72727,7 @@ Domain to exchange messages with.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_systemd_inherit" lineno="335">
+<interface name="local_konsole_systemd_inherit" lineno="360">
 <summary>
 Allow Konsole to inherit a stream socket fd from the user systemd
 instance during launch, like other user-session applications.

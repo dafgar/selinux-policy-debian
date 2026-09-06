@@ -292,6 +292,31 @@ interface(`local_konsole_systemd_dbus_chat',`
 	')
 
 	systemd_user_manager_dbus_chat($1, $1_konsole_t)
+	# Konsole scopes each new shell session into its own systemd --user
+	# transient unit (StartTransientUnit), for per-tab cgroup isolation.
+	systemd_user_manager_system_start($1, $1_konsole_t)
+')
+
+########################################
+## <summary>
+##	Allow Konsole to publish its per-instance D-Bus service name
+##	(org.kde.konsole-<pid>) on the role's session bus.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns both the session D-Bus domain and the
+##	Konsole domain.
+##	</summary>
+## </param>
+#
+interface(`local_konsole_publish_bus_name',`
+	gen_require(`
+		type $1_konsole_t;
+		type $1_dbusd_t;
+		class dbus acquire_svc;
+	')
+
+	allow $1_konsole_t $1_dbusd_t:dbus acquire_svc;
 ')
 
 ########################################

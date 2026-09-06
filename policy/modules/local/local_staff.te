@@ -102,6 +102,7 @@ konsole_role(staff, staff_t, staff_application_exec_domain, staff_r)
 local_konsole_systemd_dbus_chat(staff)
 local_konsole_dbus_chat(staff, staff_t)
 local_konsole_dbus_chat(staff, xdg_desktop_portal_t)
+local_konsole_publish_bus_name(staff)
 # Transition into the base-policy ping domain instead of granting icmp_socket
 # use directly on staff_t.
 netutils_run_ping(staff_t, staff_r)
