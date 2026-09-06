@@ -41,6 +41,7 @@ template(`konsole_role',`
 		type $2;
 		type $1_dbusd_t;
 		type $1_sudo_t;
+		type $1_xwayland_t;
 	')
 
 	type $1_konsole_t;
@@ -128,22 +129,29 @@ template(`konsole_role',`
 	allow $1_konsole_t $1_dbusd_t:dbus send_msg;
 	allow $1_dbusd_t $1_konsole_t:dbus send_msg;
 
-	# Konsole is an X11/Wayland client; the display socket is owned by $2
-	# (the compositor/Xwayland runs as the user domain on this desktop, not a
-	# dedicated xserver_t). See local_evince_x11_connect for the same pattern
-	# on a domain that only gets $3 (the attribute) instead of $2 directly.
-	allow $1_konsole_t $2:unix_stream_socket connectto;
-
-	# The connectto above only covers the socket object; the wayland-0
-	# socket path itself lives under generic user_tmp_t, so opening it also
-	# needs write on the socket file. Same fix local_evince.te already
-	# applies for the identical reason (see its userdom_write_user_tmp_sockets
-	# call).
-	userdom_write_user_tmp_sockets($1_konsole_t)
+	# Konsole is a native Wayland client of the session compositor socket
+	# (staff_wayland_socket_t, per the display-socket split -- not generic
+	# user_tmp_t like this comment used to say before that split).
+	local_$1_wayland_connect($1_konsole_t)
 
 	# Xwayland auth: Konsole reads its XAUTHORITY cookie, a mkstemp() file
 	# also under generic user_tmp_t.
 	userdom_read_user_tmp_files($1_konsole_t)
+
+	# Qt/QPA XCB MIT-SHM extension (shared-memory pixmap transport). Same
+	# set local_evince.te/local_gkrellm.te already allow.
+	allow $1_konsole_t self:shm create_shm_perms;
+
+	# QXcbEventQueue receiving a DRI3 GPU render-node fd (/dev/dri/renderD128)
+	# handed off by Xwayland for accelerated rendering.
+	allow $1_konsole_t $1_xwayland_t:fd use;
+
+	# Xwayland reading Konsoles /proc/<pid>/cmdline for _NET_WM_PID-style
+	# client identification, same pattern as local_powerdevil_read_proc_state/
+	# local_discover_notifier_read_proc_state.
+	allow $1_xwayland_t $1_konsole_t:dir list_dir_perms;
+	read_files_pattern($1_xwayland_t, $1_konsole_t, $1_konsole_t)
+	read_lnk_files_pattern($1_xwayland_t, $1_konsole_t, $1_konsole_t)
 
 	# Opening a new terminal session registers it with logind
 	# (CreateSessionWithPIDFD) over the system bus.
