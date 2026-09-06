@@ -179,7 +179,10 @@ template(`konsole_role',`
 	xserver_rw_mesa_shader_cache($1_konsole_t)
 	dev_rw_dri($1_konsole_t)
 	dev_read_sysfs($1_konsole_t)
-	allow $1_konsole_t self:process execmem;
+
+	tunable_policy(`konsole_execmem',`
+		allow $1_konsole_t self:process execmem;
+	')
 
 	# kwin shared keyboard-layout memfd, same grant local_safeeyes.te
 	# already has for the identical Wayland client buffer.

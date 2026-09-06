@@ -72815,7 +72815,7 @@ Role allowed access.
 </summary>
 </param>
 </template>
-<interface name="local_konsole_role" lineno="290">
+<interface name="local_konsole_role" lineno="293">
 <summary>
 Wire up all of a role extra Konsole grants beyond the base role
 template: systemd --user manager D-Bus chat, D-Bus chat with the role
@@ -72828,7 +72828,7 @@ systemd/D-Bus session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_systemd_dbus_chat" lineno="313">
+<interface name="local_konsole_systemd_dbus_chat" lineno="316">
 <summary>
 Allow Konsole (and anything launched from it, e.g. systemctl --user)
 to chat over D-Bus with the per-role systemd --user manager.
@@ -72840,7 +72840,7 @@ the Konsole domain.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_publish_bus_name" lineno="336">
+<interface name="local_konsole_publish_bus_name" lineno="339">
 <summary>
 Allow Konsole to publish its per-instance D-Bus service name
 (org.kde.konsole-PID) on the role's session bus.
@@ -72852,7 +72852,7 @@ Konsole domain.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_dbus_chat" lineno="362">
+<interface name="local_konsole_dbus_chat" lineno="365">
 <summary>
 Allow Konsole to exchange D-Bus messages with a desktop-owned domain
 (e.g. xdg-desktop-portal's Settings interface for theme detection).
@@ -72868,7 +72868,7 @@ Domain to exchange messages with.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_systemd_inherit" lineno="384">
+<interface name="local_konsole_systemd_inherit" lineno="387">
 <summary>
 Allow Konsole to inherit a stream socket fd from the user systemd
 instance during launch, like other user-session applications.
@@ -72880,6 +72880,16 @@ the Konsole domain.
 </summary>
 </param>
 </interface>
+<tunable name="konsole_execmem" dftval="false">
+<desc>
+<p>
+Allow Konsole to make its stack/heap memory executable. Shared across
+every role's konsole_role() instantiation rather than per-role, since
+Konsole itself (not the role prefix) is what determines whether this is
+needed.
+</p>
+</desc>
+</tunable>
 </module>
 <module name="local_kscreenlocker" filename="policy/modules/local/local_kscreenlocker.if">
 <summary>
