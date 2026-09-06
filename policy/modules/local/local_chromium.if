@@ -4,6 +4,26 @@
 
 ########################################
 ## <summary>
+## Wire up all of a role's access to/from Chromium: PipeWire Pulse
+## connect, Wayland compositor connect, MPRIS publish, and gvfs
+## dbus_chat.
+## </summary>
+## <param name="role_prefix">
+## <summary>
+## User role prefix that owns the PipeWire/Wayland/gvfs session
+## resources.
+## </summary>
+## </param>
+#
+interface(`local_chromium_role',`
+	local_chromium_pipewire_pulse_connect($1)
+	local_chromium_wayland_connect($1)
+	local_chromium_mpris_publish($1)
+	local_chromium_gvfs_dbus_chat($1)
+')
+
+########################################
+## <summary>
 ## Allow Chromium to connect to the PulseAudio-compatible PipeWire socket for
 ## a given role prefix.
 ## </summary>
