@@ -25,6 +25,11 @@ corecmd_getattr_bin_files(rsibreak_t)
 corecmd_search_bin(rsibreak_t)
 dbus_all_session_bus_client(rsibreak_t)
 dbus_write_session_runtime_socket(rsibreak_t)
+
+# StatusNotifierItem tray icon (tooltip/icon updates), the break-notification
+# popup (org.freedesktop.Notifications, hosted by plasmashell), and the
+# full-screen break overlay's use of org.kde.PlasmaShell's dashboard mode.
+local_plasmashell_dbus_chat(rsibreak_t)
 dev_read_sysfs(rsibreak_t)
 dev_rw_dma_dev(rsibreak_t)
 dev_rw_dri(rsibreak_t)

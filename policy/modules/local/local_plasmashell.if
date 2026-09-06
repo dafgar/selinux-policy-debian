@@ -55,6 +55,27 @@ interface(`local_plasmashell_systemd_inherit',`
 
 ########################################
 ## <summary>
+##	Send and receive D-Bus messages with PlasmaShell, e.g. a
+##	StatusNotifierItem tray icon or the Notifications/PlasmaShell dashboard
+##	interfaces.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to exchange D-Bus messages with PlasmaShell.
+##	</summary>
+## </param>
+#
+interface(`local_plasmashell_dbus_chat',`
+	gen_require(`
+		type plasmashell_t;
+	')
+
+	allow $1 plasmashell_t:dbus send_msg;
+	allow plasmashell_t $1:dbus send_msg;
+')
+
+########################################
+## <summary>
 ##	Allow a domain to read/write plasmashell's fifo pipes, e.g. kwin_wayland
 ##	signaling plasmashell over an anonymous pipe.
 ## </summary>
