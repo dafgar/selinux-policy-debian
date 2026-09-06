@@ -78,6 +78,7 @@ interface(`local_zotero_role',`
 	local_zotero_read_home_content($1_t)
 	local_zotero_publish_bus_name($1)
 	local_zotero_read_proc_state($1_xwayland_t)
+	local_zotero_gvfs_dbus_chat($1)
 ')
 
 ########################################
@@ -116,6 +117,25 @@ interface(`local_zotero_dbus_chat',`
 
 	allow zotero_t $1:dbus send_msg;
 	allow $1 zotero_t:dbus send_msg;
+')
+
+########################################
+## <summary>
+##	Allow Zotero to query gvfs for mountable locations from its file
+##	picker, for a given role prefix.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the gvfs domain.
+##	</summary>
+## </param>
+#
+interface(`local_zotero_gvfs_dbus_chat',`
+	gen_require(`
+		type zotero_t;
+	')
+
+	local_gvfs_dbus_chat($1, zotero_t)
 ')
 
 ########################################
