@@ -45,6 +45,7 @@ gen_require(`
 	type systemd_machined_runtime_t;
 	type system_dbusd_runtime_t;
 	type syslogd_runtime_t;
+	type sysctl_kernel_t;
 	type tpm2_pkcs11_home_t;
 	type thunderbird_exec_t;
 	type tmpfs_t;
@@ -124,7 +125,7 @@ allow zotero_t session_dbusd_runtime_t:sock_file getattr;
 allow zotero_t syslogd_runtime_t:dir search;
 dontaudit zotero_t random_device_t:chr_file getattr;
 dontaudit zotero_t systemd_machined_runtime_t:dir search;
-allow zotero_t tmpfs_t:dir search;
+allow zotero_t tmpfs_t:dir { search read };
 allow zotero_t tmpfs_t:file open;
 allow zotero_t tmpfs_t:file { read map write };
 # MozillaUpdateLock-* is created under /tmp with a variable name, so keep the
@@ -136,6 +137,9 @@ allow zotero_t self:process { execmem getsched setcap setsched signal };
 allow zotero_t self:unix_dgram_socket create_socket_perms;
 allow zotero_t self:unix_stream_socket connectto;
 allow zotero_t self:cap_userns { sys_admin sys_chroot };
+# Qt/QPA XCB MIT-SHM extension (shared-memory pixmap transport), same as the
+# Renderer process's own IPC shm segments.
+allow zotero_t self:shm create_shm_perms;
 allow zotero_t self:tcp_socket create_socket_perms;
 allow zotero_t self:tcp_socket listen;
 allow zotero_t self:tcp_socket { connect getopt };
@@ -156,6 +160,14 @@ dontaudit zotero_t dolphin_exec_t:file execute;
 dontaudit zotero_t pcscd_runtime_t:dir search;
 dontaudit zotero_t tpm2_pkcs11_home_t:dir search;
 dontaudit zotero_t thunderbird_exec_t:file execute;
+# kdialog/kfmclient (spawned by Zotero for native KDE dialogs/URL-open) try to
+# create their own first-run rc files (e.g. kcminputrc) directly under
+# ~/.config; that's KDE-helper state, not Zotero's, so mute rather than widen
+# write access to xdg_config_t, which is shared by most app configs.
+dontaudit zotero_t xdg_config_t:dir write;
+dontaudit zotero_t xdg_config_t:file write;
+# Same helpers probe /proc/sys/kernel; harmless read-only sysctl probing.
+dontaudit zotero_t sysctl_kernel_t:dir search;
 
 # Zotero's updater shells out to bash to finish applying an update -- classic
 # Mozilla-style updater behavior, even though the in-place install-dir writes
@@ -163,7 +175,7 @@ dontaudit zotero_t thunderbird_exec_t:file execute;
 corecmd_exec_shell(zotero_t)
 
 # Same PulseAudio client access already granted to chromium_t.
-allow zotero_t pulseaudio_tmp_t:dir read;
+allow zotero_t pulseaudio_tmp_t:dir { read open };
 local_pipewire_pulse_read_cookie(zotero_t)
 # Unlike the read above, deleting PulseAudio's own runtime dir isn't normal
 # client behavior -- chromium_t doesn't need this either. Mute until there's

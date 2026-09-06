@@ -74374,7 +74374,7 @@ resources.
 </summary>
 </param>
 </interface>
-<interface name="local_zotero_stream_connect" lineno="94">
+<interface name="local_zotero_stream_connect" lineno="97">
 <summary>
 Allow Zotero to connect to a desktop-owned stream socket.
 </summary>
@@ -74384,7 +74384,7 @@ Domain owning the peer socket.
 </summary>
 </param>
 </interface>
-<interface name="local_zotero_dbus_chat" lineno="112">
+<interface name="local_zotero_dbus_chat" lineno="115">
 <summary>
 Allow Zotero to chat with a desktop-owned D-Bus service.
 </summary>
@@ -74394,7 +74394,7 @@ Domain owning the D-Bus service.
 </summary>
 </param>
 </interface>
-<interface name="local_zotero_gvfs_dbus_chat" lineno="133">
+<interface name="local_zotero_gvfs_dbus_chat" lineno="136">
 <summary>
 Allow Zotero to query gvfs for mountable locations from its file
 picker, for a given role prefix.
@@ -74405,7 +74405,7 @@ User role prefix that owns the gvfs domain.
 </summary>
 </param>
 </interface>
-<interface name="local_zotero_publish_bus_name" lineno="152">
+<interface name="local_zotero_publish_bus_name" lineno="155">
 <summary>
 Allow Zotero to publish its single-instance remote-control D-Bus
 service (org.mozilla.zotero.*) on the per-role session bus.
@@ -74416,7 +74416,7 @@ User role prefix that owns the session D-Bus domain.
 </summary>
 </param>
 </interface>
-<interface name="local_zotero_read_home_content" lineno="173">
+<interface name="local_zotero_read_home_content" lineno="176">
 <summary>
 Allow a domain to read documents stored under Zotero's home content
 (e.g. a viewer opening a PDF from Zotero's attachment storage).
@@ -74427,7 +74427,7 @@ Domain allowed read access.
 </summary>
 </param>
 </interface>
-<interface name="local_zotero_read_proc_state" lineno="196">
+<interface name="local_zotero_read_proc_state" lineno="199">
 <summary>
 Allow a domain to read Zotero's /proc state (e.g. Xwayland looking up
 a client's cmdline for window properties).
@@ -74435,6 +74435,29 @@ a client's cmdline for window properties).
 <param name="domain">
 <summary>
 Domain allowed read access.
+</summary>
+</param>
+</interface>
+<interface name="local_zotero_wayland_connect" lineno="219">
+<summary>
+Allow Zotero to connect to a peer's Wayland compositor socket, for a
+given role prefix.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Wayland compositor socket.
+</summary>
+</param>
+</interface>
+<interface name="local_zotero_use_xwayland_fd" lineno="239">
+<summary>
+Allow Zotero to use a fd handed to it by Xwayland, e.g. QXcbEventQueue
+receiving a DRI3 GPU render-node fd (/dev/dri/renderD128) for
+accelerated rendering.
+</summary>
+<param name="domain">
+<summary>
+Xwayland domain handing off the fd.
 </summary>
 </param>
 </interface>

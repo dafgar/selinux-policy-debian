@@ -79,6 +79,9 @@ interface(`local_zotero_role',`
 	local_zotero_publish_bus_name($1)
 	local_zotero_read_proc_state($1_xwayland_t)
 	local_zotero_gvfs_dbus_chat($1)
+	local_kde_read_config_files(zotero_t)
+	local_zotero_wayland_connect($1)
+	local_zotero_use_xwayland_fd($1_xwayland_t)
 ')
 
 ########################################
@@ -200,4 +203,43 @@ interface(`local_zotero_read_proc_state',`
 
 	allow $1 zotero_t:dir list_dir_perms;
 	read_files_pattern($1, zotero_t, zotero_t)
+')
+
+########################################
+## <summary>
+##	Allow Zotero to connect to a peer's Wayland compositor socket, for a
+##	given role prefix.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Wayland compositor socket.
+##	</summary>
+## </param>
+#
+interface(`local_zotero_wayland_connect',`
+	gen_require(`
+		type zotero_t;
+	')
+
+	local_$1_wayland_connect(zotero_t)
+')
+
+########################################
+## <summary>
+##	Allow Zotero to use a fd handed to it by Xwayland, e.g. QXcbEventQueue
+##	receiving a DRI3 GPU render-node fd (/dev/dri/renderD128) for
+##	accelerated rendering.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Xwayland domain handing off the fd.
+##	</summary>
+## </param>
+#
+interface(`local_zotero_use_xwayland_fd',`
+	gen_require(`
+		type zotero_t;
+	')
+
+	allow zotero_t $1:fd use;
 ')
