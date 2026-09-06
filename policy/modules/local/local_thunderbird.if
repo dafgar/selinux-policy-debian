@@ -41,6 +41,66 @@ interface(`local_thunderbird_gvfs_dbus_chat',`
 
 ########################################
 ## <summary>
+##	Allow Thunderbird to connect to a role's session Wayland compositor
+##	socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session's Wayland socket.
+##	</summary>
+## </param>
+#
+interface(`local_thunderbird_wayland_connect',`
+	gen_require(`
+		type thunderbird_t;
+	')
+
+	local_$1_wayland_connect(thunderbird_t)
+')
+
+########################################
+## <summary>
+##	Allow a domain to read/write Thunderbird's MIT-SHM segment, e.g. the X
+##	server attaching to a shared-memory image passed via XShmAttach.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_thunderbird_shm',`
+	gen_require(`
+		type thunderbird_t;
+	')
+
+	allow $1 thunderbird_t:shm rw_shm_perms;
+')
+
+########################################
+## <summary>
+##	Allow a domain to read the process state (/proc/pid) of Thunderbird,
+##	e.g. Xwayland reading a connecting client's cmdline for client
+##	identification.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_thunderbird_read_proc_state',`
+	gen_require(`
+		type thunderbird_t;
+	')
+
+	allow $1 thunderbird_t:dir list_dir_perms;
+	read_files_pattern($1, thunderbird_t, thunderbird_t)
+	read_lnk_files_pattern($1, thunderbird_t, thunderbird_t)
+')
+
+########################################
+## <summary>
 ##	Allow a PipeWire domain to inspect Thunderbird through /proc.
 ## </summary>
 ## <param name="role_prefix">

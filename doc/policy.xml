@@ -73657,7 +73657,41 @@ User role prefix that owns the gvfs domain.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_pipewire_process_lookup" lineno="52">
+<interface name="local_thunderbird_wayland_connect" lineno="53">
+<summary>
+Allow Thunderbird to connect to a role's session Wayland compositor
+socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session's Wayland socket.
+</summary>
+</param>
+</interface>
+<interface name="local_thunderbird_shm" lineno="72">
+<summary>
+Allow a domain to read/write Thunderbird's MIT-SHM segment, e.g. the X
+server attaching to a shared-memory image passed via XShmAttach.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="local_thunderbird_read_proc_state" lineno="92">
+<summary>
+Allow a domain to read the process state (/proc/pid) of Thunderbird,
+e.g. Xwayland reading a connecting client's cmdline for client
+identification.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="local_thunderbird_pipewire_process_lookup" lineno="112">
 <summary>
 Allow a PipeWire domain to inspect Thunderbird through /proc.
 </summary>
@@ -73667,7 +73701,7 @@ User role prefix that owns the PipeWire domain.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_systemd_inherit" lineno="71">
+<interface name="local_thunderbird_systemd_inherit" lineno="131">
 <summary>
 Allow a user systemd instance to launch Thunderbird with the usual
 inherited-exec process bits.
@@ -73678,7 +73712,7 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_publish_bus_name" lineno="89">
+<interface name="local_thunderbird_publish_bus_name" lineno="149">
 <summary>
 Allow Thunderbird to publish its session bus name.
 </summary>
@@ -73688,7 +73722,7 @@ User role prefix that owns the session D-Bus daemon.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_dbus_chat" lineno="108">
+<interface name="local_thunderbird_dbus_chat" lineno="168">
 <summary>
 Allow Thunderbird to chat with a peer desktop service over D-Bus.
 </summary>
@@ -73698,7 +73732,7 @@ Desktop service domain, such as staff_t.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_wm_dontaudit_tmpfs_use" lineno="127">
+<interface name="local_thunderbird_wm_dontaudit_tmpfs_use" lineno="187">
 <summary>
 Dontaudit a WM domain using Thunderbird tmpfs buffers and inherited fds.
 </summary>
@@ -73708,7 +73742,7 @@ Window-manager domain using Thunderbird-owned objects.
 </summary>
 </param>
 </interface>
-<interface name="local_thunderbird_read_tmp_content" lineno="150">
+<interface name="local_thunderbird_read_tmp_content" lineno="210">
 <summary>
 Allow a domain to read attachments Thunderbird staged in its per-pid
 temporary directory (e.g. a viewer opening an attachment Thunderbird

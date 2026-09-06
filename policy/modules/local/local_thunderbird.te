@@ -61,6 +61,7 @@ dontaudit systemd_logind_t thunderbird_t:dbus send_msg;
 
 gnome_mmap_read_xdg_config_files(thunderbird_t)
 gnome_watch_xdg_config_dirs(thunderbird_t)
+local_kde_read_config_files(thunderbird_t)
 
 userdom_search_user_runtime(thunderbird_t)
 userdom_map_user_tmp_files(thunderbird_t)
