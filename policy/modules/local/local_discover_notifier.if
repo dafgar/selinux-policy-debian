@@ -56,6 +56,28 @@ interface(`local_discover_notifier_systemd_inherit',`
 
 ########################################
 ## <summary>
+##	Wire up all of a role extra DiscoverNotifier grants beyond the base
+##	role template: X11 connect, Wayland compositor connect, and the role
+##	Xwayland domain reading process state.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the X11/Wayland/Xwayland session
+##	resources.
+##	</summary>
+## </param>
+#
+interface(`local_discover_notifier_role',`
+	# DiscoverNotifier is an X11 client (via Xwayland) of the session X11
+	# socket, and also probes the Wayland compositor socket directly (Qt QPA
+	# platform detection).
+	local_discover_notifier_x11_connect($1)
+	local_discover_notifier_wayland_connect($1)
+	local_discover_notifier_read_proc_state($1_xwayland_t)
+')
+
+########################################
+## <summary>
 ##	Allow DiscoverNotifier to connect to a role's session X11 socket.
 ## </summary>
 ## <param name="role_prefix">
