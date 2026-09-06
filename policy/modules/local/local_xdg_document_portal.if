@@ -36,6 +36,22 @@ interface(`xdg_document_portal_role',`
 
 ########################################
 ## <summary>
+##	Wire up all of a role extra XDG document portal grants beyond the
+##	base role template: D-Bus chat and bus name publish.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the D-Bus session resources.
+##	</summary>
+## </param>
+#
+interface(`local_xdg_document_portal_role',`
+	local_xdg_document_portal_dbus_chat($1_t)
+	local_xdg_document_portal_publish_bus_name($1)
+')
+
+########################################
+## <summary>
 ##	Allow the XDG document portal to exchange D-Bus messages with a
 ##	desktop-owned domain (e.g. the client that invoked it, for property
 ##	queries and method returns).
