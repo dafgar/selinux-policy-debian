@@ -72334,6 +72334,18 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
+<interface name="local_kde_write_config_files" lineno="40">
+<summary>
+Write shared KDE desktop config files (kdeglobals) and watch the
+kdedefaults directory for changes, e.g. plasmashell's System Settings
+module saving global theme/locale settings.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_kdeconnect" filename="policy/modules/local/local_kdeconnect.if">
 <summary>
@@ -72784,7 +72796,17 @@ PipeWire server domain owning the socket.
 </summary>
 </param>
 </interface>
-<interface name="local_pipewire_rw_tmpfs_files" lineno="62">
+<interface name="local_pipewire_pulse_read_cookie" lineno="62">
+<summary>
+Read the PulseAudio-compatible auth cookie.
+</summary>
+<param name="domain">
+<summary>
+Client domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="local_pipewire_rw_tmpfs_files" lineno="81">
 <summary>
 Read and write PipeWire tmpfs-backed shared files.
 </summary>
@@ -72794,7 +72816,7 @@ Client domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="local_pipewire_use_fds" lineno="87">
+<interface name="local_pipewire_use_fds" lineno="106">
 <summary>
 Use file descriptors inherited from the PipeWire server domain.
 </summary>
@@ -72809,7 +72831,7 @@ PipeWire server domain owning the descriptors.
 </summary>
 </param>
 </interface>
-<template name="pipewire_role" lineno="116">
+<template name="pipewire_role" lineno="135">
 <summary>
 Role access for PipeWire.
 </summary>
@@ -72862,6 +72884,27 @@ inherited-exec process bits.
 <param name="role_prefix">
 <summary>
 User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+<interface name="local_plasmashell_use_fifo" lineno="67">
+<summary>
+Allow a domain to read/write plasmashell's fifo pipes, e.g. kwin_wayland
+signaling plasmashell over an anonymous pipe.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="local_plasmashell_wayland_connect" lineno="85">
+<summary>
+Allow plasmashell to connect to a peer's Wayland compositor socket.
+</summary>
+<param name="domain">
+<summary>
+Domain owning the compositor socket.
 </summary>
 </param>
 </interface>

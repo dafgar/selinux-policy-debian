@@ -5,8 +5,10 @@ gen_require(`
 	type mnemosyne_t;
 	type nsfs_t;
 	type mozilla_t;
+	type plasmashell_t;
 	type staff_dbusd_t;
 	type staff_git_t;
+	type staff_pipewire_t;
 	type staff_sudo_t;
 	type staff_t;
 	type staff_wm_t;
@@ -22,6 +24,14 @@ wireplumber_role(staff, staff_t, staff_application_exec_domain, staff_r)
 zotero_role(staff_application_exec_domain, staff_r)
 evince_role(staff_application_exec_domain, staff_r)
 plasmashell_role(staff_application_exec_domain, staff_r)
+
+# plasmashell is itself a Wayland client of the session's compositor socket
+# and a PulseAudio/pipewire client (volume applet, etc); pipewire-pulse in
+# turn introspects plasmashell's /proc/<pid> like it does for other
+# audio-client app domains.
+local_plasmashell_wayland_connect(staff_t)
+local_pipewire_pulse_stream_connect(plasmashell_t, staff_pipewire_t)
+ps_process_pattern(staff_pipewire_t, plasmashell_t)
 powerdevil_role(staff_application_exec_domain, staff_r)
 local_powerdevil_dbus_chat(staff_t)
 kdeconnect_role(staff_application_exec_domain, staff_r)

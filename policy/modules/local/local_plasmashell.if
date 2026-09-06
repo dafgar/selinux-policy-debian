@@ -50,4 +50,42 @@ interface(`local_plasmashell_systemd_inherit',`
 	')
 
 	local_systemd_inherit_user_service($1, plasmashell_t)
+	allow plasmashell_t $1_systemd_t:unix_stream_socket { getattr ioctl };
+')
+
+########################################
+## <summary>
+##	Allow a domain to read/write plasmashell's fifo pipes, e.g. kwin_wayland
+##	signaling plasmashell over an anonymous pipe.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_plasmashell_use_fifo',`
+	gen_require(`
+		type plasmashell_t;
+	')
+
+	allow $1 plasmashell_t:fifo_file { getattr read write };
+')
+
+########################################
+## <summary>
+##	Allow plasmashell to connect to a peer's Wayland compositor socket.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain owning the compositor socket.
+##	</summary>
+## </param>
+#
+interface(`local_plasmashell_wayland_connect',`
+	gen_require(`
+		type plasmashell_t;
+	')
+
+	allow plasmashell_t $1:unix_stream_socket connectto;
 ')

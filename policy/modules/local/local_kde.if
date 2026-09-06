@@ -24,3 +24,24 @@ interface(`local_kde_read_config_files',`
 
 	userdom_search_user_home_dirs($1)
 ')
+
+########################################
+## <summary>
+##	Write shared KDE desktop config files (kdeglobals) and watch the
+##	kdedefaults directory for changes, e.g. plasmashell's System Settings
+##	module saving global theme/locale settings.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_kde_write_config_files',`
+	gen_require(`
+		type kde_xdg_config_t;
+	')
+
+	allow $1 kde_xdg_config_t:file write;
+	allow $1 kde_xdg_config_t:dir watch;
+')

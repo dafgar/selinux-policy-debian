@@ -16,6 +16,9 @@ local_pipewire_rw_tmpfs_files(staff_wm_t)
 local_mozilla_wm_tmpfs_map(staff_wm_t)
 local_thunderbird_wm_dontaudit_tmpfs_use(staff_wm_t)
 
+# kwin_wayland signals plasmashell over an anonymous pipe.
+local_plasmashell_use_fifo(staff_wm_t)
+
 # kwin_wayland spawns its own embedded rootless Xwayland instance.
 xwayland_role(staff, staff_wm_t, staff_r)
 local_xwayland_wayland_connect(staff, staff_wm_t)

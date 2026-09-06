@@ -51,6 +51,25 @@ interface(`local_pipewire_pulse_stream_connect',`
 
 ########################################
 ## <summary>
+##	Read the PulseAudio-compatible auth cookie.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Client domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_pipewire_pulse_read_cookie',`
+	gen_require(`
+		type pulseaudio_xdg_config_t;
+	')
+
+	allow $1 pulseaudio_xdg_config_t:dir search;
+	allow $1 pulseaudio_xdg_config_t:file { lock open read };
+')
+
+########################################
+## <summary>
 ##	Read and write PipeWire tmpfs-backed shared files.
 ## </summary>
 ## <param name="domain">

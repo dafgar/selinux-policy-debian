@@ -12,7 +12,6 @@ gen_require(`
 	type chromium_t;
 	type chromium_tmp_t;
 	type mozilla_t;
-	type xdg_config_t;
 ')
 
 # Plasma's task-manager/system-monitor applets enumerate every running user
@@ -30,7 +29,23 @@ allow plasmashell_t chromium_t:fd use;
 allow plasmashell_t mozilla_t:fifo_file write;
 read_files_pattern(plasmashell_t, chromium_tmp_t, chromium_tmp_t)
 
-allow plasmashell_t xdg_config_t:file watch;
+
+# Plasma writes its own config directly (plasmashellrc, plasma-*-appletsrc)
+# and KConfig's atomic-save lockfile dance happens straight in ~/.config
+# itself (create+add_name the .lock file, setattr/link/unlink/rename/
+# remove_name the temp file it renames over the target).
+xdg_manage_config(plasmashell_t)
+xdg_watch_config_dirs(plasmashell_t)
+xdg_watch_config_files(plasmashell_t)
+
+# System Settings (plasmashell) is the one thing that actually writes the
+# shared kdeglobals/kdedefaults config that local_kde_read_config_files
+# gives every other KDE/Qt app read-only access to.
+local_kde_write_config_files(plasmashell_t)
+
+# PulseAudio-compatible cookie auth, read by pipewire-pulse's client shim
+# inside plasmashell (e.g. its "threaded-ml" media thread).
+local_pipewire_pulse_read_cookie(plasmashell_t)
 
 kernel_read_system_state(plasmashell_t)
 miscfiles_read_localization(plasmashell_t)
