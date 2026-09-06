@@ -45,6 +45,7 @@ gen_require(`
 	type tmpfs_t;
 	type urandom_device_t;
 	type usb_device_t;
+	type user_tmp_t;
 ')
 
 auth_use_nsswitch(keepassxc_t)
@@ -96,7 +97,7 @@ allow keepassxc_t usb_device_t:chr_file { getattr ioctl open read write };
 # signull backs the SingleApplication/QLockFile stale-lock check: on startup
 # it reads the PID recorded in the lock file and probes kill(pid, 0) to see
 # whether that process is still alive.
-allow keepassxc_t self:process { execmem getsched setsched setrlimit signull };
+allow keepassxc_t self:process { execmem getsched setsched setrlimit signal signull };
 allow keepassxc_t self:fifo_file { getattr read write };
 # A second launch attempt connects to an already-running instance's
 # SingleApplication IPC socket to hand off instead of opening a duplicate.
@@ -117,6 +118,11 @@ allow keepassxc_t tmpfs_t:file open;
 allow keepassxc_t tmpfs_t:file { getattr read map write };
 
 dontaudit keepassxc_t urandom_device_t:chr_file write;
+
+# Per-session MIT-MAGIC-COOKIE xauth file (e.g. xauth_gmOtgU under
+# /run/user/<uid>): Qt's XCB backend reads it while probing the X11
+# platform. Same exact-op tradeoff as local_powerdevil.te.
+allow keepassxc_t user_tmp_t:file read;
 
 # Benign noise: isatty()-style probe on an fd inherited from the launching
 # systemd --user instance (TCGETS ioctl, harmless ENOTTY either way), a

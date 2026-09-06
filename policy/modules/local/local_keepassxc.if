@@ -96,6 +96,47 @@ interface(`local_keepassxc_stream_connect',`
 
 ########################################
 ## <summary>
+##	Allow KeepassXC to connect to a role's session Wayland compositor
+##	socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session's Wayland socket.
+##	</summary>
+## </param>
+#
+interface(`local_keepassxc_wayland_connect',`
+	gen_require(`
+		type keepassxc_t;
+	')
+
+	local_$1_wayland_connect(keepassxc_t)
+')
+
+########################################
+## <summary>
+##	Allow a domain to read KeepassXC's process state (/proc/pid), e.g.
+##	Xwayland reading the cmdline of a connecting X11 client for
+##	_NET_WM_PID-style client identification.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_keepassxc_read_proc_state',`
+	gen_require(`
+		type keepassxc_t;
+	')
+
+	allow $1 keepassxc_t:dir list_dir_perms;
+	read_files_pattern($1, keepassxc_t, keepassxc_t)
+	read_lnk_files_pattern($1, keepassxc_t, keepassxc_t)
+')
+
+########################################
+## <summary>
 ##	Allow KeepassXC to exchange D-Bus messages with a desktop-owned domain
 ##	(e.g. xdg-desktop-portal's Settings interface for theme detection).
 ## </summary>
