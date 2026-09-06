@@ -201,6 +201,12 @@ template(`konsole_role',`
 	# not generic xdg_config_t (see local_kde.if).
 	local_kde_read_config_files($1_konsole_t)
 
+	# Wayland clipboard: when Konsole is the current selection owner, its
+	# WaylandEventThr writes the selection data into a pipe read by the
+	# plasmashell clipboard-history manager. Same interface staff_wm_t uses
+	# for the equivalent kwin_wayland<->plasmashell fifo.
+	local_plasmashell_use_fifo($1_konsole_t)
+
 	# Bookmark manager / SSH-sidebar browsing of the home directory itself,
 	# not just searching into it.
 	userdom_list_user_home_dirs($1_konsole_t)
