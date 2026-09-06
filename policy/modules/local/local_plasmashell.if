@@ -69,6 +69,10 @@ interface(`local_plasmashell_use_fifo',`
 		type plasmashell_t;
 	')
 
+	# The compositor passes the write end of the pipe fd to the copy-source
+	# client over Wayland (SCM_RIGHTS); using an fd created by a different
+	# domain needs fd:use in addition to the fifo_file perms below.
+	allow $1 plasmashell_t:fd use;
 	allow $1 plasmashell_t:fifo_file { getattr read write };
 ')
 
