@@ -2,6 +2,25 @@
 
 #######################################
 ## <summary>
+##	Wire up all of a role's access to/from MPlayer: PipeWire Pulse
+##	connect, and the role's Xwayland domain connecting to X11, reading
+##	MIT-SHM, and reading process state.
+## </summary>
+## <param name="role_prefix">
+## <summary>
+##	User role prefix that owns the PipeWire/Xwayland session resources.
+## </summary>
+## </param>
+#
+interface(`local_mplayer_role',`
+	local_mplayer_pipewire_pulse_connect($1)
+	local_mplayer_x11_connect($1_xwayland_t)
+	local_mplayer_shm($1_xwayland_t)
+	local_mplayer_read_proc_state($1_xwayland_t)
+')
+
+#######################################
+## <summary>
 ##	Allow MPlayer to connect to the user X11 socket peer domain.
 ## </summary>
 ## <param name="xserver_domain">
