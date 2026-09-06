@@ -276,6 +276,30 @@ template(`konsole_role',`
 
 ########################################
 ## <summary>
+##	Wire up all of a role extra Konsole grants beyond the base role
+##	template: systemd --user manager D-Bus chat, D-Bus chat with the role
+##	main domain and with xdg-desktop-portal, and bus name publish.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns both the Konsole domain and the
+##	systemd/D-Bus session resources.
+##	</summary>
+## </param>
+#
+interface(`local_konsole_role',`
+	gen_require(`
+		type xdg_desktop_portal_t;
+	')
+
+	local_konsole_systemd_dbus_chat($1)
+	local_konsole_dbus_chat($1, $1_t)
+	local_konsole_dbus_chat($1, xdg_desktop_portal_t)
+	local_konsole_publish_bus_name($1)
+')
+
+########################################
+## <summary>
 ##	Allow Konsole (and anything launched from it, e.g. systemctl --user)
 ##	to chat over D-Bus with the per-role systemd --user manager.
 ## </summary>
