@@ -48,7 +48,6 @@ gen_require(`
 	type mozilla_exec_t;
 	type pcscd_runtime_t;
 	type pulseaudio_tmp_t;
-	type pulseaudio_xdg_config_t;
 	type random_device_t;
 	type root_t;
 	type systemd_machined_runtime_t;
@@ -160,8 +159,7 @@ corecmd_exec_shell(zotero_t)
 
 # Same PulseAudio client access already granted to chromium_t.
 allow zotero_t pulseaudio_tmp_t:dir read;
-allow zotero_t pulseaudio_xdg_config_t:dir search;
-allow zotero_t pulseaudio_xdg_config_t:file { lock open read };
+local_pipewire_pulse_read_cookie(zotero_t)
 # Unlike the read above, deleting PulseAudio's own runtime dir isn't normal
 # client behavior -- chromium_t doesn't need this either. Mute until there's
 # a reason to think it's more than a harmless failed cleanup attempt.

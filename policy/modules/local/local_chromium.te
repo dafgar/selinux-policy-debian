@@ -12,7 +12,6 @@ gen_require(`
 	type pcscd_runtime_t;
 	type pcscd_t;
 	type pulseaudio_tmp_t;
-	type pulseaudio_xdg_config_t;
 	type pipewire_runtime_t;
 	type proc_t;
 	type security_t;
@@ -66,8 +65,7 @@ allow chromium_t debugfs_t:dir search;
 # devices during startup.
 allow chromium_t alsa_var_lib_t:dir search;
 allow chromium_t pulseaudio_tmp_t:dir read;
-allow chromium_t pulseaudio_xdg_config_t:dir search;
-allow chromium_t pulseaudio_xdg_config_t:file { lock open read };
+local_pipewire_pulse_read_cookie(chromium_t)
 allow chromium_t v4l_device_t:chr_file { getattr ioctl map open read write };
 
 # Hardware-accelerated video decode hands zero-copy frame buffers to the GPU
