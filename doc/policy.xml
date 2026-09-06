@@ -71909,6 +71909,16 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
+<interface name="local_discover_notifier_x11_connect" lineno="67">
+<summary>
+Allow DiscoverNotifier to connect to a role's session X11 socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session's X11 socket.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_discretegpuhelper" filename="policy/modules/local/local_discretegpuhelper.if">
 <summary>
@@ -72187,6 +72197,17 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
+<interface name="local_gkrellm_x11_connect" lineno="105">
+<summary>
+Allow GKrellM to connect to a role's session X11 socket, e.g. for its
+legacy Xlib rendering path.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session's X11 socket.
+</summary>
+</param>
+</interface>
 <tunable name="local_gkrellm_use_hddtemp" dftval="false">
 <desc>
 <p>
@@ -72395,6 +72416,17 @@ Allow a domain to use KDE Connect listener sockets directly.
 <param name="domain">
 <summary>
 Domain allowed to bind KDE Connect sockets.
+</summary>
+</param>
+</interface>
+<interface name="local_kdeconnect_wayland_connect" lineno="125">
+<summary>
+Allow KDE Connect to connect to a role's session Wayland compositor
+socket, e.g. for tray/notification integration.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
@@ -72675,6 +72707,17 @@ Role allowed access to the mnemosyne domain.
 </summary>
 </param>
 </interface>
+<interface name="local_mnemosyne_wayland_connect" lineno="47">
+<summary>
+Allow Mnemosyne to connect to a role's session Wayland compositor
+socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session's Wayland socket.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_mozilla" filename="policy/modules/local/local_mozilla.if">
 <summary>
@@ -72898,13 +72941,14 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_wayland_connect" lineno="85">
+<interface name="local_plasmashell_wayland_connect" lineno="90">
 <summary>
-Allow plasmashell to connect to a peer's Wayland compositor socket.
+Allow plasmashell to connect to a role's session Wayland compositor
+socket.
 </summary>
-<param name="domain">
+<param name="role_prefix">
 <summary>
-Domain owning the compositor socket.
+User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
@@ -72944,7 +72988,7 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_powerdevil_dbus_chat" lineno="66">
+<interface name="local_powerdevil_dbus_chat" lineno="67">
 <summary>
 Send and receive D-Bus messages with PowerDevil, e.g. to inhibit
 screen/system idle during media playback.
@@ -72952,6 +72996,16 @@ screen/system idle during media playback.
 <param name="domain">
 <summary>
 Domain allowed to exchange D-Bus messages with PowerDevil.
+</summary>
+</param>
+</interface>
+<interface name="local_powerdevil_x11_connect" lineno="86">
+<summary>
+Allow PowerDevil to connect to a role's session X11 socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session's X11 socket.
 </summary>
 </param>
 </interface>
@@ -73182,6 +73236,29 @@ Local override module with no exported interfaces.
 Allow a domain to read the process state (/proc/pid) of staff_t, e.g.
 Xwayland reading the cmdline of a connecting X11 client for
 _NET_WM_PID-style client identification.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="local_staff_wayland_connect" lineno="39">
+<summary>
+Allow a domain to connect to staff_t's Wayland compositor socket, e.g.
+an application domain acting as a Wayland client of the session
+compositor.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="local_staff_x11_connect" lineno="59">
+<summary>
+Allow a domain to connect to staff_t's X11 socket, e.g. an application
+domain acting as an X11 client via Xwayland or a native X11 server.
 </summary>
 <param name="domain">
 <summary>
