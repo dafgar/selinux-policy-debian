@@ -72054,6 +72054,26 @@ Domain allowed to query fwupd and receive replies.
 Local policy for getty integration adjustments.
 </summary>
 </module>
+<module name="local_gimp" filename="policy/modules/local/local_gimp.if">
+<summary>
+Local GIMP domain interfaces.
+</summary>
+<interface name="gimp_role" lineno="20">
+<summary>
+Allow a role to transition into the GIMP application domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to GIMP.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the GIMP domain.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_git" filename="policy/modules/local/local_git.if">
 <summary>
 Local Git helper interfaces.
@@ -72451,6 +72471,26 @@ Domain to exchange messages with.
 </param>
 </interface>
 </module>
+<module name="local_khelpcenter" filename="policy/modules/local/local_khelpcenter.if">
+<summary>
+Local KHelpCenter domain interfaces.
+</summary>
+<interface name="khelpcenter_role" lineno="20">
+<summary>
+Allow a role to transition into the khelpcenter application domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to khelpcenter.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the khelpcenter domain.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_kioworker" filename="policy/modules/local/local_kioworker.if">
 <summary>
 Local KIO worker domain interfaces.
@@ -72574,6 +72614,26 @@ Role allowed access to the KScreenLocker greeter domain.
 </param>
 </interface>
 </module>
+<module name="local_ktorrent" filename="policy/modules/local/local_ktorrent.if">
+<summary>
+Local ktorrent domain interfaces.
+</summary>
+<interface name="ktorrent_role" lineno="20">
+<summary>
+Allow a role to transition into the ktorrent application domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to ktorrent.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the ktorrent domain.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_lowmemorymonitor" filename="policy/modules/local/local_lowmemorymonitor.if">
 <summary>
 Local override module with no exported interfaces.
@@ -72583,6 +72643,26 @@ Local override module with no exported interfaces.
 <summary>
 Local override module with no exported interfaces.
 </summary>
+</module>
+<module name="local_mnemosyne" filename="policy/modules/local/local_mnemosyne.if">
+<summary>
+Local Mnemosyne domain interfaces.
+</summary>
+<interface name="mnemosyne_role" lineno="20">
+<summary>
+Allow a role to transition into the mnemosyne application domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to mnemosyne.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the mnemosyne domain.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_mozilla" filename="policy/modules/local/local_mozilla.if">
 <summary>
@@ -72865,6 +72945,21 @@ process domain.
 <param name="role">
 <summary>
 Role allowed access to the QtWebEngine process domain.
+</summary>
+</param>
+</interface>
+<interface name="local_qtwebengine_embed" lineno="64">
+<summary>
+Allow a domain to embed a sandboxed QtWebEngine renderer the way
+Chromium-derived browser processes do: create its own unprivileged
+user namespace, then exec the renderer with PR_SET_NO_NEW_PRIVS set
+(which routes the SELinux transition through process2:nnp_transition
+instead of the plain domtrans_pattern exec check), then talk to it
+over a pre-created socketpair and tune its OOM score.
+</summary>
+<param name="domain">
+<summary>
+Domain embedding the QtWebEngine renderer.
 </summary>
 </param>
 </interface>
@@ -73163,6 +73258,27 @@ Local override module with no exported interfaces.
 Local override module with no exported interfaces.
 </summary>
 </module>
+<module name="local_systemsettings" filename="policy/modules/local/local_systemsettings.if">
+<summary>
+Local KDE System Settings domain interfaces.
+</summary>
+<interface name="systemsettings_role" lineno="21">
+<summary>
+Allow a role to transition into the systemsettings application
+domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to systemsettings.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the systemsettings domain.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_test" filename="policy/modules/local/local_test.if">
 <summary>
 Local override module with no exported interfaces.
@@ -73366,6 +73482,38 @@ Role allowed access.
 </summary>
 </param>
 </template>
+</module>
+<module name="local_xdg_desktop_portal" filename="policy/modules/local/local_xdg_desktop_portal.if">
+<summary>
+Local main XDG desktop portal daemon domain interfaces.
+</summary>
+<interface name="xdg_desktop_portal_role" lineno="21">
+<summary>
+Allow a role to transition into the XDG desktop portal application
+domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to the XDG desktop portal.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the XDG desktop portal domain.
+</summary>
+</param>
+</interface>
+<interface name="local_xdg_desktop_portal_systemd_inherit" lineno="48">
+<summary>
+Allow a user systemd instance to launch the XDG desktop portal with
+the usual inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_xdg_document_portal" filename="policy/modules/local/local_xdg_document_portal.if">
 <summary>
