@@ -95,8 +95,13 @@ xdg_search_config_dirs(gimp_t)
 xdg_search_data_dirs(gimp_t)
 xdg_read_data_files(gimp_t)
 xdg_manage_data(gimp_t)
-xdg_read_cache_files(gimp_t)
+xdg_manage_cache(gimp_t)
 xdg_read_downloads(gimp_t)
+
+# GLib file monitors on system/user data dirs (icon cache, desktop files,
+# themes) at startup; denied watch adds to gimp's window-show latency.
+files_watch_usr_dirs(gimp_t)
+xdg_watch_data_dirs(gimp_t)
 gnome_mmap_read_xdg_config_files(gimp_t)
 gnome_watch_xdg_config_dirs(gimp_t)
 xserver_stream_connect(gimp_t)
@@ -130,7 +135,7 @@ allow gimp_t self:netlink_route_socket { create_socket_perms nlmsg_read };
 allow gimp_t self:shm create_shm_perms;
 
 # Noise from directory walks / thumbnailing outside gimp's actual concerns.
-dontaudit gimp_t staff_systemd_t:unix_stream_socket getattr;
+dontaudit gimp_t staff_systemd_t:unix_stream_socket { getattr ioctl };
 dontaudit gimp_t policy_config_t:dir getattr;
 dontaudit gimp_t virt_content_t:file { getattr open read };
 dontaudit gimp_t code_dir_t:dir search;

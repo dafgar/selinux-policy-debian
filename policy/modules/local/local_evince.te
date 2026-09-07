@@ -72,6 +72,10 @@ allow evince_t cupsd_etc_t:dir search_dir_perms;
 # KDE config lookup (icon theme, kdeglobals) under Plasma.
 local_kde_read_config_files(evince_t)
 
+# Qt/KDE platform theming watches kdedefaults for live theme changes; denied
+# watch falls back to polling, adding to window-show latency.
+local_kde_watch_config_dirs(evince_t)
+
 # glib/D-Bus GUID lookup: checks the legacy /var/lib/dbus/machine-id path
 # first, falling back to /etc/machine-id.
 dbus_read_lib_files(evince_t)
