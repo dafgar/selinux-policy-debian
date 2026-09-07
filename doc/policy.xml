@@ -73775,6 +73775,18 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
+<interface name="local_staff_dbus_chat_a11y" lineno="80">
+<summary>
+Allow a domain to send and receive messages with staff_t over the
+session accessibility (a11y) bus, e.g. an application registering
+with AT-SPI for screen-reader/UI-automation support.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_staff_systemd" filename="policy/modules/local/local_staff_systemd.if">
 <summary>

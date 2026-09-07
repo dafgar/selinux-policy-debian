@@ -64,3 +64,24 @@ interface(`local_staff_x11_connect',`
 	allow $1 staff_t:unix_stream_socket connectto;
 	allow $1 staff_x11_socket_t:sock_file write;
 ')
+
+########################################
+## <summary>
+##	Allow a domain to send and receive messages with staff_t over the
+##	session accessibility (a11y) bus, e.g. an application registering
+##	with AT-SPI for screen-reader/UI-automation support.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_staff_dbus_chat_a11y',`
+	gen_require(`
+		type staff_t;
+	')
+
+	allow $1 staff_t:dbus send_msg;
+	allow staff_t $1:dbus send_msg;
+')

@@ -26,6 +26,7 @@ manage_dirs_pattern(gimp_t, gimp_config_t, gimp_config_t)
 manage_files_pattern(gimp_t, gimp_config_t, gimp_config_t)
 manage_lnk_files_pattern(gimp_t, gimp_config_t, gimp_config_t)
 allow gimp_t gimp_config_t:dir watch;
+allow gimp_t gimp_config_t:file map;
 xdg_config_filetrans(gimp_t, gimp_config_t, dir, "GIMP")
 
 manage_dirs_pattern(gimp_t, gimp_cache_t, gimp_cache_t)
@@ -46,7 +47,11 @@ files_tmp_filetrans(gimp_t, gimp_tmp_t, { dir file })
 gen_tunable(gimp_execmem, false)
 
 gen_require(`
-	type xdg_config_t;
+	type xdg_config_t, xdg_documents_t;
+	type cupsd_runtime_t, cupsd_etc_t;
+	type tmpfs_t;
+	type staff_systemd_t;
+	type policy_config_t, virt_content_t, code_dir_t, user_home_t;
 ')
 
 miscfiles_read_localization(gimp_t)
@@ -55,9 +60,11 @@ kernel_read_system_state(gimp_t)
 files_read_etc_files(gimp_t)
 files_read_usr_files(gimp_t)
 files_map_usr_files(gimp_t)
+files_map_etc_files(gimp_t)
 corecmd_exec_bin(gimp_t)
 corecmd_search_bin(gimp_t)
 dbus_all_session_bus_client(gimp_t)
+dbus_connect_all_session_bus(gimp_t)
 dbus_connect_system_bus(gimp_t)
 dbus_system_bus_client(gimp_t)
 dbus_write_session_runtime_socket(gimp_t)
@@ -66,7 +73,18 @@ dev_read_urand(gimp_t)
 dev_rw_dri(gimp_t)
 fs_getattr_all_fs(gimp_t)
 logging_search_logs(gimp_t)
+logging_send_syslog_msg(gimp_t)
 systemd_dbus_chat_logind(gimp_t)
+systemd_dbus_chat_hostnamed(gimp_t)
+colord_dbus_chat(gimp_t)
+cups_stream_connect(gimp_t)
+cups_read_config(gimp_t)
+libs_exec_lib_files(gimp_t)
+local_systemd_inherit_user_service(staff, gimp_t)
+local_staff_wayland_connect(gimp_t)
+local_staff_dbus_chat_a11y(gimp_t)
+local_gvfs_dbus_chat(staff, gimp_t)
+local_kde_read_config_files(gimp_t)
 userdom_search_user_home_dirs(gimp_t)
 userdom_search_user_home_content(gimp_t)
 userdom_search_user_runtime(gimp_t)
@@ -76,6 +94,9 @@ xdg_read_config_files(gimp_t)
 xdg_search_config_dirs(gimp_t)
 xdg_search_data_dirs(gimp_t)
 xdg_read_data_files(gimp_t)
+xdg_manage_data(gimp_t)
+xdg_read_cache_files(gimp_t)
+xdg_read_downloads(gimp_t)
 gnome_mmap_read_xdg_config_files(gimp_t)
 gnome_watch_xdg_config_dirs(gimp_t)
 xserver_stream_connect(gimp_t)
@@ -86,12 +107,35 @@ wm_map_tmpfs_files(gimp_t)
 wm_rw_tmpfs_files(gimp_t)
 
 allow gimp_t xdg_config_t:dir { read watch };
+allow gimp_t xdg_documents_t:dir getattr;
 
-allow gimp_t self:process { getsched setsched signal };
+# GTK/Wayland client buffers (wayland-cursor, gdk-wayland memfds) land as
+# plain tmpfs_t, not wm_tmpfs_t, since gimp_t has no filetrans labeling them.
+allow gimp_t tmpfs_t:dir { search read };
+allow gimp_t tmpfs_t:file open;
+allow gimp_t tmpfs_t:file { read map write };
+
+# GIMP print plugin's own runtime dir/socket search isn't covered by the
+# generic files_search_runtime()/files_search_etc() in cups_stream_connect()
+# and cups_read_config().
+allow gimp_t cupsd_runtime_t:dir search_dir_perms;
+allow gimp_t cupsd_runtime_t:sock_file write;
+allow gimp_t cupsd_etc_t:dir search_dir_perms;
+
+allow gimp_t self:process { getsched setsched sigkill getpgid signal };
 allow gimp_t self:fifo_file { getattr read write };
 allow gimp_t self:unix_dgram_socket create_socket_perms;
 allow gimp_t self:unix_stream_socket { connectto create_socket_perms };
 allow gimp_t self:netlink_route_socket { create_socket_perms nlmsg_read };
+allow gimp_t self:shm create_shm_perms;
+
+# Noise from directory walks / thumbnailing outside gimp's actual concerns.
+dontaudit gimp_t staff_systemd_t:unix_stream_socket getattr;
+dontaudit gimp_t policy_config_t:dir getattr;
+dontaudit gimp_t virt_content_t:file { getattr open read };
+dontaudit gimp_t code_dir_t:dir search;
+dontaudit gimp_t user_home_t:dir write;
+dontaudit gimp_t user_home_t:file getattr;
 
 # Confirmed via /tmp/avc.log (pid-correlated to exe=/usr/bin/gimp-3.0):
 # execmem for script-fu/python-fu JIT.
