@@ -45,6 +45,7 @@ gen_require(`
 	type etc_t;
 	type mozilla_exec_t;
 	type pcscd_runtime_t;
+	type pcscd_t;
 	type plasmashell_t;
 	type pulseaudio_tmp_t;
 	type random_device_t;
@@ -54,6 +55,7 @@ gen_require(`
 	type syslogd_runtime_t;
 	type sysctl_kernel_t;
 	type tpm2_pkcs11_home_t;
+	type tpm_device_t;
 	type thunderbird_exec_t;
 	type tmpfs_t;
 	type user_home_t;
@@ -143,6 +145,10 @@ allow zotero_t self:netlink_route_socket { create_socket_perms nlmsg_read };
 allow zotero_t self:process { getsched setcap setsched signal };
 allow zotero_t self:unix_dgram_socket create_socket_perms;
 allow zotero_t self:unix_stream_socket connectto;
+
+tunable_policy(`zotero_execmem',`
+	allow zotero_t self:process execmem;
+')
 allow zotero_t self:cap_userns { sys_admin sys_chroot };
 # Qt/QPA XCB MIT-SHM extension (shared-memory pixmap transport), same as the
 # Renderer process's own IPC shm segments.
@@ -153,7 +159,7 @@ allow zotero_t self:tcp_socket { connect getopt };
 allow zotero_t self:udp_socket create_socket_perms;
 allow zotero_t self:user_namespace create;
 
-dontaudit zotero_t { etc_t root_t usr_t xdg_data_t }:dir watch;
+dontaudit zotero_t { etc_t root_t usr_t var_lib_t xdg_data_t }:dir watch;
 dontaudit zotero_t { var_t var_lib_t }:dir read;
 # The built-in updater tries to stage updates in place under the install
 # tree (~/.local/opt/zotero, labeled usr_t) -- e.g. writing .parentlock.
@@ -165,7 +171,15 @@ dontaudit zotero_t user_home_t:file read;
 dontaudit zotero_t mozilla_exec_t:file execute;
 dontaudit zotero_t dolphin_exec_t:file execute;
 dontaudit zotero_t pcscd_runtime_t:dir search;
+# NSS/PKCS#11 module enumeration at startup: probes for a smartcard reader
+# and a TPM2 token store even though Zotero has no smartcard/TPM use case.
+dontaudit zotero_t pcscd_runtime_t:sock_file { getattr write };
+dontaudit zotero_t pcscd_t:unix_stream_socket connectto;
+dontaudit pcscd_t zotero_t:dir search;
 dontaudit zotero_t tpm2_pkcs11_home_t:dir search;
+dontaudit zotero_t tpm2_pkcs11_home_t:dir { getattr add_name remove_name write };
+dontaudit zotero_t tpm2_pkcs11_home_t:file { getattr lock unlink read write create open };
+dontaudit zotero_t tpm_device_t:chr_file { read write open };
 dontaudit zotero_t thunderbird_exec_t:file execute;
 # kdialog/kfmclient (spawned by Zotero for native KDE dialogs/URL-open) try to
 # create their own first-run rc files (e.g. kcminputrc) directly under
