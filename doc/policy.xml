@@ -72052,7 +72052,7 @@ resources.
 </summary>
 </param>
 </interface>
-<interface name="local_evince_x11_connect" lineno="92">
+<interface name="local_evince_x11_connect" lineno="93">
 <summary>
 Allow Evince to connect to the user X11/Wayland socket peer domain.
 </summary>
@@ -72062,7 +72062,7 @@ Domain owning the X11/Wayland socket peer.
 </summary>
 </param>
 </interface>
-<interface name="local_evince_dbus_chat" lineno="110">
+<interface name="local_evince_dbus_chat" lineno="111">
 <summary>
 Allow Evince to chat with a desktop-owned D-Bus service.
 </summary>
@@ -72072,7 +72072,7 @@ Domain owning the D-Bus service.
 </summary>
 </param>
 </interface>
-<interface name="local_evince_gvfs_dbus_chat" lineno="130">
+<interface name="local_evince_gvfs_dbus_chat" lineno="131">
 <summary>
 Allow Evince to query gvfs for mountable locations, for a given role
 prefix.
@@ -72080,6 +72080,40 @@ prefix.
 <param name="role_prefix">
 <summary>
 User role prefix that owns the gvfs domain.
+</summary>
+</param>
+</interface>
+<interface name="local_evince_wayland_connect" lineno="150">
+<summary>
+Allow Evince to connect to a peer's Wayland compositor socket, for a
+given role prefix.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Wayland compositor socket.
+</summary>
+</param>
+</interface>
+<interface name="local_evince_read_proc_state" lineno="170">
+<summary>
+Allow a domain to read Evince's process state (/proc/pid), e.g.
+Xwayland reading the cmdline of a connecting X11 client for
+_NET_WM_PID-style client identification.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="local_evince_shm" lineno="190">
+<summary>
+Allow a domain to use Evince's X11 MIT-SHM segments, e.g. Xwayland
+reading pixmap data Evince handed it as an X11 client.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
 </summary>
 </param>
 </interface>

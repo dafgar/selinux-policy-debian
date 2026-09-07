@@ -41,6 +41,8 @@ dolphin_role(staff_application_exec_domain, staff_r)
 
 evince_role(staff_application_exec_domain, staff_r)
 local_evince_role(staff)
+local_evince_read_proc_state(staff_xwayland_t)
+local_evince_shm(staff_xwayland_t)
 
 local_evolution_alarm_role(staff)
 

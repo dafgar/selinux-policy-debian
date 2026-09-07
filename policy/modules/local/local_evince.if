@@ -75,6 +75,7 @@ interface(`local_evince_domtrans',`
 #
 interface(`local_evince_role',`
 	local_evince_x11_connect($1_t)
+	local_evince_wayland_connect($1)
 	local_evince_dbus_chat($1_t)
 	local_evince_gvfs_dbus_chat($1)
 ')
@@ -133,4 +134,63 @@ interface(`local_evince_gvfs_dbus_chat',`
 	')
 
 	local_gvfs_dbus_chat($1, evince_t)
+')
+
+########################################
+## <summary>
+## Allow Evince to connect to a peer's Wayland compositor socket, for a
+## given role prefix.
+## </summary>
+## <param name="role_prefix">
+## <summary>
+## User role prefix that owns the Wayland compositor socket.
+## </summary>
+## </param>
+#
+interface(`local_evince_wayland_connect',`
+	gen_require(`
+		type evince_t;
+	')
+
+	local_$1_wayland_connect(evince_t)
+')
+
+########################################
+## <summary>
+## Allow a domain to read Evince's process state (/proc/pid), e.g.
+## Xwayland reading the cmdline of a connecting X11 client for
+## _NET_WM_PID-style client identification.
+## </summary>
+## <param name="domain">
+## <summary>
+## Domain allowed access.
+## </summary>
+## </param>
+#
+interface(`local_evince_read_proc_state',`
+	gen_require(`
+		type evince_t;
+	')
+
+	allow $1 evince_t:dir list_dir_perms;
+	read_files_pattern($1, evince_t, evince_t)
+')
+
+########################################
+## <summary>
+## Allow a domain to use Evince's X11 MIT-SHM segments, e.g. Xwayland
+## reading pixmap data Evince handed it as an X11 client.
+## </summary>
+## <param name="domain">
+## <summary>
+## Domain allowed access.
+## </summary>
+## </param>
+#
+interface(`local_evince_shm',`
+	gen_require(`
+		type evince_t;
+	')
+
+	allow $1 evince_t:shm rw_shm_perms;
 ')

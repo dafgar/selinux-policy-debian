@@ -59,7 +59,18 @@ dev_rw_dri(evince_t)
 fs_getattr_all_fs(evince_t)
 dbus_spec_session_bus_client(staff, evince_t)
 dbus_write_session_runtime_socket(evince_t)
+dbus_system_bus_client(evince_t)
 systemd_dbus_chat_logind(evince_t)
+
+# Evince's print dialog talking to the local cupsd over its runtime socket.
+cups_stream_connect(evince_t)
+cups_read_config(evince_t)
+allow evince_t cupsd_runtime_t:dir search_dir_perms;
+allow evince_t cupsd_runtime_t:sock_file write;
+allow evince_t cupsd_etc_t:dir search_dir_perms;
+
+# KDE config lookup (icon theme, kdeglobals) under Plasma.
+local_kde_read_config_files(evince_t)
 
 # glib/D-Bus GUID lookup: checks the legacy /var/lib/dbus/machine-id path
 # first, falling back to /etc/machine-id.
@@ -130,6 +141,8 @@ tunable_policy(`evince_execmem',`
 
 gen_require(`
 	type bin_t;
+	type cupsd_runtime_t;
+	type cupsd_etc_t;
 	type etc_t;
 	type evolution_exec_t;
 	type plasmashell_t;
