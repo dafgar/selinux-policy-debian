@@ -87,7 +87,7 @@ local_plasmashell_use_fifo(chromium_t)
 
 # Chromium inhibits screen/system idle via PowerDevil while media is playing.
 local_powerdevil_dbus_chat(chromium_t)
-systemd_use_logind_fds(chromium_t)
+systemd_write_inherited_logind_inhibit_pipes(chromium_t)
 
 # Optional browser/DRM integration probes are not needed for the current
 # Chromium setup.
