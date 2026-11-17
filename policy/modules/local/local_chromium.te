@@ -56,6 +56,7 @@ allow chromium_t gnome_xdg_config_t:dir { read search };
 allow chromium_t gnome_xdg_config_t:file { getattr map open read };
 local_kde_read_config_files(chromium_t)
 allow chromium_t xdg_cache_t:file { create getattr map open read write };
+xserver_rw_mesa_shader_cache(chromium_t)
 allow chromium_t syslogd_runtime_t:dir search;
 allow chromium_t devlog_t:sock_file write;
 allow chromium_t syslogd_t:unix_dgram_socket sendto;
@@ -86,6 +87,7 @@ local_plasmashell_use_fifo(chromium_t)
 
 # Chromium inhibits screen/system idle via PowerDevil while media is playing.
 local_powerdevil_dbus_chat(chromium_t)
+systemd_use_logind_fds(chromium_t)
 
 # Optional browser/DRM integration probes are not needed for the current
 # Chromium setup.
