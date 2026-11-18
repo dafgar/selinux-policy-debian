@@ -74213,7 +74213,7 @@ Role allowed access to the virt-manager domain.
 <interface name="local_virt_manager_role" lineno="48">
 <summary>
 Wire up all of a role extra virt-manager grants beyond the base role
-template: Wayland connect and D-Bus chat.
+template: Wayland connect, D-Bus chat, gvfs chat and bus name publish.
 </summary>
 <param name="role_prefix">
 <summary>
@@ -74221,7 +74221,7 @@ User role prefix that owns the Wayland/D-Bus session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_virt_manager_wayland_connect" lineno="64">
+<interface name="local_virt_manager_wayland_connect" lineno="66">
 <summary>
 Allow virt-manager to connect to a peer's Wayland compositor socket,
 for a given role prefix.
@@ -74232,13 +74232,35 @@ User role prefix that owns the Wayland compositor socket.
 </summary>
 </param>
 </interface>
-<interface name="local_virt_manager_dbus_chat" lineno="82">
+<interface name="local_virt_manager_dbus_chat" lineno="84">
 <summary>
 Allow virt-manager to chat with a desktop-owned D-Bus service.
 </summary>
 <param name="peer_domain">
 <summary>
 Domain owning the D-Bus service.
+</summary>
+</param>
+</interface>
+<interface name="local_virt_manager_gvfs_dbus_chat" lineno="105">
+<summary>
+Allow virt-manager to query gvfs for mountable locations from its file
+picker, for a given role prefix.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the gvfs domain.
+</summary>
+</param>
+</interface>
+<interface name="local_virt_manager_publish_bus_name" lineno="124">
+<summary>
+Allow virt-manager to publish its single-instance D-Bus service
+(org.virt-manager.virt-manager) on the per-role session bus.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session D-Bus domain.
 </summary>
 </param>
 </interface>

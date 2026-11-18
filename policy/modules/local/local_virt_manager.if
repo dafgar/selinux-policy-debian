@@ -37,7 +37,7 @@ interface(`virt_manager_role',`
 ########################################
 ## <summary>
 ##	Wire up all of a role extra virt-manager grants beyond the base role
-##	template: Wayland connect and D-Bus chat.
+##	template: Wayland connect, D-Bus chat, gvfs chat and bus name publish.
 ## </summary>
 ## <param name="role_prefix">
 ##	<summary>
@@ -48,6 +48,8 @@ interface(`virt_manager_role',`
 interface(`local_virt_manager_role',`
 	local_virt_manager_wayland_connect($1)
 	local_virt_manager_dbus_chat($1_t)
+	local_virt_manager_gvfs_dbus_chat($1)
+	local_virt_manager_publish_bus_name($1)
 ')
 
 ########################################
@@ -87,4 +89,44 @@ interface(`local_virt_manager_dbus_chat',`
 
 	allow virt_manager_t $1:dbus send_msg;
 	allow $1 virt_manager_t:dbus send_msg;
+')
+
+########################################
+## <summary>
+##	Allow virt-manager to query gvfs for mountable locations from its file
+##	picker, for a given role prefix.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the gvfs domain.
+##	</summary>
+## </param>
+#
+interface(`local_virt_manager_gvfs_dbus_chat',`
+	gen_require(`
+		type virt_manager_t;
+	')
+
+	local_gvfs_dbus_chat($1, virt_manager_t)
+')
+
+########################################
+## <summary>
+##	Allow virt-manager to publish its single-instance D-Bus service
+##	(org.virt-manager.virt-manager) on the per-role session bus.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session D-Bus domain.
+##	</summary>
+## </param>
+#
+interface(`local_virt_manager_publish_bus_name',`
+	gen_require(`
+		type virt_manager_t;
+		type $1_dbusd_t;
+		class dbus acquire_svc;
+	')
+
+	allow virt_manager_t $1_dbusd_t:dbus acquire_svc;
 ')
