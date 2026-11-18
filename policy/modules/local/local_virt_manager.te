@@ -1,0 +1,108 @@
+policy_module(local_virt_manager)
+
+attribute_role virt_manager_roles;
+
+# virt-manager is a Python script. The transition keys off the script label
+# (the file handed to execve), so /usr/bin/virt-manager carries
+# virt_manager_exec_t; running "python3 /usr/bin/virt-manager" by hand does
+# not transition.
+type virt_manager_t;
+type virt_manager_exec_t;
+userdom_user_application_domain(virt_manager_t, virt_manager_exec_t)
+role virt_manager_roles types virt_manager_t;
+can_exec(virt_manager_t, virt_manager_exec_t)
+
+type virt_manager_xdg_config_t;
+xdg_config_content(virt_manager_xdg_config_t)
+
+type virt_manager_xdg_cache_t;
+xdg_cache_content(virt_manager_xdg_cache_t)
+
+## <desc>
+## <p>
+## Allow virt-manager to make its stack/heap memory executable.
+## </p>
+## </desc>
+gen_tunable(virt_manager_execmem, false)
+
+manage_dirs_pattern(virt_manager_t, virt_manager_xdg_config_t, virt_manager_xdg_config_t)
+manage_files_pattern(virt_manager_t, virt_manager_xdg_config_t, virt_manager_xdg_config_t)
+xdg_config_filetrans(virt_manager_t, virt_manager_xdg_config_t, dir, "virt-manager")
+
+manage_dirs_pattern(virt_manager_t, virt_manager_xdg_cache_t, virt_manager_xdg_cache_t)
+manage_files_pattern(virt_manager_t, virt_manager_xdg_cache_t, virt_manager_xdg_cache_t)
+xdg_cache_filetrans(virt_manager_t, virt_manager_xdg_cache_t, dir, "virt-manager")
+
+gen_require(`
+	type svirt_t;
+	type virtd_t;
+')
+
+miscfiles_read_localization(virt_manager_t)
+miscfiles_read_fonts(virt_manager_t)
+kernel_read_system_state(virt_manager_t)
+files_read_etc_files(virt_manager_t)
+files_read_usr_files(virt_manager_t)
+files_map_usr_files(virt_manager_t)
+files_list_usr(virt_manager_t)
+# The interpreter and the Python stdlib/GTK typelibs live under /usr.
+corecmd_exec_bin(virt_manager_t)
+corecmd_search_bin(virt_manager_t)
+dev_read_sysfs(virt_manager_t)
+dev_read_urand(virt_manager_t)
+dev_rw_dri(virt_manager_t)
+fs_getattr_all_fs(virt_manager_t)
+
+# qemu:///system connection to libvirtd, with polkit authorization.
+virt_stream_connect(virt_manager_t)
+policykit_dbus_chat(virt_manager_t)
+
+# The graphical console is handed over by libvirtd as an already connected
+# unix stream socket whose peer is the guest svirt_t qemu process (SPICE/VNC
+# open_graphics_fd). The socket is inherited, so allow fd use plus the stream
+# operations seen on it; no connectto is involved.
+allow virt_manager_t virtd_t:fd use;
+allow virt_manager_t svirt_t:unix_stream_socket { getattr getopt read setopt write };
+
+dbus_spec_session_bus_client(staff, virt_manager_t)
+dbus_write_session_runtime_socket(virt_manager_t)
+dbus_system_bus_client(virt_manager_t)
+
+# Local-only listener on the loopback address (SPICE/VNC console helper).
+corenet_tcp_bind_generic_node(virt_manager_t)
+
+# GTK/GSettings (dconf) and KDE theming state.
+gnome_mmap_read_xdg_config_files(virt_manager_t)
+gnome_watch_xdg_config_dirs(virt_manager_t)
+local_kde_read_config_files(virt_manager_t)
+local_kde_watch_config_dirs(virt_manager_t)
+xdg_read_config_files(virt_manager_t)
+xdg_search_config_dirs(virt_manager_t)
+xdg_search_data_dirs(virt_manager_t)
+xdg_read_data_files(virt_manager_t)
+userdom_search_user_home_dirs(virt_manager_t)
+userdom_search_user_runtime(virt_manager_t)
+userdom_use_inherited_user_terminals(virt_manager_t)
+# The Wayland socket path itself can land under user_tmp_t; connecting needs
+# write on the socket file in addition to connectto on the compositor.
+userdom_write_user_tmp_sockets(virt_manager_t)
+
+xserver_read_xkb_libs(virt_manager_t)
+xserver_use_user_fonts(virt_manager_t)
+xserver_rw_mesa_shader_cache(virt_manager_t)
+wm_map_tmpfs_files(virt_manager_t)
+wm_rw_tmpfs_files(virt_manager_t)
+
+# Wayland clipboard hand-off pipe from plasmashell (copy/paste in consoles).
+local_plasmashell_use_fifo(virt_manager_t)
+
+allow virt_manager_t self:process { getsched signal };
+allow virt_manager_t self:fifo_file rw_fifo_file_perms;
+allow virt_manager_t self:unix_dgram_socket create_socket_perms;
+allow virt_manager_t self:unix_stream_socket create_stream_socket_perms;
+allow virt_manager_t self:tcp_socket create_socket_perms;
+allow virt_manager_t self:shm create_shm_perms;
+
+tunable_policy(`virt_manager_execmem',`
+	allow virt_manager_t self:process execmem;
+')

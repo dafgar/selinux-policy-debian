@@ -1,0 +1,4 @@
+/usr/bin/virt-manager		--	gen_context(system_u:object_r:virt_manager_exec_t,s0)
+/usr/share/virt-manager/virt-manager	--	gen_context(system_u:object_r:virt_manager_exec_t,s0)
+HOME_DIR/\.config/virt-manager(/.*)?	gen_context(system_u:object_r:virt_manager_xdg_config_t,s0)
+HOME_DIR/\.cache/virt-manager(/.*)?	gen_context(system_u:object_r:virt_manager_xdg_cache_t,s0)

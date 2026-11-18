@@ -1,0 +1,90 @@
+## <summary>
+##	Local virt-manager domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the virt-manager application domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to virt-manager.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the virt-manager domain.
+##	</summary>
+## </param>
+#
+interface(`virt_manager_role',`
+	gen_require(`
+		type virt_manager_t, virt_manager_exec_t;
+		role $2;
+	')
+
+	role $2 types virt_manager_t;
+	domtrans_pattern($1, virt_manager_exec_t, virt_manager_t)
+
+	allow $1 virt_manager_t:fd use;
+	allow $1 virt_manager_t:process { ptrace signal_perms };
+	allow $1 virt_manager_t:process { noatsecure rlimitinh siginh };
+	ps_process_pattern($1, virt_manager_t)
+
+	allow virt_manager_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Wire up all of a role extra virt-manager grants beyond the base role
+##	template: Wayland connect and D-Bus chat.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Wayland/D-Bus session resources.
+##	</summary>
+## </param>
+#
+interface(`local_virt_manager_role',`
+	local_virt_manager_wayland_connect($1)
+	local_virt_manager_dbus_chat($1_t)
+')
+
+########################################
+## <summary>
+##	Allow virt-manager to connect to a peer's Wayland compositor socket,
+##	for a given role prefix.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Wayland compositor socket.
+##	</summary>
+## </param>
+#
+interface(`local_virt_manager_wayland_connect',`
+	gen_require(`
+		type virt_manager_t;
+	')
+
+	local_$1_wayland_connect(virt_manager_t)
+')
+
+########################################
+## <summary>
+##	Allow virt-manager to chat with a desktop-owned D-Bus service.
+## </summary>
+## <param name="peer_domain">
+##	<summary>
+##	Domain owning the D-Bus service.
+##	</summary>
+## </param>
+#
+interface(`local_virt_manager_dbus_chat',`
+	gen_require(`
+		type virt_manager_t;
+		class dbus send_msg;
+	')
+
+	allow virt_manager_t $1:dbus send_msg;
+	allow $1 virt_manager_t:dbus send_msg;
+')

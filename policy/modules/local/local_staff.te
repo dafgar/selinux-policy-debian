@@ -128,6 +128,9 @@ qtwebengine_role(systemsettings_t, staff_r)
 
 local_thunderbird_role(staff)
 
+virt_manager_role(staff_application_exec_domain, staff_r)
+local_virt_manager_role(staff)
+
 wireplumber_role(staff, staff_t, staff_application_exec_domain, staff_r)
 
 xdg_desktop_portal_role(staff_application_exec_domain, staff_r)
