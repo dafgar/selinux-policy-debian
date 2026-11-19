@@ -30,6 +30,10 @@ local_utempter_systemd_socket_inherit(staff_systemd_t)
 # startup and uses metadata/ioctl on that same parent-owned socket.
 local_zotero_systemd_socket_inherit(staff_systemd_t)
 
+# TWS is launched as a user service and inherits a stream socket from the user
+# systemd instance, with metadata/ioctl use on it.
+local_tws_systemd_socket_inherit(staff_systemd_t)
+
 # Evolution alarm helpers inherit the usual process attributes from the user
 # systemd instance during launch.
 local_evolution_alarm_systemd_inherit(staff)

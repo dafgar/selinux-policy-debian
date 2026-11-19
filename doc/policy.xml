@@ -74160,7 +74160,7 @@ User role prefix that owns the display and D-Bus session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_tws_wayland_connect" lineno="67">
+<interface name="local_tws_wayland_connect" lineno="69">
 <summary>
 Allow TWS to connect to a role Wayland compositor socket.
 </summary>
@@ -74170,7 +74170,7 @@ User role prefix that owns the Wayland compositor socket.
 </summary>
 </param>
 </interface>
-<interface name="local_tws_x11_connect" lineno="85">
+<interface name="local_tws_x11_connect" lineno="87">
 <summary>
 Allow TWS to connect to a role X11 socket (Java AWT via Xwayland).
 </summary>
@@ -74180,7 +74180,7 @@ User role prefix that owns the X11 socket.
 </summary>
 </param>
 </interface>
-<interface name="local_tws_stream_connect" lineno="103">
+<interface name="local_tws_stream_connect" lineno="105">
 <summary>
 Allow TWS to connect to a desktop-owned stream socket.
 </summary>
@@ -74190,7 +74190,7 @@ Domain owning the peer socket.
 </summary>
 </param>
 </interface>
-<interface name="local_tws_use_xwayland_fd" lineno="122">
+<interface name="local_tws_use_xwayland_fd" lineno="124">
 <summary>
 Allow TWS to use a fd handed over by Xwayland, such as a DRI3 render
 node.
@@ -74201,7 +74201,7 @@ Xwayland domain handing off the fd.
 </summary>
 </param>
 </interface>
-<interface name="local_tws_dbus_chat" lineno="140">
+<interface name="local_tws_dbus_chat" lineno="142">
 <summary>
 Allow TWS to chat with a desktop-owned D-Bus service.
 </summary>
@@ -74211,7 +74211,7 @@ Domain owning the D-Bus service.
 </summary>
 </param>
 </interface>
-<interface name="local_tws_gvfs_dbus_chat" lineno="161">
+<interface name="local_tws_gvfs_dbus_chat" lineno="163">
 <summary>
 Allow TWS to query gvfs for mountable locations from its file chooser,
 for a given role prefix.
@@ -74219,6 +74219,38 @@ for a given role prefix.
 <param name="role_prefix">
 <summary>
 User role prefix that owns the gvfs domain.
+</summary>
+</param>
+</interface>
+<interface name="local_tws_read_proc_state" lineno="182">
+<summary>
+Allow a domain to read TWS process state (/proc/pid), for example
+Xwayland reading the cmdline of a connecting X11 client.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed read access.
+</summary>
+</param>
+</interface>
+<interface name="local_tws_shm" lineno="202">
+<summary>
+Allow a domain to use TWS X11 MIT-SHM segments, for example Xwayland
+reading pixmap data handed over by TWS as an X11 client.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="local_tws_systemd_socket_inherit" lineno="220">
+<summary>
+Allow TWS to use an inherited user-systemd stream socket.
+</summary>
+<param name="systemd_domain">
+<summary>
+User systemd domain owning the inherited socket and fd.
 </summary>
 </param>
 </interface>

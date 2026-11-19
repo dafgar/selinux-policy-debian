@@ -130,6 +130,7 @@ local_thunderbird_role(staff)
 
 tws_role(staff_application_exec_domain, staff_r)
 local_tws_role(staff)
+local_systemd_inherit_user_service(staff, tws_t)
 
 virt_manager_role(staff_application_exec_domain, staff_r)
 local_virt_manager_role(staff)

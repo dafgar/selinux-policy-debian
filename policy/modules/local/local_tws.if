@@ -50,6 +50,8 @@ interface(`local_tws_role',`
 	local_tws_x11_connect($1)
 	local_tws_stream_connect($1_wm_t)
 	local_tws_use_xwayland_fd($1_xwayland_t)
+	local_tws_read_proc_state($1_xwayland_t)
+	local_tws_shm($1_xwayland_t)
 	local_tws_dbus_chat($1_t)
 	local_tws_gvfs_dbus_chat($1)
 ')
@@ -164,4 +166,62 @@ interface(`local_tws_gvfs_dbus_chat',`
 	')
 
 	local_gvfs_dbus_chat($1, tws_t)
+')
+
+########################################
+## <summary>
+##	Allow a domain to read TWS process state (/proc/pid), for example
+##	Xwayland reading the cmdline of a connecting X11 client.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed read access.
+##	</summary>
+## </param>
+#
+interface(`local_tws_read_proc_state',`
+	gen_require(`
+		type tws_t;
+	')
+
+	allow $1 tws_t:dir list_dir_perms;
+	read_files_pattern($1, tws_t, tws_t)
+')
+
+########################################
+## <summary>
+##	Allow a domain to use TWS X11 MIT-SHM segments, for example Xwayland
+##	reading pixmap data handed over by TWS as an X11 client.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_tws_shm',`
+	gen_require(`
+		type tws_t;
+	')
+
+	allow $1 tws_t:shm rw_shm_perms;
+')
+
+########################################
+## <summary>
+##	Allow TWS to use an inherited user-systemd stream socket.
+## </summary>
+## <param name="systemd_domain">
+##	<summary>
+##	User systemd domain owning the inherited socket and fd.
+##	</summary>
+## </param>
+#
+interface(`local_tws_systemd_socket_inherit',`
+	gen_require(`
+		type tws_t;
+	')
+
+	allow tws_t $1:fd use;
+	allow tws_t $1:unix_stream_socket { getattr ioctl read write };
 ')

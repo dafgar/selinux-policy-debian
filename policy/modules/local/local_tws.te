@@ -20,6 +20,17 @@ files_type(tws_install_t)
 type tws_xdg_config_t;
 xdg_config_content(tws_xdg_config_t)
 
+type tws_xdg_cache_t;
+xdg_cache_content(tws_xdg_cache_t)
+
+# Hardware-ID file read by TWS from the top of the home directory.
+type tws_home_t;
+userdom_user_home_content(tws_home_t)
+
+# DRI3 sync-fence memfds are not path-labeled; give them their own tmpfs type.
+type tws_tmpfs_t;
+userdom_user_tmpfs_file(tws_tmpfs_t)
+
 # JxBrowser unpacks its Chromium engine under /tmp/JxBrowser and executes it.
 type tws_tmp_t;
 files_tmp_file(tws_tmp_t)
@@ -34,6 +45,9 @@ gen_tunable(tws_execmem, false)
 gen_require(`
 	type bin_t;
 	type node_t;
+	type systemd_machined_runtime_t;
+	type user_home_t;
+	type xdg_cache_t;
 ')
 
 allow tws_t tws_install_t:dir list_dir_perms;
@@ -45,6 +59,17 @@ manage_dirs_pattern(tws_t, tws_xdg_config_t, tws_xdg_config_t)
 manage_files_pattern(tws_t, tws_xdg_config_t, tws_xdg_config_t)
 manage_lnk_files_pattern(tws_t, tws_xdg_config_t, tws_xdg_config_t)
 xdg_config_filetrans(tws_t, tws_xdg_config_t, dir, "tws")
+
+manage_dirs_pattern(tws_t, tws_xdg_cache_t, tws_xdg_cache_t)
+manage_files_pattern(tws_t, tws_xdg_cache_t, tws_xdg_cache_t)
+xdg_cache_filetrans(tws_t, tws_xdg_cache_t, dir, "install4j")
+
+read_files_pattern(tws_t, tws_home_t, tws_home_t)
+allow tws_t tws_home_t:file getattr;
+
+manage_files_pattern(tws_t, tws_tmpfs_t, tws_tmpfs_t)
+allow tws_t tws_tmpfs_t:file map;
+fs_tmpfs_filetrans(tws_t, tws_tmpfs_t, file)
 
 manage_dirs_pattern(tws_t, tws_tmp_t, tws_tmp_t)
 manage_files_pattern(tws_t, tws_tmp_t, tws_tmp_t)
@@ -76,6 +101,13 @@ dev_rw_dri(tws_t)
 # Chromium GPU process shares buffers through udmabuf.
 dev_rw_dma_dev(tws_t)
 fs_getattr_all_fs(tws_t)
+# JVM container-awareness, IPv6, mmap and RNG probes.
+fs_read_cgroup_files(tws_t)
+fs_search_cgroup_dirs(tws_t)
+kernel_read_network_state(tws_t)
+kernel_read_vm_sysctls(tws_t)
+dev_read_rand(tws_t)
+local_kde_read_config_files(tws_t)
 
 dbus_spec_session_bus_client(staff, tws_t)
 dbus_write_session_runtime_socket(tws_t)
@@ -86,6 +118,9 @@ corenet_tcp_connect_all_ports(tws_t)
 corenet_tcp_bind_generic_node(tws_t)
 sysnet_read_config(tws_t)
 
+# Java fontconfig cache under the generic XDG cache label (read only).
+xdg_read_cache_files(tws_t)
+allow tws_t xdg_cache_t:file map;
 xdg_read_config_files(tws_t)
 xdg_search_config_dirs(tws_t)
 xdg_search_data_dirs(tws_t)
@@ -120,3 +155,7 @@ allow tws_t self:shm create_shm_perms;
 tunable_policy(`tws_execmem',`
 	allow tws_t self:process execmem;
 ')
+
+# Legacy ~/.fontconfig lookups by Java and a machined probe; harmless.
+dontaudit tws_t user_home_t:dir { getattr search };
+dontaudit tws_t systemd_machined_runtime_t:dir search;
