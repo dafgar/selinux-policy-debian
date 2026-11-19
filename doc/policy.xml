@@ -74130,6 +74130,95 @@ Domain allowed access.
 </param>
 </interface>
 </module>
+<module name="local_tws" filename="policy/modules/local/local_tws.if">
+<summary>
+Local Trader Workstation (TWS) domain interfaces.
+</summary>
+<interface name="tws_role" lineno="20">
+<summary>
+Allow a role to transition into the TWS application domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to TWS.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the TWS domain.
+</summary>
+</param>
+</interface>
+<interface name="local_tws_role" lineno="48">
+<summary>
+Wire up all of a role extra TWS grants beyond the base role
+template: Wayland and X11 connect, xwayland fd use, D-Bus chat.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the display and D-Bus session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_tws_wayland_connect" lineno="66">
+<summary>
+Allow TWS to connect to a role Wayland compositor socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Wayland compositor socket.
+</summary>
+</param>
+</interface>
+<interface name="local_tws_x11_connect" lineno="84">
+<summary>
+Allow TWS to connect to a role X11 socket (Java AWT via Xwayland).
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the X11 socket.
+</summary>
+</param>
+</interface>
+<interface name="local_tws_stream_connect" lineno="102">
+<summary>
+Allow TWS to connect to a desktop-owned stream socket.
+</summary>
+<param name="peer_domain">
+<summary>
+Domain owning the peer socket.
+</summary>
+</param>
+</interface>
+<interface name="local_tws_use_xwayland_fd" lineno="121">
+<summary>
+Allow TWS to use a fd handed over by Xwayland, such as a DRI3 render
+node.
+</summary>
+<param name="domain">
+<summary>
+Xwayland domain handing off the fd.
+</summary>
+</param>
+</interface>
+<interface name="local_tws_dbus_chat" lineno="139">
+<summary>
+Allow TWS to chat with a desktop-owned D-Bus service.
+</summary>
+<param name="peer_domain">
+<summary>
+Domain owning the D-Bus service.
+</summary>
+</param>
+</interface>
+<tunable name="tws_execmem" dftval="false">
+<desc>
+<p>
+Allow TWS to make its stack/heap memory executable.
+</p>
+</desc>
+</tunable>
+</module>
 <module name="local_udev" filename="policy/modules/local/local_udev.if">
 <summary>
 Local override module with no exported interfaces.

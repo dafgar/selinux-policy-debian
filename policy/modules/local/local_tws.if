@@ -1,0 +1,147 @@
+## <summary>
+##	Local Trader Workstation (TWS) domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the TWS application domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to TWS.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the TWS domain.
+##	</summary>
+## </param>
+#
+interface(`tws_role',`
+	gen_require(`
+		type tws_t, tws_exec_t;
+		role $2;
+	')
+
+	role $2 types tws_t;
+	domtrans_pattern($1, tws_exec_t, tws_t)
+
+	allow $1 tws_t:fd use;
+	allow $1 tws_t:process { ptrace signal_perms };
+	allow $1 tws_t:process { noatsecure rlimitinh siginh };
+	ps_process_pattern($1, tws_t)
+
+	allow tws_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Wire up all of a role extra TWS grants beyond the base role
+##	template: Wayland and X11 connect, xwayland fd use, D-Bus chat.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the display and D-Bus session resources.
+##	</summary>
+## </param>
+#
+interface(`local_tws_role',`
+	local_tws_wayland_connect($1)
+	local_tws_x11_connect($1)
+	local_tws_stream_connect($1_wm_t)
+	local_tws_use_xwayland_fd($1_xwayland_t)
+	local_tws_dbus_chat($1_t)
+')
+
+########################################
+## <summary>
+##	Allow TWS to connect to a role Wayland compositor socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Wayland compositor socket.
+##	</summary>
+## </param>
+#
+interface(`local_tws_wayland_connect',`
+	gen_require(`
+		type tws_t;
+	')
+
+	local_$1_wayland_connect(tws_t)
+')
+
+########################################
+## <summary>
+##	Allow TWS to connect to a role X11 socket (Java AWT via Xwayland).
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the X11 socket.
+##	</summary>
+## </param>
+#
+interface(`local_tws_x11_connect',`
+	gen_require(`
+		type tws_t;
+	')
+
+	local_$1_x11_connect(tws_t)
+')
+
+########################################
+## <summary>
+##	Allow TWS to connect to a desktop-owned stream socket.
+## </summary>
+## <param name="peer_domain">
+##	<summary>
+##	Domain owning the peer socket.
+##	</summary>
+## </param>
+#
+interface(`local_tws_stream_connect',`
+	gen_require(`
+		type tws_t;
+	')
+
+	allow tws_t $1:unix_stream_socket connectto;
+')
+
+########################################
+## <summary>
+##	Allow TWS to use a fd handed over by Xwayland, such as a DRI3 render
+##	node.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Xwayland domain handing off the fd.
+##	</summary>
+## </param>
+#
+interface(`local_tws_use_xwayland_fd',`
+	gen_require(`
+		type tws_t;
+	')
+
+	allow tws_t $1:fd use;
+')
+
+########################################
+## <summary>
+##	Allow TWS to chat with a desktop-owned D-Bus service.
+## </summary>
+## <param name="peer_domain">
+##	<summary>
+##	Domain owning the D-Bus service.
+##	</summary>
+## </param>
+#
+interface(`local_tws_dbus_chat',`
+	gen_require(`
+		type tws_t;
+		class dbus send_msg;
+	')
+
+	allow tws_t $1:dbus send_msg;
+	allow $1 tws_t:dbus send_msg;
+')

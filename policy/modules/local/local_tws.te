@@ -1,0 +1,122 @@
+policy_module(local_tws)
+
+attribute_role tws_roles;
+
+# Interactive Brokers Trader Workstation. The entrypoint is the
+# /usr/local/bin/tws wrapper script (the transition keys off the script
+# label); it execs the install4j launcher and the bundled JRE under /opt/Jts,
+# both labeled tws_install_t and executed inside this domain, so java_t is
+# never involved.
+type tws_t;
+type tws_exec_t;
+userdom_user_application_domain(tws_t, tws_exec_t)
+role tws_roles types tws_t;
+can_exec(tws_t, tws_exec_t)
+
+# Root-owned install tree (launcher, jars, bundled JRE): read and execute only.
+type tws_install_t;
+files_type(tws_install_t)
+
+type tws_xdg_config_t;
+xdg_config_content(tws_xdg_config_t)
+
+# JxBrowser unpacks its Chromium engine under /tmp/JxBrowser and executes it.
+type tws_tmp_t;
+files_tmp_file(tws_tmp_t)
+
+## <desc>
+## <p>
+## Allow TWS to make its stack/heap memory executable.
+## </p>
+## </desc>
+gen_tunable(tws_execmem, false)
+
+gen_require(`
+	type bin_t;
+	type node_t;
+')
+
+allow tws_t tws_install_t:dir list_dir_perms;
+read_files_pattern(tws_t, tws_install_t, tws_install_t)
+read_lnk_files_pattern(tws_t, tws_install_t, tws_install_t)
+can_exec(tws_t, tws_install_t)
+
+manage_dirs_pattern(tws_t, tws_xdg_config_t, tws_xdg_config_t)
+manage_files_pattern(tws_t, tws_xdg_config_t, tws_xdg_config_t)
+manage_lnk_files_pattern(tws_t, tws_xdg_config_t, tws_xdg_config_t)
+xdg_config_filetrans(tws_t, tws_xdg_config_t, dir, "tws")
+
+manage_dirs_pattern(tws_t, tws_tmp_t, tws_tmp_t)
+manage_files_pattern(tws_t, tws_tmp_t, tws_tmp_t)
+manage_lnk_files_pattern(tws_t, tws_tmp_t, tws_tmp_t)
+allow tws_t tws_tmp_t:file map;
+can_exec(tws_t, tws_tmp_t)
+files_tmp_filetrans(tws_t, tws_tmp_t, dir, "JxBrowser")
+
+# The wrapper script is a shell script that runs mkdir and exec.
+corecmd_exec_shell(tws_t)
+corecmd_exec_bin(tws_t)
+corecmd_search_bin(tws_t)
+
+# Java preferences and WebView state live under the generic ~/.java label.
+java_manage_generic_home_content(tws_t)
+java_home_filetrans_java_home(tws_t, dir, ".java")
+
+miscfiles_read_localization(tws_t)
+miscfiles_read_fonts(tws_t)
+kernel_read_system_state(tws_t)
+# JxBrowser samples /proc/pressure (PSI).
+kernel_read_psi(tws_t)
+files_read_etc_files(tws_t)
+files_read_usr_files(tws_t)
+files_map_usr_files(tws_t)
+dev_read_sysfs(tws_t)
+dev_read_urand(tws_t)
+dev_rw_dri(tws_t)
+# Chromium GPU process shares buffers through udmabuf.
+dev_rw_dma_dev(tws_t)
+fs_getattr_all_fs(tws_t)
+
+dbus_spec_session_bus_client(staff, tws_t)
+dbus_write_session_runtime_socket(tws_t)
+dbus_system_bus_client(tws_t)
+
+# Broker connection and the local API listener on the loopback address.
+corenet_tcp_connect_all_ports(tws_t)
+corenet_tcp_bind_generic_node(tws_t)
+sysnet_read_config(tws_t)
+
+xdg_read_config_files(tws_t)
+xdg_search_config_dirs(tws_t)
+xdg_search_data_dirs(tws_t)
+xdg_manage_downloads(tws_t)
+gnome_mmap_read_xdg_config_files(tws_t)
+gnome_watch_xdg_config_dirs(tws_t)
+userdom_search_user_home_dirs(tws_t)
+userdom_search_user_runtime(tws_t)
+userdom_manage_user_tmp_files(tws_t)
+userdom_map_user_tmp_files(tws_t)
+userdom_write_user_tmp_sockets(tws_t)
+userdom_use_inherited_user_terminals(tws_t)
+
+xserver_stream_connect(tws_t)
+xserver_read_xkb_libs(tws_t)
+xserver_use_user_fonts(tws_t)
+xserver_rw_mesa_shader_cache(tws_t)
+wm_map_tmpfs_files(tws_t)
+wm_rw_tmpfs_files(tws_t)
+
+local_plasmashell_use_fifo(tws_t)
+
+allow tws_t self:process { getsched setsched signal };
+allow tws_t self:fifo_file rw_fifo_file_perms;
+allow tws_t self:unix_dgram_socket create_socket_perms;
+allow tws_t self:unix_stream_socket create_stream_socket_perms;
+allow tws_t self:tcp_socket create_socket_perms;
+allow tws_t self:udp_socket create_socket_perms;
+allow tws_t self:netlink_route_socket { create_socket_perms nlmsg_read };
+allow tws_t self:shm create_shm_perms;
+
+tunable_policy(`tws_execmem',`
+	allow tws_t self:process execmem;
+')
