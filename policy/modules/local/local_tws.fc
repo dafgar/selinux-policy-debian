@@ -1,6 +1,4 @@
 /usr/local/bin/tws	--	gen_context(system_u:object_r:tws_exec_t,s0)
 /opt/Jts(/.*)?			gen_context(system_u:object_r:tws_install_t,s0)
 HOME_DIR/\.config/tws(/.*)?	gen_context(system_u:object_r:tws_xdg_config_t,s0)
-HOME_DIR/\.cache/install4j(/.*)?	gen_context(system_u:object_r:tws_xdg_cache_t,s0)
-HOME_DIR/\.hwid	--	gen_context(system_u:object_r:tws_home_t,s0)
 /tmp/JxBrowser(/.*)?		gen_context(system_u:object_r:tws_tmp_t,s0)

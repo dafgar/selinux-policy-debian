@@ -20,13 +20,6 @@ files_type(tws_install_t)
 type tws_xdg_config_t;
 xdg_config_content(tws_xdg_config_t)
 
-type tws_xdg_cache_t;
-xdg_cache_content(tws_xdg_cache_t)
-
-# Hardware-ID file read by TWS from the top of the home directory.
-type tws_home_t;
-userdom_user_home_content(tws_home_t)
-
 # DRI3 sync-fence memfds are not path-labeled; give them their own tmpfs type.
 type tws_tmpfs_t;
 userdom_user_tmpfs_file(tws_tmpfs_t)
@@ -59,13 +52,6 @@ manage_dirs_pattern(tws_t, tws_xdg_config_t, tws_xdg_config_t)
 manage_files_pattern(tws_t, tws_xdg_config_t, tws_xdg_config_t)
 manage_lnk_files_pattern(tws_t, tws_xdg_config_t, tws_xdg_config_t)
 xdg_config_filetrans(tws_t, tws_xdg_config_t, dir, "tws")
-
-manage_dirs_pattern(tws_t, tws_xdg_cache_t, tws_xdg_cache_t)
-manage_files_pattern(tws_t, tws_xdg_cache_t, tws_xdg_cache_t)
-xdg_cache_filetrans(tws_t, tws_xdg_cache_t, dir, "install4j")
-
-read_files_pattern(tws_t, tws_home_t, tws_home_t)
-allow tws_t tws_home_t:file getattr;
 
 manage_files_pattern(tws_t, tws_tmpfs_t, tws_tmpfs_t)
 allow tws_t tws_tmpfs_t:file map;
@@ -158,4 +144,10 @@ tunable_policy(`tws_execmem',`
 
 # Legacy ~/.fontconfig lookups by Java and a machined probe; harmless.
 dontaudit tws_t user_home_t:dir { getattr search };
+# ~/.hwid is a generic home dotfile and ~/.cache/install4j is shared by every
+# install4j application; neither gets a TWS-specific type. TWS runs without
+# them, so keep the probes quiet instead of widening access to generic labels.
+dontaudit tws_t user_home_t:file { getattr open read };
+dontaudit tws_t xdg_cache_t:dir { add_name getattr search write };
+dontaudit tws_t xdg_cache_t:file { create getattr lock open write };
 dontaudit tws_t systemd_machined_runtime_t:dir search;
