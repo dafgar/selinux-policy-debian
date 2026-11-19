@@ -37,7 +37,7 @@ interface(`tws_role',`
 ########################################
 ## <summary>
 ##	Wire up all of a role extra TWS grants beyond the base role
-##	template: Wayland and X11 connect, xwayland fd use, D-Bus chat.
+##	template: Wayland and X11 connect, xwayland fd use, D-Bus chat, gvfs chat.
 ## </summary>
 ## <param name="role_prefix">
 ##	<summary>
@@ -51,6 +51,7 @@ interface(`local_tws_role',`
 	local_tws_stream_connect($1_wm_t)
 	local_tws_use_xwayland_fd($1_xwayland_t)
 	local_tws_dbus_chat($1_t)
+	local_tws_gvfs_dbus_chat($1)
 ')
 
 ########################################
@@ -144,4 +145,23 @@ interface(`local_tws_dbus_chat',`
 
 	allow tws_t $1:dbus send_msg;
 	allow $1 tws_t:dbus send_msg;
+')
+
+########################################
+## <summary>
+##	Allow TWS to query gvfs for mountable locations from its file chooser,
+##	for a given role prefix.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the gvfs domain.
+##	</summary>
+## </param>
+#
+interface(`local_tws_gvfs_dbus_chat',`
+	gen_require(`
+		type tws_t;
+	')
+
+	local_gvfs_dbus_chat($1, tws_t)
 ')

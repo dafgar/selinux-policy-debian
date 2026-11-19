@@ -74152,7 +74152,7 @@ Role allowed access to the TWS domain.
 <interface name="local_tws_role" lineno="48">
 <summary>
 Wire up all of a role extra TWS grants beyond the base role
-template: Wayland and X11 connect, xwayland fd use, D-Bus chat.
+template: Wayland and X11 connect, xwayland fd use, D-Bus chat, gvfs chat.
 </summary>
 <param name="role_prefix">
 <summary>
@@ -74160,7 +74160,7 @@ User role prefix that owns the display and D-Bus session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_tws_wayland_connect" lineno="66">
+<interface name="local_tws_wayland_connect" lineno="67">
 <summary>
 Allow TWS to connect to a role Wayland compositor socket.
 </summary>
@@ -74170,7 +74170,7 @@ User role prefix that owns the Wayland compositor socket.
 </summary>
 </param>
 </interface>
-<interface name="local_tws_x11_connect" lineno="84">
+<interface name="local_tws_x11_connect" lineno="85">
 <summary>
 Allow TWS to connect to a role X11 socket (Java AWT via Xwayland).
 </summary>
@@ -74180,7 +74180,7 @@ User role prefix that owns the X11 socket.
 </summary>
 </param>
 </interface>
-<interface name="local_tws_stream_connect" lineno="102">
+<interface name="local_tws_stream_connect" lineno="103">
 <summary>
 Allow TWS to connect to a desktop-owned stream socket.
 </summary>
@@ -74190,7 +74190,7 @@ Domain owning the peer socket.
 </summary>
 </param>
 </interface>
-<interface name="local_tws_use_xwayland_fd" lineno="121">
+<interface name="local_tws_use_xwayland_fd" lineno="122">
 <summary>
 Allow TWS to use a fd handed over by Xwayland, such as a DRI3 render
 node.
@@ -74201,13 +74201,24 @@ Xwayland domain handing off the fd.
 </summary>
 </param>
 </interface>
-<interface name="local_tws_dbus_chat" lineno="139">
+<interface name="local_tws_dbus_chat" lineno="140">
 <summary>
 Allow TWS to chat with a desktop-owned D-Bus service.
 </summary>
 <param name="peer_domain">
 <summary>
 Domain owning the D-Bus service.
+</summary>
+</param>
+</interface>
+<interface name="local_tws_gvfs_dbus_chat" lineno="161">
+<summary>
+Allow TWS to query gvfs for mountable locations from its file chooser,
+for a given role prefix.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the gvfs domain.
 </summary>
 </param>
 </interface>
