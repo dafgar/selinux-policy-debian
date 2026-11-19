@@ -1,0 +1,109 @@
+## <summary>
+##	Local JuK music player domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the JuK music player domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to JuK music player.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the JuK music player domain.
+##	</summary>
+## </param>
+#
+interface(`juk_role',`
+	gen_require(`
+		type juk_t, juk_exec_t;
+		role $2;
+	')
+
+	role $2 types juk_t;
+	domtrans_pattern($1, juk_exec_t, juk_t)
+
+	allow $1 juk_t:fd use;
+	allow $1 juk_t:process { ptrace signal_perms };
+	ps_process_pattern($1, juk_t)
+
+	allow juk_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Wire up a role access to/from JuK music player: Wayland connect, D-Bus chat
+##	with the role main domain, and systemd inherited-exec launch.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session resources.
+##	</summary>
+## </param>
+#
+interface(`local_juk_role',`
+	local_juk_wayland_connect($1)
+	local_juk_dbus_chat($1_t)
+	local_juk_systemd_inherit($1)
+')
+
+########################################
+## <summary>
+##	Allow JuK music player to connect to a role Wayland socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Wayland socket.
+##	</summary>
+## </param>
+#
+interface(`local_juk_wayland_connect',`
+	gen_require(`
+		type juk_t;
+	')
+
+	local_$1_wayland_connect(juk_t)
+')
+
+########################################
+## <summary>
+##	Send and receive D-Bus messages with JuK music player.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to exchange D-Bus messages.
+##	</summary>
+## </param>
+#
+interface(`local_juk_dbus_chat',`
+	gen_require(`
+		type juk_t;
+		class dbus send_msg;
+	')
+
+	allow $1 juk_t:dbus send_msg;
+	allow juk_t $1:dbus send_msg;
+')
+
+########################################
+## <summary>
+##	Allow a user systemd instance to launch JuK music player with the usual
+##	inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_juk_systemd_inherit',`
+	gen_require(`
+		type juk_t;
+	')
+
+	local_systemd_inherit_user_service($1, juk_t)
+	allow juk_t $1_systemd_t:unix_stream_socket { getattr ioctl };
+')

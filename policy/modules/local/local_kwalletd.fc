@@ -1,0 +1,1 @@
+/usr/bin/kwalletd6	--	gen_context(system_u:object_r:kwalletd_exec_t,s0)

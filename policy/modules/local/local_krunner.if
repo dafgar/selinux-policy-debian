@@ -1,0 +1,109 @@
+## <summary>
+##	Local KRunner domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the KRunner domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to KRunner.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the KRunner domain.
+##	</summary>
+## </param>
+#
+interface(`krunner_role',`
+	gen_require(`
+		type krunner_t, krunner_exec_t;
+		role $2;
+	')
+
+	role $2 types krunner_t;
+	domtrans_pattern($1, krunner_exec_t, krunner_t)
+
+	allow $1 krunner_t:fd use;
+	allow $1 krunner_t:process { ptrace signal_perms };
+	ps_process_pattern($1, krunner_t)
+
+	allow krunner_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Wire up a role access to/from KRunner: Wayland connect, D-Bus chat
+##	with the role main domain, and systemd inherited-exec launch.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session resources.
+##	</summary>
+## </param>
+#
+interface(`local_krunner_role',`
+	local_krunner_wayland_connect($1)
+	local_krunner_dbus_chat($1_t)
+	local_krunner_systemd_inherit($1)
+')
+
+########################################
+## <summary>
+##	Allow KRunner to connect to a role Wayland socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Wayland socket.
+##	</summary>
+## </param>
+#
+interface(`local_krunner_wayland_connect',`
+	gen_require(`
+		type krunner_t;
+	')
+
+	local_$1_wayland_connect(krunner_t)
+')
+
+########################################
+## <summary>
+##	Send and receive D-Bus messages with KRunner.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to exchange D-Bus messages.
+##	</summary>
+## </param>
+#
+interface(`local_krunner_dbus_chat',`
+	gen_require(`
+		type krunner_t;
+		class dbus send_msg;
+	')
+
+	allow $1 krunner_t:dbus send_msg;
+	allow krunner_t $1:dbus send_msg;
+')
+
+########################################
+## <summary>
+##	Allow a user systemd instance to launch KRunner with the usual
+##	inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_krunner_systemd_inherit',`
+	gen_require(`
+		type krunner_t;
+	')
+
+	local_systemd_inherit_user_service($1, krunner_t)
+	allow krunner_t $1_systemd_t:unix_stream_socket { getattr ioctl };
+')

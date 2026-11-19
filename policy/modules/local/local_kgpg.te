@@ -1,0 +1,27 @@
+policy_module(local_kgpg)
+
+# KGpg: GPG key manager front end. Handles keys, so it is a standalone
+# domain; the gpg/gpg-agent transitions and ~/.gnupg management come from
+# base gpg_role() via local_kgpg_gpg_role().
+
+attribute_role kgpg_roles;
+
+type kgpg_t;
+type kgpg_exec_t;
+userdom_user_application_domain(kgpg_t, kgpg_exec_t)
+role kgpg_roles types kgpg_t;
+
+## <desc>
+## <p>
+## Allow KGpg to make its stack/heap memory executable.
+## </p>
+## </desc>
+gen_tunable(kgpg_execmem, false)
+
+local_kde_gui_client(kgpg_t)
+
+xdg_manage_config(kgpg_t)
+
+tunable_policy(`kgpg_execmem',`
+	allow kgpg_t self:process execmem;
+')

@@ -1,0 +1,166 @@
+## <summary>
+##	Local Plasma session bootstrap helper domain (startplasma-wayland,
+##	plasma-fallback-session-restore, kconf_update, kcminit, kaccess).
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the Plasma session helper domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to the session helpers.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the session helper domain.
+##	</summary>
+## </param>
+#
+interface(`plasma_session_role',`
+	gen_require(`
+		type plasma_session_t, startplasma_exec_t;
+		type plasma_fallback_restore_exec_t, kconf_update_exec_t;
+		type kcminit_exec_t, kaccess_exec_t;
+		role $2;
+	')
+
+	role $2 types plasma_session_t;
+	domtrans_pattern($1, startplasma_exec_t, plasma_session_t)
+	domtrans_pattern($1, plasma_fallback_restore_exec_t, plasma_session_t)
+	domtrans_pattern($1, kconf_update_exec_t, plasma_session_t)
+	domtrans_pattern($1, kcminit_exec_t, plasma_session_t)
+	domtrans_pattern($1, kaccess_exec_t, plasma_session_t)
+
+	allow $1 plasma_session_t:fd use;
+	allow $1 plasma_session_t:process { ptrace signal_perms };
+	ps_process_pattern($1, plasma_session_t)
+
+	allow plasma_session_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Allow a domain to run kconf_update in the Plasma session helper domain,
+##	e.g. KDED spawning it for config migrations.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to execute kconf_update.
+##	</summary>
+## </param>
+#
+interface(`local_plasma_session_run_kconf_update',`
+	gen_require(`
+		type plasma_session_t, kconf_update_exec_t;
+	')
+
+	domtrans_pattern($1, kconf_update_exec_t, plasma_session_t)
+	allow $1 plasma_session_t:fd use;
+	allow $1 plasma_session_t:process { ptrace signal_perms };
+	allow plasma_session_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Wire up all of a role access to/from the Plasma session helpers:
+##	Wayland and X11 connect, D-Bus chat with the role main domain, and
+##	systemd inherited-exec launch.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session resources.
+##	</summary>
+## </param>
+#
+interface(`local_plasma_session_role',`
+	gen_require(`
+		type plasma_session_t, $1_xwayland_t;
+	')
+
+	local_plasma_session_wayland_connect($1)
+	# kaccess is an X11 client; it also inherits the DRI render-node fd
+	# that Xwayland hands to its clients.
+	local_plasma_session_x11_connect($1)
+	allow plasma_session_t $1_xwayland_t:fd use;
+
+	local_plasma_session_dbus_chat($1_t)
+	local_plasma_session_systemd_inherit($1)
+')
+
+########################################
+## <summary>
+##	Allow the Plasma session helpers to connect to a role Wayland socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Wayland socket.
+##	</summary>
+## </param>
+#
+interface(`local_plasma_session_wayland_connect',`
+	gen_require(`
+		type plasma_session_t;
+	')
+
+	local_$1_wayland_connect(plasma_session_t)
+')
+
+########################################
+## <summary>
+##	Allow the Plasma session helpers to connect to a role X11 socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the X11 socket.
+##	</summary>
+## </param>
+#
+interface(`local_plasma_session_x11_connect',`
+	gen_require(`
+		type plasma_session_t;
+	')
+
+	local_$1_x11_connect(plasma_session_t)
+')
+
+########################################
+## <summary>
+##	Send and receive D-Bus messages with the Plasma session helpers.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to exchange D-Bus messages.
+##	</summary>
+## </param>
+#
+interface(`local_plasma_session_dbus_chat',`
+	gen_require(`
+		type plasma_session_t;
+		class dbus send_msg;
+	')
+
+	allow $1 plasma_session_t:dbus send_msg;
+	allow plasma_session_t $1:dbus send_msg;
+')
+
+########################################
+## <summary>
+##	Allow a user systemd instance to launch the Plasma session helpers with
+##	the usual inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_plasma_session_systemd_inherit',`
+	gen_require(`
+		type plasma_session_t;
+	')
+
+	local_systemd_inherit_user_service($1, plasma_session_t)
+	allow plasma_session_t $1_systemd_t:unix_stream_socket { getattr ioctl };
+')

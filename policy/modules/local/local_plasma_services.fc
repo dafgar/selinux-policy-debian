@@ -1,0 +1,2 @@
+/usr/bin/kded6	--	gen_context(system_u:object_r:kded_exec_t,s0)
+/usr/lib/x86_64-linux-gnu/libexec/kactivitymanagerd	--	gen_context(system_u:object_r:kactivitymanagerd_exec_t,s0)

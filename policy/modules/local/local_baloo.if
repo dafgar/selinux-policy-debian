@@ -1,0 +1,90 @@
+## <summary>
+##	Local Baloo search runner domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the Baloo search runner domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to Baloo search runner.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the Baloo search runner domain.
+##	</summary>
+## </param>
+#
+interface(`baloo_role',`
+	gen_require(`
+		type baloo_t, baloo_exec_t;
+		role $2;
+	')
+
+	role $2 types baloo_t;
+	domtrans_pattern($1, baloo_exec_t, baloo_t)
+
+	allow $1 baloo_t:fd use;
+	allow $1 baloo_t:process { ptrace signal_perms };
+	ps_process_pattern($1, baloo_t)
+
+	allow baloo_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Wire up a role access to/from Baloo search runner: D-Bus chat
+##	with the role main domain, and systemd inherited-exec launch.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session resources.
+##	</summary>
+## </param>
+#
+interface(`local_baloo_role',`
+	local_baloo_dbus_chat($1_t)
+	local_baloo_systemd_inherit($1)
+')
+
+########################################
+## <summary>
+##	Send and receive D-Bus messages with Baloo search runner.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to exchange D-Bus messages.
+##	</summary>
+## </param>
+#
+interface(`local_baloo_dbus_chat',`
+	gen_require(`
+		type baloo_t;
+		class dbus send_msg;
+	')
+
+	allow $1 baloo_t:dbus send_msg;
+	allow baloo_t $1:dbus send_msg;
+')
+
+########################################
+## <summary>
+##	Allow a user systemd instance to launch Baloo search runner with the usual
+##	inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_baloo_systemd_inherit',`
+	gen_require(`
+		type baloo_t;
+	')
+
+	local_systemd_inherit_user_service($1, baloo_t)
+	allow baloo_t $1_systemd_t:unix_stream_socket { getattr ioctl };
+')

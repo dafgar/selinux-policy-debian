@@ -1,0 +1,61 @@
+policy_module(local_plasma_session)
+
+# Short-lived Plasma session bootstrap helpers, merged into one domain because
+# they share one permission profile: read/write KDE rc files and cache, start
+# user units, talk on the session bus, no network and no user content.
+#   startplasma-wayland, plasma-fallback-session-restore, kconf_update,
+#   kcminit (+ kcminit_startup), kaccess.
+# Each binary keeps its own exec type so any of them can be split into a
+# dedicated domain later by changing only the transition target.
+
+attribute_role plasma_session_roles;
+
+type plasma_session_t;
+type startplasma_exec_t;
+type plasma_fallback_restore_exec_t;
+type kconf_update_exec_t;
+type kcminit_exec_t;
+type kaccess_exec_t;
+
+userdom_user_application_domain(plasma_session_t, startplasma_exec_t)
+application_executable_file(plasma_fallback_restore_exec_t)
+domain_entry_file(plasma_session_t, plasma_fallback_restore_exec_t)
+application_executable_file(kconf_update_exec_t)
+domain_entry_file(plasma_session_t, kconf_update_exec_t)
+application_executable_file(kcminit_exec_t)
+domain_entry_file(plasma_session_t, kcminit_exec_t)
+application_executable_file(kaccess_exec_t)
+domain_entry_file(plasma_session_t, kaccess_exec_t)
+role plasma_session_roles types plasma_session_t;
+
+# startplasma-wayland execs the other helpers without changing domain.
+can_exec(plasma_session_t, startplasma_exec_t)
+can_exec(plasma_session_t, plasma_fallback_restore_exec_t)
+can_exec(plasma_session_t, kconf_update_exec_t)
+can_exec(plasma_session_t, kcminit_exec_t)
+can_exec(plasma_session_t, kaccess_exec_t)
+
+## <desc>
+## <p>
+## Allow the Plasma session helpers (startplasma-wayland,
+## plasma-fallback-session-restore, kconf_update, kcminit, kaccess) to make
+## their stack/heap memory executable (Qt/QML JIT). Defaults to true because
+## startplasma-wayland is on the login path; the denial is still audited when
+## the boolean is off.
+## </p>
+## </desc>
+gen_tunable(plasma_session_execmem, true)
+
+local_kde_gui_client(plasma_session_t)
+local_kde_session_peer(plasma_session_t)
+
+# kconf_update rewrites KDE rc files in place, including the shared
+# kdeglobals/kdedefaults; startplasma and kcminit write session/startup keys.
+xdg_manage_config(plasma_session_t)
+xdg_watch_config_dirs(plasma_session_t)
+xdg_watch_config_files(plasma_session_t)
+local_kde_write_config_files(plasma_session_t)
+
+tunable_policy(`plasma_session_execmem',`
+	allow plasma_session_t self:process execmem;
+')

@@ -65,3 +65,87 @@ interface(`local_kde_watch_config_dirs',`
 
 	allow $1 kde_xdg_config_t:dir watch;
 ')
+
+########################################
+## <summary>
+##	Make a domain a Plasma session infrastructure peer, so it can exchange
+##	session-bus messages with every other peer (plasmashell, KDED, KRunner,
+##	KActivities, Baloo, session helpers).
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain joining the peer group.
+##	</summary>
+## </param>
+#
+interface(`local_kde_session_peer',`
+	gen_require(`
+		attribute kde_session_peer;
+	')
+
+	typeattribute $1 kde_session_peer;
+')
+
+########################################
+## <summary>
+##	Baseline for a non-graphical KDE/Qt session process: read system and
+##	library files, be a session bus client, read shared KDE and XDG config,
+##	and the usual self process/socket perms. Callers add their own
+##	app-specific rules on top.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_kde_session_client',`
+	kernel_read_system_state($1)
+	miscfiles_read_localization($1)
+	files_read_etc_files($1)
+	files_read_usr_files($1)
+	files_map_usr_files($1)
+	fs_getattr_all_fs($1)
+	dev_read_sysfs($1)
+	dev_read_urand($1)
+	dbus_all_session_bus_client($1)
+	dbus_write_session_runtime_socket($1)
+	userdom_search_user_home_dirs($1)
+	userdom_search_user_runtime($1)
+	xdg_read_config_files($1)
+	xdg_search_config_dirs($1)
+	xdg_search_data_dirs($1)
+	xdg_read_cache_files($1)
+	xdg_search_cache_dirs($1)
+	local_kde_read_config_files($1)
+
+	allow $1 self:process { getsched setsched signal };
+	allow $1 self:fifo_file { getattr read write };
+	allow $1 self:unix_dgram_socket create_socket_perms;
+	allow $1 self:unix_stream_socket { connectto create_socket_perms };
+	allow $1 self:netlink_route_socket { create_socket_perms nlmsg_read };
+')
+
+########################################
+## <summary>
+##	Baseline for a graphical KDE/Qt Wayland client: everything from
+##	local_kde_session_client plus fonts, xkb data, DRI and the Mesa shader
+##	cache. The Wayland socket connect is wired separately per role.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_kde_gui_client',`
+	local_kde_session_client($1)
+
+	miscfiles_read_fonts($1)
+	dev_rw_dri($1)
+	xserver_read_xkb_libs($1)
+	xserver_use_user_fonts($1)
+	xserver_rw_mesa_shader_cache($1)
+	wm_map_tmpfs_files($1)
+	wm_rw_tmpfs_files($1)
+')

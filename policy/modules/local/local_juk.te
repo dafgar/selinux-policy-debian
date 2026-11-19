@@ -1,0 +1,25 @@
+policy_module(local_juk)
+
+attribute_role juk_roles;
+
+type juk_t;
+type juk_exec_t;
+userdom_user_application_domain(juk_t, juk_exec_t)
+role juk_roles types juk_t;
+
+## <desc>
+## <p>
+## Allow JuK to make its stack/heap memory executable.
+## </p>
+## </desc>
+gen_tunable(juk_execmem, false)
+
+local_kde_gui_client(juk_t)
+
+xdg_manage_config(juk_t)
+xdg_manage_data(juk_t)
+xdg_read_music(juk_t)
+
+tunable_policy(`juk_execmem',`
+	allow juk_t self:process execmem;
+')

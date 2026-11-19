@@ -1,0 +1,133 @@
+## <summary>
+##	Local KGpg domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the KGpg domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to KGpg.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the KGpg domain.
+##	</summary>
+## </param>
+#
+interface(`kgpg_role',`
+	gen_require(`
+		type kgpg_t, kgpg_exec_t;
+		role $2;
+	')
+
+	role $2 types kgpg_t;
+	domtrans_pattern($1, kgpg_exec_t, kgpg_t)
+
+	allow $1 kgpg_t:fd use;
+	allow $1 kgpg_t:process { ptrace signal_perms };
+	ps_process_pattern($1, kgpg_t)
+
+	allow kgpg_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Wire up a role access to/from KGpg: Wayland connect, D-Bus chat
+##	with the role main domain, and systemd inherited-exec launch.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session resources.
+##	</summary>
+## </param>
+#
+interface(`local_kgpg_role',`
+	local_kgpg_wayland_connect($1)
+	local_kgpg_dbus_chat($1_t)
+	local_kgpg_systemd_inherit($1)
+')
+
+########################################
+## <summary>
+##	Allow KGpg to connect to a role Wayland socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Wayland socket.
+##	</summary>
+## </param>
+#
+interface(`local_kgpg_wayland_connect',`
+	gen_require(`
+		type kgpg_t;
+	')
+
+	local_$1_wayland_connect(kgpg_t)
+')
+
+########################################
+## <summary>
+##	Send and receive D-Bus messages with KGpg.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to exchange D-Bus messages.
+##	</summary>
+## </param>
+#
+interface(`local_kgpg_dbus_chat',`
+	gen_require(`
+		type kgpg_t;
+		class dbus send_msg;
+	')
+
+	allow $1 kgpg_t:dbus send_msg;
+	allow kgpg_t $1:dbus send_msg;
+')
+
+########################################
+## <summary>
+##	Allow a user systemd instance to launch KGpg with the usual
+##	inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_kgpg_systemd_inherit',`
+	gen_require(`
+		type kgpg_t;
+	')
+
+	local_systemd_inherit_user_service($1, kgpg_t)
+	allow kgpg_t $1_systemd_t:unix_stream_socket { getattr ioctl };
+')
+
+########################################
+## <summary>
+##	Give KGpg the base gpg role wiring: transitions into gpg and gpg-agent,
+##	signal/ps access to them, and management of ~/.gnupg.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed to use the gpg domains.
+##	</summary>
+## </param>
+#
+interface(`local_kgpg_gpg_role',`
+	gen_require(`
+		type kgpg_t;
+	')
+
+	gpg_role($1, kgpg_t, kgpg_t, $2)
+')

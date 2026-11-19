@@ -1,0 +1,64 @@
+policy_module(local_plasma_services)
+
+# Long-running Plasma session-bus services, merged into one domain because
+# they share one permission profile: watch/write KDE config and cache, own
+# small per-user databases, talk on the session bus, no user content.
+#   kded6, kactivitymanagerd.
+# Each binary keeps its own exec type so either can be split out later by
+# changing only the transition target.
+
+attribute_role plasma_services_roles;
+
+type plasma_services_t;
+type kded_exec_t;
+type kactivitymanagerd_exec_t;
+
+userdom_user_application_domain(plasma_services_t, kded_exec_t)
+application_executable_file(kactivitymanagerd_exec_t)
+domain_entry_file(plasma_services_t, kactivitymanagerd_exec_t)
+role plasma_services_roles types plasma_services_t;
+
+## <desc>
+## <p>
+## Allow the Plasma session services (kded6, kactivitymanagerd) to make their
+## stack/heap memory executable (Qt/QML JIT).
+## </p>
+## </desc>
+gen_tunable(plasma_services_execmem, false)
+
+gen_require(`
+	type mount_runtime_t;
+	type xdg_config_t;
+')
+
+local_kde_session_client(plasma_services_t)
+local_kde_session_peer(plasma_services_t)
+
+# KDED spawns kconf_update for config migrations.
+local_plasma_session_run_kconf_update(plasma_services_t)
+
+# Solid/KIO device monitoring.
+allow plasma_services_t mount_runtime_t:dir watch;
+
+# KConfig/KSycoca watches (including the ~/.config/menus symlinks), plus the
+# kactivitymanagerd rc and the activity statistics database.
+xdg_manage_config(plasma_services_t)
+xdg_watch_config_dirs(plasma_services_t)
+xdg_watch_config_files(plasma_services_t)
+allow plasma_services_t xdg_config_t:lnk_file watch;
+xdg_manage_cache(plasma_services_t)
+xdg_watch_cache_files(plasma_services_t)
+xdg_manage_data(plasma_services_t)
+local_kde_write_config_files(plasma_services_t)
+
+# KDED modules: removable media, power, networking, Bluetooth, logind.
+dbus_system_bus_client(plasma_services_t)
+systemd_dbus_chat_logind(plasma_services_t)
+devicekit_dbus_chat_disk(plasma_services_t)
+devicekit_dbus_chat_power(plasma_services_t)
+networkmanager_dbus_chat(plasma_services_t)
+bluetooth_dbus_chat(plasma_services_t)
+
+tunable_policy(`plasma_services_execmem',`
+	allow plasma_services_t self:process execmem;
+')

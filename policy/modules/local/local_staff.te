@@ -29,6 +29,15 @@ type staff_x11_socket_t;
 userdom_user_tmp_file(staff_x11_socket_t)
 filetrans_pattern(staff_t, xdm_tmp_t, staff_x11_socket_t, sock_file, "X0")
 
+# kwin_wayland_wrapper (still staff_t) creates and listens on both sockets,
+# then hands them to kwin_wayland; clients still in staff_t connect to them too.
+manage_sock_files_pattern(staff_t, staff_wayland_socket_t, staff_wayland_socket_t)
+manage_sock_files_pattern(staff_t, staff_x11_socket_t, staff_x11_socket_t)
+local_staff_wayland_connect(staff_t)
+
+baloo_role(staff_application_exec_domain, staff_r)
+local_baloo_role(staff)
+
 local_chromium_role(staff)
 
 local_code_role(staff, staff_t)
@@ -67,11 +76,18 @@ gstpluginscanner_role(staff_application_exec_domain, staff_r)
 
 gvfs_role(staff, staff_t, staff_application_exec_domain, staff_r)
 
+juk_role(staff_application_exec_domain, staff_r)
+local_juk_role(staff)
+
 kdeconnect_role(staff_application_exec_domain, staff_r)
 local_kdeconnect_role(staff)
 
 keepassxc_role(staff_application_exec_domain, staff_r)
 local_keepassxc_role(staff)
+
+kgpg_role(staff_application_exec_domain, staff_r)
+local_kgpg_role(staff)
+local_kgpg_gpg_role(staff, staff_r)
 
 khelpcenter_role(staff_application_exec_domain, staff_r)
 qtwebengine_role(khelpcenter_t, staff_r)
@@ -82,9 +98,15 @@ local_kioworker_read_proc_state(staff_xwayland_t)
 konsole_role(staff, staff_t, staff_application_exec_domain, staff_r)
 local_konsole_role(staff)
 
+krunner_role(staff_application_exec_domain, staff_r)
+local_krunner_role(staff)
+
 kscreenlocker_role(staff_application_exec_domain, staff_r)
 
 ktorrent_role(staff_application_exec_domain, staff_r)
+
+kwalletd_role(staff_application_exec_domain, staff_r)
+local_kwalletd_role(staff)
 
 low_mem_mon_dbus_chat(staff_t)
 
@@ -101,6 +123,12 @@ local_mplayer_role(staff)
 netutils_run_ping(staff_t, staff_r)
 
 pipewire_role(staff, staff_t, staff_application_exec_domain, staff_r)
+
+plasma_services_role(staff_application_exec_domain, staff_r)
+local_plasma_services_role(staff)
+
+plasma_session_role(staff_application_exec_domain, staff_r)
+local_plasma_session_role(staff)
 
 plasmashell_role(staff_application_exec_domain, staff_r)
 local_plasmashell_role(staff)

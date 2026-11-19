@@ -1,0 +1,31 @@
+policy_module(local_baloo)
+
+# Baloo search runner (baloorunner). Kept apart from the other Plasma helpers
+# because the indexer side reads broadly under the home directory.
+# baloo_file/baloo_file_extractor were not seen in the AVC log; add their
+# exec labels here when they show up.
+
+attribute_role baloo_roles;
+
+type baloo_t;
+type baloo_exec_t;
+userdom_user_application_domain(baloo_t, baloo_exec_t)
+role baloo_roles types baloo_t;
+can_exec(baloo_t, baloo_exec_t)
+
+## <desc>
+## <p>
+## Allow the Baloo search runner to make its stack/heap memory executable.
+## </p>
+## </desc>
+gen_tunable(baloo_execmem, false)
+
+local_kde_session_client(baloo_t)
+local_kde_session_peer(baloo_t)
+
+# The LMDB index lives under ~/.local/share/baloo.
+xdg_manage_data(baloo_t)
+
+tunable_policy(`baloo_execmem',`
+	allow baloo_t self:process execmem;
+')

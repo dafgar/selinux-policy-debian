@@ -1,0 +1,109 @@
+## <summary>
+##	Local KWallet daemon domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the KWallet daemon domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to KWallet daemon.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the KWallet daemon domain.
+##	</summary>
+## </param>
+#
+interface(`kwalletd_role',`
+	gen_require(`
+		type kwalletd_t, kwalletd_exec_t;
+		role $2;
+	')
+
+	role $2 types kwalletd_t;
+	domtrans_pattern($1, kwalletd_exec_t, kwalletd_t)
+
+	allow $1 kwalletd_t:fd use;
+	allow $1 kwalletd_t:process { ptrace signal_perms };
+	ps_process_pattern($1, kwalletd_t)
+
+	allow kwalletd_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Wire up a role access to/from KWallet daemon: Wayland connect, D-Bus chat
+##	with the role main domain, and systemd inherited-exec launch.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session resources.
+##	</summary>
+## </param>
+#
+interface(`local_kwalletd_role',`
+	local_kwalletd_wayland_connect($1)
+	local_kwalletd_dbus_chat($1_t)
+	local_kwalletd_systemd_inherit($1)
+')
+
+########################################
+## <summary>
+##	Allow KWallet daemon to connect to a role Wayland socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Wayland socket.
+##	</summary>
+## </param>
+#
+interface(`local_kwalletd_wayland_connect',`
+	gen_require(`
+		type kwalletd_t;
+	')
+
+	local_$1_wayland_connect(kwalletd_t)
+')
+
+########################################
+## <summary>
+##	Send and receive D-Bus messages with KWallet daemon.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to exchange D-Bus messages.
+##	</summary>
+## </param>
+#
+interface(`local_kwalletd_dbus_chat',`
+	gen_require(`
+		type kwalletd_t;
+		class dbus send_msg;
+	')
+
+	allow $1 kwalletd_t:dbus send_msg;
+	allow kwalletd_t $1:dbus send_msg;
+')
+
+########################################
+## <summary>
+##	Allow a user systemd instance to launch KWallet daemon with the usual
+##	inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_kwalletd_systemd_inherit',`
+	gen_require(`
+		type kwalletd_t;
+	')
+
+	local_systemd_inherit_user_service($1, kwalletd_t)
+	allow kwalletd_t $1_systemd_t:unix_stream_socket { getattr ioctl };
+')

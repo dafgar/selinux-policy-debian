@@ -71710,6 +71710,65 @@ Local auditadm role bindings.
 Local policy for the KDE backlight helper domain.
 </summary>
 </module>
+<module name="local_baloo" filename="policy/modules/local/local_baloo.if">
+<summary>
+Local Baloo search runner domain interfaces.
+</summary>
+<interface name="baloo_role" lineno="20">
+<summary>
+Allow a role to transition into the Baloo search runner domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to Baloo search runner.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the Baloo search runner domain.
+</summary>
+</param>
+</interface>
+<interface name="local_baloo_role" lineno="47">
+<summary>
+Wire up a role access to/from Baloo search runner: D-Bus chat
+with the role main domain, and systemd inherited-exec launch.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_baloo_dbus_chat" lineno="62">
+<summary>
+Send and receive D-Bus messages with Baloo search runner.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages.
+</summary>
+</param>
+</interface>
+<interface name="local_baloo_systemd_inherit" lineno="83">
+<summary>
+Allow a user systemd instance to launch Baloo search runner with the usual
+inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+<tunable name="baloo_execmem" dftval="false">
+<desc>
+<p>
+Allow the Baloo search runner to make its stack/heap memory executable.
+</p>
+</desc>
+</tunable>
+</module>
 <module name="local_bird" filename="policy/modules/local/local_bird.if">
 <summary>
 Local override module with no exported interfaces.
@@ -72520,6 +72579,75 @@ Local override module with no exported interfaces.
 Local override module with no exported interfaces.
 </summary>
 </module>
+<module name="local_juk" filename="policy/modules/local/local_juk.if">
+<summary>
+Local JuK music player domain interfaces.
+</summary>
+<interface name="juk_role" lineno="20">
+<summary>
+Allow a role to transition into the JuK music player domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to JuK music player.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the JuK music player domain.
+</summary>
+</param>
+</interface>
+<interface name="local_juk_role" lineno="47">
+<summary>
+Wire up a role access to/from JuK music player: Wayland connect, D-Bus chat
+with the role main domain, and systemd inherited-exec launch.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_juk_wayland_connect" lineno="63">
+<summary>
+Allow JuK music player to connect to a role Wayland socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Wayland socket.
+</summary>
+</param>
+</interface>
+<interface name="local_juk_dbus_chat" lineno="81">
+<summary>
+Send and receive D-Bus messages with JuK music player.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages.
+</summary>
+</param>
+</interface>
+<interface name="local_juk_systemd_inherit" lineno="102">
+<summary>
+Allow a user systemd instance to launch JuK music player with the usual
+inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+<tunable name="juk_execmem" dftval="false">
+<desc>
+<p>
+Allow JuK to make its stack/heap memory executable.
+</p>
+</desc>
+</tunable>
+</module>
 <module name="local_kde" filename="policy/modules/local/local_kde.if">
 <summary>
 Shared KDE-wide desktop config interfaces.
@@ -72551,6 +72679,43 @@ Domain allowed access.
 Watch the shared KDE desktop config directory (kdedefaults) for
 changes, e.g. a non-KDE app noticing a dark/light theme switch,
 without granting write access.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="local_kde_session_peer" lineno="81">
+<summary>
+Make a domain a Plasma session infrastructure peer, so it can exchange
+session-bus messages with every other peer (plasmashell, KDED, KRunner,
+KActivities, Baloo, session helpers).
+</summary>
+<param name="domain">
+<summary>
+Domain joining the peer group.
+</summary>
+</param>
+</interface>
+<interface name="local_kde_session_client" lineno="102">
+<summary>
+Baseline for a non-graphical KDE/Qt session process: read system and
+library files, be a session bus client, read shared KDE and XDG config,
+and the usual self process/socket perms. Callers add their own
+app-specific rules on top.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
+<interface name="local_kde_gui_client" lineno="141">
+<summary>
+Baseline for a graphical KDE/Qt Wayland client: everything from
+local_kde_session_client plus fonts, xkb data, DRI and the Mesa shader
+cache. The Wayland socket connect is wired separately per role.
 </summary>
 <param name="domain">
 <summary>
@@ -72760,6 +72925,91 @@ Allow KeePassXC to make its stack/heap memory executable.
 </desc>
 </tunable>
 </module>
+<module name="local_kgpg" filename="policy/modules/local/local_kgpg.if">
+<summary>
+Local KGpg domain interfaces.
+</summary>
+<interface name="kgpg_role" lineno="20">
+<summary>
+Allow a role to transition into the KGpg domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to KGpg.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the KGpg domain.
+</summary>
+</param>
+</interface>
+<interface name="local_kgpg_role" lineno="47">
+<summary>
+Wire up a role access to/from KGpg: Wayland connect, D-Bus chat
+with the role main domain, and systemd inherited-exec launch.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_kgpg_wayland_connect" lineno="63">
+<summary>
+Allow KGpg to connect to a role Wayland socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Wayland socket.
+</summary>
+</param>
+</interface>
+<interface name="local_kgpg_dbus_chat" lineno="81">
+<summary>
+Send and receive D-Bus messages with KGpg.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages.
+</summary>
+</param>
+</interface>
+<interface name="local_kgpg_systemd_inherit" lineno="102">
+<summary>
+Allow a user systemd instance to launch KGpg with the usual
+inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+<interface name="local_kgpg_gpg_role" lineno="127">
+<summary>
+Give KGpg the base gpg role wiring: transitions into gpg and gpg-agent,
+signal/ps access to them, and management of ~/.gnupg.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed to use the gpg domains.
+</summary>
+</param>
+</interface>
+<tunable name="kgpg_execmem" dftval="false">
+<desc>
+<p>
+Allow KGpg to make its stack/heap memory executable.
+</p>
+</desc>
+</tunable>
+</module>
 <module name="local_khelpcenter" filename="policy/modules/local/local_khelpcenter.if">
 <summary>
 Local KHelpCenter domain interfaces.
@@ -72925,6 +73175,76 @@ needed.
 </desc>
 </tunable>
 </module>
+<module name="local_krunner" filename="policy/modules/local/local_krunner.if">
+<summary>
+Local KRunner domain interfaces.
+</summary>
+<interface name="krunner_role" lineno="20">
+<summary>
+Allow a role to transition into the KRunner domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to KRunner.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the KRunner domain.
+</summary>
+</param>
+</interface>
+<interface name="local_krunner_role" lineno="47">
+<summary>
+Wire up a role access to/from KRunner: Wayland connect, D-Bus chat
+with the role main domain, and systemd inherited-exec launch.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_krunner_wayland_connect" lineno="63">
+<summary>
+Allow KRunner to connect to a role Wayland socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Wayland socket.
+</summary>
+</param>
+</interface>
+<interface name="local_krunner_dbus_chat" lineno="81">
+<summary>
+Send and receive D-Bus messages with KRunner.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages.
+</summary>
+</param>
+</interface>
+<interface name="local_krunner_systemd_inherit" lineno="102">
+<summary>
+Allow a user systemd instance to launch KRunner with the usual
+inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+<tunable name="krunner_execmem" dftval="false">
+<desc>
+<p>
+Allow KRunner to make its stack/heap memory executable (QML JIT in the
+runner UI).
+</p>
+</desc>
+</tunable>
+</module>
 <module name="local_kscreenlocker" filename="policy/modules/local/local_kscreenlocker.if">
 <summary>
 Local KScreenLocker greeter domain interfaces.
@@ -72972,6 +73292,68 @@ Allow KTorrent to make its stack/heap memory executable.
 </p>
 </desc>
 </tunable>
+</module>
+<module name="local_kwalletd" filename="policy/modules/local/local_kwalletd.if">
+<summary>
+Local KWallet daemon domain interfaces.
+</summary>
+<interface name="kwalletd_role" lineno="20">
+<summary>
+Allow a role to transition into the KWallet daemon domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to KWallet daemon.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the KWallet daemon domain.
+</summary>
+</param>
+</interface>
+<interface name="local_kwalletd_role" lineno="47">
+<summary>
+Wire up a role access to/from KWallet daemon: Wayland connect, D-Bus chat
+with the role main domain, and systemd inherited-exec launch.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_kwalletd_wayland_connect" lineno="63">
+<summary>
+Allow KWallet daemon to connect to a role Wayland socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Wayland socket.
+</summary>
+</param>
+</interface>
+<interface name="local_kwalletd_dbus_chat" lineno="81">
+<summary>
+Send and receive D-Bus messages with KWallet daemon.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages.
+</summary>
+</param>
+</interface>
+<interface name="local_kwalletd_systemd_inherit" lineno="102">
+<summary>
+Allow a user systemd instance to launch KWallet daemon with the usual
+inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_lowmemorymonitor" filename="policy/modules/local/local_lowmemorymonitor.if">
 <summary>
@@ -73301,6 +73683,162 @@ Role allowed access.
 </summary>
 </param>
 </template>
+</module>
+<module name="local_plasma_services" filename="policy/modules/local/local_plasma_services.if">
+<summary>
+Local Plasma session services domain (kded6, kactivitymanagerd).
+</summary>
+<interface name="plasma_services_role" lineno="20">
+<summary>
+Allow a role to transition into the Plasma session services domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to the services.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the services domain.
+</summary>
+</param>
+</interface>
+<interface name="local_plasma_services_role" lineno="48">
+<summary>
+Wire up all of a role access to/from the Plasma session services:
+D-Bus chat with the role main domain and systemd inherited-exec launch.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_plasma_services_dbus_chat" lineno="63">
+<summary>
+Send and receive D-Bus messages with the Plasma session services.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages.
+</summary>
+</param>
+</interface>
+<interface name="local_plasma_services_systemd_inherit" lineno="84">
+<summary>
+Allow a user systemd instance to launch the Plasma session services
+with the usual inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+<tunable name="plasma_services_execmem" dftval="false">
+<desc>
+<p>
+Allow the Plasma session services (kded6, kactivitymanagerd) to make their
+stack/heap memory executable (Qt/QML JIT).
+</p>
+</desc>
+</tunable>
+</module>
+<module name="local_plasma_session" filename="policy/modules/local/local_plasma_session.if">
+<summary>
+Local Plasma session bootstrap helper domain (startplasma-wayland,
+plasma-fallback-session-restore, kconf_update, kcminit, kaccess).
+</summary>
+<interface name="plasma_session_role" lineno="21">
+<summary>
+Allow a role to transition into the Plasma session helper domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to the session helpers.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the session helper domain.
+</summary>
+</param>
+</interface>
+<interface name="local_plasma_session_run_kconf_update" lineno="54">
+<summary>
+Allow a domain to run kconf_update in the Plasma session helper domain,
+e.g. KDED spawning it for config migrations.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to execute kconf_update.
+</summary>
+</param>
+</interface>
+<interface name="local_plasma_session_role" lineno="77">
+<summary>
+Wire up all of a role access to/from the Plasma session helpers:
+Wayland and X11 connect, D-Bus chat with the role main domain, and
+systemd inherited-exec launch.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_plasma_session_wayland_connect" lineno="102">
+<summary>
+Allow the Plasma session helpers to connect to a role Wayland socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Wayland socket.
+</summary>
+</param>
+</interface>
+<interface name="local_plasma_session_x11_connect" lineno="120">
+<summary>
+Allow the Plasma session helpers to connect to a role X11 socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the X11 socket.
+</summary>
+</param>
+</interface>
+<interface name="local_plasma_session_dbus_chat" lineno="138">
+<summary>
+Send and receive D-Bus messages with the Plasma session helpers.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages.
+</summary>
+</param>
+</interface>
+<interface name="local_plasma_session_systemd_inherit" lineno="159">
+<summary>
+Allow a user systemd instance to launch the Plasma session helpers with
+the usual inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+<tunable name="plasma_session_execmem" dftval="true">
+<desc>
+<p>
+Allow the Plasma session helpers (startplasma-wayland,
+plasma-fallback-session-restore, kconf_update, kcminit, kaccess) to make
+their stack/heap memory executable (Qt/QML JIT). Defaults to true because
+startplasma-wayland is on the login path; the denial is still audited when
+the boolean is off.
+</p>
+</desc>
+</tunable>
 </module>
 <module name="local_plasmashell" filename="policy/modules/local/local_plasmashell.if">
 <summary>

@@ -1,0 +1,6 @@
+/usr/bin/startplasma-wayland	--	gen_context(system_u:object_r:startplasma_exec_t,s0)
+/usr/lib/x86_64-linux-gnu/libexec/plasma-fallback-session-restore	--	gen_context(system_u:object_r:plasma_fallback_restore_exec_t,s0)
+/usr/lib/x86_64-linux-gnu/libexec/kf6/kconf_update	--	gen_context(system_u:object_r:kconf_update_exec_t,s0)
+# kcminit_startup runs the same binary (exe=/usr/bin/kcminit) under a different argv0.
+/usr/bin/kcminit	--	gen_context(system_u:object_r:kcminit_exec_t,s0)
+/usr/bin/kaccess	--	gen_context(system_u:object_r:kaccess_exec_t,s0)

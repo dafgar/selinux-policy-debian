@@ -1,0 +1,18 @@
+policy_module(local_kwalletd)
+
+# KWallet daemon: holds the user secrets store, so it stays out of every
+# merged helper domain and is not a kde_session_peer; callers get D-Bus access
+# through local_kwalletd_dbus_chat().
+
+attribute_role kwalletd_roles;
+
+type kwalletd_t;
+type kwalletd_exec_t;
+userdom_user_application_domain(kwalletd_t, kwalletd_exec_t)
+role kwalletd_roles types kwalletd_t;
+
+local_kde_gui_client(kwalletd_t)
+
+# ~/.config/kwalletrc and the wallet files under ~/.local/share/kwalletd.
+xdg_manage_config(kwalletd_t)
+xdg_manage_data(kwalletd_t)

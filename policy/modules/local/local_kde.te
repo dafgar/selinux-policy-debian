@@ -7,3 +7,17 @@ policy_module(local_kde)
 # so it previously fell back to generic xdg_config_t.
 type kde_xdg_config_t;
 xdg_config_content(kde_xdg_config_t)
+
+# Plasma session infrastructure domains (plasma_session_t, plasma_services_t,
+# krunner_t, baloo_t, plasmashell_t) all exchange session-bus messages with
+# each other (KActivities, KRunner, KDED modules, notifications). Joining this
+# attribute via local_kde_session_peer() gives them mutual D-Bus access without
+# an N-by-N list of per-pair interfaces. Secrets/key handlers (kwalletd_t,
+# kgpg_t) and ordinary apps deliberately do not join it.
+attribute kde_session_peer;
+
+gen_require(`
+	class dbus send_msg;
+')
+
+allow kde_session_peer kde_session_peer:dbus send_msg;

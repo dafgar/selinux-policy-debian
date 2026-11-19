@@ -1,0 +1,47 @@
+policy_module(local_krunner)
+
+# KRunner is its own domain (not merged with the other Plasma helpers): it
+# searches user content (bookmarks, recent files, places) and launches
+# applications, so its trust profile differs from the config/service helpers.
+# The krunner_service/krunner_placesr/krunner_bookmar comms are threads of
+# the same process.
+
+attribute_role krunner_roles;
+
+type krunner_t;
+type krunner_exec_t;
+userdom_user_application_domain(krunner_t, krunner_exec_t)
+role krunner_roles types krunner_t;
+can_exec(krunner_t, krunner_exec_t)
+
+## <desc>
+## <p>
+## Allow KRunner to make its stack/heap memory executable (QML JIT in the
+## runner UI).
+## </p>
+## </desc>
+gen_tunable(krunner_execmem, false)
+
+gen_require(`
+	type chromium_xdg_config_t;
+	type mount_runtime_t;
+')
+
+local_kde_gui_client(krunner_t)
+local_kde_session_peer(krunner_t)
+
+# Places runner: Solid/KIO mount list changes.
+allow krunner_t mount_runtime_t:dir watch;
+
+# KConfig and KSycoca (service cache) invalidation watches.
+xdg_watch_config_dirs(krunner_t)
+xdg_watch_config_files(krunner_t)
+xdg_watch_cache_files(krunner_t)
+
+# The bookmarks runner watches Chromium's Bookmarks file; keep Chromium's
+# profile out of KRunner reach rather than granting it.
+dontaudit krunner_t chromium_xdg_config_t:file watch;
+
+tunable_policy(`krunner_execmem',`
+	allow krunner_t self:process execmem;
+')
