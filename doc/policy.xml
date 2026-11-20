@@ -72553,9 +72553,9 @@ Role allowed access.
 </summary>
 </param>
 </template>
-<interface name="local_gvfs_dbus_chat" lineno="131">
+<interface name="local_gvfs_dbus_chat" lineno="177">
 <summary>
-Allow a domain to chat with the role's GVFS daemon over D-Bus.
+Allow a domain to chat with the role GVFS daemon and volume monitor over D-Bus.
 </summary>
 <param name="role_prefix">
 <summary>

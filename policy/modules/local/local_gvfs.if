@@ -32,6 +32,7 @@ template(`gvfs_role',`
 		role $4;
 		attribute $3;
 		type gvfsd_exec_t, gvfsd_fuse_exec_t, gvfsd_runtime_t, fusefs_t;
+		type gvfs_volume_monitor_exec_t, mount_runtime_t;
 		type mount_t, sysctl_vm_t, sysctl_vm_overcommit_t;
 		type $1_systemd_t, $1_dbusd_t;
 		type session_dbusd_runtime_t;
@@ -40,9 +41,11 @@ template(`gvfs_role',`
 
 	type $1_gvfsd_t;
 	type $1_gvfsd_fuse_t;
+	type $1_gvfs_volume_monitor_t;
 	userdom_user_application_domain($1_gvfsd_t, gvfsd_exec_t)
 	userdom_user_application_domain($1_gvfsd_fuse_t, gvfsd_fuse_exec_t)
-	role $4 types { $1_gvfsd_t $1_gvfsd_fuse_t };
+	userdom_user_application_domain($1_gvfs_volume_monitor_t, gvfs_volume_monitor_exec_t)
+	role $4 types { $1_gvfsd_t $1_gvfsd_fuse_t $1_gvfs_volume_monitor_t };
 
 	domtrans_pattern($3, gvfsd_exec_t, $1_gvfsd_t)
 	domtrans_pattern($3, gvfsd_fuse_exec_t, $1_gvfsd_fuse_t)
@@ -90,6 +93,49 @@ template(`gvfs_role',`
 	allow $1_gvfsd_fuse_t sysctl_vm_overcommit_t:file { open read };
 
 	allow $1_gvfsd_t self:fifo_file { getattr read write };
+
+	# UDisks2-backed volume monitor: separate from gvfsd because it needs
+	# udisks (system bus), udev and uevent access that the file-backend
+	# daemon does not.
+	domtrans_pattern($3, gvfs_volume_monitor_exec_t, $1_gvfs_volume_monitor_t)
+	allow $3 $1_gvfs_volume_monitor_t:process { ptrace signal_perms };
+	allow $3 $1_gvfs_volume_monitor_t:fd use;
+	ps_process_pattern($3, $1_gvfs_volume_monitor_t)
+	allow $1_gvfs_volume_monitor_t $3:process sigchld;
+
+	auth_use_nsswitch($1_gvfs_volume_monitor_t)
+	dbus_all_session_bus_client($1_gvfs_volume_monitor_t)
+	dbus_write_session_runtime_socket($1_gvfs_volume_monitor_t)
+	dbus_system_bus_client($1_gvfs_volume_monitor_t)
+	devicekit_dbus_chat_disk($1_gvfs_volume_monitor_t)
+	allow $3 $1_gvfs_volume_monitor_t:dbus send_msg;
+	allow $1_gvfs_volume_monitor_t $3:dbus send_msg;
+	allow $1_gvfs_volume_monitor_t $1_dbusd_t:dbus acquire_svc;
+	allow $1_gvfs_volume_monitor_t session_dbusd_runtime_t:sock_file getattr;
+	allow $1_gvfsd_t $1_gvfs_volume_monitor_t:dbus send_msg;
+	allow $1_gvfs_volume_monitor_t $1_gvfsd_t:dbus send_msg;
+
+	files_read_usr_files($1_gvfs_volume_monitor_t)
+	files_map_usr_files($1_gvfs_volume_monitor_t)
+	miscfiles_read_localization($1_gvfs_volume_monitor_t)
+	xdg_search_config_dirs($1_gvfs_volume_monitor_t)
+	xdg_search_data_dirs($1_gvfs_volume_monitor_t)
+	userdom_search_user_runtime($1_gvfs_volume_monitor_t)
+	kernel_read_system_state($1_gvfs_volume_monitor_t)
+	dev_read_sysfs($1_gvfs_volume_monitor_t)
+	fs_getattr_all_fs($1_gvfs_volume_monitor_t)
+	udev_read_runtime_files($1_gvfs_volume_monitor_t)
+	allow $1_gvfs_volume_monitor_t proc_t:file { getattr open read };
+
+	# libmount watches the mount table; gudev listens for kernel uevents.
+	mount_list_runtime($1_gvfs_volume_monitor_t)
+	mount_read_runtime_files($1_gvfs_volume_monitor_t)
+	allow $1_gvfs_volume_monitor_t mount_runtime_t:dir watch;
+	allow $1_gvfs_volume_monitor_t self:netlink_kobject_uevent_socket { create_socket_perms read };
+	allow $1_gvfs_volume_monitor_t self:fifo_file { getattr read write };
+	allow $1_gvfs_volume_monitor_t self:unix_dgram_socket create_socket_perms;
+	allow $1_gvfs_volume_monitor_t self:process { getsched signal };
+	local_systemd_inherit_user_service($1, $1_gvfs_volume_monitor_t)
 	local_systemd_inherit_user_service($1, $1_gvfsd_t)
 	local_systemd_inherit_user_service($1, $1_gvfsd_fuse_t)
 
@@ -115,7 +161,7 @@ template(`gvfs_role',`
 
 ########################################
 ## <summary>
-##	Allow a domain to chat with the role's GVFS daemon over D-Bus.
+##	Allow a domain to chat with the role GVFS daemon and volume monitor over D-Bus.
 ## </summary>
 ## <param name="role_prefix">
 ##	<summary>
@@ -130,10 +176,13 @@ template(`gvfs_role',`
 #
 interface(`local_gvfs_dbus_chat',`
 	gen_require(`
-		type $1_gvfsd_t;
+		type $1_gvfsd_t, $1_gvfs_volume_monitor_t;
 		class dbus send_msg;
 	')
 
 	allow $2 $1_gvfsd_t:dbus send_msg;
 	allow $1_gvfsd_t $2:dbus send_msg;
+	# GIO clients also query the volume monitor over the session bus.
+	allow $2 $1_gvfs_volume_monitor_t:dbus send_msg;
+	allow $1_gvfs_volume_monitor_t $2:dbus send_msg;
 ')

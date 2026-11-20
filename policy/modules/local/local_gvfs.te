@@ -9,3 +9,8 @@ application_executable_file(gvfsd_fuse_exec_t)
 type gvfsd_runtime_t;
 userdom_user_runtime_content(gvfsd_runtime_t)
 files_mountpoint(gvfsd_runtime_t)
+
+# gvfs-udisks2-volume-monitor: GIO remote volume monitor backed by UDisks2
+# (D-Bus-activated; feeds the drives/volumes sidebar of GTK/GIO file dialogs).
+type gvfs_volume_monitor_exec_t;
+application_executable_file(gvfs_volume_monitor_exec_t)
