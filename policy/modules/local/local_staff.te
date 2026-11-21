@@ -101,6 +101,9 @@ local_konsole_role(staff)
 krunner_role(staff_application_exec_domain, staff_r)
 local_krunner_role(staff)
 
+libreoffice_role(staff_application_exec_domain, staff_r)
+local_libreoffice_role(staff)
+
 kscreenlocker_role(staff_application_exec_domain, staff_r)
 
 ktorrent_role(staff_application_exec_domain, staff_r)

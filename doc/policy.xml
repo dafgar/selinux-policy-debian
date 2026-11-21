@@ -73355,6 +73355,130 @@ User role prefix that owns the user systemd domain.
 </param>
 </interface>
 </module>
+<module name="local_libreoffice" filename="policy/modules/local/local_libreoffice.if">
+<summary>
+Local LibreOffice domain interfaces.
+</summary>
+<interface name="libreoffice_role" lineno="20">
+<summary>
+Allow a role to transition into the LibreOffice domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to LibreOffice.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the LibreOffice domain.
+</summary>
+</param>
+</interface>
+<interface name="local_libreoffice_role" lineno="48">
+<summary>
+Wire up a role access to/from LibreOffice: X11 and Wayland connect,
+D-Bus chat with the role main domain, and gvfs for the file dialog.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Wayland and gvfs session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_libreoffice_x11_connect" lineno="65">
+<summary>
+Allow LibreOffice to connect to the user X11 socket peer domain.
+</summary>
+<param name="xserver_domain">
+<summary>
+Domain owning the X11 socket peer.
+</summary>
+</param>
+</interface>
+<interface name="local_libreoffice_wayland_connect" lineno="83">
+<summary>
+Allow LibreOffice to connect to a role Wayland socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the Wayland socket.
+</summary>
+</param>
+</interface>
+<interface name="local_libreoffice_dbus_chat" lineno="101">
+<summary>
+Send and receive D-Bus messages with LibreOffice.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages.
+</summary>
+</param>
+</interface>
+<interface name="local_libreoffice_gvfs_dbus_chat" lineno="122">
+<summary>
+Allow LibreOffice to query gvfs for mountable locations, for a given
+role prefix.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the gvfs domain.
+</summary>
+</param>
+</interface>
+<tunable name="libreoffice_execmem" dftval="false">
+<desc>
+<p>
+Allow LibreOffice to make its stack/heap memory executable (Java and
+JIT-based components).
+</p>
+</desc>
+</tunable>
+<tunable name="libreoffice_allow_update" dftval="true">
+<desc>
+<p>
+Allow LibreOffice to download software updates and extensions from the
+network.
+</p>
+</desc>
+</tunable>
+<tunable name="libreoffice_allow_email" dftval="false">
+<desc>
+<p>
+Allow LibreOffice Writer to send email directly (print to email).
+External mail clients keep working either way.
+</p>
+</desc>
+</tunable>
+<tunable name="libreoffice_read_generic_user_content" dftval="true">
+<desc>
+<p>
+Grant the libreoffice domains read access to generic user content
+</p>
+</desc>
+</tunable>
+<tunable name="libreoffice_read_all_user_content" dftval="false">
+<desc>
+<p>
+Grant the libreoffice domains read access to all user content
+</p>
+</desc>
+</tunable>
+<tunable name="libreoffice_manage_generic_user_content" dftval="false">
+<desc>
+<p>
+Grant the libreoffice domains manage rights on generic user content
+</p>
+</desc>
+</tunable>
+<tunable name="libreoffice_manage_all_user_content" dftval="false">
+<desc>
+<p>
+Grant the libreoffice domains manage rights on all user content
+</p>
+</desc>
+</tunable>
+</module>
 <module name="local_lowmemorymonitor" filename="policy/modules/local/local_lowmemorymonitor.if">
 <summary>
 Local override module with no exported interfaces.

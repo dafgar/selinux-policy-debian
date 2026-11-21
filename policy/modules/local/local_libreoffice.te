@@ -1,0 +1,159 @@
+policy_module(local_libreoffice)
+
+# Own domain for Debian LibreOffice (soffice.bin), based on the base
+# policy module openoffice (policy/modules/apps/openoffice.te, ooffice_t):
+# its rules were copied and then adapted to Debian paths, Wayland and the
+# local KDE baseline. The base module only labels /opt/openoffice*, never
+# matches Debian paths, and carries an unconditional execmem plus X11-only
+# display access; none of that can be changed from a local overlay.
+
+attribute_role libreoffice_roles;
+
+type libreoffice_t;
+type libreoffice_exec_t;
+userdom_user_application_domain(libreoffice_t, libreoffice_exec_t)
+role libreoffice_roles types libreoffice_t;
+can_exec(libreoffice_t, libreoffice_exec_t)
+
+type libreoffice_xdg_config_t;
+xdg_config_content(libreoffice_xdg_config_t)
+
+type libreoffice_tmp_t;
+files_tmp_file(libreoffice_tmp_t)
+
+# Native Wayland clients hand cursor pixel data to the compositor through an
+# anonymous memfd; memfd objects take their label from tmpfs transitions.
+type libreoffice_tmpfs_t;
+userdom_user_tmpfs_file(libreoffice_tmpfs_t)
+
+## <desc>
+## <p>
+## Allow LibreOffice to make its stack/heap memory executable (Java and
+## JIT-based components).
+## </p>
+## </desc>
+gen_tunable(libreoffice_execmem, false)
+
+## <desc>
+## <p>
+## Allow LibreOffice to download software updates and extensions from the
+## network.
+## </p>
+## </desc>
+gen_tunable(libreoffice_allow_update, true)
+
+## <desc>
+## <p>
+## Allow LibreOffice Writer to send email directly (print to email).
+## External mail clients keep working either way.
+## </p>
+## </desc>
+gen_tunable(libreoffice_allow_email, false)
+
+gen_require(`
+	type chromium_t;
+	type mount_runtime_t;
+')
+
+local_kde_gui_client(libreoffice_t)
+
+allow libreoffice_t self:process getsched;
+allow libreoffice_t self:shm create_shm_perms;
+allow libreoffice_t self:unix_stream_socket connectto;
+
+manage_dirs_pattern(libreoffice_t, libreoffice_xdg_config_t, libreoffice_xdg_config_t)
+manage_files_pattern(libreoffice_t, libreoffice_xdg_config_t, libreoffice_xdg_config_t)
+manage_lnk_files_pattern(libreoffice_t, libreoffice_xdg_config_t, libreoffice_xdg_config_t)
+xdg_config_filetrans(libreoffice_t, libreoffice_xdg_config_t, dir, "libreoffice")
+
+manage_dirs_pattern(libreoffice_t, libreoffice_tmp_t, libreoffice_tmp_t)
+manage_files_pattern(libreoffice_t, libreoffice_tmp_t, libreoffice_tmp_t)
+manage_lnk_files_pattern(libreoffice_t, libreoffice_tmp_t, libreoffice_tmp_t)
+manage_sock_files_pattern(libreoffice_t, libreoffice_tmp_t, libreoffice_tmp_t)
+files_tmp_filetrans(libreoffice_t, libreoffice_tmp_t, { dir file lnk_file sock_file })
+dontaudit libreoffice_t libreoffice_tmp_t:file execute;
+
+manage_files_pattern(libreoffice_t, libreoffice_tmpfs_t, libreoffice_tmpfs_t)
+allow libreoffice_t libreoffice_tmpfs_t:file map;
+fs_tmpfs_filetrans(libreoffice_t, libreoffice_tmpfs_t, file)
+
+corecmd_exec_bin(libreoffice_t)
+corecmd_exec_shell(libreoffice_t)
+
+kernel_dontaudit_read_system_state(libreoffice_t)
+
+domain_use_interactive_fds(libreoffice_t)
+
+# Document and font/icon scanning stats files across the filesystem.
+files_getattr_all_dirs(libreoffice_t)
+files_getattr_all_files(libreoffice_t)
+files_getattr_all_symlinks(libreoffice_t)
+
+fs_getattr_xattr_fs(libreoffice_t)
+
+miscfiles_manage_fonts_cache(libreoffice_t)
+
+sysnet_dns_name_resolve(libreoffice_t)
+
+userdom_dontaudit_exec_user_home_content_files(libreoffice_t)
+userdom_dontaudit_manage_user_tmp_dirs(libreoffice_t)
+userdom_manage_user_tmp_dirs(libreoffice_t)
+userdom_manage_user_tmp_sockets(libreoffice_t)
+userdom_write_user_tmp_sockets(libreoffice_t)
+userdom_use_inherited_user_terminals(libreoffice_t)
+
+# Opens and saves documents from anywhere under the user home; the template
+# adds libreoffice_{read,manage}_{generic,all}_user_content tunables.
+userdom_user_content_access_template(libreoffice, libreoffice_t)
+xdg_manage_documents(libreoffice_t)
+
+# Wayland clipboard and drag-and-drop: Plasma creates the data-offer pipe and
+# the compositor passes its write end to LibreOffice.
+local_plasmashell_use_fifo(libreoffice_t)
+
+# Pasting or dragging content out of Chromium: Chromium creates the pipe.
+local_clipboard_pipe_write(chromium_t, libreoffice_t)
+
+# File dialog mount-table inotify; the dialog works without it, so keep
+# /run/mount out of reach.
+dontaudit libreoffice_t mount_runtime_t:dir watch;
+
+tunable_policy(`libreoffice_execmem',`
+	allow libreoffice_t self:process execmem;
+')
+
+tunable_policy(`libreoffice_allow_update',`
+	corenet_tcp_connect_http_port(libreoffice_t)
+')
+
+tunable_policy(`libreoffice_allow_email',`
+	corenet_tcp_connect_smtp_port(libreoffice_t)
+	corenet_sendrecv_smtp_client_packets(libreoffice_t)
+')
+
+optional_policy(`
+	cups_read_config(libreoffice_t)
+	cups_stream_connect(libreoffice_t)
+')
+
+optional_policy(`
+	hostname_exec(libreoffice_t)
+')
+
+# X11 fallback (xcb VCL plugin) through Xwayland; the connectto on the
+# compositor socket owner is in local_libreoffice_x11_connect.
+xserver_stream_connect(libreoffice_t)
+
+# Send as email and mailto: links launch the confined mail client instead of
+# running it inside libreoffice_t.
+optional_policy(`
+	evolution_domtrans(libreoffice_t)
+')
+
+optional_policy(`
+	thunderbird_domtrans(libreoffice_t)
+')
+
+optional_policy(`
+	java_exec(libreoffice_t)
+')

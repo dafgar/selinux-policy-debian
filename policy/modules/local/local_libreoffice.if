@@ -1,0 +1,128 @@
+## <summary>
+##	Local LibreOffice domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the LibreOffice domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to LibreOffice.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the LibreOffice domain.
+##	</summary>
+## </param>
+#
+interface(`libreoffice_role',`
+	gen_require(`
+		type libreoffice_t, libreoffice_exec_t;
+		role $2;
+	')
+
+	role $2 types libreoffice_t;
+	domtrans_pattern($1, libreoffice_exec_t, libreoffice_t)
+
+	allow $1 libreoffice_t:fd use;
+	allow $1 libreoffice_t:process { ptrace signal_perms };
+	allow $1 libreoffice_t:process { noatsecure rlimitinh siginh };
+	ps_process_pattern($1, libreoffice_t)
+
+	allow libreoffice_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Wire up a role access to/from LibreOffice: X11 and Wayland connect,
+##	D-Bus chat with the role main domain, and gvfs for the file dialog.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Wayland and gvfs session resources.
+##	</summary>
+## </param>
+#
+interface(`local_libreoffice_role',`
+	local_libreoffice_x11_connect($1_t)
+	local_libreoffice_wayland_connect($1)
+	local_libreoffice_dbus_chat($1_t)
+	local_libreoffice_gvfs_dbus_chat($1)
+')
+
+########################################
+## <summary>
+##	Allow LibreOffice to connect to the user X11 socket peer domain.
+## </summary>
+## <param name="xserver_domain">
+##	<summary>
+##	Domain owning the X11 socket peer.
+##	</summary>
+## </param>
+#
+interface(`local_libreoffice_x11_connect',`
+	gen_require(`
+		type libreoffice_t;
+	')
+
+	allow libreoffice_t $1:unix_stream_socket connectto;
+')
+
+########################################
+## <summary>
+##	Allow LibreOffice to connect to a role Wayland socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the Wayland socket.
+##	</summary>
+## </param>
+#
+interface(`local_libreoffice_wayland_connect',`
+	gen_require(`
+		type libreoffice_t;
+	')
+
+	local_$1_wayland_connect(libreoffice_t)
+')
+
+########################################
+## <summary>
+##	Send and receive D-Bus messages with LibreOffice.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to exchange D-Bus messages.
+##	</summary>
+## </param>
+#
+interface(`local_libreoffice_dbus_chat',`
+	gen_require(`
+		type libreoffice_t;
+		class dbus send_msg;
+	')
+
+	allow $1 libreoffice_t:dbus send_msg;
+	allow libreoffice_t $1:dbus send_msg;
+')
+
+########################################
+## <summary>
+##	Allow LibreOffice to query gvfs for mountable locations, for a given
+##	role prefix.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the gvfs domain.
+##	</summary>
+## </param>
+#
+interface(`local_libreoffice_gvfs_dbus_chat',`
+	gen_require(`
+		type libreoffice_t;
+	')
+
+	local_gvfs_dbus_chat($1, libreoffice_t)
+')

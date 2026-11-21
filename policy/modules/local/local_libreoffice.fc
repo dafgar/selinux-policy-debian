@@ -1,0 +1,21 @@
+# Debian LibreOffice. The base openoffice module only labels /opt/openoffice*,
+# so soffice stayed in staff_t. Shared libraries and the *.py/rc data files
+# stay usr_t; only executables and launcher scripts get the entry type.
+/usr/lib/libreoffice/program/oosplash	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/pagein-.*	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/regview	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/scalc	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/sdraw	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/senddoc	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/simpress	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/smath	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/soffice	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/soffice\.bin	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/swriter	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/uno	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/uno\.bin	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/unoinfo	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/unopkg	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/unopkg\.bin	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/uri-encode	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
+/usr/lib/libreoffice/program/xpdfimport	--	gen_context(system_u:object_r:libreoffice_exec_t,s0)
