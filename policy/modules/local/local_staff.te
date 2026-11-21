@@ -59,6 +59,11 @@ local_evolution_alarm_role(staff)
 # session. Keep this limited to read/write on systemd_user_tmpfs_t files.
 allow staff_t systemd_user_tmpfs_t:file rw_file_perms;
 
+# journalctl -f and sd_journal_open() users (drkonqi-coredump-processor) add
+# an inotify watch on /run/log/journal; reading the journal is already
+# allowed. Same grant as base sysadm_t.
+systemd_watch_journal_dirs(staff_t)
+
 gimp_role(staff_application_exec_domain, staff_r)
 
 local_git_search_user_paths(staff)
