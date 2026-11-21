@@ -73888,7 +73888,7 @@ Role allowed access to the session helper domain.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_run_kconf_update" lineno="54">
+<interface name="local_plasma_session_run_kconf_update" lineno="55">
 <summary>
 Allow a domain to run kconf_update in the Plasma session helper domain,
 e.g. KDED spawning it for config migrations.
@@ -73899,7 +73899,7 @@ Domain allowed to execute kconf_update.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_role" lineno="77">
+<interface name="local_plasma_session_role" lineno="78">
 <summary>
 Wire up all of a role access to/from the Plasma session helpers:
 Wayland and X11 connect, D-Bus chat with the role main domain, and
@@ -73911,7 +73911,7 @@ User role prefix that owns the session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_wayland_connect" lineno="102">
+<interface name="local_plasma_session_wayland_connect" lineno="103">
 <summary>
 Allow the Plasma session helpers to connect to a role Wayland socket.
 </summary>
@@ -73921,7 +73921,7 @@ User role prefix that owns the Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_x11_connect" lineno="120">
+<interface name="local_plasma_session_x11_connect" lineno="121">
 <summary>
 Allow the Plasma session helpers to connect to a role X11 socket.
 </summary>
@@ -73931,7 +73931,7 @@ User role prefix that owns the X11 socket.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_dbus_chat" lineno="138">
+<interface name="local_plasma_session_dbus_chat" lineno="139">
 <summary>
 Send and receive D-Bus messages with the Plasma session helpers.
 </summary>
@@ -73941,7 +73941,7 @@ Domain allowed to exchange D-Bus messages.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_systemd_inherit" lineno="159">
+<interface name="local_plasma_session_systemd_inherit" lineno="160">
 <summary>
 Allow a user systemd instance to launch the Plasma session helpers with
 the usual inherited-exec process bits.
@@ -73956,7 +73956,8 @@ User role prefix that owns the user systemd domain.
 <desc>
 <p>
 Allow the Plasma session helpers (startplasma-wayland,
-plasma-fallback-session-restore, kconf_update, kcminit, kaccess) to make
+plasma-fallback-session-restore, kconf_update, kcminit, kaccess,
+ksmserver) to make
 their stack/heap memory executable (Qt/QML JIT). Defaults to true because
 startplasma-wayland is on the login path; the denial is still audited when
 the boolean is off.

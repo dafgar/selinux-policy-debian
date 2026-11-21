@@ -4,3 +4,4 @@
 # kcminit_startup runs the same binary (exe=/usr/bin/kcminit) under a different argv0.
 /usr/bin/kcminit	--	gen_context(system_u:object_r:kcminit_exec_t,s0)
 /usr/bin/kaccess	--	gen_context(system_u:object_r:kaccess_exec_t,s0)
+/usr/bin/ksmserver	--	gen_context(system_u:object_r:ksmserver_exec_t,s0)

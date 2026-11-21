@@ -1,10 +1,11 @@
 policy_module(local_plasma_session)
 
-# Short-lived Plasma session bootstrap helpers, merged into one domain because
-# they share one permission profile: read/write KDE rc files and cache, start
-# user units, talk on the session bus, no network and no user content.
+# Plasma session lifecycle helpers, merged into one domain because they share
+# one permission profile: read/write KDE rc files and cache, start user
+# units, talk on the session bus, no network and no user content.
 #   startplasma-wayland, plasma-fallback-session-restore, kconf_update,
-#   kcminit (+ kcminit_startup), kaccess.
+#   kcminit (+ kcminit_startup), kaccess, ksmserver (session manager: XSMP
+#   save/restore and the logout/shutdown flow; long-lived, unlike the rest).
 # Each binary keeps its own exec type so any of them can be split into a
 # dedicated domain later by changing only the transition target.
 
@@ -16,6 +17,7 @@ type plasma_fallback_restore_exec_t;
 type kconf_update_exec_t;
 type kcminit_exec_t;
 type kaccess_exec_t;
+type ksmserver_exec_t;
 
 userdom_user_application_domain(plasma_session_t, startplasma_exec_t)
 application_executable_file(plasma_fallback_restore_exec_t)
@@ -26,6 +28,8 @@ application_executable_file(kcminit_exec_t)
 domain_entry_file(plasma_session_t, kcminit_exec_t)
 application_executable_file(kaccess_exec_t)
 domain_entry_file(plasma_session_t, kaccess_exec_t)
+application_executable_file(ksmserver_exec_t)
+domain_entry_file(plasma_session_t, ksmserver_exec_t)
 role plasma_session_roles types plasma_session_t;
 
 # startplasma-wayland execs the other helpers without changing domain.
@@ -34,11 +38,13 @@ can_exec(plasma_session_t, plasma_fallback_restore_exec_t)
 can_exec(plasma_session_t, kconf_update_exec_t)
 can_exec(plasma_session_t, kcminit_exec_t)
 can_exec(plasma_session_t, kaccess_exec_t)
+can_exec(plasma_session_t, ksmserver_exec_t)
 
 ## <desc>
 ## <p>
 ## Allow the Plasma session helpers (startplasma-wayland,
-## plasma-fallback-session-restore, kconf_update, kcminit, kaccess) to make
+## plasma-fallback-session-restore, kconf_update, kcminit, kaccess,
+## ksmserver) to make
 ## their stack/heap memory executable (Qt/QML JIT). Defaults to true because
 ## startplasma-wayland is on the login path; the denial is still audited when
 ## the boolean is off.
