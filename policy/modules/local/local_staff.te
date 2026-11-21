@@ -1,7 +1,9 @@
 policy_module(local_staff)
 
 gen_require(`
+	type auditd_etc_t;
 	type khelpcenter_t;
+	type krb5_keytab_t;
 	type mnemosyne_t;
 	type nsfs_t;
 	type plasmashell_t;
@@ -63,6 +65,11 @@ allow staff_t systemd_user_tmpfs_t:file rw_file_perms;
 # an inotify watch on /run/log/journal; reading the journal is already
 # allowed. Same grant as base sysadm_t.
 systemd_watch_journal_dirs(staff_t)
+
+# Directory listers (mc, ls -l /etc, file dialogs) stat every entry in /etc.
+# Only the stat is silenced; open/read/search on these types stay audited.
+dontaudit staff_t auditd_etc_t:dir getattr;
+dontaudit staff_t krb5_keytab_t:file getattr;
 
 gimp_role(staff_application_exec_domain, staff_r)
 
