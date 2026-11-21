@@ -75325,6 +75325,23 @@ Domain owning the listening socket.
 </summary>
 </param>
 </interface>
+<interface name="local_xwayland_use_fd" lineno="222">
+<summary>
+Allow a domain to use file descriptors owned by the role Xwayland,
+such as the DRI3 render-node fd (/dev/dri/renderD128) Xwayland hands
+to its X11 clients.
+</summary>
+<param name="role_prefix">
+<summary>
+The prefix of the user role owning the Xwayland domain.
+</summary>
+</param>
+<param name="domain">
+<summary>
+Domain allowed to use the fds (an X11 client).
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_zfs" filename="policy/modules/local/local_zfs.if">
 <summary>

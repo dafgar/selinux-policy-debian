@@ -181,6 +181,9 @@ local_xdg_document_portal_role(staff)
 
 local_xwayland_wm_protocol_socket(staff, staff_wm_t)
 local_xwayland_listen_socket(staff, staff_t)
+# Generic X11 clients without their own domain (ibus-x11 and others) run as
+# staff_t and receive the DRI3 render-node fd from Xwayland.
+local_xwayland_use_fd(staff, staff_t)
 local_systemd_inherit_user_service(staff, staff_xwayland_t)
 
 zotero_role(staff_application_exec_domain, staff_r)
