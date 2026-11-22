@@ -75,6 +75,8 @@ interface(`local_discover_notifier_role',`
 	local_discover_notifier_x11_connect($1)
 	local_discover_notifier_wayland_connect($1)
 	local_discover_notifier_read_proc_state($1_xwayland_t)
+	# GIO queries gvfs for mountable locations (org.gtk.vfs.MountTracker).
+	local_gvfs_dbus_chat($1, discover_notifier_t)
 ')
 
 ########################################
