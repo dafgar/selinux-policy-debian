@@ -92,3 +92,6 @@ allow thunderbird_t self:user_namespace create;
 # Tray icon registration and KDirNotify signals go to kded6 (StatusNotifierWatcher),
 # which runs in plasma_services_t.
 local_plasma_services_dbus_chat(thunderbird_t)
+
+# Desktop notifications: Plasma serves org.freedesktop.Notifications.
+local_plasmashell_dbus_chat(thunderbird_t)

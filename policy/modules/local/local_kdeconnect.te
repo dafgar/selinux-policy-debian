@@ -62,3 +62,7 @@ tunable_policy(`local_kdeconnect_use_network',`
 # Local KDE Connect support is modeled as a dedicated user service domain with
 # a separate listener port type. Keep the numeric port mapping under sysadm
 # control via semanage port instead of hardcoding it here.
+
+# The Plasma KDE Connect widget queries devices from kdeconnectd and gets
+# replies and signals back.
+local_plasmashell_dbus_chat(kdeconnect_t)

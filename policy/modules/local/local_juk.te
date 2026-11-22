@@ -27,3 +27,6 @@ tunable_policy(`juk_execmem',`
 # Tray icon registration and KDirNotify signals go to kded6 (StatusNotifierWatcher),
 # which runs in plasma_services_t.
 local_plasma_services_dbus_chat(juk_t)
+
+# MPRIS: the Plasma media widget controls JuK and reads its player state.
+local_plasmashell_dbus_chat(juk_t)
