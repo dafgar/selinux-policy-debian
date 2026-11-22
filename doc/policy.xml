@@ -72070,7 +72070,7 @@ resources.
 </summary>
 </param>
 </interface>
-<interface name="local_discover_notifier_x11_connect" lineno="90">
+<interface name="local_discover_notifier_x11_connect" lineno="92">
 <summary>
 Allow DiscoverNotifier to connect to a role's session X11 socket.
 </summary>
@@ -72080,7 +72080,7 @@ User role prefix that owns the session's X11 socket.
 </summary>
 </param>
 </interface>
-<interface name="local_discover_notifier_wayland_connect" lineno="109">
+<interface name="local_discover_notifier_wayland_connect" lineno="111">
 <summary>
 Allow DiscoverNotifier to connect to a role's session Wayland
 compositor socket.
@@ -72091,7 +72091,7 @@ User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_discover_notifier_read_proc_state" lineno="129">
+<interface name="local_discover_notifier_read_proc_state" lineno="131">
 <summary>
 Allow a domain to read DiscoverNotifier's process state (/proc/pid),
 e.g. Xwayland reading the cmdline of a connecting X11 client for
@@ -74219,7 +74219,7 @@ resources.
 </summary>
 </param>
 </interface>
-<interface name="local_powerdevil_dbus_chat" lineno="91">
+<interface name="local_powerdevil_dbus_chat" lineno="93">
 <summary>
 Send and receive D-Bus messages with PowerDevil, e.g. to inhibit
 screen/system idle during media playback.
@@ -74230,7 +74230,7 @@ Domain allowed to exchange D-Bus messages with PowerDevil.
 </summary>
 </param>
 </interface>
-<interface name="local_powerdevil_x11_connect" lineno="110">
+<interface name="local_powerdevil_x11_connect" lineno="112">
 <summary>
 Allow PowerDevil to connect to a role's session X11 socket.
 </summary>
@@ -74240,7 +74240,7 @@ User role prefix that owns the session's X11 socket.
 </summary>
 </param>
 </interface>
-<interface name="local_powerdevil_wayland_connect" lineno="129">
+<interface name="local_powerdevil_wayland_connect" lineno="131">
 <summary>
 Allow PowerDevil to connect to a role's session Wayland compositor
 socket.
@@ -74251,7 +74251,7 @@ User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_powerdevil_read_proc_state" lineno="149">
+<interface name="local_powerdevil_read_proc_state" lineno="151">
 <summary>
 Allow a domain to read PowerDevil's process state (/proc/pid), e.g.
 Xwayland reading the cmdline of a connecting X11 client for
