@@ -17,6 +17,10 @@ corenet_port(kdeconnect_port_t)
 # kdeconnectd reads shared KDE theming/locale config (kdeglobals).
 local_kde_read_config_files(kdeconnect_t)
 
+# kdeconnectd is a session bus client: Hello, name registration (acquire_svc
+# comes from local_kdeconnect_role) and all of its method calls and signals.
+dbus_all_session_bus_client(kdeconnect_t)
+
 # kdeconnectd queries NetworkManager to check whether the phone and desktop
 # are on the same network.
 networkmanager_dbus_chat(kdeconnect_t)
