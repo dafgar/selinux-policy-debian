@@ -72298,7 +72298,7 @@ The prefix of the user role, for example staff or user.
 </summary>
 </param>
 </interface>
-<interface name="local_evolution_alarm_read_proc_state" lineno="104">
+<interface name="local_evolution_alarm_read_proc_state" lineno="106">
 <summary>
 Allow a domain to read Evolution alarm's process state (/proc/pid),
 e.g. Xwayland reading the cmdline of a connecting X11 client for

@@ -87,6 +87,8 @@ interface(`local_evolution_alarm_role',`
 	local_evolution_alarm_read_proc_state($1_xwayland_t)
 	# Tray icon registration goes to kded6 (StatusNotifierWatcher).
 	local_plasma_services_dbus_chat(evolution_alarm_t)
+	# GIO queries gvfs for mountable locations (org.gtk.vfs.MountTracker).
+	local_gvfs_dbus_chat($1, evolution_alarm_t)
 ')
 
 ########################################
