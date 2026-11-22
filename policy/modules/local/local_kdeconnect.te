@@ -21,6 +21,9 @@ local_kde_read_config_files(kdeconnect_t)
 # are on the same network.
 networkmanager_dbus_chat(kdeconnect_t)
 
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(kdeconnect_t)
+
 ## <desc>
 ## <p>
 ## Allow KDE Connect to use its Bluetooth transport backend.

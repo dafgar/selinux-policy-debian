@@ -71700,6 +71700,72 @@ Domain to be exempted.
 Local override module with no exported interfaces.
 </summary>
 </module>
+<module name="local_atspi" filename="policy/modules/local/local_atspi.if">
+<summary>
+Local AT-SPI accessibility bus domain interfaces.
+</summary>
+<interface name="atspi_role" lineno="20">
+<summary>
+Allow a role to transition into the AT-SPI domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to the AT-SPI helpers.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the AT-SPI domain.
+</summary>
+</param>
+</interface>
+<interface name="local_atspi_role" lineno="48">
+<summary>
+Wire up a role access to/from the AT-SPI helpers: session bus name
+ownership, D-Bus activation, the a11y bus daemon the launcher spawns,
+and systemd user-unit launch.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session D-Bus and systemd domains.
+</summary>
+</param>
+</interface>
+<interface name="local_atspi_systemd_inherit" lineno="79">
+<summary>
+Allow a user systemd instance to launch the AT-SPI helpers
+(at-spi-dbus-bus.service) with the usual inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+<interface name="local_atspi_dbus_chat" lineno="100">
+<summary>
+Allow an application to use the AT-SPI accessibility bus services
+(asking for the a11y bus address, registering with the registry).
+Gated by the atspi_allow_clients boolean; when it is off the denial is
+silenced because the application just runs without accessibility.
+</summary>
+<param name="domain">
+<summary>
+Application domain allowed access.
+</summary>
+</param>
+</interface>
+<tunable name="atspi_allow_clients" dftval="false">
+<desc>
+<p>
+Allow applications to talk to the AT-SPI accessibility bus services
+(screen readers, UI automation). Applications can read and drive other
+applications widgets through it. When off, clients fall back to running
+without accessibility support and the denials are not audited.
+</p>
+</desc>
+</tunable>
+</module>
 <module name="local_auditadm" filename="policy/modules/local/local_auditadm.if">
 <summary>
 Local auditadm role bindings.
@@ -74465,18 +74531,6 @@ Domain allowed access.
 <summary>
 Allow a domain to connect to staff_t's X11 socket, e.g. an application
 domain acting as an X11 client via Xwayland or a native X11 server.
-</summary>
-<param name="domain">
-<summary>
-Domain allowed access.
-</summary>
-</param>
-</interface>
-<interface name="local_staff_dbus_chat_a11y" lineno="80">
-<summary>
-Allow a domain to send and receive messages with staff_t over the
-session accessibility (a11y) bus, e.g. an application registering
-with AT-SPI for screen-reader/UI-automation support.
 </summary>
 <param name="domain">
 <summary>

@@ -45,6 +45,9 @@ local_chromium_role(staff)
 local_code_role(staff, staff_t)
 local_code_git_client(staff)
 
+atspi_role(staff_application_exec_domain, staff_r)
+local_atspi_role(staff)
+
 discover_notifier_role(staff_application_exec_domain, staff_r)
 local_discover_notifier_role(staff)
 

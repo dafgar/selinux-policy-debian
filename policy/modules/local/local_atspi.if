@@ -1,0 +1,113 @@
+## <summary>
+##	Local AT-SPI accessibility bus domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the AT-SPI domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to the AT-SPI helpers.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the AT-SPI domain.
+##	</summary>
+## </param>
+#
+interface(`atspi_role',`
+	gen_require(`
+		type atspi_t, atspi_exec_t;
+		role $2;
+	')
+
+	role $2 types atspi_t;
+	domtrans_pattern($1, atspi_exec_t, atspi_t)
+
+	allow $1 atspi_t:fd use;
+	allow $1 atspi_t:process { ptrace signal_perms };
+	ps_process_pattern($1, atspi_t)
+
+	allow atspi_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Wire up a role access to/from the AT-SPI helpers: session bus name
+##	ownership, D-Bus activation, the a11y bus daemon the launcher spawns,
+##	and systemd user-unit launch.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session D-Bus and systemd domains.
+##	</summary>
+## </param>
+#
+interface(`local_atspi_role',`
+	gen_require(`
+		type atspi_t, atspi_exec_t, dbusd_exec_t;
+		type $1_dbusd_t;
+	')
+
+	# org.a11y.Bus well-known name on the session bus.
+	dbus_connect_spec_session_bus($1, atspi_t)
+
+	# Direct D-Bus activation fallback (Exec= in the service file).
+	domtrans_pattern($1_dbusd_t, atspi_exec_t, atspi_t)
+	ps_process_pattern($1_dbusd_t, atspi_t)
+
+	# The launcher execs dbus-daemon for the dedicated a11y bus; it runs in
+	# the role session bus domain like any other user dbus-daemon.
+	domtrans_pattern(atspi_t, dbusd_exec_t, $1_dbusd_t)
+
+	local_atspi_systemd_inherit($1)
+')
+
+########################################
+## <summary>
+##	Allow a user systemd instance to launch the AT-SPI helpers
+##	(at-spi-dbus-bus.service) with the usual inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_atspi_systemd_inherit',`
+	gen_require(`
+		type atspi_t;
+	')
+
+	local_systemd_inherit_user_service($1, atspi_t)
+')
+
+########################################
+## <summary>
+##	Allow an application to use the AT-SPI accessibility bus services
+##	(asking for the a11y bus address, registering with the registry).
+##	Gated by the atspi_allow_clients boolean; when it is off the denial is
+##	silenced because the application just runs without accessibility.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Application domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_atspi_dbus_chat',`
+	gen_require(`
+		type atspi_t;
+		class dbus send_msg;
+		bool atspi_allow_clients;
+	')
+
+	tunable_policy(`atspi_allow_clients',`
+		allow $1 atspi_t:dbus send_msg;
+		allow atspi_t $1:dbus send_msg;
+	',`
+		dontaudit $1 atspi_t:dbus send_msg;
+	')
+')

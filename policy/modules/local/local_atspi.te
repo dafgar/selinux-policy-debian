@@ -1,0 +1,28 @@
+policy_module(local_atspi)
+
+# AT-SPI accessibility bus helpers: at-spi-bus-launcher (answers
+# org.a11y.Bus.GetAddress on the session bus and starts the a11y bus) and
+# at-spi2-registryd. They ran inside staff_t, so every application allowed to
+# ask for the a11y bus address was granted D-Bus access to all of staff_t.
+# A separate domain narrows that grant to atspi_t, and the client side is
+# behind the atspi_allow_clients boolean (see local_atspi_dbus_chat).
+
+attribute_role atspi_roles;
+
+type atspi_t;
+type atspi_exec_t;
+userdom_user_application_domain(atspi_t, atspi_exec_t)
+role atspi_roles types atspi_t;
+can_exec(atspi_t, atspi_exec_t)
+
+## <desc>
+## <p>
+## Allow applications to talk to the AT-SPI accessibility bus services
+## (screen readers, UI automation). Applications can read and drive other
+## applications widgets through it. When off, clients fall back to running
+## without accessibility support and the denials are not audited.
+## </p>
+## </desc>
+gen_tunable(atspi_allow_clients, false)
+
+local_kde_session_client(atspi_t)

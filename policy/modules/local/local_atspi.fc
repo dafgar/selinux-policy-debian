@@ -1,0 +1,4 @@
+/usr/libexec/at-spi-bus-launcher	--	gen_context(system_u:object_r:atspi_exec_t,s0)
+/usr/libexec/at-spi2-registryd		--	gen_context(system_u:object_r:atspi_exec_t,s0)
+/usr/lib/at-spi2-core/at-spi-bus-launcher	--	gen_context(system_u:object_r:atspi_exec_t,s0)
+/usr/lib/at-spi2-core/at-spi2-registryd		--	gen_context(system_u:object_r:atspi_exec_t,s0)
