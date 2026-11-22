@@ -35,3 +35,7 @@ allow zfs_t self:process setpgid;
 # dir), which needs DAC override to mkdir/traverse regardless of the parent
 # directory's owner/mode.
 allow zfs_t self:capability { dac_override dac_read_search };
+
+# zfs-import-cache.service: zpool inherits a zpool.cache fd labeled kernel_t
+# at boot. It reopens the cache by path, and the import succeeds without it.
+kernel_dontaudit_use_fds(zfs_t)
