@@ -88,3 +88,7 @@ xdg_config_filetrans(rsibreak_t, rsibreak_xdg_config_t, file, "rsibreak.kmessage
 manage_files_pattern(rsibreak_t, rsibreak_tmpfs_t, rsibreak_tmpfs_t)
 allow rsibreak_t rsibreak_tmpfs_t:file map;
 fs_tmpfs_filetrans(rsibreak_t, rsibreak_tmpfs_t, file)
+
+# Tray icon registration and KDirNotify signals go to kded6 (StatusNotifierWatcher),
+# which runs in plasma_services_t.
+local_plasma_services_dbus_chat(rsibreak_t)

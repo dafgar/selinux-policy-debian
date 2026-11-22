@@ -106,3 +106,7 @@ allow virt_manager_t self:shm create_shm_perms;
 tunable_policy(`virt_manager_execmem',`
 	allow virt_manager_t self:process execmem;
 ')
+
+# Tray icon registration and KDirNotify signals go to kded6 (StatusNotifierWatcher),
+# which runs in plasma_services_t.
+local_plasma_services_dbus_chat(virt_manager_t)

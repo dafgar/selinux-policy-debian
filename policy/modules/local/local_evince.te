@@ -194,3 +194,7 @@ dontaudit evince_t staff_systemd_t:unix_stream_socket { read append write };
 # and granting that would let evince execute any generic binary on the
 # system for a rarely-used feature. Confinement wins over mailto handling.
 dontaudit evince_t bin_t:file execute;
+
+# Tray icon registration and KDirNotify signals go to kded6 (StatusNotifierWatcher),
+# which runs in plasma_services_t.
+local_plasma_services_dbus_chat(evince_t)

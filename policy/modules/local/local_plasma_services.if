@@ -48,6 +48,8 @@ interface(`plasma_services_role',`
 interface(`local_plasma_services_role',`
 	local_kde_session_bus_owner($1, plasma_services_t)
 	local_plasma_services_dbus_chat($1_t)
+	# The user systemd manager emits PropertiesChanged signals kded6 listens to.
+	local_plasma_services_dbus_chat($1_systemd_t)
 	local_plasma_services_systemd_inherit($1)
 ')
 

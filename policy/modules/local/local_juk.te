@@ -23,3 +23,7 @@ xdg_read_music(juk_t)
 tunable_policy(`juk_execmem',`
 	allow juk_t self:process execmem;
 ')
+
+# Tray icon registration and KDirNotify signals go to kded6 (StatusNotifierWatcher),
+# which runs in plasma_services_t.
+local_plasma_services_dbus_chat(juk_t)

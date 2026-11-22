@@ -75,3 +75,7 @@ tunable_policy(`mozilla_execmem',`
 
 dontaudit mozilla_t systemd_user_runtime_t:dir { getattr search };
 dontaudit mozilla_t { var_lib_t xdg_config_t xdg_data_t }:dir watch;
+
+# Tray icon registration and KDirNotify signals go to kded6 (StatusNotifierWatcher),
+# which runs in plasma_services_t.
+local_plasma_services_dbus_chat(mozilla_t)

@@ -25,3 +25,7 @@ xdg_manage_config(kgpg_t)
 tunable_policy(`kgpg_execmem',`
 	allow kgpg_t self:process execmem;
 ')
+
+# Tray icon registration and KDirNotify signals go to kded6 (StatusNotifierWatcher),
+# which runs in plasma_services_t.
+local_plasma_services_dbus_chat(kgpg_t)

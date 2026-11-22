@@ -143,3 +143,7 @@ allow keepassxc_t user_tmp_t:file read;
 dontaudit keepassxc_t staff_systemd_t:unix_stream_socket { getattr ioctl };
 dontaudit keepassxc_t debugfs_t:dir search;
 dontaudit keepassxc_t src_t:dir search;
+
+# Tray icon registration and KDirNotify signals go to kded6 (StatusNotifierWatcher),
+# which runs in plasma_services_t.
+local_plasma_services_dbus_chat(keepassxc_t)

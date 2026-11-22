@@ -72298,7 +72298,7 @@ The prefix of the user role, for example staff or user.
 </summary>
 </param>
 </interface>
-<interface name="local_evolution_alarm_read_proc_state" lineno="102">
+<interface name="local_evolution_alarm_read_proc_state" lineno="104">
 <summary>
 Allow a domain to read Evolution alarm's process state (/proc/pid),
 e.g. Xwayland reading the cmdline of a connecting X11 client for
@@ -73921,7 +73921,7 @@ User role prefix that owns the session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_services_dbus_chat" lineno="64">
+<interface name="local_plasma_services_dbus_chat" lineno="66">
 <summary>
 Send and receive D-Bus messages with the Plasma session services.
 </summary>
@@ -73931,7 +73931,7 @@ Domain allowed to exchange D-Bus messages.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_services_systemd_inherit" lineno="85">
+<interface name="local_plasma_services_systemd_inherit" lineno="87">
 <summary>
 Allow a user systemd instance to launch the Plasma session services
 with the usual inherited-exec process bits.
