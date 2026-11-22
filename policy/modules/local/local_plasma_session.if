@@ -88,6 +88,7 @@ interface(`local_plasma_session_role',`
 
 	local_plasma_session_dbus_chat($1_t)
 	local_plasma_session_systemd_inherit($1)
+	local_plasma_session_systemd_manage($1)
 ')
 
 ########################################
@@ -164,4 +165,31 @@ interface(`local_plasma_session_systemd_inherit',`
 
 	local_systemd_inherit_user_service($1, plasma_session_t)
 	allow plasma_session_t $1_systemd_t:unix_stream_socket { getattr ioctl };
+')
+
+########################################
+## <summary>
+##	Allow the Plasma session helpers to drive the user systemd manager:
+##	startplasma-wayland starts plasma-workspace-wayland.target and unsets
+##	environment variables, ksmserver starts transient units and stops the
+##	session units on logout.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_plasma_session_systemd_manage',`
+	gen_require(`
+		type plasma_session_t, systemd_user_unit_t;
+		class dbus send_msg;
+		class service { start stop status };
+		class system { start status reload };
+	')
+
+	allow plasma_session_t $1_systemd_t:system { start status reload };
+	allow plasma_session_t systemd_user_unit_t:service { start stop status };
+	allow plasma_session_t $1_systemd_t:dbus send_msg;
+	allow $1_systemd_t plasma_session_t:dbus send_msg;
 ')

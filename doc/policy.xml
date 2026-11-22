@@ -73977,7 +73977,7 @@ User role prefix that owns the session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_wayland_connect" lineno="103">
+<interface name="local_plasma_session_wayland_connect" lineno="104">
 <summary>
 Allow the Plasma session helpers to connect to a role Wayland socket.
 </summary>
@@ -73987,7 +73987,7 @@ User role prefix that owns the Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_x11_connect" lineno="121">
+<interface name="local_plasma_session_x11_connect" lineno="122">
 <summary>
 Allow the Plasma session helpers to connect to a role X11 socket.
 </summary>
@@ -73997,7 +73997,7 @@ User role prefix that owns the X11 socket.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_dbus_chat" lineno="139">
+<interface name="local_plasma_session_dbus_chat" lineno="140">
 <summary>
 Send and receive D-Bus messages with the Plasma session helpers.
 </summary>
@@ -74007,10 +74007,23 @@ Domain allowed to exchange D-Bus messages.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_systemd_inherit" lineno="160">
+<interface name="local_plasma_session_systemd_inherit" lineno="161">
 <summary>
 Allow a user systemd instance to launch the Plasma session helpers with
 the usual inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+<interface name="local_plasma_session_systemd_manage" lineno="183">
+<summary>
+Allow the Plasma session helpers to drive the user systemd manager:
+startplasma-wayland starts plasma-workspace-wayland.target and unsets
+environment variables, ksmserver starts transient units and stops the
+session units on logout.
 </summary>
 <param name="role_prefix">
 <summary>
