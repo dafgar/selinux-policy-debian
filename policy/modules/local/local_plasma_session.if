@@ -1,6 +1,7 @@
 ## <summary>
 ##	Local Plasma session bootstrap helper domain (startplasma-wayland,
-##	plasma-fallback-session-restore, kconf_update, kcminit, kaccess).
+##	plasma-fallback-session-restore, kconf_update, kcminit, kaccess,
+##	ksmserver, gmenudbusmenuproxy).
 ## </summary>
 
 ########################################
@@ -23,6 +24,7 @@ interface(`plasma_session_role',`
 		type plasma_session_t, startplasma_exec_t;
 		type plasma_fallback_restore_exec_t, kconf_update_exec_t;
 		type kcminit_exec_t, kaccess_exec_t, ksmserver_exec_t;
+		type gmenudbusmenuproxy_exec_t;
 		role $2;
 	')
 
@@ -33,6 +35,7 @@ interface(`plasma_session_role',`
 	domtrans_pattern($1, kcminit_exec_t, plasma_session_t)
 	domtrans_pattern($1, kaccess_exec_t, plasma_session_t)
 	domtrans_pattern($1, ksmserver_exec_t, plasma_session_t)
+	domtrans_pattern($1, gmenudbusmenuproxy_exec_t, plasma_session_t)
 
 	allow $1 plasma_session_t:fd use;
 	allow $1 plasma_session_t:process { ptrace signal_perms };

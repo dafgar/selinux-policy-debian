@@ -5,7 +5,9 @@ policy_module(local_plasma_session)
 # units, talk on the session bus, no network and no user content.
 #   startplasma-wayland, plasma-fallback-session-restore, kconf_update,
 #   kcminit (+ kcminit_startup), kaccess, ksmserver (session manager: XSMP
-#   save/restore and the logout/shutdown flow; long-lived, unlike the rest).
+#   save/restore and the logout/shutdown flow; long-lived, unlike the rest),
+#   gmenudbusmenuproxy (exports GTK menu bars to the Plasma global menu;
+#   long-lived systemd --user service, joins the session over ICE).
 # Each binary keeps its own exec type so any of them can be split into a
 # dedicated domain later by changing only the transition target.
 
@@ -18,6 +20,7 @@ type kconf_update_exec_t;
 type kcminit_exec_t;
 type kaccess_exec_t;
 type ksmserver_exec_t;
+type gmenudbusmenuproxy_exec_t;
 
 userdom_user_application_domain(plasma_session_t, startplasma_exec_t)
 application_executable_file(plasma_fallback_restore_exec_t)
@@ -30,6 +33,8 @@ application_executable_file(kaccess_exec_t)
 domain_entry_file(plasma_session_t, kaccess_exec_t)
 application_executable_file(ksmserver_exec_t)
 domain_entry_file(plasma_session_t, ksmserver_exec_t)
+application_executable_file(gmenudbusmenuproxy_exec_t)
+domain_entry_file(plasma_session_t, gmenudbusmenuproxy_exec_t)
 role plasma_session_roles types plasma_session_t;
 
 # startplasma-wayland execs the other helpers without changing domain.
@@ -39,12 +44,13 @@ can_exec(plasma_session_t, kconf_update_exec_t)
 can_exec(plasma_session_t, kcminit_exec_t)
 can_exec(plasma_session_t, kaccess_exec_t)
 can_exec(plasma_session_t, ksmserver_exec_t)
+can_exec(plasma_session_t, gmenudbusmenuproxy_exec_t)
 
 ## <desc>
 ## <p>
 ## Allow the Plasma session helpers (startplasma-wayland,
 ## plasma-fallback-session-restore, kconf_update, kcminit, kaccess,
-## ksmserver) to make
+## ksmserver, gmenudbusmenuproxy) to make
 ## their stack/heap memory executable (Qt/QML JIT). Defaults to true because
 ## startplasma-wayland is on the login path; the denial is still audited when
 ## the boolean is off.
@@ -52,8 +58,18 @@ can_exec(plasma_session_t, ksmserver_exec_t)
 ## </desc>
 gen_tunable(plasma_session_execmem, true)
 
+gen_require(`
+	type user_runtime_t;
+')
+
 local_kde_gui_client(plasma_session_t)
 local_kde_session_peer(plasma_session_t)
+
+# gmenudbusmenuproxy joins the session over ICE: it reads the iceauth_* cookie
+# file ksmserver leaves in the runtime dir; the socket itself is abstract and
+# the peer is this same domain. ~/.gtkrc-2.0 is labeled xdg_config_t by
+# local_gnome.fc, so the xdg config read/watch rules below already cover it.
+allow plasma_session_t user_runtime_t:file read_file_perms;
 
 # kconf_update rewrites KDE rc files in place, including the shared
 # kdeglobals/kdedefaults; startplasma and kcminit write session/startup keys.
