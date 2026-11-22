@@ -67,6 +67,7 @@ interface(`local_plasmashell_pipewire_pulse_connect',`
 ## </param>
 #
 interface(`local_plasmashell_role',`
+	local_kde_session_bus_owner($1, plasmashell_t)
 	# plasmashell is itself a Wayland client of the session compositor
 	# socket and a PulseAudio/pipewire client (volume applet, etc);
 	# pipewire-pulse in turn introspects the plasmashell /proc/<pid> like it

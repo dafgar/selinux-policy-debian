@@ -68,6 +68,7 @@ interface(`local_discover_notifier_systemd_inherit',`
 ## </param>
 #
 interface(`local_discover_notifier_role',`
+	local_kde_session_bus_owner($1, discover_notifier_t)
 	# DiscoverNotifier is an X11 client (via Xwayland) of the session X11
 	# socket, and also probes the Wayland compositor socket directly (Qt QPA
 	# platform detection).

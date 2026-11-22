@@ -149,3 +149,24 @@ interface(`local_kde_gui_client',`
 	wm_map_tmpfs_files($1)
 	wm_rw_tmpfs_files($1)
 ')
+
+########################################
+## <summary>
+##	Allow a KDE session domain to own well-known names on the role
+##	session D-Bus (acquire_svc), e.g. org.kde.kded6 or
+##	org.kde.Solid.PowerManagement.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session D-Bus daemon.
+##	</summary>
+## </param>
+## <param name="domain">
+##	<summary>
+##	Domain that registers a bus name.
+##	</summary>
+## </param>
+#
+interface(`local_kde_session_bus_owner',`
+	dbus_connect_spec_session_bus($1, $2)
+')

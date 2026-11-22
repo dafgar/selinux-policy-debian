@@ -45,6 +45,7 @@ interface(`juk_role',`
 ## </param>
 #
 interface(`local_juk_role',`
+	local_kde_session_bus_owner($1, juk_t)
 	local_juk_wayland_connect($1)
 	local_juk_dbus_chat($1_t)
 	local_juk_systemd_inherit($1)

@@ -72070,7 +72070,7 @@ resources.
 </summary>
 </param>
 </interface>
-<interface name="local_discover_notifier_x11_connect" lineno="89">
+<interface name="local_discover_notifier_x11_connect" lineno="90">
 <summary>
 Allow DiscoverNotifier to connect to a role's session X11 socket.
 </summary>
@@ -72080,7 +72080,7 @@ User role prefix that owns the session's X11 socket.
 </summary>
 </param>
 </interface>
-<interface name="local_discover_notifier_wayland_connect" lineno="108">
+<interface name="local_discover_notifier_wayland_connect" lineno="109">
 <summary>
 Allow DiscoverNotifier to connect to a role's session Wayland
 compositor socket.
@@ -72091,7 +72091,7 @@ User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_discover_notifier_read_proc_state" lineno="128">
+<interface name="local_discover_notifier_read_proc_state" lineno="129">
 <summary>
 Allow a domain to read DiscoverNotifier's process state (/proc/pid),
 e.g. Xwayland reading the cmdline of a connecting X11 client for
@@ -72675,7 +72675,7 @@ User role prefix that owns the session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_juk_wayland_connect" lineno="63">
+<interface name="local_juk_wayland_connect" lineno="64">
 <summary>
 Allow JuK music player to connect to a role Wayland socket.
 </summary>
@@ -72685,7 +72685,7 @@ User role prefix that owns the Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_juk_dbus_chat" lineno="81">
+<interface name="local_juk_dbus_chat" lineno="82">
 <summary>
 Send and receive D-Bus messages with JuK music player.
 </summary>
@@ -72695,7 +72695,7 @@ Domain allowed to exchange D-Bus messages.
 </summary>
 </param>
 </interface>
-<interface name="local_juk_systemd_inherit" lineno="102">
+<interface name="local_juk_systemd_inherit" lineno="103">
 <summary>
 Allow a user systemd instance to launch JuK music player with the usual
 inherited-exec process bits.
@@ -72789,6 +72789,23 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
+<interface name="local_kde_session_bus_owner" lineno="170">
+<summary>
+Allow a KDE session domain to own well-known names on the role
+session D-Bus (acquire_svc), e.g. org.kde.kded6 or
+org.kde.Solid.PowerManagement.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session D-Bus daemon.
+</summary>
+</param>
+<param name="domain">
+<summary>
+Domain that registers a bus name.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_kdeconnect" filename="policy/modules/local/local_kdeconnect.if">
 <summary>
@@ -72820,7 +72837,7 @@ User role prefix that owns the D-Bus/Wayland session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_kdeconnect_dbus_activation" lineno="66">
+<interface name="local_kdeconnect_dbus_activation" lineno="67">
 <summary>
 Allow a user session D-Bus daemon to directly activate KDE Connect via
 its D-Bus service file (Exec=kdeconnectd, no SystemdService), executing
@@ -72832,7 +72849,7 @@ User role prefix that owns the session D-Bus daemon domain.
 </summary>
 </param>
 </interface>
-<interface name="local_kdeconnect_systemd_inherit" lineno="86">
+<interface name="local_kdeconnect_systemd_inherit" lineno="87">
 <summary>
 Allow a user systemd instance to monitor and launch KDE Connect.
 </summary>
@@ -72842,7 +72859,7 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_kdeconnect_bind_port" lineno="107">
+<interface name="local_kdeconnect_bind_port" lineno="108">
 <summary>
 Allow a domain to use KDE Connect listener sockets directly.
 </summary>
@@ -72852,7 +72869,7 @@ Domain allowed to bind KDE Connect sockets.
 </summary>
 </param>
 </interface>
-<interface name="local_kdeconnect_wayland_connect" lineno="143">
+<interface name="local_kdeconnect_wayland_connect" lineno="144">
 <summary>
 Allow KDE Connect to connect to a role's session Wayland compositor
 socket, e.g. for tray/notification integration.
@@ -73021,7 +73038,7 @@ User role prefix that owns the session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_kgpg_wayland_connect" lineno="63">
+<interface name="local_kgpg_wayland_connect" lineno="64">
 <summary>
 Allow KGpg to connect to a role Wayland socket.
 </summary>
@@ -73031,7 +73048,7 @@ User role prefix that owns the Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_kgpg_dbus_chat" lineno="81">
+<interface name="local_kgpg_dbus_chat" lineno="82">
 <summary>
 Send and receive D-Bus messages with KGpg.
 </summary>
@@ -73041,7 +73058,7 @@ Domain allowed to exchange D-Bus messages.
 </summary>
 </param>
 </interface>
-<interface name="local_kgpg_systemd_inherit" lineno="102">
+<interface name="local_kgpg_systemd_inherit" lineno="103">
 <summary>
 Allow a user systemd instance to launch KGpg with the usual
 inherited-exec process bits.
@@ -73052,7 +73069,7 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_kgpg_gpg_role" lineno="127">
+<interface name="local_kgpg_gpg_role" lineno="128">
 <summary>
 Give KGpg the base gpg role wiring: transitions into gpg and gpg-agent,
 signal/ps access to them, and management of ~/.gnupg.
@@ -73904,7 +73921,7 @@ User role prefix that owns the session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_services_dbus_chat" lineno="63">
+<interface name="local_plasma_services_dbus_chat" lineno="64">
 <summary>
 Send and receive D-Bus messages with the Plasma session services.
 </summary>
@@ -73914,7 +73931,7 @@ Domain allowed to exchange D-Bus messages.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_services_systemd_inherit" lineno="84">
+<interface name="local_plasma_services_systemd_inherit" lineno="85">
 <summary>
 Allow a user systemd instance to launch the Plasma session services
 with the usual inherited-exec process bits.
@@ -73977,7 +73994,7 @@ User role prefix that owns the session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_wayland_connect" lineno="104">
+<interface name="local_plasma_session_wayland_connect" lineno="105">
 <summary>
 Allow the Plasma session helpers to connect to a role Wayland socket.
 </summary>
@@ -73987,7 +74004,7 @@ User role prefix that owns the Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_x11_connect" lineno="122">
+<interface name="local_plasma_session_x11_connect" lineno="123">
 <summary>
 Allow the Plasma session helpers to connect to a role X11 socket.
 </summary>
@@ -73997,7 +74014,7 @@ User role prefix that owns the X11 socket.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_dbus_chat" lineno="140">
+<interface name="local_plasma_session_dbus_chat" lineno="141">
 <summary>
 Send and receive D-Bus messages with the Plasma session helpers.
 </summary>
@@ -74007,7 +74024,7 @@ Domain allowed to exchange D-Bus messages.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_systemd_inherit" lineno="161">
+<interface name="local_plasma_session_systemd_inherit" lineno="162">
 <summary>
 Allow a user systemd instance to launch the Plasma session helpers with
 the usual inherited-exec process bits.
@@ -74018,7 +74035,7 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_systemd_manage" lineno="183">
+<interface name="local_plasma_session_systemd_manage" lineno="184">
 <summary>
 Allow the Plasma session helpers to drive the user systemd manager:
 startplasma-wayland starts plasma-workspace-wayland.target and unsets
@@ -74087,7 +74104,7 @@ session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_systemd_inherit" lineno="95">
+<interface name="local_plasmashell_systemd_inherit" lineno="96">
 <summary>
 Allow a user systemd instance to launch plasmashell with the usual
 inherited-exec process bits.
@@ -74098,7 +74115,7 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_dbus_chat" lineno="116">
+<interface name="local_plasmashell_dbus_chat" lineno="117">
 <summary>
 Send and receive D-Bus messages with PlasmaShell, e.g. a
 StatusNotifierItem tray icon or the Notifications/PlasmaShell dashboard
@@ -74110,7 +74127,7 @@ Domain allowed to exchange D-Bus messages with PlasmaShell.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_gvfs_dbus_chat" lineno="138">
+<interface name="local_plasmashell_gvfs_dbus_chat" lineno="139">
 <summary>
 Allow Plasma to query gvfs for mountable locations (e.g. Dolphin's
 "Network" places, or the storage notifier applet), for a given role
@@ -74122,7 +74139,7 @@ User role prefix that owns the gvfs domain.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_use_fifo" lineno="157">
+<interface name="local_plasmashell_use_fifo" lineno="158">
 <summary>
 Allow a domain to read/write plasmashell's fifo pipes, e.g. kwin_wayland
 signaling plasmashell over an anonymous pipe.
@@ -74133,7 +74150,7 @@ Domain allowed access.
 </summary>
 </param>
 </interface>
-<interface name="local_plasmashell_wayland_connect" lineno="180">
+<interface name="local_plasmashell_wayland_connect" lineno="181">
 <summary>
 Allow plasmashell to connect to a role's session Wayland compositor
 socket.
@@ -74201,7 +74218,7 @@ resources.
 </summary>
 </param>
 </interface>
-<interface name="local_powerdevil_dbus_chat" lineno="90">
+<interface name="local_powerdevil_dbus_chat" lineno="91">
 <summary>
 Send and receive D-Bus messages with PowerDevil, e.g. to inhibit
 screen/system idle during media playback.
@@ -74212,7 +74229,7 @@ Domain allowed to exchange D-Bus messages with PowerDevil.
 </summary>
 </param>
 </interface>
-<interface name="local_powerdevil_x11_connect" lineno="109">
+<interface name="local_powerdevil_x11_connect" lineno="110">
 <summary>
 Allow PowerDevil to connect to a role's session X11 socket.
 </summary>
@@ -74222,7 +74239,7 @@ User role prefix that owns the session's X11 socket.
 </summary>
 </param>
 </interface>
-<interface name="local_powerdevil_wayland_connect" lineno="128">
+<interface name="local_powerdevil_wayland_connect" lineno="129">
 <summary>
 Allow PowerDevil to connect to a role's session Wayland compositor
 socket.
@@ -74233,7 +74250,7 @@ User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_powerdevil_read_proc_state" lineno="148">
+<interface name="local_powerdevil_read_proc_state" lineno="149">
 <summary>
 Allow a domain to read PowerDevil's process state (/proc/pid), e.g.
 Xwayland reading the cmdline of a connecting X11 client for

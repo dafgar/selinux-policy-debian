@@ -46,6 +46,7 @@ interface(`plasma_services_role',`
 ## </param>
 #
 interface(`local_plasma_services_role',`
+	local_kde_session_bus_owner($1, plasma_services_t)
 	local_plasma_services_dbus_chat($1_t)
 	local_plasma_services_systemd_inherit($1)
 ')

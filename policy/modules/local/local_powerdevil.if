@@ -67,6 +67,7 @@ interface(`local_powerdevil_systemd_inherit',`
 ## </param>
 #
 interface(`local_powerdevil_role',`
+	local_kde_session_bus_owner($1, powerdevil_t)
 	local_powerdevil_dbus_chat($1_t)
 	# org_kde_powerdevil is an X11 client (via Xwayland) of the session X11
 	# socket, and also probes the Wayland compositor socket directly (Qt QPA

@@ -45,6 +45,7 @@ interface(`kdeconnect_role',`
 ## </param>
 #
 interface(`local_kdeconnect_role',`
+	local_kde_session_bus_owner($1, kdeconnect_t)
 	local_kdeconnect_dbus_activation($1)
 	# kdeconnectd is a Wayland client of the session compositor socket,
 	# e.g. for tray/notification integration.

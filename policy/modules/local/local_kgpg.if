@@ -45,6 +45,7 @@ interface(`kgpg_role',`
 ## </param>
 #
 interface(`local_kgpg_role',`
+	local_kde_session_bus_owner($1, kgpg_t)
 	local_kgpg_wayland_connect($1)
 	local_kgpg_dbus_chat($1_t)
 	local_kgpg_systemd_inherit($1)

@@ -80,6 +80,7 @@ interface(`local_plasma_session_role',`
 		type plasma_session_t, $1_xwayland_t;
 	')
 
+	local_kde_session_bus_owner($1, plasma_session_t)
 	local_plasma_session_wayland_connect($1)
 	# kaccess is an X11 client; it also inherits the DRI render-node fd
 	# that Xwayland hands to its clients.
