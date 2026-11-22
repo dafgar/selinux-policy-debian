@@ -30,3 +30,6 @@ local_plasma_services_dbus_chat(juk_t)
 
 # MPRIS: the Plasma media widget controls JuK and reads its player state.
 local_plasmashell_dbus_chat(juk_t)
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(juk_t)

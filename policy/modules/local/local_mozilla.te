@@ -79,3 +79,6 @@ dontaudit mozilla_t { var_lib_t xdg_config_t xdg_data_t }:dir watch;
 # Tray icon registration and KDirNotify signals go to kded6 (StatusNotifierWatcher),
 # which runs in plasma_services_t.
 local_plasma_services_dbus_chat(mozilla_t)
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(mozilla_t)

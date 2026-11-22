@@ -81,3 +81,6 @@ local_kde_write_config_files(plasma_session_t)
 tunable_policy(`plasma_session_execmem',`
 	allow plasma_session_t self:process execmem;
 ')
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(plasma_session_t)

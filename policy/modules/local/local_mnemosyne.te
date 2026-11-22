@@ -42,3 +42,6 @@ userdom_search_user_home_dirs(mnemosyne_t)
 userdom_search_user_runtime(mnemosyne_t)
 xserver_use_user_fonts(mnemosyne_t)
 xserver_rw_mesa_shader_cache(mnemosyne_t)
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(mnemosyne_t)

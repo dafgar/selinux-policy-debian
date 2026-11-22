@@ -109,5 +109,6 @@ interface(`local_atspi_dbus_chat',`
 		allow atspi_t $1:dbus send_msg;
 	',`
 		dontaudit $1 atspi_t:dbus send_msg;
+		dontaudit atspi_t $1:dbus send_msg;
 	')
 ')

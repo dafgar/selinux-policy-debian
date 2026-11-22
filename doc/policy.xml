@@ -72298,7 +72298,7 @@ The prefix of the user role, for example staff or user.
 </summary>
 </param>
 </interface>
-<interface name="local_evolution_alarm_read_proc_state" lineno="106">
+<interface name="local_evolution_alarm_read_proc_state" lineno="108">
 <summary>
 Allow a domain to read Evolution alarm's process state (/proc/pid),
 e.g. Xwayland reading the cmdline of a connecting X11 client for
@@ -73195,7 +73195,7 @@ systemd/D-Bus session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_systemd_dbus_chat" lineno="316">
+<interface name="local_konsole_systemd_dbus_chat" lineno="318">
 <summary>
 Allow Konsole (and anything launched from it, e.g. systemctl --user)
 to chat over D-Bus with the per-role systemd --user manager.
@@ -73207,7 +73207,7 @@ the Konsole domain.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_publish_bus_name" lineno="339">
+<interface name="local_konsole_publish_bus_name" lineno="341">
 <summary>
 Allow Konsole to publish its per-instance D-Bus service name
 (org.kde.konsole-PID) on the role's session bus.
@@ -73219,7 +73219,7 @@ Konsole domain.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_dbus_chat" lineno="365">
+<interface name="local_konsole_dbus_chat" lineno="367">
 <summary>
 Allow Konsole to exchange D-Bus messages with a desktop-owned domain
 (e.g. xdg-desktop-portal's Settings interface for theme detection).
@@ -73235,7 +73235,7 @@ Domain to exchange messages with.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_systemd_inherit" lineno="387">
+<interface name="local_konsole_systemd_inherit" lineno="389">
 <summary>
 Allow Konsole to inherit a stream socket fd from the user systemd
 instance during launch, like other user-session applications.
@@ -73954,9 +73954,10 @@ stack/heap memory executable (Qt/QML JIT).
 <module name="local_plasma_session" filename="policy/modules/local/local_plasma_session.if">
 <summary>
 Local Plasma session bootstrap helper domain (startplasma-wayland,
-plasma-fallback-session-restore, kconf_update, kcminit, kaccess).
+plasma-fallback-session-restore, kconf_update, kcminit, kaccess,
+ksmserver, gmenudbusmenuproxy).
 </summary>
-<interface name="plasma_session_role" lineno="21">
+<interface name="plasma_session_role" lineno="22">
 <summary>
 Allow a role to transition into the Plasma session helper domain.
 </summary>
@@ -73971,7 +73972,7 @@ Role allowed access to the session helper domain.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_run_kconf_update" lineno="55">
+<interface name="local_plasma_session_run_kconf_update" lineno="58">
 <summary>
 Allow a domain to run kconf_update in the Plasma session helper domain,
 e.g. KDED spawning it for config migrations.
@@ -73982,7 +73983,7 @@ Domain allowed to execute kconf_update.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_role" lineno="78">
+<interface name="local_plasma_session_role" lineno="81">
 <summary>
 Wire up all of a role access to/from the Plasma session helpers:
 Wayland and X11 connect, D-Bus chat with the role main domain, and
@@ -73994,7 +73995,7 @@ User role prefix that owns the session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_wayland_connect" lineno="105">
+<interface name="local_plasma_session_wayland_connect" lineno="108">
 <summary>
 Allow the Plasma session helpers to connect to a role Wayland socket.
 </summary>
@@ -74004,7 +74005,7 @@ User role prefix that owns the Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_x11_connect" lineno="123">
+<interface name="local_plasma_session_x11_connect" lineno="126">
 <summary>
 Allow the Plasma session helpers to connect to a role X11 socket.
 </summary>
@@ -74014,7 +74015,7 @@ User role prefix that owns the X11 socket.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_dbus_chat" lineno="141">
+<interface name="local_plasma_session_dbus_chat" lineno="144">
 <summary>
 Send and receive D-Bus messages with the Plasma session helpers.
 </summary>
@@ -74024,7 +74025,7 @@ Domain allowed to exchange D-Bus messages.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_systemd_inherit" lineno="162">
+<interface name="local_plasma_session_systemd_inherit" lineno="165">
 <summary>
 Allow a user systemd instance to launch the Plasma session helpers with
 the usual inherited-exec process bits.
@@ -74035,7 +74036,7 @@ User role prefix that owns the user systemd domain.
 </summary>
 </param>
 </interface>
-<interface name="local_plasma_session_systemd_manage" lineno="184">
+<interface name="local_plasma_session_systemd_manage" lineno="187">
 <summary>
 Allow the Plasma session helpers to drive the user systemd manager:
 startplasma-wayland starts plasma-workspace-wayland.target and unsets
@@ -74053,7 +74054,7 @@ User role prefix that owns the user systemd domain.
 <p>
 Allow the Plasma session helpers (startplasma-wayland,
 plasma-fallback-session-restore, kconf_update, kcminit, kaccess,
-ksmserver) to make
+ksmserver, gmenudbusmenuproxy) to make
 their stack/heap memory executable (Qt/QML JIT). Defaults to true because
 startplasma-wayland is on the login path; the denial is still audited when
 the boolean is off.

@@ -89,6 +89,8 @@ interface(`local_evolution_alarm_role',`
 	local_plasma_services_dbus_chat(evolution_alarm_t)
 	# GIO queries gvfs for mountable locations (org.gtk.vfs.MountTracker).
 	local_gvfs_dbus_chat($1, evolution_alarm_t)
+	# Accessibility bus address lookup (behind atspi_allow_clients).
+	local_atspi_dbus_chat(evolution_alarm_t)
 ')
 
 ########################################

@@ -95,3 +95,6 @@ local_plasma_services_dbus_chat(thunderbird_t)
 
 # Desktop notifications: Plasma serves org.freedesktop.Notifications.
 local_plasmashell_dbus_chat(thunderbird_t)
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(thunderbird_t)

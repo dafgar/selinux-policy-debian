@@ -116,3 +116,6 @@ allow plasmashell_t self:netlink_route_socket { create_socket_perms nlmsg_read }
 tunable_policy(`plasmashell_execmem',`
 	allow plasmashell_t self:process execmem;
 ')
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(plasmashell_t)

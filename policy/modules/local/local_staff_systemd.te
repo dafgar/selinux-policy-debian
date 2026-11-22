@@ -108,3 +108,6 @@ allow staff_wm_t staff_systemd_t:system { start status };
 
 # systemd --user rotates its per-session notify socket during session setup.
 allow staff_systemd_t systemd_user_runtime_notify_t:sock_file unlink;
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(staff_systemd_t)

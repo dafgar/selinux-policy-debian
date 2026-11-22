@@ -99,3 +99,6 @@ dontaudit chromium_t bluetooth_t:dbus send_msg;
 # Tray icon registration and KDirNotify signals go to kded6 (StatusNotifierWatcher),
 # which runs in plasma_services_t.
 local_plasma_services_dbus_chat(chromium_t)
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(chromium_t)

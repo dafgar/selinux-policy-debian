@@ -110,3 +110,6 @@ tunable_policy(`virt_manager_execmem',`
 # Tray icon registration and KDirNotify signals go to kded6 (StatusNotifierWatcher),
 # which runs in plasma_services_t.
 local_plasma_services_dbus_chat(virt_manager_t)
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(virt_manager_t)

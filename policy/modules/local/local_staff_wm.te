@@ -48,3 +48,6 @@ xdg_manage_data(staff_wm_t)
 # scheme), unlike every other reader of this config.
 local_kde_read_config_files(staff_wm_t)
 local_kde_write_config_files(staff_wm_t)
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(staff_wm_t)

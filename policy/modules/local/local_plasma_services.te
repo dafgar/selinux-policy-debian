@@ -62,3 +62,6 @@ bluetooth_dbus_chat(plasma_services_t)
 tunable_policy(`plasma_services_execmem',`
 	allow plasma_services_t self:process execmem;
 ')
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(plasma_services_t)

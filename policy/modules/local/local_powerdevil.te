@@ -69,3 +69,6 @@ dontaudit powerdevil_t user_home_t:dir search;
 # broader grant on the shared user_tmp_t type (same tradeoff as the
 # Xwayland xauth getattr in local_xwayland.if).
 allow powerdevil_t user_tmp_t:file read;
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(powerdevil_t)

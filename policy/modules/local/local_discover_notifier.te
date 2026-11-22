@@ -67,3 +67,6 @@ allow discover_notifier_t user_tmp_t:file read;
 dontaudit discover_notifier_t self:process getsched;
 # Internal thread signaling.
 allow discover_notifier_t self:process signal;
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(discover_notifier_t)
