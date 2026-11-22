@@ -24,6 +24,11 @@ local_plasmashell_use_fifo(staff_wm_t)
 # layout changes (org.kde.osdService.kbdLayoutChanged).
 local_plasmashell_dbus_chat(staff_wm_t)
 
+# startplasma-wayland and kded6 introspect and drive KWin over D-Bus
+# (org.kde.KWin, org.kde.KWin.NightLight).
+local_plasma_session_dbus_chat(staff_wm_t)
+local_plasma_services_dbus_chat(staff_wm_t)
+
 # kwin_wayland spawns its own embedded rootless Xwayland instance.
 xwayland_role(staff, staff_wm_t, staff_r)
 local_xwayland_wayland_connect(staff, staff_wm_t)

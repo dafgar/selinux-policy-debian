@@ -72675,7 +72675,7 @@ User role prefix that owns the session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_juk_wayland_connect" lineno="64">
+<interface name="local_juk_wayland_connect" lineno="66">
 <summary>
 Allow JuK music player to connect to a role Wayland socket.
 </summary>
@@ -72685,7 +72685,7 @@ User role prefix that owns the Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_juk_dbus_chat" lineno="82">
+<interface name="local_juk_dbus_chat" lineno="84">
 <summary>
 Send and receive D-Bus messages with JuK music player.
 </summary>
@@ -72695,7 +72695,7 @@ Domain allowed to exchange D-Bus messages.
 </summary>
 </param>
 </interface>
-<interface name="local_juk_systemd_inherit" lineno="103">
+<interface name="local_juk_systemd_inherit" lineno="105">
 <summary>
 Allow a user systemd instance to launch JuK music player with the usual
 inherited-exec process bits.
@@ -74578,6 +74578,23 @@ Local override module with no exported interfaces.
 <summary>
 Local staff window-manager policy adjustments.
 </summary>
+<interface name="local_wm_dbus_chat" lineno="22">
+<summary>
+Allow a domain to send and receive D-Bus messages with the role
+window manager (kwin_wayland), e.g. registering global shortcuts
+through org.kde.KGlobalAccel.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the window manager domain.
+</summary>
+</param>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_sudo" filename="policy/modules/local/local_sudo.if">
 <summary>
