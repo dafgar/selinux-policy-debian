@@ -269,6 +269,12 @@ template(`konsole_role',`
 	# above.
 	corecmd_shell_domtrans($1_konsole_t, $2)
 
+	# Without noatsecure the shell is exec'd in secure-exec mode (AT_SECURE),
+	# so glibc strips LD_LIBRARY_PATH, TMPDIR, LOCPATH and similar from the
+	# user's interactive shell; rlimitinh/siginh keep its limits and pending
+	# signals across the exec.
+	allow $1_konsole_t $2:process { noatsecure rlimitinh siginh };
+
 	# systemd-tty-ask-password-agent, run from that elevated sysadm_r shell,
 	# still inherits the original Konsole pty fd (fd-use checks the domain
 	# that opened the fd, i.e. $1_konsole_t, regardless of how many further
