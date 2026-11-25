@@ -6,3 +6,4 @@
 /usr/bin/kaccess	--	gen_context(system_u:object_r:kaccess_exec_t,s0)
 /usr/bin/ksmserver	--	gen_context(system_u:object_r:ksmserver_exec_t,s0)
 /usr/bin/gmenudbusmenuproxy	--	gen_context(system_u:object_r:gmenudbusmenuproxy_exec_t,s0)
+/usr/bin/xembedsniproxy	--	gen_context(system_u:object_r:xembedsniproxy_exec_t,s0)
