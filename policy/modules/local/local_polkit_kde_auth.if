@@ -1,0 +1,116 @@
+## <summary>
+##	Local KDE polkit authentication agent domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the KDE polkit authentication agent
+##	domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to the agent.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the agent domain.
+##	</summary>
+## </param>
+#
+interface(`polkit_kde_auth_role',`
+	gen_require(`
+		type polkit_kde_auth_t, polkit_kde_auth_exec_t;
+		role $2;
+	')
+
+	role $2 types polkit_kde_auth_t;
+	domtrans_pattern($1, polkit_kde_auth_exec_t, polkit_kde_auth_t)
+
+	allow $1 polkit_kde_auth_t:process { ptrace signal_perms };
+	allow $1 polkit_kde_auth_t:fd use;
+	ps_process_pattern($1, polkit_kde_auth_t)
+
+	allow polkit_kde_auth_t $1:process sigchld;
+
+	# The agent runs polkit-agent-helper-1 to verify the typed password.
+	policykit_run_auth(polkit_kde_auth_t, $2)
+	policykit_signal_auth(polkit_kde_auth_t)
+')
+
+########################################
+## <summary>
+##	Wire up all of a role access to/from the KDE polkit authentication
+##	agent beyond the base role template: D-Bus chat, Wayland compositor
+##	connect, and systemd inherited-exec launch.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the D-Bus/Wayland/systemd session
+##	resources.
+##	</summary>
+## </param>
+#
+interface(`local_polkit_kde_auth_role',`
+	local_polkit_kde_auth_dbus_chat($1_t)
+	local_polkit_kde_auth_wayland_connect($1)
+	local_polkit_kde_auth_systemd_inherit($1)
+')
+
+########################################
+## <summary>
+##	Allow bidirectional D-Bus method call/reply between a domain and the
+##	KDE polkit authentication agent.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to exchange D-Bus messages with the agent.
+##	</summary>
+## </param>
+#
+interface(`local_polkit_kde_auth_dbus_chat',`
+	gen_require(`
+		type polkit_kde_auth_t;
+	')
+
+	allow $1 polkit_kde_auth_t:dbus send_msg;
+	allow polkit_kde_auth_t $1:dbus send_msg;
+')
+
+########################################
+## <summary>
+##	Allow the KDE polkit authentication agent to connect to a role's
+##	session Wayland compositor socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session's Wayland socket.
+##	</summary>
+## </param>
+#
+interface(`local_polkit_kde_auth_wayland_connect',`
+	gen_require(`
+		type polkit_kde_auth_t;
+	')
+
+	local_$1_wayland_connect(polkit_kde_auth_t)
+')
+
+########################################
+## <summary>
+##	Allow a user systemd instance to launch the KDE polkit authentication
+##	agent with the usual inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_polkit_kde_auth_systemd_inherit',`
+	gen_require(`
+		type polkit_kde_auth_t;
+	')
+
+	local_systemd_inherit_user_service($1, polkit_kde_auth_t)
+')

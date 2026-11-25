@@ -73182,7 +73182,7 @@ Role allowed access.
 </summary>
 </param>
 </template>
-<interface name="local_konsole_role" lineno="293">
+<interface name="local_konsole_role" lineno="299">
 <summary>
 Wire up all of a role extra Konsole grants beyond the base role
 template: systemd --user manager D-Bus chat, D-Bus chat with the role
@@ -73195,7 +73195,7 @@ systemd/D-Bus session resources.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_systemd_dbus_chat" lineno="318">
+<interface name="local_konsole_systemd_dbus_chat" lineno="324">
 <summary>
 Allow Konsole (and anything launched from it, e.g. systemctl --user)
 to chat over D-Bus with the per-role systemd --user manager.
@@ -73207,7 +73207,7 @@ the Konsole domain.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_publish_bus_name" lineno="341">
+<interface name="local_konsole_publish_bus_name" lineno="347">
 <summary>
 Allow Konsole to publish its per-instance D-Bus service name
 (org.kde.konsole-PID) on the role's session bus.
@@ -73219,7 +73219,7 @@ Konsole domain.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_dbus_chat" lineno="367">
+<interface name="local_konsole_dbus_chat" lineno="373">
 <summary>
 Allow Konsole to exchange D-Bus messages with a desktop-owned domain
 (e.g. xdg-desktop-portal's Settings interface for theme detection).
@@ -73235,7 +73235,7 @@ Domain to exchange messages with.
 </summary>
 </param>
 </interface>
-<interface name="local_konsole_systemd_inherit" lineno="389">
+<interface name="local_konsole_systemd_inherit" lineno="395">
 <summary>
 Allow Konsole to inherit a stream socket fd from the user systemd
 instance during launch, like other user-session applications.
@@ -74175,6 +74175,83 @@ its embedded QtWebEngine sandbox setup (widgets like web-preview/forecast).
 <summary>
 Local override module with no exported interfaces.
 </summary>
+</module>
+<module name="local_polkit_kde_auth" filename="policy/modules/local/local_polkit_kde_auth.if">
+<summary>
+Local KDE polkit authentication agent domain interfaces.
+</summary>
+<interface name="polkit_kde_auth_role" lineno="21">
+<summary>
+Allow a role to transition into the KDE polkit authentication agent
+domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to the agent.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the agent domain.
+</summary>
+</param>
+</interface>
+<interface name="local_polkit_kde_auth_role" lineno="54">
+<summary>
+Wire up all of a role access to/from the KDE polkit authentication
+agent beyond the base role template: D-Bus chat, Wayland compositor
+connect, and systemd inherited-exec launch.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the D-Bus/Wayland/systemd session
+resources.
+</summary>
+</param>
+</interface>
+<interface name="local_polkit_kde_auth_dbus_chat" lineno="71">
+<summary>
+Allow bidirectional D-Bus method call/reply between a domain and the
+KDE polkit authentication agent.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages with the agent.
+</summary>
+</param>
+</interface>
+<interface name="local_polkit_kde_auth_wayland_connect" lineno="91">
+<summary>
+Allow the KDE polkit authentication agent to connect to a role's
+session Wayland compositor socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session's Wayland socket.
+</summary>
+</param>
+</interface>
+<interface name="local_polkit_kde_auth_systemd_inherit" lineno="110">
+<summary>
+Allow a user systemd instance to launch the KDE polkit authentication
+agent with the usual inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+<tunable name="polkit_kde_auth_execmem" dftval="true">
+<desc>
+<p>
+Allow the KDE polkit authentication agent to make its stack/heap memory
+executable (Qt/QML JIT). Defaults to true because a crash of the agent
+means no graphical privilege prompts; the denial is still audited when
+the boolean is off.
+</p>
+</desc>
+</tunable>
 </module>
 <module name="local_powerdevil" filename="policy/modules/local/local_powerdevil.if">
 <summary>

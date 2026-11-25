@@ -1,0 +1,40 @@
+policy_module(local_polkit_kde_auth)
+
+# KDE polkit authentication agent (polkit-kde-authentication-agent-1): the
+# graphical password prompt for polkit-authorized actions. Split out of
+# staff_t so its QML JIT (execmem) does not widen staff_t. Written without a
+# dedicated AVC log; add rules from permissive-mode denials.
+
+attribute_role polkit_kde_auth_roles;
+
+type polkit_kde_auth_t;
+type polkit_kde_auth_exec_t;
+userdom_user_application_domain(polkit_kde_auth_t, polkit_kde_auth_exec_t)
+role polkit_kde_auth_roles types polkit_kde_auth_t;
+
+## <desc>
+## <p>
+## Allow the KDE polkit authentication agent to make its stack/heap memory
+## executable (Qt/QML JIT). Defaults to true because a crash of the agent
+## means no graphical privilege prompts; the denial is still audited when
+## the boolean is off.
+## </p>
+## </desc>
+gen_tunable(polkit_kde_auth_execmem, true)
+
+tunable_policy(`polkit_kde_auth_execmem',`
+	allow polkit_kde_auth_t self:process execmem;
+')
+
+local_kde_gui_client(polkit_kde_auth_t)
+local_kde_session_peer(polkit_kde_auth_t)
+
+auth_use_nsswitch(polkit_kde_auth_t)
+
+# The agent registers with polkitd over the system bus and receives
+# authentication requests back on it.
+dbus_system_bus_client(polkit_kde_auth_t)
+policykit_dbus_chat(polkit_kde_auth_t)
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(polkit_kde_auth_t)

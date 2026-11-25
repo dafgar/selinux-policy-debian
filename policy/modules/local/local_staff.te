@@ -155,6 +155,9 @@ plasmashell_role(staff_application_exec_domain, staff_r)
 local_plasmashell_role(staff)
 qtwebengine_role(plasmashell_t, staff_r)
 
+polkit_kde_auth_role(staff_application_exec_domain, staff_r)
+local_polkit_kde_auth_role(staff)
+
 powerdevil_role(staff_application_exec_domain, staff_r)
 local_powerdevil_role(staff)
 
