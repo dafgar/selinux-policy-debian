@@ -199,6 +199,11 @@ local_xwayland_listen_socket(staff, staff_t)
 local_xwayland_use_fd(staff, staff_t)
 local_systemd_inherit_user_service(staff, staff_xwayland_t)
 
+# Let ps/pgrep/pkill in staff_t see the user's own systemd --user manager and
+# Xwayland. Other domains' /proc entries stay hidden (base userdomain policy).
+systemd_read_user_manager_state(staff, staff_t)
+ps_process_pattern(staff_t, staff_xwayland_t)
+
 zotero_role(staff_application_exec_domain, staff_r)
 local_zotero_role(staff)
 
