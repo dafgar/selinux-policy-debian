@@ -60,7 +60,16 @@ gen_tunable(plasma_session_execmem, true)
 
 gen_require(`
 	type user_runtime_t;
+	type user_tty_device_t, xdm_t;
 ')
+
+# startplasma-wayland inherits GDM's session socket and the VT from the
+# display manager session helper. The kernel closes or replaces unauthorized
+# inherited fds on exec, and the session uses neither, so keep this out of the
+# log rather than granting access to GDM internals or the tty.
+dontaudit plasma_session_t xdm_t:fd use;
+dontaudit plasma_session_t xdm_t:unix_stream_socket { read write };
+dontaudit plasma_session_t user_tty_device_t:chr_file { read write };
 
 local_kde_gui_client(plasma_session_t)
 local_kde_session_peer(plasma_session_t)
