@@ -80,6 +80,12 @@ dontaudit plasma_session_t user_tty_device_t:chr_file { read write };
 local_kde_gui_client(plasma_session_t)
 local_kde_session_peer(plasma_session_t)
 
+# startplasma-wayland asks systemd-localed (org.freedesktop.locale1) for the
+# system locale and keymap before it launches the session. If the reply is
+# denied it waits for the D-Bus timeout and the session start stalls.
+dbus_system_bus_client(plasma_session_t)
+systemd_dbus_chat_locale(plasma_session_t)
+
 # gmenudbusmenuproxy joins the session over ICE: it reads the iceauth_* cookie
 # file ksmserver leaves in the runtime dir; the socket itself is abstract and
 # the peer is this same domain. ~/.gtkrc-2.0 is labeled xdg_config_t by
