@@ -200,6 +200,9 @@ local_xdg_desktop_portal_gtk_role(staff)
 
 xdg_desktop_portal_kde_role(staff_application_exec_domain, staff_r)
 local_xdg_desktop_portal_kde_role(staff)
+# The KDE portal backend polls KWin (org.kde.KWin Properties.Get) for screen
+# capture and screencast capabilities; staff_wm_t is not a kde_session_peer.
+local_wm_dbus_chat(staff, xdg_desktop_portal_kde_t)
 
 xdg_document_portal_role(staff_application_exec_domain, staff_r)
 local_xdg_document_portal_role(staff)
