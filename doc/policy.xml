@@ -74275,7 +74275,19 @@ resources.
 </summary>
 </param>
 </interface>
-<interface name="local_polkit_kde_auth_dbus_chat" lineno="71">
+<interface name="local_polkit_kde_auth_publish_bus_name" lineno="73">
+<summary>
+Allow the KDE polkit authentication agent to own its D-Bus service
+(org.kde.polkit-kde-authentication-agent-1) on the per-role session
+bus. Without it the agent exits at startup and is restarted in a loop.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session D-Bus domain.
+</summary>
+</param>
+</interface>
+<interface name="local_polkit_kde_auth_dbus_chat" lineno="94">
 <summary>
 Allow bidirectional D-Bus method call/reply between a domain and the
 KDE polkit authentication agent.
@@ -74286,7 +74298,7 @@ Domain allowed to exchange D-Bus messages with the agent.
 </summary>
 </param>
 </interface>
-<interface name="local_polkit_kde_auth_wayland_connect" lineno="91">
+<interface name="local_polkit_kde_auth_wayland_connect" lineno="114">
 <summary>
 Allow the KDE polkit authentication agent to connect to a role's
 session Wayland compositor socket.
@@ -74297,7 +74309,7 @@ User role prefix that owns the session's Wayland socket.
 </summary>
 </param>
 </interface>
-<interface name="local_polkit_kde_auth_systemd_inherit" lineno="110">
+<interface name="local_polkit_kde_auth_systemd_inherit" lineno="133">
 <summary>
 Allow a user systemd instance to launch the KDE polkit authentication
 agent with the usual inherited-exec process bits.

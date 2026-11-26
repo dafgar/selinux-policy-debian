@@ -36,5 +36,8 @@ auth_use_nsswitch(polkit_kde_auth_t)
 dbus_system_bus_client(polkit_kde_auth_t)
 policykit_dbus_chat(polkit_kde_auth_t)
 
+# Qt platform theme queries the main portal (Properties.Get) at startup.
+local_xdg_desktop_portal_dbus_chat(polkit_kde_auth_t)
+
 # Accessibility bus address lookup (behind atspi_allow_clients).
 local_atspi_dbus_chat(polkit_kde_auth_t)
