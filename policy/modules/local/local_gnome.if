@@ -25,7 +25,8 @@ template(`local_gnome_systemd_keyring_socket',`
 ########################################
 ## <summary>
 ##	Allow a GSettings/dconf client to create and map dconf's shared-memory
-##	change flag in the user runtime directory.
+##	change flag (/run/user/UID/dconf/user), which the base gnome module
+##	labels gconf_tmp_t.
 ## </summary>
 ## <param name="domain">
 ##	<summary>
@@ -35,11 +36,11 @@ template(`local_gnome_systemd_keyring_socket',`
 #
 interface(`local_gnome_dconf_runtime_client',`
 	gen_require(`
-		type dconf_runtime_t;
+		type gconf_tmp_t;
 	')
 
-	userdom_user_runtime_filetrans($1, dconf_runtime_t, dir, "dconf")
-	manage_dirs_pattern($1, dconf_runtime_t, dconf_runtime_t)
-	manage_files_pattern($1, dconf_runtime_t, dconf_runtime_t)
-	allow $1 dconf_runtime_t:file map;
+	userdom_user_runtime_filetrans($1, gconf_tmp_t, dir, "dconf")
+	manage_dirs_pattern($1, gconf_tmp_t, gconf_tmp_t)
+	manage_files_pattern($1, gconf_tmp_t, gconf_tmp_t)
+	allow $1 gconf_tmp_t:file map;
 ')

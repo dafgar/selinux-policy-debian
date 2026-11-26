@@ -72597,10 +72597,11 @@ User prefix, for example staff or user.
 </summary>
 </param>
 </template>
-<interface name="local_gnome_dconf_runtime_client" lineno="36">
+<interface name="local_gnome_dconf_runtime_client" lineno="37">
 <summary>
 Allow a GSettings/dconf client to create and map dconf's shared-memory
-change flag in the user runtime directory.
+change flag (/run/user/UID/dconf/user), which the base gnome module
+labels gconf_tmp_t.
 </summary>
 <param name="domain">
 <summary>
