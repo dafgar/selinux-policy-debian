@@ -72331,6 +72331,60 @@ Domain allowed to query fwupd and receive replies.
 </param>
 </interface>
 </module>
+<module name="local_gcr_prompter" filename="policy/modules/local/local_gcr_prompter.if">
+<summary>
+Local gcr-prompter (passphrase/PIN dialog) domain interfaces.
+</summary>
+<interface name="gcr_prompter_role" lineno="20">
+<summary>
+Allow a role to transition into the gcr-prompter domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to gcr-prompter.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the gcr-prompter domain.
+</summary>
+</param>
+</interface>
+<interface name="local_gcr_prompter_role" lineno="48">
+<summary>
+Wire up all of a role access to/from gcr-prompter beyond the base role
+template: D-Bus activation by the session bus, D-Bus chat with the
+role main domain and its keyring daemon, and Wayland compositor connect.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session D-Bus and Wayland resources.
+</summary>
+</param>
+</interface>
+<interface name="local_gcr_prompter_dbus_chat" lineno="70">
+<summary>
+Allow bidirectional D-Bus method call/reply between a domain and
+gcr-prompter.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages with gcr-prompter.
+</summary>
+</param>
+</interface>
+<interface name="local_gcr_prompter_wayland_connect" lineno="90">
+<summary>
+Allow gcr-prompter to connect to a role session Wayland compositor
+socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session Wayland socket.
+</summary>
+</param>
+</interface>
+</module>
 <module name="local_getty" filename="policy/modules/local/local_getty.if">
 <summary>
 Local policy for getty integration adjustments.

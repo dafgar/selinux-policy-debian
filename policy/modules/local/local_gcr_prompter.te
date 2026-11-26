@@ -1,0 +1,31 @@
+policy_module(local_gcr_prompter)
+
+# gcr-prompter: the GTK dialog that asks for passphrases and PINs on behalf of
+# pinentry-gnome3 (gpg-agent), gnome-keyring, ssh-askpass and PKCS#11 tokens.
+# It is D-Bus activated (org.gnome.keyring.SystemPrompter) and holds typed
+# secrets in memory, so it is kept out of staff_t. Written without a
+# dedicated AVC log; add rules from permissive-mode denials.
+
+attribute_role gcr_prompter_roles;
+
+type gcr_prompter_t;
+type gcr_prompter_exec_t;
+userdom_user_application_domain(gcr_prompter_t, gcr_prompter_exec_t)
+role gcr_prompter_roles types gcr_prompter_t;
+
+# Baseline for a graphical Wayland client: libraries, session bus client,
+# fonts, DRI, xkb, Mesa shader cache, shared XDG/KDE config read.
+local_kde_gui_client(gcr_prompter_t)
+
+# GTK/GSettings: ~/.config/gtk-*, ~/.config/dconf and the dconf change flag.
+gnome_mmap_read_xdg_config_files(gcr_prompter_t)
+local_gnome_dconf_runtime_client(gcr_prompter_t)
+
+auth_use_nsswitch(gcr_prompter_t)
+
+# pinentry-gnome3 runs inside gpg_agent_t and calls the prompter over the
+# session bus.
+local_gpg_prompter_dbus_chat(gcr_prompter_t)
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(gcr_prompter_t)
