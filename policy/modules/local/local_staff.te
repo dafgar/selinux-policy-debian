@@ -195,6 +195,12 @@ wireplumber_role(staff, staff_t, staff_application_exec_domain, staff_r)
 xdg_desktop_portal_role(staff_application_exec_domain, staff_r)
 local_xdg_desktop_portal_role(staff)
 
+xdg_desktop_portal_gtk_role(staff_application_exec_domain, staff_r)
+local_xdg_desktop_portal_gtk_role(staff)
+
+xdg_desktop_portal_kde_role(staff_application_exec_domain, staff_r)
+local_xdg_desktop_portal_kde_role(staff)
+
 xdg_document_portal_role(staff_application_exec_domain, staff_r)
 local_xdg_document_portal_role(staff)
 
@@ -240,6 +246,6 @@ local_sudo_dontaudit_runtime_probes(staff)
 
 local_staff_read_proc_state(staff_xwayland_t)
 
-# GSettings clients running as staff_t (portal backends, goa, gcr, evolution)
+# GSettings clients still running as staff_t (goa, evolution)
 # map dconf's shared-memory change flag.
 local_gnome_dconf_runtime_client(staff_t)

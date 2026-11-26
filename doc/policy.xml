@@ -75413,6 +75413,149 @@ User role prefix that owns the user systemd domain.
 </param>
 </interface>
 </module>
+<module name="local_xdg_desktop_portal_gtk" filename="policy/modules/local/local_xdg_desktop_portal_gtk.if">
+<summary>
+Local GTK XDG desktop portal backend domain interfaces.
+</summary>
+<interface name="xdg_desktop_portal_gtk_role" lineno="20">
+<summary>
+Allow a role to transition into the GTK portal backend domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to the backend.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the backend domain.
+</summary>
+</param>
+</interface>
+<interface name="local_xdg_desktop_portal_gtk_role" lineno="50">
+<summary>
+Wire up all of a role access to/from the GTK portal backend beyond the
+base role template: D-Bus activation by the session bus, Wayland
+compositor connect and systemd inherited-exec
+launch.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the D-Bus, Wayland and systemd
+session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_xdg_desktop_portal_gtk_dbus_chat" lineno="71">
+<summary>
+Allow bidirectional D-Bus method call/reply between a domain and the
+GTK portal backend.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages with the backend.
+</summary>
+</param>
+</interface>
+<interface name="local_xdg_desktop_portal_gtk_wayland_connect" lineno="91">
+<summary>
+Allow the GTK portal backend to connect to a role session Wayland
+compositor socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session Wayland socket.
+</summary>
+</param>
+</interface>
+<interface name="local_xdg_desktop_portal_gtk_systemd_inherit" lineno="110">
+<summary>
+Allow a user systemd instance to launch the GTK portal backend with
+the usual inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+</module>
+<module name="local_xdg_desktop_portal_kde" filename="policy/modules/local/local_xdg_desktop_portal_kde.if">
+<summary>
+Local KDE XDG desktop portal backend domain interfaces.
+</summary>
+<interface name="xdg_desktop_portal_kde_role" lineno="20">
+<summary>
+Allow a role to transition into the KDE portal backend domain.
+</summary>
+<param name="source_domain">
+<summary>
+Domain allowed to execute and transition to the backend.
+</summary>
+</param>
+<param name="role">
+<summary>
+Role allowed access to the backend domain.
+</summary>
+</param>
+</interface>
+<interface name="local_xdg_desktop_portal_kde_role" lineno="50">
+<summary>
+Wire up all of a role access to/from the KDE portal backend beyond the
+base role template: D-Bus activation by the session bus, Wayland
+compositor connect, PipeWire socket access and systemd inherited-exec
+launch.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the D-Bus, Wayland, PipeWire and systemd
+session resources.
+</summary>
+</param>
+</interface>
+<interface name="local_xdg_desktop_portal_kde_dbus_chat" lineno="72">
+<summary>
+Allow bidirectional D-Bus method call/reply between a domain and the
+KDE portal backend.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed to exchange D-Bus messages with the backend.
+</summary>
+</param>
+</interface>
+<interface name="local_xdg_desktop_portal_kde_wayland_connect" lineno="92">
+<summary>
+Allow the KDE portal backend to connect to a role session Wayland
+compositor socket.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the session Wayland socket.
+</summary>
+</param>
+</interface>
+<interface name="local_xdg_desktop_portal_kde_systemd_inherit" lineno="111">
+<summary>
+Allow a user systemd instance to launch the KDE portal backend with
+the usual inherited-exec process bits.
+</summary>
+<param name="role_prefix">
+<summary>
+User role prefix that owns the user systemd domain.
+</summary>
+</param>
+</interface>
+<tunable name="xdg_desktop_portal_kde_execmem" dftval="true">
+<desc>
+<p>
+Allow xdg-desktop-portal-kde to make its stack/heap memory executable
+(Qt/QML JIT). Defaults to true because the portal dialogs are QML; the
+denial is still audited when the boolean is off.
+</p>
+</desc>
+</tunable>
+</module>
 <module name="local_xdg_document_portal" filename="policy/modules/local/local_xdg_document_portal.if">
 <summary>
 Local XDG document portal domain interfaces.

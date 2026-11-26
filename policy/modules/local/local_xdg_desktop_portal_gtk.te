@@ -1,0 +1,30 @@
+policy_module(local_xdg_desktop_portal_gtk)
+
+# xdg-desktop-portal-gtk: the GTK backend of the XDG desktop portal. Used as
+# the fallback for portals the KDE backend does not implement (app chooser,
+# account, inhibit, settings lookups and the GTK file chooser for GTK apps).
+# It sees picked file paths, so it is kept out of staff_t. Written without a
+# dedicated AVC log; add rules from permissive-mode denials.
+
+attribute_role xdg_desktop_portal_gtk_roles;
+
+type xdg_desktop_portal_gtk_t;
+type xdg_desktop_portal_gtk_exec_t;
+userdom_user_application_domain(xdg_desktop_portal_gtk_t, xdg_desktop_portal_gtk_exec_t)
+role xdg_desktop_portal_gtk_roles types xdg_desktop_portal_gtk_t;
+
+# Baseline for a graphical Wayland client: libraries, session bus client,
+# fonts, DRI, xkb, Mesa shader cache, shared XDG/KDE config read.
+local_kde_gui_client(xdg_desktop_portal_gtk_t)
+
+# GTK/GSettings: ~/.config/gtk-*, ~/.config/dconf and the dconf change flag.
+gnome_mmap_read_xdg_config_files(xdg_desktop_portal_gtk_t)
+local_gnome_dconf_runtime_client(xdg_desktop_portal_gtk_t)
+
+auth_use_nsswitch(xdg_desktop_portal_gtk_t)
+
+# The main portal calls the backend over the session bus.
+local_xdg_desktop_portal_dbus_chat(xdg_desktop_portal_gtk_t)
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(xdg_desktop_portal_gtk_t)

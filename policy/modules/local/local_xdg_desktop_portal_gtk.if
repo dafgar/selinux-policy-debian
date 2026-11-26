@@ -1,0 +1,116 @@
+## <summary>
+##	Local GTK XDG desktop portal backend domain interfaces.
+## </summary>
+
+########################################
+## <summary>
+##	Allow a role to transition into the GTK portal backend domain.
+## </summary>
+## <param name="source_domain">
+##	<summary>
+##	Domain allowed to execute and transition to the backend.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access to the backend domain.
+##	</summary>
+## </param>
+#
+interface(`xdg_desktop_portal_gtk_role',`
+	gen_require(`
+		type xdg_desktop_portal_gtk_t, xdg_desktop_portal_gtk_exec_t;
+		role $2;
+	')
+
+	role $2 types xdg_desktop_portal_gtk_t;
+	domtrans_pattern($1, xdg_desktop_portal_gtk_exec_t, xdg_desktop_portal_gtk_t)
+
+	allow $1 xdg_desktop_portal_gtk_t:process { ptrace signal_perms };
+	allow $1 xdg_desktop_portal_gtk_t:fd use;
+	ps_process_pattern($1, xdg_desktop_portal_gtk_t)
+
+	allow xdg_desktop_portal_gtk_t $1:process sigchld;
+')
+
+########################################
+## <summary>
+##	Wire up all of a role access to/from the GTK portal backend beyond the
+##	base role template: D-Bus activation by the session bus, Wayland
+##	compositor connect and systemd inherited-exec
+##	launch.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the D-Bus, Wayland and systemd
+##	session resources.
+##	</summary>
+## </param>
+#
+interface(`local_xdg_desktop_portal_gtk_role',`
+	gen_require(`
+		type xdg_desktop_portal_gtk_t, xdg_desktop_portal_gtk_exec_t;
+	')
+
+	dbus_spec_session_domain($1, xdg_desktop_portal_gtk_t, xdg_desktop_portal_gtk_exec_t)
+	local_xdg_desktop_portal_gtk_wayland_connect($1)
+	local_xdg_desktop_portal_gtk_systemd_inherit($1)
+')
+
+########################################
+## <summary>
+##	Allow bidirectional D-Bus method call/reply between a domain and the
+##	GTK portal backend.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to exchange D-Bus messages with the backend.
+##	</summary>
+## </param>
+#
+interface(`local_xdg_desktop_portal_gtk_dbus_chat',`
+	gen_require(`
+		type xdg_desktop_portal_gtk_t;
+	')
+
+	allow $1 xdg_desktop_portal_gtk_t:dbus send_msg;
+	allow xdg_desktop_portal_gtk_t $1:dbus send_msg;
+')
+
+########################################
+## <summary>
+##	Allow the GTK portal backend to connect to a role session Wayland
+##	compositor socket.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the session Wayland socket.
+##	</summary>
+## </param>
+#
+interface(`local_xdg_desktop_portal_gtk_wayland_connect',`
+	gen_require(`
+		type xdg_desktop_portal_gtk_t;
+	')
+
+	local_$1_wayland_connect(xdg_desktop_portal_gtk_t)
+')
+
+########################################
+## <summary>
+##	Allow a user systemd instance to launch the GTK portal backend with
+##	the usual inherited-exec process bits.
+## </summary>
+## <param name="role_prefix">
+##	<summary>
+##	User role prefix that owns the user systemd domain.
+##	</summary>
+## </param>
+#
+interface(`local_xdg_desktop_portal_gtk_systemd_inherit',`
+	gen_require(`
+		type xdg_desktop_portal_gtk_t;
+	')
+
+	local_systemd_inherit_user_service($1, xdg_desktop_portal_gtk_t)
+')

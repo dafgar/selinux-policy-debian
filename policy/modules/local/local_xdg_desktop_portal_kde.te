@@ -1,0 +1,40 @@
+policy_module(local_xdg_desktop_portal_kde)
+
+# xdg-desktop-portal-kde: the KDE backend of the XDG desktop portal. It shows
+# the file chooser, screenshot, print and settings dialogs and brokers screen
+# capture, screencast and remote-desktop input through KWin. It sees screen
+# contents and picked file paths, so it is kept out of staff_t. Written
+# without a dedicated AVC log; add rules from permissive-mode denials.
+
+attribute_role xdg_desktop_portal_kde_roles;
+
+type xdg_desktop_portal_kde_t;
+type xdg_desktop_portal_kde_exec_t;
+userdom_user_application_domain(xdg_desktop_portal_kde_t, xdg_desktop_portal_kde_exec_t)
+role xdg_desktop_portal_kde_roles types xdg_desktop_portal_kde_t;
+
+## <desc>
+## <p>
+## Allow xdg-desktop-portal-kde to make its stack/heap memory executable
+## (Qt/QML JIT). Defaults to true because the portal dialogs are QML; the
+## denial is still audited when the boolean is off.
+## </p>
+## </desc>
+gen_tunable(xdg_desktop_portal_kde_execmem, true)
+
+tunable_policy(`xdg_desktop_portal_kde_execmem',`
+	allow xdg_desktop_portal_kde_t self:process execmem;
+')
+
+# Baseline for a Qt/Wayland client, plus the Plasma peer group (KWin,
+# plasmashell, KGlobalAccel and friends) it talks to on the session bus.
+local_kde_gui_client(xdg_desktop_portal_kde_t)
+local_kde_session_peer(xdg_desktop_portal_kde_t)
+
+auth_use_nsswitch(xdg_desktop_portal_kde_t)
+
+# The main portal calls the backend over the session bus.
+local_xdg_desktop_portal_dbus_chat(xdg_desktop_portal_kde_t)
+
+# Accessibility bus address lookup (behind atspi_allow_clients).
+local_atspi_dbus_chat(xdg_desktop_portal_kde_t)
