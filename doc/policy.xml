@@ -72543,6 +72543,17 @@ User prefix, for example staff or user.
 </summary>
 </param>
 </template>
+<interface name="local_gnome_dconf_runtime_client" lineno="36">
+<summary>
+Allow a GSettings/dconf client to create and map dconf's shared-memory
+change flag in the user runtime directory.
+</summary>
+<param name="domain">
+<summary>
+Domain allowed access.
+</summary>
+</param>
+</interface>
 </module>
 <module name="local_gpg" filename="policy/modules/local/local_gpg.if">
 <summary>

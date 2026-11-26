@@ -21,3 +21,25 @@ template(`local_gnome_systemd_keyring_socket',`
 	systemd_user_app_socket_create($1, $1_gkeyringd_t, gnome_keyring_tmp_t)
 	local_systemd_inherit_user_service($1, $1_gkeyringd_t)
 ')
+
+########################################
+## <summary>
+##	Allow a GSettings/dconf client to create and map dconf's shared-memory
+##	change flag in the user runtime directory.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`local_gnome_dconf_runtime_client',`
+	gen_require(`
+		type dconf_runtime_t;
+	')
+
+	userdom_user_runtime_filetrans($1, dconf_runtime_t, dir, "dconf")
+	manage_dirs_pattern($1, dconf_runtime_t, dconf_runtime_t)
+	manage_files_pattern($1, dconf_runtime_t, dconf_runtime_t)
+	allow $1 dconf_runtime_t:file map;
+')

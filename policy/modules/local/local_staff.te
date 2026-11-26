@@ -236,3 +236,7 @@ local_systemd_logind_use_inherited_sudo_fds(staff)
 local_sudo_dontaudit_runtime_probes(staff)
 
 local_staff_read_proc_state(staff_xwayland_t)
+
+# GSettings clients running as staff_t (portal backends, goa, gcr, evolution)
+# map dconf's shared-memory change flag.
+local_gnome_dconf_runtime_client(staff_t)

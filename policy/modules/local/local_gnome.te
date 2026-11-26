@@ -2,3 +2,10 @@ policy_module(local_gnome)
 
 # Generic helper interfaces for local GNOME/session adjustments shared by
 # multiple SELinux users and their session managers.
+
+# dconf's shared-memory change flag (/run/user/<uid>/dconf/user), mapped by
+# every GSettings client. Its own label keeps GSettings access from needing
+# the generic user_runtime_t, which also holds the ICE cookie and any other
+# unlabeled runtime file.
+type dconf_runtime_t;
+userdom_user_runtime_content(dconf_runtime_t)
