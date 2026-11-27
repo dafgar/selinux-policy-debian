@@ -5,6 +5,7 @@ gen_require(`
 	type evince_tmpfs_t;
 	type evolution_alarm_t;
 	type evolution_alarm_tmpfs_t;
+	type gcr_prompter_tmpfs_t;
 	type plasmashell_t;
 	type rsibreak_tmpfs_t;
 	type staff_pipewire_t;
@@ -36,6 +37,7 @@ local_xwayland_wayland_connect(staff, staff_wm_t)
 allow staff_wm_t evolution_alarm_t:fd use;
 allow staff_wm_t evolution_alarm_tmpfs_t:file { getattr map read write };
 allow staff_wm_t evince_tmpfs_t:file { getattr map read write };
+allow staff_wm_t gcr_prompter_tmpfs_t:file { getattr map read write };
 allow staff_wm_t chromium_tmpfs_t:file map;
 allow staff_wm_t staff_xwayland_tmpfs_t:file { getattr map read write };
 allow staff_wm_t rsibreak_tmpfs_t:file { getattr map read write };

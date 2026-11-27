@@ -13,6 +13,16 @@ type gcr_prompter_exec_t;
 userdom_user_application_domain(gcr_prompter_t, gcr_prompter_exec_t)
 role gcr_prompter_roles types gcr_prompter_t;
 
+# Native Wayland clients hand cursor pixel data to the compositor through an
+# anonymous memfd; memfd objects inherit their label from tmpfs transitions,
+# not from *.fc, so give the prompter its own tmpfs type instead of generic
+# tmpfs_t. staff_wm_t gets access in local_staff_wm.te.
+type gcr_prompter_tmpfs_t;
+userdom_user_tmpfs_file(gcr_prompter_tmpfs_t)
+manage_files_pattern(gcr_prompter_t, gcr_prompter_tmpfs_t, gcr_prompter_tmpfs_t)
+allow gcr_prompter_t gcr_prompter_tmpfs_t:file map;
+fs_tmpfs_filetrans(gcr_prompter_t, gcr_prompter_tmpfs_t, file)
+
 # Baseline for a graphical Wayland client: libraries, session bus client,
 # fonts, DRI, xkb, Mesa shader cache, shared XDG/KDE config read.
 local_kde_gui_client(gcr_prompter_t)
