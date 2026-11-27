@@ -54,6 +54,9 @@ interface(`local_gcr_prompter_role',`
 	local_gcr_prompter_dbus_chat($1_t)
 	local_gcr_prompter_dbus_chat($1_gkeyringd_t)
 	local_gcr_prompter_wayland_connect($1)
+	# GIO startup queries gvfsd MountTracker and the volume monitor; an
+	# unanswered call leaves the prompter without a dialog.
+	local_gvfs_dbus_chat($1, gcr_prompter_t)
 ')
 
 ########################################

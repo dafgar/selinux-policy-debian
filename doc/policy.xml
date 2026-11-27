@@ -72362,7 +72362,7 @@ User role prefix that owns the session D-Bus and Wayland resources.
 </summary>
 </param>
 </interface>
-<interface name="local_gcr_prompter_dbus_chat" lineno="70">
+<interface name="local_gcr_prompter_dbus_chat" lineno="73">
 <summary>
 Allow bidirectional D-Bus method call/reply between a domain and
 gcr-prompter.
@@ -72373,7 +72373,7 @@ Domain allowed to exchange D-Bus messages with gcr-prompter.
 </summary>
 </param>
 </interface>
-<interface name="local_gcr_prompter_wayland_connect" lineno="90">
+<interface name="local_gcr_prompter_wayland_connect" lineno="93">
 <summary>
 Allow gcr-prompter to connect to a role session Wayland compositor
 socket.
