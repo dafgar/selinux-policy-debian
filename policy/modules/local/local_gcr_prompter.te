@@ -27,5 +27,8 @@ auth_use_nsswitch(gcr_prompter_t)
 # session bus.
 local_gpg_prompter_dbus_chat(gcr_prompter_t)
 
+# GTK startup queries a Plasma session service (kded) over the session bus.
+local_plasma_services_dbus_chat(gcr_prompter_t)
+
 # Accessibility bus address lookup (behind atspi_allow_clients).
 local_atspi_dbus_chat(gcr_prompter_t)
